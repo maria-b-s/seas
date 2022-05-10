@@ -1,0 +1,68 @@
+{% from "country.njk" import country %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row other-names">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="previous-address-start" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            What is the previous address?
+                        </h1>
+                    </legend>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="address-line-1">
+                            Building and street <span class="govuk-visually-hidden">line 1 of 2</span>
+                        </label>
+                        <input class="govuk-input" id="address-line-1" name="previous-address" type="text" autocomplete="address-line1" />
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="address-line-2">
+                            <span class="govuk-visually-hidden">Building and street line 2 of 2</span>
+                        </label>
+                        <input class="govuk-input" id="address-line-2" name="previous-address" type="text" autocomplete="address-line2" />
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="address-town"> Town or city </label>
+                        <input
+                            class="govuk-input govuk-!-width-two-thirds"
+                            id="address-town"
+                            name="previous-address"
+                            type="text"
+                            autocomplete="address-level2"
+                        />
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="address-postcode"> Postcode </label>
+                        <input
+                            class="govuk-input govuk-input--width-10"
+                            id="address-postcode"
+                            name="previous-address"
+                            type="text"
+                            autocomplete="postal-code"
+                        />
+                    </div>
+
+                    {{ country({ label: 'Country', inputClass: 'govuk-!-width-two-thirds' }) }}
+                </fieldset>
+            </div>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

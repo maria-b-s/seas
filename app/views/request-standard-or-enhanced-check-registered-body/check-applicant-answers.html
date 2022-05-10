@@ -1,0 +1,123 @@
+{% extends "layout.html" %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h1 class="govuk-heading-l">Check applicant answers</h1>
+            <button type="submit" class="govuk-button" data-module="govuk-button">Print PDF</button>
+        </div>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">Jessica Christine Smith</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Previous names</dt>
+                <dd class="govuk-summary-list__value">None</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">05 November 1976</dd>
+
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Sex</dt>
+                <dd class="govuk-summary-list__value">Female</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">National Insurance number</dt>
+                <dd class="govuk-summary-list__value">JL747850D</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Driving licence</dt>
+                <dd class="govuk-summary-list__value">SMITH304186JD9TE</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Passport number</dt>
+                <dd class="govuk-summary-list__value">123456789</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Nationality</dt>
+                <dd class="govuk-summary-list__value">British</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Country of issue</dt>
+                <dd class="govuk-summary-list__value">United Kingdom</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Place of birth</dt>
+                <dd class="govuk-summary-list__value">Liverpool, United Kingdom</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Current address</dt>
+                <dd class="govuk-summary-list__value">
+                    37 Stroma Road<br />
+                    Allerton<br />
+                    Liverpool<br />
+                    L18 9SN<br />
+                    United Kingdon
+                </dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Previous addresses in last 5 years</dt>
+                <dd class="govuk-summary-list__value">None</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">jessica.smith&commat;email.com</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Telephone number</dt>
+                <dd class="govuk-summary-list__value">07912 260456</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Previous convictions</dt>
+                <dd class="govuk-summary-list__value">None</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+        </dl>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                If you believe any of the applicant’s answers are incorrect you must reject the application.
+            </strong>
+        </div>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action="verify-applicant-id" method="post" novalidate>
+                <input type="hidden" name="answers-checked" value="true" />
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+            </form>
+            <form action="application-cancelled">
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application.</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

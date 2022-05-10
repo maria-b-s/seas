@@ -1,0 +1,45 @@
+{% extends "layout.html" %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <span class="govuk-caption-l">Registered body</span>
+        <form class="form" action="application-error-resent" method="post">
+            <div class="govuk-form-group">
+                <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                    <h1 class="govuk-fieldset__heading">
+                        <label class="govuk-label govuk-label--l" for="more-detail"> Additional details </label>
+                    </h1>
+
+                    <div id="more-detail-hint" class="govuk-hint">
+                        Additional information the applicant could need to fix their application. (Optional)
+                    </div>
+                    <textarea
+                        class="govuk-textarea govuk-js-character-count"
+                        id="more-detail"
+                        name="application-error-details"
+                        rows="5"
+                        aria-describedby="more-detail-hint more-detail-info"
+                    ></textarea>
+                    <div id="more-detail-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                        You can enter up to 200 characters
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-inset-text">
+                Proceeding will send the application back to the applicant. You will receive an email when they have rectified the issues
+            </div>
+            <button class="govuk-button" data-module="govuk-button">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

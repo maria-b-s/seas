@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Start page example
+{% endblock %}
+
+{% block header %}
+  <!-- Blank header with no service name for the start page -->
+  {{ govukHeader() }}
+{% endblock %}
+
+{% block beforeContent %}
+<div class="govuk-phase-banner">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">
+      alpha
+    </strong>
+    <span class="govuk-phase-banner__text">
+      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+    </span>
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Request a standard or enhanced DBS check
+      </h1>
+
+      <p>If you're a registered body, you can use this service to:</p>
+      <ol class="govuk-list govuk-list--number">
+        <li>Request a standard or enhanced DBS check for a new employee, post holder or volunteer.</li>
+        <li>Send an online application form to the applicant.</li>
+        <li>Check the applicant's details.</li>
+        <li>Submit the application to DBS.</li>
+      </ol>
+
+      <h2 class="govuk-heading-m">What you'll need</h2>
+
+      <p>To request a standard or enhanced DBS check you'll need:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your registered body number</li>
+        <li>your countersignatory number</li>
+        <li>the job or role the check is for</li>
+        <li>the name of the employer or organisation</li>
+        <li>the name and email address of the applicant</li>
+      </ul>
+
+
+      <a href="/landing-page/index" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8"  data-module="govuk-button">
+        Start
+        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+        </svg>
+      </a>
+
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related content
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="#">
+                Find out which DBS check is right for your employee
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+    </div>
+  </div>
+{% endblock %}

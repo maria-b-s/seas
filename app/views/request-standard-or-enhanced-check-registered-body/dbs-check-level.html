@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Question page
+{% endblock %}
+
+{% set serviceName %}
+  Request a standard or enhanced DBS check
+{% endset%}
+
+{% block beforeContent %}
+<div class="govuk-phase-banner">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">
+      alpha
+    </strong>
+    <span class="govuk-phase-banner__text">
+      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+    </span>
+  </p>
+</div>
+  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+
+      <form class="form" action="/dbs-check-answer" method="post">
+
+        <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <span class="govuk-caption-l">Registered body</span>
+      <h1 class="govuk-fieldset__heading">
+        What DBS check are you requesting?
+      </h1>
+    </legend>
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="what-dbs-check" name="what-dbs-check" type="radio" value="Standard" {{ checked("what-dbs-check", "Standard") }}>
+        <label class="govuk-label govuk-radios__label" for="what-dbs-check">
+          Standard
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+        A standard level certificate contains details of all spent and unspent convictions, cautions, reprimands and final warnings from the Police National Computer (PNC) which have not been filtered in line with legislation.
+      </div>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="what-dbs-check-2" name="what-dbs-check" type="radio" value="Enhanced" {{ checked("what-dbs-check", "Enhanced") }}>
+        <label class="govuk-label govuk-radios__label" for="what-dbs-check-2">
+          Enhanced
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+        An enhanced level certificate contains the same PNC information as the standard level certificate but also includes a check of information held by police forces.
+       </div>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="what-dbs-check-2" name="what-dbs-check" type="radio" value="Enhanced with barred list" {{ checked("what-dbs-check", "Enhanced with barred list") }}>
+        <label class="govuk-label govuk-radios__label" for="what-dbs-check-2">
+          Enhanced with barred list
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+        An enhanced level certificate with barred list check(s) contains the same PNC information and check of information held by police forces as an enhanced level check but in addition will check against the children’s and/or adult’s barred lists.
+        </div>
+      </div>
+    </div>
+
+
+  </fieldset>
+</div>
+
+
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

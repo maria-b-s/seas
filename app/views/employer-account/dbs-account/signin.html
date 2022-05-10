@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Question page
+{% endblock %}
+
+{% set serviceName %}
+  Request a standard or enhanced DBS check
+{% endset%}
+
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Your DBS account</span>
+      <h1 class="govuk-heading-l">Enter your sign in details</h1>
+
+      <form class="form" action="home" method="post">
+
+        <div class="govuk-form-group">
+  <label class="govuk-label" for="full-name">
+    Username
+  </label>
+  <input class="govuk-input govuk-input--width-10" id="full-name" name="full-name" type="text" spellcheck="false" autocomplete="name"></div>
+
+  <div class="govuk-form-group">
+  <label class="govuk-label" for="sort-code">
+    Password
+  </label>
+  <div id="sort-code-hint" class="govuk-hint">
+    Must be 8 digits long
+  </div>
+  <input class="govuk-input govuk-input--width-10" id="sort-code" name="sort-code" type="text" spellcheck="false" aria-describedby="sort-code-hint" pattern="[0-9]*" inputmode="numeric">
+</div>
+
+
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

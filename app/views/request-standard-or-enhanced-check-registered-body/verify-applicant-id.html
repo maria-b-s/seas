@@ -1,0 +1,80 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="declaration-registered-person" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <span class="govuk-caption-l">Registered body</span>
+                        <h1 class="govuk-fieldset__heading">Has the applicant's identity been verified?</h1>
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input
+                                class="govuk-radios__input"
+                                id="verified"
+                                name="verified"
+                                type="radio"
+                                value="Yes"
+                                checked
+                                data-aria-controls="conditional-contact"
+                            />
+                            <label class="govuk-label govuk-radios__label" for="verified"> Yes </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-contact">
+                            <label class="govuk-label" for="name-of-verifier"> Name of evidence checker </label>
+                            <input
+                                class="govuk-input govuk-!-width-one-half"
+                                id="evidence-checker-2"
+                                name="evidence-checker-2"
+                                type="text"
+                                spellcheck="false"
+                                autocomplete="name"
+                            />
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input
+                                class="govuk-radios__input"
+                                id="verified-2"
+                                name="verified"
+                                type="radio"
+                                value="No"
+                                data-aria-controls="conditional-contact-2"
+                            />
+                            <label class="govuk-label govuk-radios__label" for="verified-2"> No </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text"> How should you do this? </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>To verify the applicant's id you should:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>Lorem Ipsum</li>
+                        <li>dolor sit</li>
+                    </ul>
+                </div>
+            </details>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Question page
+{% endblock %}
+
+{% set serviceName %}
+  Request a standard or enhanced DBS check
+{% endset%}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" action="payment-on-account" method="post">
+
+      <div class="govuk-form-group">
+        <span class="govuk-caption-l">Create your DBS account</span>
+        <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="email-address">
+          What is their email address?
+      </label>
+      </h1>
+
+      <label class="govuk-label" for="address-line-1">
+        Email address<span class="govuk-visually-hidden">line 1 of 2</span>
+      </label>
+      <input class="govuk-input" id="email-address" name="email-address" type="text">
+
+      </div>
+
+
+
+
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

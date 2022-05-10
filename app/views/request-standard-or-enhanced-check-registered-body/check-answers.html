@@ -1,0 +1,129 @@
+{% extends "layout.html" %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <span class="govuk-caption-l">Registered body</span>
+        <h1 class="govuk-heading-l">Check your answers</h1>
+        <h2 class="govuk-heading-m">Role details</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Role or job title</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['position-name'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="position">
+                        Change
+                        <span class="govuk-visually-hidden"> contact details</span>
+                    </a>
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Company or organisation</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['employer-name'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="organisation-name">
+                        Change
+                        <span class="govuk-visually-hidden"> licence type</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">DBS check details</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Check level</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['what-dbs-check'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="dbs-check-level">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Job applicant or post holder</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['what-application-type'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="applicant-or-post-holder">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Free-of-charge volunteer</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['volunteer'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="volunteer">
+                        Change
+                        <span class="govuk-visually-hidden"> licence period</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Applicant details</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['full-name'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="applicant-name">
+                        Change
+                        <span class="govuk-visually-hidden"> name</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['applicant-email'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="applicant-email">
+                        Change
+                        <span class="govuk-visually-hidden"> date of birth</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+        <form action="application-sent-to-citizen" method="post" novalidate>
+            <div class="govuk-form-group">
+                <h2 class="govuk-heading-m">Now send the online application form to the applicant</h2>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="declare-check-answers" name="declare-check-answers" type="checkbox" value="" />
+                    <label class="govuk-label govuk-checkboxes__label" for="declare-check-answers">
+                        I declare that to the best of my knowledge, the details I am providing are correct.
+                    </label>
+                </div>
+                <input type="hidden" name="answers-checked" value="true" />
+                <button type="submit" class="govuk-button" data-module="govuk-button">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

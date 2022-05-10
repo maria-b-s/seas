@@ -1,0 +1,182 @@
+{% extends "layout.html" %} {% block pageTitle %} GOV.UK Prototype Kit {% endblock %} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Standard or enhanced DBS check prototypes</h1>
+
+        <a
+            href="request-standard-or-enhanced-check-registered-body/start"
+            role="button"
+            draggable="false"
+            class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-4"
+            data-module="govuk-button"
+        >
+            Request a standard or enhanced DBS check
+            <svg
+                class="govuk-button__start-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="17.5"
+                height="19"
+                viewBox="0 0 33 40"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+            </svg>
+        </a>
+        <br />
+        <br />
+        <h2 class="govuk-heading-m">Registered body</h2>
+        <p class="govuk-body">
+            <a href="/request-standard-or-enhanced-check-registered-body/start" class="govuk-link"> Start page </a>
+        </p>
+        <p class="govuk-body">
+            <a href="landing-page/index" class="govuk-link">Login page</a>
+        </p>
+        <p class="govuk-body">
+            <a href="landing-page/opt-verify" class="govuk-link">OTP verify</a>
+        </p>
+        <p class="govuk-body">
+            <a href="landing-page/home" class="govuk-link">Landing page</a>
+        </p>
+        <p class="govuk-body">
+            <a href="/request-standard-or-enhanced-check-registered-body/enter-details" class="govuk-link">
+                Enter registered body and countersignatory numbers
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/dbs-check-level" class="govuk-link"> DBS check level </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/enhanced/barred-list-children" class="govuk-link">
+                Enhanced: barred list (children)
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/enhanced/barred-list-adults" class="govuk-link">
+                Enhanced: barred list (adults)
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/enhanced/working-at-home-address" class="govuk-link">
+                Enhanced: working at home address
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/position" class="govuk-link"> Job or role </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/organisation-name" class="govuk-link"> Employer or organisation </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/applicant-or-post-holder" class="govuk-link">
+                New applicant or post holder
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/volunteer-declaration" class="govuk-link"> Free-of-charge volunteer </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/applicant-name" class="govuk-link"> Applicant name </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/applicant-email" class="govuk-link"> Applicant email address </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/check-answers" class="govuk-link"> Check answers </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/application-sent-to-citizen" class="govuk-link">
+                Application form sent to citizen
+            </a>
+        </p>
+
+        <h2 class="govuk-heading-m">Citizen application</h2>
+        <p class="govuk-body">
+            <a href="citizen-application/start-application" class="govuk-link"> Start application </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/login" class="govuk-link"> Login </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/login-old" class="govuk-link"> Login back in </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/current-full-name" class="govuk-link"> Current full name </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/other-names" class="govuk-link"> Previous names </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/date-of-birth" class="govuk-link"> Date of birth </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/sex" class="govuk-link"> Sex </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/national-insurance-number" class="govuk-link"> National Insurance number </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/driving-licence" class="govuk-link"> Driving licence </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/passport" class="govuk-link"> Passport </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/place-of-birth" class="govuk-link"> Place of birth </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/current-address" class="govuk-link"> Current address </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/previous-address" class="govuk-link"> Previous addresses </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/send-certificate" class="govuk-link"> Address to send certificate </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/email-address" class="govuk-link"> Email address </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/telephone-number" class="govuk-link"> Telephone number </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/previous-convictions" class="govuk-link"> Previous convictions </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/review-application" class="govuk-link"> Review application </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/declaration" class="govuk-link"> Declaration </a>
+        </p>
+        <p class="govuk-body">
+            <a href="citizen-application/confirmation" class="govuk-link"> Application sent to registered body </a>
+        </p>
+
+        <h2 class="govuk-heading-m">Registered body</h2>
+
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/check-applicant-answers" class="govuk-link"> Check applicant answers </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/verify-applicant-id" class="govuk-link"> Verify applicant ID </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/declaration-registered-person" class="govuk-link"> Declaration </a>
+        </p>
+        <p class="govuk-body">
+            <a href="request-standard-or-enhanced-check-registered-body/application-sent" class="govuk-link"> Application sent </a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

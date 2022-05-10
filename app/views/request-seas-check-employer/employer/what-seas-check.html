@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Question page
+{% endblock %}
+
+{% set serviceName %}
+  Request a standard or enhanced DBS check
+{% endset%}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+      <form class="form" action="confirm-employer-identity" method="post">
+
+        <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        What DBS check do you want to request?
+      </h1>
+    </legend>
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="where-do-you-live" name="where-do-you-live" type="radio" value="england">
+        <label class="govuk-label govuk-radios__label" for="where-do-you-live">
+          Standard DBS check
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+        A standard level certificate contains details of all spent and unspent convictions, cautions, reprimands and final warnings from the Police National Computer (PNC) which have not been filtered in line with legislation.
+      </div>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="where-do-you-live-2" name="where-do-you-live" type="radio" value="scotland">
+        <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">
+          Enhanced DBS check
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+          An enhanced level certificate contains the same PNC information as the standard level certificate but also includes a check of information held by police forces.
+      </div>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="where-do-you-live-3" name="where-do-you-live" type="radio" value="wales">
+        <label class="govuk-label govuk-radios__label" for="where-do-you-live-3">
+          Enhanced DBS check with barred lists
+        </label>
+        <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+        An enhanced level certificate with barred list check(s) contains the same PNC information and check of information held by police forces as an enhanced level check but in addition will check against the children’s and/or adult’s barred lists.
+        </div>
+      </div>
+    </div>
+
+  </fieldset>
+</div>
+
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

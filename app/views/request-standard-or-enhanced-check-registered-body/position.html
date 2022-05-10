@@ -1,0 +1,42 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="organisation-name" method="post">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="60">
+                <div class="govuk-form-group">
+                    <span class="govuk-caption-l">Registered body</span>
+                    <h1 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="position-name"> What job or role is the DBS check for? </label>
+                    </h1>
+                    <input
+                        class="govuk-input govuk-js-character-count"
+                        id="position-name"
+                        name="position-name"
+                        value="{{ data['position-name'] }}"
+                        type="text"
+                        aria-describedby="position-name-info"
+                    />
+                </div>
+                <div id="position-name-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                    You can enter up to 60 characters
+                </div>
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

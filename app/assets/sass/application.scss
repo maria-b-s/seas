@@ -1,0 +1,69 @@
+// global styles for <a> and <p> tags
+$govuk-global-styles: true;
+$govuk-new-link-styles: true;
+
+// We can't mount GOV.UK Frontend's assets at root as it's done automatically by the extensions framework.
+$govuk-assets-path: '/govuk/assets/';
+
+// Import GOV.UK Frontend and any extension styles if extensions have been configured
+@import 'lib/extensions/extensions';
+
+// Patterns that aren't in Frontend
+@import 'patterns/step-by-step-header';
+@import 'patterns/step-by-step-nav';
+@import 'patterns/step-by-step-related';
+@import 'patterns/task-list';
+@import 'patterns/related-items';
+@import 'landing-page';
+
+// Add extra styles here, or re-organise the Sass files in whichever way makes most sense to you
+
+.Kieran-input {
+    border: #0b0c0c 2px solid;
+    line-height: 1.31579;
+    font-size: 1.1875rem;
+    font-family: 'GDS Transport', arial, sans-serif;
+    //padding: 5px;
+    cursor: pointer;
+    &:focus {
+        outline: 3px solid #ffdd00;
+        outline-offset: 0;
+        box-shadow: inset 0 0 0 2px;
+    }
+}
+
+.country-input-group {
+    position: relative;
+    .country-dropdown {
+        position: absolute;
+        width: 100%;
+        background-color: white;
+        z-index: 20;
+        border: 1px solid #b0beca;
+        max-height: 250px;
+        overflow-y: scroll;
+        h4 {
+            border-top: 1px solid #b0beca;
+            padding: 4px 10px;
+            margin: 0;
+            font-weight: normal;
+            font-size: 1.2em;
+            cursor: pointer;
+            user-select: none;
+            font-family: 'GDS Transport', arial, sans-serif;
+        }
+
+        :first-child {
+            border-top: none;
+        }
+    }
+}
+
+.new-app {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    button {
+        margin-bottom: 0;
+    }
+}

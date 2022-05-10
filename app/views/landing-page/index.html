@@ -1,0 +1,53 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check
+{%endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Registered body</span>
+        <h1 class="govuk-heading-l">Enter your details</h1>
+
+        <form class="form" action="opt-verify" method="post">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="reg-body-num"> Registered body number </label>
+                <input
+                    class="govuk-input govuk-input--width-10"
+                    id="reg-body-num"
+                    name="account-number"
+                    type="text"
+                    spellcheck="false"
+                    aria-describedby="account-number-hint"
+                    pattern="[0-9]*"
+                    inputmode="numeric"
+                />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="csig-num"> Countersignatory number </label>
+                <input
+                    class="govuk-input govuk-input--width-10"
+                    id="csig-num"
+                    name="account-number"
+                    type="text"
+                    spellcheck="false"
+                    aria-describedby="account-number-hint"
+                    pattern="[0-9]*"
+                    inputmode="numeric"
+                />
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

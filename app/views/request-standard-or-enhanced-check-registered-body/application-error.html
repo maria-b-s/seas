@@ -1,0 +1,162 @@
+{% extends "layout.html" %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <span class="govuk-caption-l">Registered body</span>
+        <form class="form" action="application-error-details" method="post" novalidate>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Which fields are incorrect</h1>
+                    </legend>
+                    <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="name" name="application-error" type="checkbox" value="Name" />
+                            <label class="govuk-label govuk-checkboxes__label" for="name"> Name </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="previous-names"
+                                name="application-error"
+                                type="checkbox"
+                                value="Previous Names"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="previous-names"> Previous names </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="date-of-birth"
+                                name="application-error"
+                                type="checkbox"
+                                value="Date of birth"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="date-of-birth"> Date of birth </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="sex" name="application-error" type="checkbox" value="sex" />
+                            <label class="govuk-label govuk-checkboxes__label" for="sex"> Sex </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="national-insurance-number"
+                                name="application-error"
+                                type="checkbox"
+                                value="National insurance number"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="national-insurance-number"> National Insurance number </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="driving-license"
+                                name="application-error"
+                                type="checkbox"
+                                value="Driver's license"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="driving-license"> Driving license </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="passport-number"
+                                name="application-error"
+                                type="checkbox"
+                                value="Passport number"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="passport-number"> Passport number </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="nationality" name="application-error" type="checkbox" value="Nationality" />
+                            <label class="govuk-label govuk-checkboxes__label" for="nationality"> Nationality </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="country-of-issue"
+                                name="application-error"
+                                type="checkbox"
+                                value="Country of issue"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="country-of-issue"> Country of issue </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="place-of-birth"
+                                name="application-error"
+                                type="checkbox"
+                                value="Place of birth"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="place-of-birth"> Place of birth </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="current-address"
+                                name="application-error"
+                                type="checkbox"
+                                value="Current Address"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="current-address"> Current address </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="previous-addresses"
+                                name="application-error"
+                                type="checkbox"
+                                value="Previous Addresses"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="previous-addresses"> Previous addresses </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="email-address"
+                                name="application-error"
+                                type="checkbox"
+                                value="Email Addresses"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="email-address"> Email address </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="telephone-number"
+                                name="application-error"
+                                type="checkbox"
+                                value="Telephone number"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="telephone-number"> Telephone number </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input
+                                class="govuk-checkboxes__input"
+                                id="previous-convictions"
+                                name="application-error"
+                                type="checkbox"
+                                value="Previous convictions"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="previous-convictions"> Previous convictions </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

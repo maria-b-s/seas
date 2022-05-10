@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Request a standard or enhanced DBS check
+{% endblock %}
+
+{% block header %}
+  <!-- Blank header with no service name for the start page -->
+  {{ govukHeader() }}
+{% endblock %}
+
+{% block beforeContent %}
+  <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="https://www.gov.uk">Home</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Section</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link">Subsection</a>
+      </li>
+    </ol>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Request a standard or enhanced DBS check
+      </h1>
+
+      <p class="govuk-body">Apply for a Standard or Enhanced Disclosure and Barring Service (DBS) check to get a copy of a job applicant or employee's criminal record. It’s available for people working in England and Wales.</p>
+
+      <p class="govuk-body">You can also get a standard or enhanced DBS check for someone who lives in Northern Ireland or Scotland but the job they’re applying for is in England or Wales. There’s a different way to apply if the job is in <a class="govuk-link" href=https://www.nidirect.gov.uk/campaigns/accessni-criminal-record-checks>Northern Ireland</a> or <a class="govuk-link" href="https://www.mygov.scot/browse/working-jobs/finding-a-job/disclosure">Scotland</a>.</p>
+
+
+        <div class="govuk-inset-text">If you're an employer requesting a standard or enhanced check for the first time, you'll need to <a href="create-account/company-name">create a DBS account</a>.</div>
+
+      <br>
+      <a href="dbs-account/signin" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8"  data-module="govuk-button">
+        Sign in to your DBS account
+        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+        </svg>
+      </a>
+
+      <!--
+      <h2 class="govuk-heading-m">Before you start</h2>
+      -->
+
+
+
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Subsection
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="#">
+                Related link
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                Related link
+              </a>
+            </li>
+            <li>
+              <a href="#" class="govuk-!-font-weight-bold">
+                More <span class="govuk-visually-hidden">in Subsection</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+    </div>
+  </div>
+{% endblock %}

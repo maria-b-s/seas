@@ -1,0 +1,44 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="applicant-or-post-holder" method="post">
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <span class="govuk-caption-l">Registered body</span>
+                    <label class="govuk-label govuk-label--l"> What organisation is the check for?</label>
+                </h1>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="my-org" name="whos-check" type="radio" value="my-org" />
+                        <label class="govuk-label govuk-radios__label" for="my-org"> My organisation </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="someone-else" name="whos-check" type="radio" value="another-org" />
+                        <label class="govuk-label govuk-radios__label" for="someone-else"> Another organisation </label>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-form-group add-another-name" style="display: none">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--m" for="event-name"> What is the name of the employer or organisation? </label>
+                </h1>
+                <input class="govuk-input govuk-input--width-20" id="event-name" name="event-name" type="text" />
+            </div>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
