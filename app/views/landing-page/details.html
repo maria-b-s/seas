@@ -22,12 +22,12 @@
                     </svg>
                     <!--<![endif]-->
                     <!--[if IE 8]>
-                        <img
-                            src="/assets/images/govuk-logotype-crown.png"
-                            class="govuk-header__logotype-crown-fallback-image"
-                            width="36"
-                            height="32"
-                        />
+                    <img
+                        src="/assets/images/govuk-logotype-crown.png"
+                        class="govuk-header__logotype-crown-fallback-image"
+                        width="36"
+                        height="32"
+                    />
                     <![endif]-->
                     <span class="govuk-header__logotype-text"> GOV.UK </span>
                 </span>
@@ -67,46 +67,55 @@
     </p>
 </div>
 <nav class="nav-bar">
-    <a href="#3"> Home </a>
+    <a href="home" class="govuk-back-link" style='margin-block: 0'>Back</a>
     <a href="#4"> Settings </a>
 </nav>
+
 {% endblock %} {% block content %}
 
-<table class="govuk-table landing-table">
-    <caption class="govuk-table__caption govuk-table__caption--m">
-        <div class="new-app">
-            Applications
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h4 class="govuk-heading-m">Application details</h4>
             <a href="/request-standard-or-enhanced-check-registered-body/dbs-check-level">
                 <button class="govuk-button" data-module="govuk-button">New Application</button>
             </a>
         </div>
-    </caption>
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Reference number</th>
-            <th scope="col" class="govuk-table__header">Applicant name</th>
-            <th scope="col" class="govuk-table__header status">Status</th>
-            <th scope="col" class="govuk-table__header type">Type</th>
-            <th scope="col" class="govuk-table__header mod-date">Modified date</th>
-            <th scope="col" class="govuk-table__header">Actions</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        {% for app in data['applications'] %}
-        <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{app['ref']}}</td>
-            <td class="govuk-table__cell">{{app['name']}}</td>
-            <td class="govuk-table__cell status-cell">{{app['status']}}</td>
-            <td class="govuk-table__cell type-cell">{{app['type']}}</td>
-            <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
-            <td class="govuk-table__cell">
-                <a class="govuk-link delete-name" id="{{loop.index}}" href="#">View<span class="govuk-visually-hidden">{{loop.index}}</span> </a>
-                <a class="govuk-link details" id="{{loop.index}}-details" href="details?app={{app['ref']}}">Details<span class="govuk-visually-hidden">{{loop.index}}</span>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            {% for app in data['applications'] %}
+               {% if app['ref'] == query['app'] %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Reference number</dt>
+                        <dd class="govuk-summary-list__value">{{app['ref']}}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Applicant name</dt>
+                        <dd class="govuk-summary-list__value">{{app['name']}}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Status</dt>
+                        <dd class="govuk-summary-list__value">{{app['status']}}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Type</dt>
+                        <dd class="govuk-summary-list__value">{{app['type']}}</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Modified date</dt>
+                        <dd class="govuk-summary-list__value">{{app['date']}}</dd>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </dl>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action="verify-applicant-id" method="post" novalidate>
+                <input type="hidden" name="answers-checked" value="true" />
+                <button type="submit" class="govuk-button" data-module="govuk-button">View application</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

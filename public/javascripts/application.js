@@ -11,7 +11,9 @@ $(document).ready(() => {
 
 $('[name="changed-name"]').click(e => {
     const radio = $('.add-another-name');
-    if (e.currentTarget.value === 'yes') return radio.show().attr('aria-hidden', 'false');
+    if (e.currentTarget.value === 'yes') {
+        return radio.show().attr('aria-hidden', 'false');
+    }
     return radio.hide().attr('aria-hidden', 'true');
 });
 
@@ -235,7 +237,23 @@ const populateDropdown = list => {
     list.forEach(c => countryDropdown.append(`<h4 class="country-option">${c}</h4>`));
 };
 
+// eslint-disable-next-line consistent-return
+const details = $('.details');
+const landingSetup = () => {
+    if ($('.landing-table')) {
+        if (window.innerWidth < 800) {
+            details.css('display', 'table-cell');
+            return ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
+        }
+        details.css('display', 'none');
+        return ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item =>
+            $(`.${item}`).css('display', 'table-cell'),
+        );
+    }
+};
+
 $(window).on('load', () => {
+    landingSetup();
     populateDropdown(countryArray);
 });
 
@@ -250,4 +268,8 @@ countryInput.keyup(e => {
 $(document).on('click', '.country-option', e => {
     $('.country-input').val(e.currentTarget.innerHTML);
     countryDropdown.css('display', 'none');
+});
+
+$(window).on('resize', () => {
+    landingSetup();
 });

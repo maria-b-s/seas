@@ -6,7 +6,6 @@ module.exports = env => {
      * @type {Object}
      */
     const filters = {};
-
     /* ------------------------------------------------------------------
     add your methods to the filters obj below this comment block:
     @example:
