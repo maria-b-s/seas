@@ -1,7 +1,7 @@
 {% macro country(params) %}
     <div class="govuk-form-group country-input-group  {{ params.inputClass }}">
         <label class="govuk-label" for="{{ params.id }}">{{ params.label }}</label>
-        <input id="{{ params.id }}" name="{{params.name}}" type="text" class="govuk-input country-input"/>
+        <input id="{{ params.id }}" name="{{params.name}}" type="text" class="govuk-input country-input" value="{{params.value}}"/>
         <div style="display: none;" class="country-dropdown">
     </div>
 </div>

@@ -1,0 +1,63 @@
+{% from "country.njk" import country %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a
+standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="details?lookup=true" method="post">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">What is your current address?</h1>
+                </legend>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="postcode-lookup"> UK Postcode </label>
+                    <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style='display: none'>
+                        <span class="govuk-visually-hidden">Error:</span> Invalid postcode
+                    </p>
+                    <input
+                        class="govuk-input govuk-input--width-10"
+                        id="postcode-lookup"
+                        name="postcode-lookup"
+                        type="text"
+                        autocomplete="postal-code"
+                    />
+                </div>
+                <button class="govuk-button lookup" type='button' data-module="govuk-button">Look up address</button>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="sort">
+                        Select your address
+                    </label>
+                    <select class="govuk-select govuk-input--width-20 postcode-select" id="sort" name="lookup-addr" disabled>
+                        <option class='enter-postcode'>Enter postcode</option>
+                        <option value="1-orchid-place">1 Orchid place</option>
+                        <option value="2-orchid-place">2 Orchid place</option>
+                        <option value="3-orchid-place">3 Orchid place</option>
+                        <option value="4-orchid-place">4 Orchid place</option>
+                        <option value="5-orchid-place">5 Orchid place</option>
+                        <option value="6-orchid-place">6 Orchid place</option>
+                    </select>
+                </div>
+                <input class='hidden-details-town' name='hidden-details-town' type='text' hidden/>
+                <input class='hidden-details-city' name='hidden-details-city' type='text' hidden/>
+                <div style='margin-bottom: .5rem'>
+                    <a href="details" class="govuk-link">Add address manually</a>
+                </div>
+                <div style='margin-bottom: 2rem'>
+                    <a href="details" class="govuk-link">I am homeless or travelling and don't have an address</a>
+                </div>
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

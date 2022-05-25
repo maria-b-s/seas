@@ -237,18 +237,16 @@ const populateDropdown = list => {
     list.forEach(c => countryDropdown.append(`<h4 class="country-option">${c}</h4>`));
 };
 
-// eslint-disable-next-line consistent-return
 const details = $('.details');
 const landingSetup = () => {
     if ($('.landing-table')) {
         if (window.innerWidth < 800) {
             details.css('display', 'table-cell');
-            return ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
+            ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
+        } else {
+            details.css('display', 'none');
+            ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'table-cell'));
         }
-        details.css('display', 'none');
-        return ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item =>
-            $(`.${item}`).css('display', 'table-cell'),
-        );
     }
 };
 
@@ -272,4 +270,36 @@ $(document).on('click', '.country-option', e => {
 
 $(window).on('resize', () => {
     landingSetup();
+});
+
+const getRandomArbitrary = (min, max) => {
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
+$('.lookup').on('click', async () => {
+    const postcode = $('#postcode-lookup');
+    const err = $('.error-msg');
+    const select = $('.postcode-select');
+    if (!postcode) return;
+    const firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
+    const secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
+    fetch(`https://api.postcodes.io/postcodes/${postcode.val()}`)
+        .then(response => response.json())
+        .then(res => {
+            if (res.status !== 200) {
+                err.css('display', 'block');
+                return postcode.addClass('govuk-input--error');
+            }
+            select.prop('disabled', false);
+            select.empty();
+            err.css('display', 'none');
+            const street = `${firstStreetBit[getRandomArbitrary(0, 6)]} ${secondStreetBit[getRandomArbitrary(0, 4)]}`;
+            Array.from(Array(10))
+                .map(() => `${getRandomArbitrary(3, 50)} ${street}`)
+                .forEach(el => select.append(`<option value="${el}">${el}</option>`));
+            console.log(res);
+            $('.hidden-details-city').val(res.result.admin_county);
+            $('.hidden-details-town').val(res.result.parish);
+            return postcode.removeClass('govuk-input--error');
+        });
 });
