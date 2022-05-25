@@ -3,3 +3,4 @@ yarn.lock
 .env
 .DS_Store
 public
+package-lock.json
