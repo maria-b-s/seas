@@ -53,12 +53,12 @@ router.post('/dbs-check-answer', (req, res) => {
     // Check whether the variable matches a condition
     if (whatDbsCheck === 'Standard') {
         // Send user to next page
-        res.redirect('request-standard-or-enhanced-check-registered-body/position');
+        res.redirect('registered-body/position');
     } else if (whatDbsCheck === 'Enhanced') {
         // Send user to next page
-        res.redirect('request-standard-or-enhanced-check-registered-body/position');
+        res.redirect('registered-body/position');
     } else {
-        res.redirect('request-standard-or-enhanced-check-registered-body/enhanced/barred-list-children');
+        res.redirect('registered-body/enhanced/barred-list-children');
     }
 });
 
@@ -67,9 +67,9 @@ router.post('/pay-now-answer', (req, res) => {
 
     if (whatPayment === 'Pay-now') {
         // Send user to next page
-        res.redirect('request-standard-or-enhanced-check-registered-body/enter-card-details');
+        res.redirect('registered-body/enter-card-details');
     } else {
-        res.redirect('request-standard-or-enhanced-check-registered-body/application-sent');
+        res.redirect('registered-body/application-sent');
     }
 });
 
@@ -162,7 +162,7 @@ const randomDate = (start, end) => {
 };
 
 router.use('/citizen-application', citizenRouter);
-router.use('/request-standard-or-enhanced-check-registered-body', registeredBodyRouter);
+router.use('/registered-body', registeredBodyRouter);
 router.use('/landing-page', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
     const statuses = [
