@@ -162,7 +162,7 @@ const randomDate = (start, end) => {
 };
 
 router.use('/citizen-application', citizenRouter);
-router.use('/request-standard-or-enhanced-check-registered-body', registeredBodyRouter);
+router.use('/registered-body', registeredBodyRouter);
 router.use('/landing-page', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
     const statuses = [
