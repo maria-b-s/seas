@@ -13,8 +13,7 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <h1 class="govuk-heading-l">Check applicant answers</h1>
-            <button type="submit" class="govuk-button" data-module="govuk-button">Print PDF</button>
+            <h1 class="govuk-heading-l">Verify applicant ID</h1>
         </div>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
@@ -101,6 +100,11 @@ endset%} {% block beforeContent %}
             </div>
         </dl>
 
+        <p id="download-pdf-hint" class="govuk-body">
+            You can download a PDF of the applicants answers to allow for them to be sent to an ID checker if required.
+        </p>
+        <button type="submit" class="govuk-button" data-module="govuk-button">Download PDF</button>
+
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
@@ -113,9 +117,6 @@ endset%} {% block beforeContent %}
             <form action="verify-applicant-id" method="post" novalidate>
                 <input type="hidden" name="answers-checked" value="true" />
                 <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
-            </form>
-            <form action="application-cancelled">
-                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application.</button>
             </form>
         </div>
     </div>

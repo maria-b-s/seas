@@ -54,7 +54,7 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                             autocomplete="postal-code"
                         />
                     </div>
-                    {{ country({ label: 'Country of issue', inputClass: 'govuk-!-width-two-thirds' }) }}
+                    {{ country({ label: 'Country of issue', inputClass: 'govuk-!-width-two-thirds', name: 'send-cert-address' }) }}
                 </fieldset>
             </div>
             <button class="govuk-button" data-module="govuk-button">Continue</button>

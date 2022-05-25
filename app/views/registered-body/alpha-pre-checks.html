@@ -1,0 +1,59 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">ALPHA ONLY PRE-QUESTIONS</span>
+
+        <form class="form" action="check-answers" method="post">
+            <fieldset class='govuk-fieldset'>
+                <legend class='govuk-fieldset__legend govuk-fieldset__legend--l'>
+                    <span class='govuk-caption-l'>Registered body</span>
+                    <h1 class='govuk-fieldset__heading'>
+                            What login system would you like to use for this test?
+
+                    </h1>
+                </legend>
+                <div class='govuk-radios' data-module='govuk-radios'>
+                    <div class='govuk-radios__item'>
+                        <input class='govuk-radios__input' id='what-dbs-check' name='auth-type' type='radio'
+                               value='Standard' {{ checked("auth-type", "email") }}>
+                        <label class='govuk-label govuk-radios__label' for='what-dbs-check'>
+                            Email/SMS OTP
+                        </label>
+                        <div id='sign-in-item-hint-01' class='govuk-hint govuk-radios__hint'>
+                            We would send you an email or text containing a one-time passcode that you would then enter along with an
+                            email to gain access to your account
+                        </div>
+                    </div>
+                    <div class='govuk-radios__item'>
+                        <input class='govuk-radios__input' id='what-dbs-check-2' name='auth-type' type='radio'
+                               value='Enhanced' {{ checked("auth-type", "google-auth") }}>
+                        <label class='govuk-label govuk-radios__label' for='what-dbs-check-2'>
+                            Google Authenticator
+                        </label>
+                        <div id='sign-in-item-hint-02' class='govuk-hint govuk-radios__hint'>
+                            Using the google authenticator when you set your account up with DBS you will link it to the app one your phone
+                            when you then come to login we would request the current 6 digit code being displayed on the app
+                        </div>
+                    </div>
+                </div>
+
+
+            </fieldset>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

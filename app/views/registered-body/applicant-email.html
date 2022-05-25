@@ -23,7 +23,10 @@ endset%} {% block beforeContent %}
                 <div id="email-hint" class="govuk-hint"> We’ll only use this to contact them about their DBS check
                 </div>
                 <input
-                    class="govuk-input govuk-input--width-20"
+                    oncopy='return false'
+                    oncut='return false'
+                    onpaste='return false'
+                    class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email"
                     name="applicant-email"
                     value="{{ data['applicant-email'] }}"
@@ -36,7 +39,10 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <label class="govuk-label" for="applicant-email-confirm"> Confirm email address </label>
                 <input
-                    class="govuk-input govuk-input--width-20"
+                    oncopy='return false'
+                    oncut='return false'
+                    onpaste='return false'
+                    class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email-confirm"
                     name="applicant-email-confirm"
                     value="{{ data['applicant-email'] }}"

@@ -164,7 +164,6 @@ const randomDate = (start, end) => {
 router.use('/citizen-application', citizenRouter);
 router.use('/request-standard-or-enhanced-check-registered-body', registeredBodyRouter);
 router.use('/landing-page', (req, res, next) => {
-    console.log(req.session.data.applications);
     if (req.session.data.applications !== undefined) return next();
     const statuses = [
         'Sent to Applicant',
@@ -192,7 +191,7 @@ router.use('/landing-page', (req, res, next) => {
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });
-    next();
+    return next();
 });
 
 module.exports = router;
