@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="passport" method="post">
+        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'passport'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="drivers-licence-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -28,10 +28,10 @@ endset%} {% block beforeContent %}
                         <input
                             class="govuk-radios__input"
                             id="contact"
-                            name="contact"
+                            name="has-drivers-license"
                             type="radio"
-                            value="email"
-                            checked
+                            value="yes"
+                            {{ checked("has-drivers-license", "yes") }}
                             data-aria-controls="conditional-contact"
                         />
                         <label class="govuk-label govuk-radios__label" for="contact"> Yes </label>
@@ -57,17 +57,22 @@ endset%} {% block beforeContent %}
                         <input
                             class="govuk-radios__input"
                             id="contact-2"
-                            name="contact"
+                            name="has-drivers-license"
                             type="radio"
-                            value="phone"
+                            value="no"
                             data-aria-controls="conditional-contact-2"
+                            {{ checked("has-drivers-license", "no") }}
                         />
                         <label class="govuk-label govuk-radios__label" for="contact-2"> No </label>
                     </div>
                 </div>
             </div>
 
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

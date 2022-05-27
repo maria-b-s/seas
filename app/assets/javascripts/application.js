@@ -17,11 +17,15 @@ $('[name="changed-name"]').click(e => {
     return radio.hide().attr('aria-hidden', 'true');
 });
 
-$('[name="whos-check"]').click(e => {
-    const radio = $('.add-another-name');
-    if (e.currentTarget.value === 'another-org') return radio.show();
-    return radio.hide();
-});
+const anotherNameRadio = $('.add-another-name');
+
+const orgSetup = () => {
+    if ($('input[name="whos-check"]:checked').val() === 'another-org') return anotherNameRadio.show();
+    return anotherNameRadio.hide();
+};
+
+$('[name="whos-check"]').on('click', orgSetup);
+$(window).on('load', orgSetup);
 
 $('.delete-name').click(e => {
     fetch(`/citizen-application/delete-name?index=${parseInt(e.currentTarget.id, 10)}`, {
@@ -303,3 +307,21 @@ $('.lookup').on('click', async () => {
             return postcode.removeClass('govuk-input--error');
         });
 });
+
+/* dbs-check-level */
+const changeContinueBtn = (btnId, value, inputName) => {
+    const btn = $(`#${btnId}`);
+    if ($(`input[name="${inputName}"]:checked`).val() === value) {
+        btn.text('Continue');
+    } else {
+        btn.text('Check Answers');
+    }
+};
+
+$('[name="what-dbs-check"]').on('click', () => changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check'));
+$(window).on('load', () => changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check'));
+
+/* applicant-or-post-holder */
+
+$('[name="what-application-type"]').on('click', () => changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type'));
+$(window).on('load', () => changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type'));

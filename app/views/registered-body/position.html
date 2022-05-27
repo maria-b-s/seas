@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="organisation-name" method="post">
+        <form class="form" action="{{'check-answers' if query['change'] == 'true' else 'organisation-name'}}" method="post">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="60">
                 <div class="govuk-form-group">
                     <span class="govuk-caption-l">Registered body</span>
@@ -33,8 +33,11 @@ endset%} {% block beforeContent %}
                     You can enter up to 60 characters
                 </div>
             </div>
-
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% if query['change'] === 'true' %}
+                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

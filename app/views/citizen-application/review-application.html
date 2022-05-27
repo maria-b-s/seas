@@ -20,11 +20,9 @@ endset%} {% block beforeContent %}
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Name</th>
+                    <td class="govuk-table__cell">{{ [ data['full-name'][0], ' ' ,data['full-name'][1], ' ' , data['full-name'][2]] | join }}</td>
                     <td class="govuk-table__cell">
-                        {{ [ data['names'][0].firstName, ' ' ,data['names'][0].middleNames, ' ' , data['names'][0].lastName] | join }}
-                    </td>
-                    <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="current-full-name?change=true">
                             Change
                             <span class="govuk-visually-hidden">name</span>
                         </a>
@@ -33,13 +31,12 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous Names</th>
                     <td class="govuk-table__cell">
-                        {% for item in data['names'] %} {% if data['names'].length === 1 %} None {% endif %} {% if loop.index !== 0 %} {{ [
-                        data['names'][loop.index].firstName, ' ' ,data['names'][loop.index].middleNames, ' ' , data['names'][loop.index].lastName] |
-                        join }} <br />
-                        {% endif %} {% endfor %}
+                        {% for item in data['names'] %} {% if data['names'].length === 0 %} None {% endif %} {{[ data['names'][loop.index -1].firstName,
+                        ' ' ,data['names'][loop.index - 1].middleNames, ' ' , data['names'][loop.index - 1].lastName] | join }} <br />
+                        {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="other-names?change=true">
                             Change
                             <span class="govuk-visually-hidden">previous names</span>
                         </a>
@@ -49,7 +46,7 @@ endset%} {% block beforeContent %}
                     <th scope="row" class="govuk-table__header">Date of birth</th>
                     <td class="govuk-table__cell">{{[data['dob-day'], '/' , data['dob-month'], '/' ,data['dob-year']] | join }}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="date-of-birth?change=true">
                             Change
                             <span class="govuk-visually-hidden">date of birth</span>
                         </a>
@@ -59,7 +56,7 @@ endset%} {% block beforeContent %}
                     <th scope="row" class="govuk-table__header">Sex</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">{{data['sex']}}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="sex?change=true">
                             Change
                             <span class="govuk-visually-hidden">sex</span>
                         </a>
@@ -71,7 +68,7 @@ endset%} {% block beforeContent %}
                         {% if data['has-national-insurance-number'] === 'no'%} N/A {% else %} {{data['national-insurance-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="national-insurance-number?change=true">
                             Change
                             <span class="govuk-visually-hidden">national insurance number</span>
                         </a>
@@ -79,9 +76,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Driver's licence number</th>
-                    <td class="govuk-table__cell" style="text-transform: uppercase">{{data['drivers-licence-number']}}</td>
+                    <td class="govuk-table__cell" style="text-transform: uppercase">{% if data['has-drivers-license'] === 'no'%} N/A {% else %} {{data['drivers-licence-number']}} {% endif %}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="drivers-licence?change=true">
                             Change
                             <span class="govuk-visually-hidden">driver's licence number</span>
                         </a>
@@ -89,9 +86,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Passport number</th>
-                    <td class="govuk-table__cell" style="text-transform: uppercase">{{data['passport-number']}}</td>
+                    <td class="govuk-table__cell" style="text-transform: uppercase">{% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="passport?change=true">
                             Change
                             <span class="govuk-visually-hidden">passport number</span>
                         </a>
@@ -99,9 +96,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Country of issue</th>
-                    <td class="govuk-table__cell" style="text-transform: capitalize">{{data['passport-country-of-issue']}}</td>
+                    <td class="govuk-table__cell" style="text-transform: capitalize">{% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-country-of-issue']}} {% endif %}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="passport?change=true">
                             Change
                             <span class="govuk-visually-hidden">country of issue</span>
                         </a>
@@ -110,10 +107,11 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Place of birth</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
-                        {{[data['address-town'], ', ' , data['address-country']] | join }}
+                        {{data['address-town']}}<br />
+                        {{data['address-country']}}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="place-of-birth?change=true">
                             Change
                             <span class="govuk-visually-hidden">place of birth</span>
                         </a>

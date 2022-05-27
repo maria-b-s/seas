@@ -14,18 +14,16 @@ endset%} {% block beforeContent %}
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Registered body</span>
         <h1 class="govuk-heading-l">
-            What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} email
-            address?
+            What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} email address?
         </h1>
         <form class="form" action="check-answers" method="post">
             <div class="govuk-form-group">
                 <label class="govuk-label" for="applicant-email"> Email address </label>
-                <div id="email-hint" class="govuk-hint"> We’ll only use this to contact them about their DBS check
-                </div>
+                <div id="email-hint" class="govuk-hint">We’ll only use this to contact them about their DBS check</div>
                 <input
-                    oncopy='return false'
-                    oncut='return false'
-                    onpaste='return false'
+                    oncopy="return false"
+                    oncut="return false"
+                    onpaste="return false"
                     class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email"
                     name="applicant-email"
@@ -39,9 +37,9 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <label class="govuk-label" for="applicant-email-confirm"> Confirm email address </label>
                 <input
-                    oncopy='return false'
-                    oncut='return false'
-                    onpaste='return false'
+                    oncopy="return false"
+                    oncut="return false"
+                    onpaste="return false"
                     class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email-confirm"
                     name="applicant-email-confirm"

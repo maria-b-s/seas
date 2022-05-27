@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="drivers-licence" method="post">
+        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'drivers-licence'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="ni-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -30,7 +30,7 @@ endset%} {% block beforeContent %}
                                 name="has-national-insurance-number"
                                 type="radio"
                                 value="yes"
-                                checked
+                                {{ checked("has-national-insurance-number", "yes") }}
                                 data-aria-controls="conditional-contact"
                             />
                             <label class="govuk-label govuk-radios__label" for="contact"> Yes </label>
@@ -55,13 +55,14 @@ endset%} {% block beforeContent %}
                                 name="has-national-insurance-number"
                                 type="radio"
                                 value="no"
+                                {{ checked("has-national-insurance-number", "no") }}
                                 data-aria-controls="conditional-contact-2"
                             />
                             <label class="govuk-label govuk-radios__label" for="contact-2"> No </label>
                         </div>
                     </div>
                 </fieldset>
-                <details class="govuk-details" data-module="govuk-details">
+                <details class="govuk-details" data-module="govuk-details" style='margin-top: 1rem'>
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text"> I don't know my UK National Insurance number </span>
                     </summary>
@@ -72,7 +73,11 @@ endset%} {% block beforeContent %}
                 </details>
             </div>
 
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

@@ -22,7 +22,7 @@ endset%} {% block beforeContent %}
                     <p>{{ data['position-name'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="position">
+                    <a href="position?change=true">
                         Change
                         <span class="govuk-visually-hidden"> contact details</span>
                     </a>
@@ -32,10 +32,14 @@ endset%} {% block beforeContent %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Company or organisation</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ data['employer-name'] }}</p>
+                    {% if data['whos-check'] === 'another-org' %}
+                        <p>{{ data['org-name'] }}</p>
+                    {% else %}
+                        <p>My organisation</p>
+                    {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="organisation-name">
+                    <a href="organisation-name?change=true">
                         Change
                         <span class="govuk-visually-hidden"> licence type</span>
                     </a>
@@ -51,7 +55,7 @@ endset%} {% block beforeContent %}
                     <p>{{ data['what-dbs-check'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="dbs-check-level">
+                    <a href="dbs-check-level?change=true">
                         Change
                         <span class="govuk-visually-hidden"> home address</span>
                     </a>
@@ -63,7 +67,7 @@ endset%} {% block beforeContent %}
                     <p>{{ data['what-application-type'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="applicant-or-post-holder">
+                    <a href="applicant-or-post-holder?change=true">
                         Change
                         <span class="govuk-visually-hidden"> home address</span>
                     </a>
@@ -72,10 +76,14 @@ endset%} {% block beforeContent %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Free-of-charge volunteer</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ data['volunteer'] }}</p>
+                    {% if data['what-application-type'] === 'Volunteer' %}
+                        <p>Yes</p>
+                    {% else %}
+                        <p>No</p>
+                    {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="volunteer">
+                    <a href="applicant-or-post-holder?change=true">
                         Change
                         <span class="govuk-visually-hidden"> licence period</span>
                     </a>
@@ -89,10 +97,10 @@ endset%} {% block beforeContent %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Name</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ data['full-name'] }}</p>
+                    <p>{{ [data['first-name'], ' ' , data['last-name']] | join }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="applicant-name">
+                    <a href="applicant-name?change=true">
                         Change
                         <span class="govuk-visually-hidden"> name</span>
                     </a>
@@ -104,7 +112,7 @@ endset%} {% block beforeContent %}
                     <p>{{ data['applicant-email'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="applicant-email">
+                    <a href="applicant-email?change=true">
                         Change
                         <span class="govuk-visually-hidden"> date of birth</span>
                     </a>
@@ -114,7 +122,7 @@ endset%} {% block beforeContent %}
         <form action="application-sent-to-citizen" method="post" novalidate>
             <div class="govuk-form-group">
                 <h2 class="govuk-heading-m">Now send the online application form to the applicant</h2>
-                <div class="govuk-checkboxes__item">
+                <div class="govuk-checkboxes__item" style='margin-bottom: 1rem'>
                     <input class="govuk-checkboxes__input" id="declare-check-answers" name="declare-check-answers" type="checkbox" value="" />
                     <label class="govuk-label govuk-checkboxes__label" for="declare-check-answers">
                         I declare that to the best of my knowledge, the details I am providing are correct.

@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form full-name-form" action="verify-name" method="post">
+        <form class="form full-name-form" action="{{'review-application' if query['change'] == 'true' else 'verify-name'}}" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What is your current full name?</h1>
@@ -27,6 +27,7 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="given-name"
+                        value='{{data["full-name"][0]}}'
                     />
                 </div>
                 <div class="govuk-form-group">
@@ -38,6 +39,7 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="name"
+                        value='{{data["full-name"][1]}}'
                     />
                 </div>
                 <div class="govuk-form-group">
@@ -49,11 +51,16 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="family-name"
+                        value='{{data["full-name"][2]}}'
                     />
                 </div>
             </fieldset>
             <input value="Current" type="hidden" name="name-use-start" />
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

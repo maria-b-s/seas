@@ -26,10 +26,7 @@ Request a standard or enhanced DBS check
 
 <div class='govuk-grid-row'>
     <div class='govuk-grid-column-two-thirds'>
-
-
-        <form class='form' action='/dbs-check-answer' method='post'>
-
+        <form class='form' action="/dbs-check-answer" method='post'>
             <div class='govuk-form-group'>
                 <fieldset class='govuk-fieldset'>
                     <legend class='govuk-fieldset__legend govuk-fieldset__legend--l'>
@@ -63,9 +60,7 @@ Request a standard or enhanced DBS check
                             </div>
                         </div>
                         <div class='govuk-radios__item'>
-                            <input class='govuk-radios__input' id='what-dbs-check-3' name='what-dbs-check' type='radio'
-                                   value='Enhanced with barred list' {{ checked("what-dbs-check", "Enhanced with barred
-                            list") }}>
+                            <input class='govuk-radios__input' id='what-dbs-check-3' name='what-dbs-check' type='radio' value='Enhanced with barred list' {{ checked("what-dbs-check", "Enhanced with barred list") }}>
                             <label class='govuk-label govuk-radios__label' for='what-dbs-check-3'>
                                 Enhanced with barred list
                             </label>
@@ -76,15 +71,31 @@ Request a standard or enhanced DBS check
                             </div>
                         </div>
                     </div>
-
-
                 </fieldset>
             </div>
-
-
-            <button class='govuk-button' data-module='govuk-button'>Continue</button>
-
+            {% if query['change'] === 'true' %}
+                <button class="govuk-button" id='enhanced-barred-check-btn' data-module="govuk-button">Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
+    </div>
+    <div class="govuk-grid-column-one-third">
+
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">
+                Related content
+            </h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <a href="#">
+                            Find out which DBS check is right for your employee
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
     </div>
 </div>

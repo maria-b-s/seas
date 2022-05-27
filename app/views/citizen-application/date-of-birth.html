@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="sex" method="post">
+        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'sex'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset id="main-content" class="govuk-fieldset" role="group" aria-describedby="dob-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -32,6 +32,7 @@ endset%} {% block beforeContent %}
                                     autocomplete="bday-day"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
+                                    value='{{data["dob-day"]}}'
                                 />
                             </div>
                         </div>
@@ -46,6 +47,7 @@ endset%} {% block beforeContent %}
                                     autocomplete="bday-month"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
+                                    value='{{data["dob-month"]}}'
                                 />
                             </div>
                         </div>
@@ -60,6 +62,7 @@ endset%} {% block beforeContent %}
                                     autocomplete="bday-year"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
+                                    value='{{data["dob-year"]}}'
                                 />
                             </div>
                         </div>
@@ -67,7 +70,11 @@ endset%} {% block beforeContent %}
                 </fieldset>
             </div>
 
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

@@ -14,7 +14,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row other-names">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="date-of-birth" method="post" href="/date-of-birth">
+        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'date-of-birth'}}" method="post" href="/date-of-birth">
             <div class="govuk-form-group">
                 <fieldset id="name-changed" class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -32,9 +32,11 @@ endset%} {% block beforeContent %}
                         </div>
                     </div>
                 </fieldset>
-                <div aria-live="polite" style='margin-top: 1.5rem'>
+                <div aria-live="polite" style="margin-top: 1.5rem">
                     <div class="add-another-name" style="display: none">
-                        <button class="govuk-button" data-module="govuk-button">Add another name </button>
+                        <a href="{{'add-other-name?change=true' if query['change'] == 'true' else 'add-other-name.html'}}">
+                            <button class="govuk-button" data-module="govuk-button" type="button">Add another name</button>
+                        </a>
                         <p>You must tell us about all other names you've used, including middle names.</p>
                         <p>For example, you may have changed your name through marriage or deed poll.</p>
                         <div class="govuk-inset-text">Only your current name will be displayed on your online result</div>
@@ -59,6 +61,15 @@ endset%} {% block beforeContent %}
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">{{ [ data['full-name'][0], ' ' ,data['full-name'][1], ' ' , data['full-name'][2]] | join }}</td>
+                        <td class="govuk-table__cell">Current</td>
+                        <td class="govuk-table__cell">
+                            {% if query['change'] != 'true' %}
+                            <a class="govuk-link" href="/citizen-application/current-full-name">Change </a>
+                            {% endif %}
+                        </td>
+                    </tr>
                     {% for item in data['names'] %}
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">{{ [ item.firstName, ' ' ,item.middleNames, ' ' , item.lastName] | join }}</td>
@@ -76,36 +87,12 @@ endset%} {% block beforeContent %}
                     {% endfor %}
                 </tbody>
             </table>
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>
 {% endblock %}
-
-<!--            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                    <dt class="govuk-summary-list__key">Name</dt>
-                    <dt class="govuk-summary-list__key">Dates you used this name</dt>
-                </div>
-                {% for item in data['names'] %}
-                <div class="govuk-summary-list__row">
-                    <dd class="govuk-summary-list__value">{{ [ item.firstName, ' ' ,item.middleNames, ' ' , item.lastName] | join }}</dd>
-                    <dd class="govuk-summary-list__value">{{ item.dates }}</dd>
-                    {%if item.dates == 'Current'%}
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="/citizen-application/current-full-name"
-                            >Change<span class="govuk-visually-hidden"
-                                >{{ [ item.firstName, ' ' ,item.middleNames, ' ' , item.lastName] | join }}</span
-                            >
-                        </a>
-                    </dd>
-                    {% endif %} {%if item.dates != 'Current'%}
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link delete-name" id="{{loop.index}}" href="#"
-                            >Delete<span class="govuk-visually-hidden">{{loop.index}}</span>
-                        </a>
-                    </dd>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </dl>-->

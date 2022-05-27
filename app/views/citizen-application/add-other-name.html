@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row other-names">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="verify-name" method="post">
+        <form class="form" action="{{'verify-name?change=true' if query['change'] == 'true' else 'verify-name'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -24,7 +24,7 @@ endset%} {% block beforeContent %}
                         <input
                             class="govuk-input govuk-input--width-20"
                             id="full-name-first-name"
-                            name="full-name"
+                            name="other-full-name"
                             type="text"
                             spellcheck="false"
                             autocomplete="given-name"
@@ -35,7 +35,7 @@ endset%} {% block beforeContent %}
                         <input
                             class="govuk-input govuk-input--width-20"
                             id="full-name-middle-names"
-                            name="full-name"
+                            name="other-full-name"
                             type="text"
                             spellcheck="false"
                             autocomplete="name"
@@ -46,7 +46,7 @@ endset%} {% block beforeContent %}
                         <input
                             class="govuk-input govuk-input--width-20"
                             id="full-name-last-name"
-                            name="full-name"
+                            name="other-full-name"
                             type="text"
                             spellcheck="false"
                             autocomplete="family-name"

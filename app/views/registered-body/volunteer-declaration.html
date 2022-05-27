@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="applicant-name" method="post">
+        <form class="form" action="{{'check-answers' if query['change'] == 'true' else 'applicant-name'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -48,8 +48,11 @@ endset%} {% block beforeContent %}
                     </ul>
                 </div>
             </details>
-
-            <button class="govuk-button" data-module="govuk-button">Accept and continue</button>
+            {% if query['change'] === 'true' %}
+                <button class="govuk-button" data-module="govuk-button">Accept and Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Accept and continue</button>
+            {% endif %}
         </form>
     </div>
     <!--

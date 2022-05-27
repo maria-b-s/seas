@@ -14,14 +14,14 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Registered body</span>
-        <form class="form" action="applicant-email" method="post">
+        <form class="form" action="{{'check-answers' if query['change'] == 'true' else 'applicant-email'}}" method="post">
             <fieldset class="govuk-fieldset" aria-describedby="passport-hint">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading"> What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} name?</h1>
+                    <h1 class="govuk-fieldset__heading">
+                        What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} name?
+                    </h1>
                 </legend>
-                <div id="passport-hint" class="govuk-hint">
-                    We will only use this to address emails to the applicant.
-                </div>
+                <div id="passport-hint" class="govuk-hint">We will only use this to address emails to the applicant.</div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="first-name"> First name </label>
                     <input
@@ -33,7 +33,6 @@ endset%} {% block beforeContent %}
                         spellcheck="false"
                         autocomplete="name"
                     />
-
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="last-name"> Last name </label>
@@ -46,10 +45,13 @@ endset%} {% block beforeContent %}
                         spellcheck="false"
                         autocomplete="name"
                     />
-
                 </div>
             </fieldset>
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

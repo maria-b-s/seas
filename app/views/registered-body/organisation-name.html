@@ -11,9 +11,9 @@ endset%} {% block beforeContent %}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
-<div class="govuk-grid-row">
+<div class="govuk-grid-row what-org">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="applicant-or-post-holder" method="post">
+        <form class="form" action="{{'check-answers' if query['change'] == 'true' else 'applicant-or-post-holder'}}" method="post">
             <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
                     <span class="govuk-caption-l">Registered body</span>
@@ -21,11 +21,11 @@ endset%} {% block beforeContent %}
                 </h1>
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="my-org" name="whos-check" type="radio" value="my-org" />
+                        <input class="govuk-radios__input" id="my-org" name="whos-check" type="radio" value="my-org" {{ checked("whos-check", "my-org") }} />
                         <label class="govuk-label govuk-radios__label" for="my-org"> My organisation </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="someone-else" name="whos-check" type="radio" value="another-org" />
+                        <input class="govuk-radios__input" id="someone-else" name="whos-check" type="radio" value="another-org" {{ checked("whos-check", "another-org") }}/>
                         <label class="govuk-label govuk-radios__label" for="someone-else"> Another organisation </label>
                     </div>
                 </div>
@@ -34,9 +34,13 @@ endset%} {% block beforeContent %}
                 <h1 class="govuk-label-wrapper">
                     <label class="govuk-label govuk-label--m" for="event-name"> What is the name of the employer or organisation? </label>
                 </h1>
-                <input class="govuk-input govuk-input--width-20" id="event-name" name="event-name" type="text" />
+                <input class="govuk-input govuk-input--width-20" id="event-name" name="org-name" type="text" value="{{ data['org-name'] }}"/>
             </div>
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% if query['change'] === 'true' %}
+                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

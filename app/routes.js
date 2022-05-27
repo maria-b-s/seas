@@ -49,17 +49,13 @@ const lastNames = [
 router.post('/dbs-check-answer', (req, res) => {
     // Make a variable and give it the value from 'what-dbs-check'
     const whatDbsCheck = req.session.data['what-dbs-check'];
-
     // Check whether the variable matches a condition
-    if (whatDbsCheck === 'Standard') {
-        // Send user to next page
-        res.redirect('registered-body/position');
-    } else if (whatDbsCheck === 'Enhanced') {
-        // Send user to next page
-        res.redirect('registered-body/position');
-    } else {
-        res.redirect('registered-body/enhanced/barred-list-children');
-    }
+    if (whatDbsCheck === 'Enhanced with barred list')
+        return res.redirect(`registered-body/enhanced/barred-list-children${req.header('referer').includes('change=true') ? '?change=true' : ''}`);
+    if (req.header('referer').includes('change=true')) return res.redirect('registered-body/check-answers');
+    if (whatDbsCheck === 'Standard') return res.redirect('registered-body/position');
+    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/position');
+    return undefined;
 });
 
 router.post('/pay-now-answer', (req, res) => {
@@ -75,29 +71,34 @@ router.post('/pay-now-answer', (req, res) => {
 
 citizenRouter.post('/verify-name', (req, res) => {
     const sessionNames = req.session.data.names || [];
-    const fullName = req.session.data['full-name'];
+    const otherName = req.session.data['other-full-name'];
     const date = req.session.data['name-use-start'];
-    if (fullName[0] !== '' && fullName[2] !== '') {
+    if (otherName && otherName[0] !== '' && otherName[2] !== '' && date !== 'Current') {
         sessionNames.push({
-            firstName: fullName[0],
-            middleNames: fullName[1],
-            lastName: fullName[2],
-            dates: date === 'Current' ? 'Current' : `${date[0]}/${date[1]}`,
+            firstName: otherName[0],
+            middleNames: otherName[1],
+            lastName: otherName[2],
+            dates: `${date[0]}/${date[1]}`,
         });
         req.session.data.names = sessionNames;
+        return res.redirect(`other-names${req.header('referer').includes('change=true') ? '?change=true' : ''}`);
+    }
+    const fullName = req.session.data['full-name'];
+    if (fullName && fullName[0] !== '' && fullName[2] !== '' && date === 'Current') {
         return res.redirect('other-names');
     }
     return res.redirect('back');
 });
 
 citizenRouter.post('/delete-name', (req, res) => {
-    if (req.query.index && typeof req.query.index === 'number') {
+    const parsedIndex = parseInt(req.query.index, 10);
+    if (req.query.index && typeof parsedIndex === 'number') {
         const sessionNames = [...req.session.data.names] || [];
-        sessionNames.splice(req.body.index, 1);
+        sessionNames.splice(parsedIndex - 1, 1);
         req.session.data.names = sessionNames;
-        res.status(200).send('deleted');
+        return res.status(200).send('deleted');
     }
-    res.status(500).send('error');
+    return res.status(500).send('error');
 });
 
 citizenRouter.post('/add-address', (req, res) => {
@@ -142,7 +143,9 @@ citizenRouter.post('/national-insurance', (req, res) => {
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
     res.redirect(
-        applicationType === 'Volunteer' ? 'volunteer-declaration' : applicationType === 'New employee' ? 'applicant-name' : 'existing-post-holder',
+        `${
+            applicationType === 'Volunteer' ? `volunteer-declaration` : applicationType === 'New employee' ? 'applicant-name' : 'existing-post-holder'
+        }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
     );
 });
 

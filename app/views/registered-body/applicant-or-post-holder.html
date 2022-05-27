@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="select-flow" method="post">
+        <form class="form" action="{{'select-flow?change=true' if query['change'] == 'true' else 'select-flow'}}" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -22,11 +22,13 @@ endset%} {% block beforeContent %}
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="what-application-type" name="what-application-type" type="radio" value="New employee" {{ checked("what-application-type", "New applicant") }}>
+                            <input class="govuk-radios__input" id="what-application-type" name="what-application-type" type="radio" value="New
+                            employee" {{ checked("what-application-type", "New applicant") }}>
                             <label class="govuk-label govuk-radios__label" for="what-application-type">New employee</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="what-application-type-2" name="what-application-type" type="radio" value="Current employee" {{ checked("what-application-type", "Existing post holder") }}>
+                            <input class="govuk-radios__input" id="what-application-type-2" name="what-application-type" type="radio" value="Current
+                            employee" {{ checked("what-application-type", "Existing post holder") }}>
                             <label class="govuk-label govuk-radios__label" for="what-application-type-2">Current employee</label>
                         </div>
                         <div class="govuk-radios__item">
@@ -38,7 +40,12 @@ endset%} {% block beforeContent %}
                 </fieldset>
             </div>
 
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% if query['change'] === 'true' %}
+                <button class="govuk-button" id='app-or-post-change-btn' data-module="govuk-button">Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+
         </form>
     </div>
 </div>
