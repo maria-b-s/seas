@@ -67,7 +67,7 @@
     </p>
 </div>
 <nav class="nav-bar">
-    <a href="#3"> Home </a>
+    <a href="home"> Home </a>
     <a href="#4"> Settings </a>
 </nav>
 {% endblock %} {% block content %}
@@ -75,33 +75,35 @@
 <table class="govuk-table landing-table">
     <caption class="govuk-table__caption govuk-table__caption--m">
         <div class="new-app">
-            Applications
-            <a href="/registered-body/dbs-check-level">
-                <button class="govuk-button" data-module="govuk-button">New Application</button>
+            Notifications
+            <a href="clear-notifications">
+                <button class="govuk-button" data-module="govuk-button">Clear Notifications</button>
             </a>
         </div>
     </caption>
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Reference number</th>
-            <th scope="col" class="govuk-table__header">Applicant name</th>
-            <th scope="col" class="govuk-table__header status">Status</th>
-            <th scope="col" class="govuk-table__header type">Type</th>
-            <th scope="col" class="govuk-table__header mod-date">Modified date</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header mod-date">Date</th>
             <th scope="col" class="govuk-table__header">Actions</th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-        {% for app in data['applications'] %}
+        {% if data['notifications'].length === 0 %}
+        <tr class="govuk-table__row" >
+            <td class="govuk-table__cell" style='text-align: center' colspan='4'>Notifications Empty</td>
+        </tr>
+        {% endif %} {% for app in data['notifications'] %}
         <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{app['ref']}}</td>
-            <td class="govuk-table__cell">{{app['name']}}</td>
-            <td class="govuk-table__cell status-cell">{{app['status']}}</td>
-            <td class="govuk-table__cell type-cell">{{app['type']}}</td>
+            <td class="govuk-table__cell">{{app['action']}}</td>
             <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
             <td class="govuk-table__cell">
-                <a class="govuk-link delete-name" id="{{loop.index}}" href="#">View<span class="govuk-visually-hidden">{{loop.index}}</span> </a>
-                <a class="govuk-link details" id="{{loop.index}}-details" href="details?app={{app['ref']}}">Details<span class="govuk-visually-hidden">{{loop.index}}</span>
+                <a class="govuk-link"  id="{{loop.index}}-details" href="details?app={{app['ref']}}">Details<span class="govuk-visually-hidden">{{loop.index}}</span>
+                </a>
+                <a class="govuk-link delete-name" style='margin-left: 5px;' id="{{loop.index}}" href="delete-notification?notif={{loop.index}}"
+                    >Delete<span class="govuk-visually-hidden">{{loop.index}}</span>
                 </a>
             </td>
         </tr>

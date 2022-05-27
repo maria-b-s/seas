@@ -241,18 +241,18 @@ const populateDropdown = list => {
     list.forEach(c => countryDropdown.append(`<h4 class="country-option">${c}</h4>`));
 };
 
-const details = $('.details');
-const landingSetup = () => {
-    if ($('.landing-table')) {
-        if (window.innerWidth < 800) {
-            details.css('display', 'table-cell');
-            ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
-        } else {
-            details.css('display', 'none');
-            ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'table-cell'));
-        }
-    }
-};
+// const details = $('.details');
+// const landingSetup = () => {
+//     if ($('.landing-table')) {
+//         if (window.innerWidth < 800) {
+//             details.css('display', 'table-cell');
+//             ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
+//         } else {
+//             details.css('display', 'none');
+//             ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'table-cell'));
+//         }
+//     }
+// };
 
 $(window).on('load', () => {
     landingSetup();
@@ -301,7 +301,6 @@ $('.lookup').on('click', async () => {
             Array.from(Array(10))
                 .map(() => `${getRandomArbitrary(3, 50)} ${street}`)
                 .forEach(el => select.append(`<option value="${el}">${el}</option>`));
-            console.log(res);
             $('.hidden-details-city').val(res.result.admin_county);
             $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');

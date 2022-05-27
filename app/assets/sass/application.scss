@@ -68,6 +68,26 @@ $govuk-assets-path: '/govuk/assets/';
     }
 }
 
-//.KL-details-sub {
-//    display: grid;
-//}
+.KL-notify {
+    > div {
+        display: flex;
+        flex-direction: row;
+        > a {
+            padding: 0 3px 0 0;
+        }
+        > div {
+            height: 14px;
+            width: 14px;
+            border-radius: 7px;
+            margin-top: -5px;
+            right: 0;
+            font-weight: 700;
+            background-color: red;
+            font-size: 0.6rem;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+
+        }
+    }
+}

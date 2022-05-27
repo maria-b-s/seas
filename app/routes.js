@@ -4,6 +4,7 @@ const RandExp = require('randexp');
 const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
+const dashboardRouter = express.Router();
 
 // Add your routes here - above the module.exports line
 
@@ -164,9 +165,7 @@ const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-router.use('/citizen-application', citizenRouter);
-router.use('/registered-body', registeredBodyRouter);
-router.use('/landing-page', (req, res, next) => {
+dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
     const statuses = [
         'Sent to Applicant',
@@ -180,7 +179,19 @@ router.use('/landing-page', (req, res, next) => {
         'cancelled',
     ];
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
+    const actions = ['Ready for review', 'Application Expired', 'Certificate sent'];
 
+    req.session.data.notifications = Array.from(Array(getRandomArbitrary(2, 11))).map(() => {
+        const date = randomDate(new Date(2021, 11, 10), new Date());
+        const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
+            extractSetAverage: true,
+        }).gen();
+        return {
+            ref,
+            action: actions[getRandomArbitrary(0, 2)],
+            date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+        };
+    });
     req.session.data.applications = Array.from(Array(getRandomArbitrary(8, 15))).map((_, elIndex) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
         const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
@@ -196,5 +207,24 @@ router.use('/landing-page', (req, res, next) => {
     });
     return next();
 });
+
+dashboardRouter.get('/delete-notification', (req, res) => {
+    const parsedIndex = parseInt(req.query.notif, 10);
+    if (req.query.notif && typeof parsedIndex === 'number') {
+        const notifications = [...req.session.data.notifications];
+        notifications.splice(parsedIndex - 1, 1);
+        req.session.data.notifications = notifications;
+    }
+    res.redirect(req.get('referer'));
+});
+
+dashboardRouter.get('/clear-notifications', (req, res) => {
+    req.session.data.notifications = [];
+    res.redirect(req.get('referer'));
+});
+
+router.use('/citizen-application', citizenRouter);
+router.use('/registered-body', registeredBodyRouter);
+router.use('/dashboard', dashboardRouter);
 
 module.exports = router;
