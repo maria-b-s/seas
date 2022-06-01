@@ -91,18 +91,16 @@
     </thead>
     <tbody class="govuk-table__body">
         {% if data['notifications'].length === 0 %}
-        <tr class="govuk-table__row" >
-            <td class="govuk-table__cell" style='text-align: center' colspan='4'>Notifications Empty</td>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell" style="text-align: center" colspan="4">Notifications Empty</td>
         </tr>
         {% endif %} {% for app in data['notifications'] %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{app['ref']}}</td>
+            <td class="govuk-table__cell"><a class="govuk-link" id="{{loop.index}}-details" href="details?app={{app['name']}}">{{app['name']}}</a></td>
             <td class="govuk-table__cell">{{app['action']}}</td>
             <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
             <td class="govuk-table__cell">
-                <a class="govuk-link"  id="{{loop.index}}-details" href="details?app={{app['ref']}}">Details<span class="govuk-visually-hidden">{{loop.index}}</span>
-                </a>
-                <a class="govuk-link delete-name" style='margin-left: 5px;' id="{{loop.index}}" href="delete-notification?notif={{loop.index}}"
+                <a class="govuk-link delete-name" style="margin-left: 5px" id="{{loop.index}}" href="delete-notification?notif={{loop.index}}"
                     >Delete<span class="govuk-visually-hidden">{{loop.index}}</span>
                 </a>
             </td>

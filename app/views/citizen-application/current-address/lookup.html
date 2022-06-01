@@ -20,7 +20,7 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                 </legend>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="postcode-lookup"> UK Postcode </label>
-                    <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style='display: none'>
+                    <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style="display: none">
                         <span class="govuk-visually-hidden">Error:</span> Invalid postcode
                     </p>
                     <input
@@ -31,28 +31,38 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                         autocomplete="postal-code"
                     />
                 </div>
-                <button class="govuk-button lookup" type='button' data-module="govuk-button">Look up address</button>
+
+                <button class="govuk-button lookup" type="button" data-module="govuk-button">Look up address</button>
+
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="sort">
-                        Select your address
-                    </label>
+                    <label class="govuk-label" for="sort"> Select your address </label>
                     <select class="govuk-select govuk-input--width-20 postcode-select" id="sort" name="lookup-addr" disabled>
-                        <option class='enter-postcode'>Enter postcode</option>
-                        <option value="1-orchid-place">1 Orchid place</option>
-                        <option value="2-orchid-place">2 Orchid place</option>
-                        <option value="3-orchid-place">3 Orchid place</option>
-                        <option value="4-orchid-place">4 Orchid place</option>
-                        <option value="5-orchid-place">5 Orchid place</option>
-                        <option value="6-orchid-place">6 Orchid place</option>
+                        <option class="enter-postcode">Enter postcode</option>
                     </select>
                 </div>
-                <input class='hidden-details-town' name='hidden-details-town' type='text' hidden/>
-                <input class='hidden-details-city' name='hidden-details-city' type='text' hidden/>
-                <div style='margin-bottom: .5rem'>
-                    <a href="details" class="govuk-link">Add address manually</a>
-                </div>
-                <div style='margin-bottom: 2rem'>
-                    <a href="details" class="govuk-link">I am homeless or travelling and don't have an address</a>
+                <input class="hidden-details-town" name="hidden-details-town" type="text" hidden />
+                <input class="hidden-details-city" name="hidden-details-city" type="text" hidden />
+
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text"> Add your address manually</span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        If you have a non-UK address, or your UK address can’t be found, you can add your address manually
+
+                        <p class="govuk-body">
+                            <a href="details" class="govuk-link">
+                                <button class="govuk-button" style='margin: 5px 0 0 0' data-module="govuk-button">
+                                    Add address;
+                                </button>
+                            </a>
+                        </p>
+                    </div>
+                </details>
+                <div style="margin-bottom: 2rem">
+                    <p class="govuk-body">
+                        <a href="details" class="govuk-link">I am homeless or travelling and don't have an address</a>
+                    </p>
                 </div>
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
             </fieldset>

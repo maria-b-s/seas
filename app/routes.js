@@ -123,8 +123,8 @@ citizenRouter.post('/add-address', (req, res) => {
             townOrCity: previousAddress[2],
             postcode: previousAddress[3],
             country: previousAddress[4],
-            startDate: `${previousAddressStart[0]}/${previousAddressStart[1]}/${previousAddressStart[2]}`,
-            endDate: `${previousAddressEnd[0]}/${previousAddressEnd[1]}/${previousAddressEnd[2]}`,
+            startDate: `${previousAddressStart[0]}/${previousAddressStart[1]}`,
+            endDate: `${previousAddressEnd[0]}/${previousAddressEnd[1]}`,
         });
     }
     req.session.data.addresses = addresses;
@@ -181,13 +181,10 @@ dashboardRouter.get('*', (req, res, next) => {
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready for review', 'Application Expired', 'Certificate sent'];
 
-    req.session.data.notifications = Array.from(Array(getRandomArbitrary(2, 11))).map(() => {
+    req.session.data.notifications = Array.from(Array(getRandomArbitrary(2, 11))).map((_, elIndex) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
-        const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
-            extractSetAverage: true,
-        }).gen();
         return {
-            ref,
+            name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
             action: actions[getRandomArbitrary(0, 2)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };

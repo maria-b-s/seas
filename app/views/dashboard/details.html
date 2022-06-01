@@ -84,7 +84,7 @@
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             {% for app in data['applications'] %}
-               {% if app['ref'] == query['app'] %}
+               {% if app['name'] == query['app'] %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Reference number</dt>
                         <dd class="govuk-summary-list__value">{{app['ref']}}</dd>
