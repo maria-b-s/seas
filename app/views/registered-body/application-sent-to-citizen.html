@@ -21,11 +21,17 @@ check {% endset%} {% block beforeContent %}
 
         <h2 class="govuk-heading-m">Would you like a confirmation email?</h2>
         <p>This will include the application details.</p>
-        <p>You can also <a href=https://standard-or-enhanced.herokuapp.com/dashboard/home> review and track your applications online.</a></p>
+        <p>You can also <a href=https://standard-or-enhanced.herokuapp.com/dashboard/home> view and track your applications online.</a></p>
         <button class="govuk-button" data-module="govuk-button">Send confirmation email</button>
 
         <h2 class="govuk-heading-m">What happens next</h2>
-        <p><a href="verify-applicant-id">Check applicant answers</a></p>
+        <ol class="govuk-list govuk-list--number">
+          <li>We'll email the applicant a link to complete their online application.</li>
+          <li>They'll have xx days to do this before it expires.</li>
+          <li>You'll get a notifiction in your online account when the applicant has completed their part.</li>
+          <li>You can then view and download a copy of the applicant's answers to verify their identity.</li>
+        </ol>
+
     </div>
 </div>
 
