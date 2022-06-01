@@ -101,17 +101,10 @@ endset%} {% block beforeContent %}
         </dl>
 
         <p id="download-pdf-hint" class="govuk-body">
-            You can download a PDF of the applicant's answers to send to an ID checker if required.
+            If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
         </p>
-        <button type="submit" class="govuk-button" data-module="govuk-button">Download PDF</button>
+        <button type="submit" class="govuk-button" data-module="govuk-button">Download applicant answers PDF</button>
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                If you believe any of the applicant’s answers are incorrect you must reject the application.
-            </strong>
-        </div>
 
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <form action="verify-applicant-id" method="post" novalidate>
