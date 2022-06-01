@@ -170,16 +170,14 @@ dashboardRouter.get('*', (req, res, next) => {
     const statuses = [
         'Sent to Applicant',
         'Expired',
-        'Check Answers',
-        'Applicant amending',
-        'Verify Id',
-        'Read to submit',
-        'Application Submitted',
+        'Verify ID',
+        'Ready to submit',
+        'Submitted',
         'Sent for case-working',
-        'cancelled',
+        'Cancelled',
     ];
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
-    const actions = ['Ready for review', 'Application Expired', 'Certificate sent'];
+    const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
 
     req.session.data.notifications = Array.from(Array(getRandomArbitrary(2, 11))).map((_, elIndex) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
