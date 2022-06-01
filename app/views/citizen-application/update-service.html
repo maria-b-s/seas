@@ -17,9 +17,12 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="sex-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Would you like to sign up for the update service?</h1>
+                        <h1 class="govuk-fieldset__heading">Would you like to register for the update service?</h1>
                     </legend>
-                    <div id="sex-hint" class="govuk-hint">This will allow you to x,y,z.</div>
+                    <div id="sex-hint" class="govuk-hint">This will allow you to keep your DBS certificate up to date, and share it online with employers.
+                      <div/>
+                      <div class="govuk-inset-text">It's free for volunteers. For everyone else it costs £13 per year. You can pay by debit or credit card.
+                      </div>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="update-service-yes" name="update-service" type="radio" value="yes" {{ checked("update-service", "yes") }}/>
@@ -45,7 +48,7 @@ endset%} {% block beforeContent %}
             <nav role="navigation" aria-labelledby="subsection-title">
                 <ul class="govuk-list govuk-!-font-size-16">
                     <li>
-                        <a href="https://www.gov.uk/dbs-update-service">Find out more about the update service.</a>
+                        <a href="https://www.gov.uk/government/publications/dbs-update-service-applicant-guide/dbs-update-service-applicant-guide">Find out more about the update service.</a>
                     </li>
                 </ul>
             </nav>
