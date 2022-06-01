@@ -31,8 +31,8 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous Names</th>
                     <td class="govuk-table__cell">
-                        {% for item in data['names'] %} {% if data['names'].length === 0 %} None {% endif %} {{[ data['names'][loop.index -1].firstName,
-                        ' ' ,data['names'][loop.index - 1].middleNames, ' ' , data['names'][loop.index - 1].lastName] | join }} <br />
+                        {% for item in data['names'] %} {% if data['names'].length === 0 %} None {% endif %} {{[ data['names'][loop.index
+                        -1].firstName, ' ' ,data['names'][loop.index - 1].middleNames, ' ' , data['names'][loop.index - 1].lastName] | join }} <br />
                         {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
@@ -76,7 +76,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Driver's licence number</th>
-                    <td class="govuk-table__cell" style="text-transform: uppercase">{% if data['has-drivers-license'] === 'no'%} N/A {% else %} {{data['drivers-licence-number']}} {% endif %}</td>
+                    <td class="govuk-table__cell" style="text-transform: uppercase">
+                        {% if data['has-drivers-license'] === 'no'%} N/A {% else %} {{data['drivers-licence-number']}} {% endif %}
+                    </td>
                     <td class="govuk-table__cell">
                         <a href="drivers-licence?change=true">
                             Change
@@ -86,7 +88,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Passport number</th>
-                    <td class="govuk-table__cell" style="text-transform: uppercase">{% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}</td>
+                    <td class="govuk-table__cell" style="text-transform: uppercase">
+                        {% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}
+                    </td>
                     <td class="govuk-table__cell">
                         <a href="passport?change=true">
                             Change
@@ -96,7 +100,9 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Country of issue</th>
-                    <td class="govuk-table__cell" style="text-transform: capitalize">{% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-country-of-issue']}} {% endif %}</td>
+                    <td class="govuk-table__cell" style="text-transform: capitalize">
+                        {% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-country-of-issue']}} {% endif %}
+                    </td>
                     <td class="govuk-table__cell">
                         <a href="passport?change=true">
                             Change
@@ -140,7 +146,8 @@ endset%} {% block beforeContent %}
                         {{item.lineTwo}} <br />
                         {{item.townOrCity }} <br />
                         {{item.postcode }} <br />
-                        {{item.country }} <br /> <br />
+                        {{item.country }} <br />
+                        <br />
                         {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
@@ -175,7 +182,17 @@ endset%} {% block beforeContent %}
                     <th scope="row" class="govuk-table__header">Previous convictions</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">{{data['previous-convictions']}}</td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="previous-convictions?change=true">
+                            Change
+                            <span class="govuk-visually-hidden">previous convictions</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Update service</th>
+                    <td class="govuk-table__cell" style="text-transform: capitalize">{{data['update-service']}}</td>
+                    <td class="govuk-table__cell">
+                        <a href="update-service?change=true">
                             Change
                             <span class="govuk-visually-hidden">previous convictions</span>
                         </a>
