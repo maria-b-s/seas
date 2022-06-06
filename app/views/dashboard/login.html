@@ -1,0 +1,84 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check
+{%endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="{{'opt-verify' if data['login-method'] === 'email-2fa-login' else 'home'}}" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    {% if data["login-method"] === 'kba-login' %}
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Enter your details.</h1>
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="csig-num"> Registered body number </label>
+                            <input class="govuk-input govuk-input--width-10" id="csig-num" name="width-10" type="text" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="rb-num"> Counter Signatory Number </label>
+                            <input class="govuk-input govuk-input--width-10" id="rb-num" name="width-10" type="text" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="rb-num">Date of birth</label>
+                            <input class="govuk-input govuk-input--width-10" id="dob-login" name="width-10" type="text" />
+                        </div>
+                    </div>
+                    {% elif data["login-method"] === 'email-google-login' %}
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Enter your details.</h1>
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="csig-num"> Email </label>
+                            <input class="govuk-input govuk-input--width-10" id="email" name="width-10" type="text" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="rb-num"> Google Authenticator code </label>
+                            <div id="event-name-hint" class="govuk-hint">
+                                Find this on the google authenticator app you set up when you recieved your DBS RB account
+                            </div>
+                            <input class="govuk-input govuk-input--width-10" id="ga-code" name="width-10" type="text" />
+                        </div>
+                    </div>
+                    {% elif data["login-method"] === 'email-2fa-login' %}
+                    <div class="govuk-form-group">
+                        <h1 class="govuk-label-wrapper">
+                            <label class="govuk-label govuk-label--l" for="event-name"> Enter your email </label>
+                        </h1>
+                        <input class="govuk-input govuk-input--width-20" id="event-name" name="event-name" type="text" />
+                    </div>
+                    {% elif data["login-method"] === 'email-password-login' %}
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Enter your details.</h1>
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="csig-num"> Email </label>
+                            <input class="govuk-input govuk-input--width-10" id="email-login" name="width-10" type="text" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="rb-num"> Password </label>
+                            <input class="govuk-input govuk-input--width-10" id="password-login" name="width-10" type="text" />
+                        </div>
+                    </div>
+                    {% endif %}
+                </fieldset>
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

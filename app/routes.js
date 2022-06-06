@@ -104,29 +104,38 @@ citizenRouter.post('/delete-name', (req, res) => {
 
 citizenRouter.post('/add-address', (req, res) => {
     const addresses = req.session.data.addresses || [];
-    if (addresses.length === 0) {
-        const currentAddress = req.session.data['current-address'];
-        addresses.push({
-            lineOne: currentAddress[0],
-            lineTwo: currentAddress[1],
-            townOrCity: currentAddress[2],
-            postcode: currentAddress[3],
-            country: currentAddress[4],
-        });
-    } else {
-        const previousAddress = req.session.data['previous-address'];
-        const previousAddressStart = req.session.data['previous-address-start'];
-        const previousAddressEnd = req.session.data['previous-address-end'];
-        addresses.push({
-            lineOne: previousAddress[0],
-            lineTwo: previousAddress[1],
-            townOrCity: previousAddress[2],
-            postcode: previousAddress[3],
-            country: previousAddress[4],
-            startDate: `${previousAddressStart[0]}/${previousAddressStart[1]}`,
-            endDate: `${previousAddressEnd[0]}/${previousAddressEnd[1]}`,
-        });
-    }
+    const { address } = req.session.data;
+    addresses.push({
+        lineOne: address[0],
+        lineTwo: address[1],
+        townOrCity: address[2],
+        postcode: address[3],
+        country: address[4],
+        startYear: address[5],
+    });
+    // if (addresses.length === 0) {
+    //     const currentAddress = req.session.data['current-address'];
+    //     addresses.push({
+    //         lineOne: currentAddress[0],
+    //         lineTwo: currentAddress[1],
+    //         townOrCity: currentAddress[2],
+    //         postcode: currentAddress[3],
+    //         country: currentAddress[4],
+    //     });
+    // } else {
+    //     const previousAddress = req.session.data['previous-address'];
+    //     const previousAddressStart = req.session.data['previous-address-start'];
+    //     const previousAddressEnd = req.session.data['previous-address-end'];
+    //     addresses.push({
+    //         lineOne: previousAddress[0],
+    //         lineTwo: previousAddress[1],
+    //         townOrCity: previousAddress[2],
+    //         postcode: previousAddress[3],
+    //         country: previousAddress[4],
+    //         startDate: `${previousAddressStart[0]}/${previousAddressStart[1]}`,
+    //         endDate: `${previousAddressEnd[0]}/${previousAddressEnd[1]}`,
+    //     });
+    // }
     req.session.data.addresses = addresses;
     return res.redirect('previous-address');
 });

@@ -13,36 +13,43 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-        <h1 class="govuk-heading-l">Enter your details</h1>
-
-        <form class="form" action="opt-verify" method="post">
+        <form class="form" action="login" method="post">
             <div class="govuk-form-group">
-                <label class="govuk-label" for="reg-body-num"> Registered body number </label>
-                <input
-                    class="govuk-input govuk-input--width-10"
-                    id="reg-body-num"
-                    name="account-number"
-                    type="text"
-                    spellcheck="false"
-                    aria-describedby="account-number-hint"
-                    pattern="[0-9]*"
-                    inputmode="numeric"
-                />
-            </div>
-
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="csig-num"> Countersignatory number </label>
-                <input
-                    class="govuk-input govuk-input--width-10"
-                    id="csig-num"
-                    name="account-number"
-                    type="text"
-                    spellcheck="false"
-                    aria-describedby="account-number-hint"
-                    pattern="[0-9]*"
-                    inputmode="numeric"
-                />
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Which login system would you like to demo?</h1>
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="kba-login" name="login-method" type="radio" value="kba-login" />
+                            <label class="govuk-label govuk-radios__label" for="kba-login"> Key Based Access </label>
+                            <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+                                You will be asked for your RB number, Counter Signatory number and your date of birth to verify your identity
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="sign-in-item-email-google" name="login-method" type="radio" value="email-google-login" />
+                            <label class="govuk-label govuk-radios__label" for="sign-in-item-email-google"> Email and Google Authenticator </label>
+                            <div id="sign-in-item-hint-email-google" class="govuk-hint govuk-radios__hint">
+                                You will be asked for your Email and then asked to enter a code that will be shown on the Google authenticator app
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="sign-in-item-email-2FA" name="login-method" type="radio" value="email-2fa-login" />
+                            <label class="govuk-label govuk-radios__label" for="sign-in-item-email-2FA"> Email/SMS One Time Passcode </label>
+                            <div id="sign-in-item-hint-email-2FA" class="govuk-hint govuk-radios__hint">
+                                You will be asked for your Email and then sent a code to either your email or mobile that you will then enter
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="sign-in-item-email-password" name="login-method" type="radio" value="email-password-login" />
+                            <label class="govuk-label govuk-radios__label" for="sign-in-item-email-password"> Email and Password </label>
+                            <div id="sign-in-item-hint-email-password" class="govuk-hint govuk-radios__hint">
+                                You will be asked for your Email and Password
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <button class="govuk-button" data-module="govuk-button">Continue</button>

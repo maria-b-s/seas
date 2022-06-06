@@ -32,23 +32,20 @@ endset%} {% block beforeContent %}
                 </fieldset>
                 <div aria-live="polite" style="margin-top: 1.5rem">
                     <div class="add-another-name" style="display: none">
-                        <a href="add-previous-address">
-                            <button type='button' class="govuk-button" data-module="govuk-button">Add previous address</button>
+                        <p>Your previous 5 years of address history is a mandatory requirement.</p>
+                        <a href="address-lookup">
+                            <button type="button" class="govuk-button" data-module="govuk-button">Add previous address</button>
                         </a>
-                        <div class="govuk-warning-text">
-                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                            <strong class="govuk-warning-text__text">
-                                <span class="govuk-warning-text__assistive">Warning</span>
-                                Your previous 5 years of address history is a mandatory requirement.
-                            </strong>
-                        </div>
+                        <p class="govuk-body">
+                            <a href="homeless-or-travelling" class="govuk-link">I was homeless or travelling and didn't have an address</a>
+                        </p>
                     </div>
                 </div>
                 <table class="govuk-table">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Address</th>
-                            <th scope="col" class="govuk-table__header">Period of occupancy</th>
+                            <th scope="col" class="govuk-table__header">Start of occupancy</th>
                             <th scope="col" class="govuk-table__header">Actions</th>
                         </tr>
                     </thead>
@@ -62,9 +59,7 @@ endset%} {% block beforeContent %}
                                 {{item.postcode }} <br />
                                 {{item.country }} <br />
                             </td>
-                            <td class="govuk-table__cell">
-                                {% if item.startDate == undefined %} Current {% else %} {{ [ item.startDate, '-' ,item.endDate] | join }} {% endif %}
-                            </td>
+                            <td class="govuk-table__cell">{{item.startYear}}</td>
                             <td class="govuk-table__cell">
                                 {%if item.startDate == undefined%}
                                 <a class="govuk-link" href="/citizen-application/current-full-name">Change </a>
