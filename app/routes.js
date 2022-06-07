@@ -103,8 +103,13 @@ citizenRouter.post('/delete-name', (req, res) => {
 });
 
 citizenRouter.post('/add-address', (req, res) => {
-    const addresses = req.session.data.addresses || [];
     const { address } = req.session.data;
+    if (req.header('referer').includes('certificate=true')) {
+        req.session.data['send-cert-address'] = [address[0], address[1], address[2], address[3]];
+        return res.redirect('previous-convictions');
+    }
+    const addresses = req.session.data.addresses || [];
+
     addresses.push({
         lineOne: address[0],
         lineTwo: address[1],
@@ -113,36 +118,37 @@ citizenRouter.post('/add-address', (req, res) => {
         country: address[4],
         startYear: address[5],
     });
-    // if (addresses.length === 0) {
-    //     const currentAddress = req.session.data['current-address'];
-    //     addresses.push({
-    //         lineOne: currentAddress[0],
-    //         lineTwo: currentAddress[1],
-    //         townOrCity: currentAddress[2],
-    //         postcode: currentAddress[3],
-    //         country: currentAddress[4],
-    //     });
-    // } else {
-    //     const previousAddress = req.session.data['previous-address'];
-    //     const previousAddressStart = req.session.data['previous-address-start'];
-    //     const previousAddressEnd = req.session.data['previous-address-end'];
-    //     addresses.push({
-    //         lineOne: previousAddress[0],
-    //         lineTwo: previousAddress[1],
-    //         townOrCity: previousAddress[2],
-    //         postcode: previousAddress[3],
-    //         country: previousAddress[4],
-    //         startDate: `${previousAddressStart[0]}/${previousAddressStart[1]}`,
-    //         endDate: `${previousAddressEnd[0]}/${previousAddressEnd[1]}`,
-    //     });
-    // }
+    req.session.data.addresses = addresses;
+    return res.redirect('previous-address');
+});
+
+citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
+    const addresses = req.session.data.addresses || [];
+    const whyNoAddress = req.session.data['why-no-address'];
+    addresses.push({
+        lineOne: whyNoAddress,
+        lineTwo: '',
+        townOrCity: whyNoAddress === 'Homeless' ? req.session.data['homeless-town-or-city'] : '',
+        county: whyNoAddress === 'Homeless' ? req.session.data['homeless-county'] : req.session.data['travelling-county'],
+        postcode: '',
+        country: 'United Kingdom',
+        startYear: `${req.session.data[whyNoAddress === 'Homeless' ? 'homeless-start' : 'travelling-start']} ${
+            whyNoAddress === 'Homeless'
+                ? req.session.data['still-homeless'] === 'yes'
+                    ? 'Still Homeless'
+                    : ''
+                : req.session.data['still-travelling']
+                ? 'Still Travelling'
+                : ''
+        }`,
+    });
     req.session.data.addresses = addresses;
     return res.redirect('previous-address');
 });
 
 citizenRouter.post('/where-certificate', (req, res) => {
     if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('previous-convictions');
-    return res.redirect('send-certification-location');
+    return res.redirect('address-lookup?certificate=true');
 });
 
 citizenRouter.post('/national-insurance', (req, res) => {
@@ -176,15 +182,7 @@ const randomDate = (start, end) => {
 
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
-    const statuses = [
-        'Sent to Applicant',
-        'Expired',
-        'Verify ID',
-        'Ready to submit',
-        'Submitted',
-        'Sent for case-working',
-        'Cancelled',
-    ];
+    const statuses = ['Sent to Applicant', 'Expired', 'Verify ID', 'Ready to submit', 'Submitted', 'Sent for case-working', 'Cancelled'];
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
 
@@ -192,7 +190,7 @@ dashboardRouter.get('*', (req, res, next) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
         return {
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
-            action: actions[getRandomArbitrary(0, 2)],
+            action: actions[getRandomArbitrary(0, actions.length - 1)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });
@@ -204,8 +202,8 @@ dashboardRouter.get('*', (req, res, next) => {
         return {
             ref,
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
-            status: statuses[getRandomArbitrary(0, 8)],
-            type: types[getRandomArbitrary(0, 2)],
+            status: statuses[getRandomArbitrary(0, statuses.length - 1)],
+            type: types[getRandomArbitrary(0, types.length - 1)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });

@@ -13,10 +13,10 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="add-address" method="post">
+        <form class="form" action="{{'add-address?certificate=true' if query['certificate'] == 'true' else 'add-address'}}" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">What is your current address?</h1>
+                    <h1 class="govuk-fieldset__heading">{{'What address do you want your certificate sent to?' if query['certificate'] == 'true' else 'What is your current address? current address?'}}</h1>
                 </legend>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="postcode-lookup"> Number and street </label>
@@ -65,28 +65,24 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                 </div>
 
-                {% if query['lookup'] == 'true' %}
-                    {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address', value: 'United Kingdom' }) }}
-                {% else %}
-                    {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address' }) }}
-                {% endif %}
-
+                {% if query['lookup'] == 'true' %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address', value: 'United
+                Kingdom' }) }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address' }) }} {% endif %} {% if
+                query['certificate'] !== 'true' %}
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="year"> <strong>What year did you start living here?</strong>  </label>
-                    <div id="passport-hint" class="govuk-hint">
-                        For example, 1980
-                    </div>
+                    <label class="govuk-label" for="year"> <strong>What year did you start living here?</strong> </label>
+                    <div id="passport-hint" class="govuk-hint">For example, 1980</div>
                     <input
                         class="govuk-input govuk-input--width-5"
                         id="year"
                         name="address"
                         type="number"
-                        maxlength='4'
+                        maxlength="4"
                         autocomplete="postal-code"
                         value='{{data["postcode-lookup"]}}'
                     />
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                 </div>
+                {% endif %}
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
             </fieldset>
         </form>

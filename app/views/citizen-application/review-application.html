@@ -142,11 +142,12 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">5 year address history</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
-                        {% for item in data['addresses'] %} {{item.lineOne}} <br />
-                        {{item.lineTwo}} <br />
-                        {{item.townOrCity }} <br />
-                        {{item.postcode }} <br />
-                        {{item.country }} <br />
+                        {% for item in data['addresses'] %}
+                        {% if item.lineOne !== '' %} {{item.lineOne}} <br /> {% endif %}
+                        {% if item.lineTwo !== '' %} {{item.lineTwo}} <br /> {% endif %}
+                        {% if item.townOrCity !== '' %} {{item.townOrCity}} <br /> {% endif %}
+                        {% if item.postcode !== '' %} {{item.postcode}} <br /> {% endif %}
+                        {% if item.country !== '' %} {{item.country}} <br /> {% endif %}
                         <br />
                         {% endfor %}
                     </td>
@@ -160,16 +161,19 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Certificate destination address</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
-                        {% if data['where-to-send-cert'] == 'Current Address' %} {{data['current-address'][0]}} <br />
-                        {{data['current-address'][1]}} <br />
-                        {{data['current-address'][2]}} <br />
-                        {{data['current-address'][3]}} <br />
-                        {{data['current-address'][4]}} <br />
-                        {% else %} {{data['send-cert-address'][0]}} <br />
-                        {{data['send-cert-address'][1]}} <br />
-                        {{data['send-cert-address'][2]}} <br />
-                        {{data['send-cert-address'][3]}} <br />
-                        {{data['send-cert-address'][4]}} <br />{% endif%}
+                        {% if data['where-to-send-cert'] == 'Current Address' %}
+                            {{data['current-address'][0]}} <br />
+                            {{data['current-address'][1]}} <br />
+                            {{data['current-address'][2]}} <br />
+                            {{data['current-address'][3]}} <br />
+                            {{data['current-address'][4]}} <br />
+                        {% else %}
+                            {% if data['send-cert-address'][0] !== '' %}{{data['send-cert-address'][0]}} <br />{% endif %}
+                            {% if data['send-cert-address'][1] !== '' %}{{data['send-cert-address'][1]}} <br />{% endif %}
+                            {% if data['send-cert-address'][2] !== '' %}{{data['send-cert-address'][2]}} <br />{% endif %}
+                            {% if data['send-cert-address'][3] !== '' %}{{data['send-cert-address'][3]}} <br />{% endif %}
+                            {% if data['send-cert-address'][4] !== '' and data['send-cert-address'][4] !== undefined %}{{data['send-cert-address'][4]}} <br />{% endif %}
+                        {% endif%}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="#">

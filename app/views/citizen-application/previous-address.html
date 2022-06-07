@@ -53,11 +53,13 @@ endset%} {% block beforeContent %}
                         {% for item in data['addresses'] %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                {{ item.lineOne }} <br />
-                                {{item.lineTwo}} <br />
-                                {{item.townOrCity }} <br />
-                                {{item.postcode }} <br />
-                                {{item.country }} <br />
+                                {% if item.lineOne !== '' %} {{ item.lineOne }} <br />
+                                {% endif %} {% if item.lineTwo !== '' %} {{ item.lineTwo}} <br />
+                                {% endif %} {% if item.townOrCity !== '' %} {{ item.townOrCity }} <br />
+                                {% endif %} {% if item.county !== '' and item.county !== undefined %} {{ item.county }} <br />
+                                {% endif %} {% if item.postcode !== '' %} {{ item.postcode }} <br />
+                                {% endif %} {% if item.country !== '' %} {{ item.country }} <br />
+                                {% endif %}
                             </td>
                             <td class="govuk-table__cell">{{item.startYear}}</td>
                             <td class="govuk-table__cell">

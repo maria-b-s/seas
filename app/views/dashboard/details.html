@@ -22,12 +22,12 @@
                     </svg>
                     <!--<![endif]-->
                     <!--[if IE 8]>
-                    <img
-                        src="/assets/images/govuk-logotype-crown.png"
-                        class="govuk-header__logotype-crown-fallback-image"
-                        width="36"
-                        height="32"
-                    />
+                        <img
+                            src="/assets/images/govuk-logotype-crown.png"
+                            class="govuk-header__logotype-crown-fallback-image"
+                            width="36"
+                            height="32"
+                        />
                     <![endif]-->
                     <span class="govuk-header__logotype-text"> GOV.UK </span>
                 </span>
@@ -67,7 +67,7 @@
     </p>
 </div>
 <nav class="nav-bar">
-    <a href="home" class="govuk-back-link" style='margin-block: 0'>Back</a>
+    <a href="home" class="govuk-back-link" style="margin-block: 0">Back</a>
     <a href="#4"> Settings </a>
 </nav>
 
@@ -77,44 +77,46 @@
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <h4 class="govuk-heading-m">Application details</h4>
-            <a href="/registered-body/dbs-check-level">
-                <button class="govuk-button" data-module="govuk-button">New Application</button>
-            </a>
         </div>
 
+        {% for app in data['applications'] %} {% if app['name'] == query['app'] %}
+
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            {% for app in data['applications'] %}
-               {% if app['name'] == query['app'] %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Reference number</dt>
-                        <dd class="govuk-summary-list__value">{{app['ref']}}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Applicant name</dt>
-                        <dd class="govuk-summary-list__value">{{app['name']}}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Status</dt>
-                        <dd class="govuk-summary-list__value">{{app['status']}}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Type</dt>
-                        <dd class="govuk-summary-list__value">{{app['type']}}</dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Modified date</dt>
-                        <dd class="govuk-summary-list__value">{{app['date']}}</dd>
-                    </div>
-                {% endif %}
-            {% endfor %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Reference number</dt>
+                <dd class="govuk-summary-list__value">{{app['ref']}}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant name</dt>
+                <dd class="govuk-summary-list__value">{{app['name']}}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Status</dt>
+                <dd class="govuk-summary-list__value">{{app['status']}}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Type</dt>
+                <dd class="govuk-summary-list__value">{{app['type']}}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Modified date</dt>
+                <dd class="govuk-summary-list__value">{{app['date']}}</dd>
+            </div>
         </dl>
+        {% if app['status'] !== 'Cancelled' %}
 
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <form action="verify-applicant-id" method="post" novalidate>
+
+            <form action="/registered-body/verify-applicant-id" method="post" novalidate>
                 <input type="hidden" name="answers-checked" value="true" />
                 <button type="submit" class="govuk-button" data-module="govuk-button">View application</button>
             </form>
+
+            <a href="/registered-body/dbs-check-level">
+                <button class="govuk-button govuk-button--warning" type="button" data-module="govuk-button">Cancel Application</button>
+            </a>
         </div>
+        {% endif %} {% endif %} {% endfor %}
     </div>
 </div>
 
