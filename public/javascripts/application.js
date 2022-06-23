@@ -273,10 +273,8 @@ $(document).on('click', '.country-option', e => {
 });
 
 var optionConditionalWrapper = $('#options-conditional');
-var optionConditionalWrapperAlt = $('#options-conditional-alt');
 var radioOption = $('#radio-option-1');
 var radioOptionTwo = $('#radio-option-0');
-var conditionalAddAnother = $('#conditional-add-another');
 
 var onRadioChange = function() {
     $('.govuk-error-summary').remove();
@@ -287,19 +285,14 @@ var onRadioChange = function() {
   if (radioOption) {
     if (radioOption.is(':checked')) {
       optionConditionalWrapper.css({display: 'block'});
-      conditionalAddAnother.css({display: 'block'});
     } else if (radioOptionTwo.is(':checked')) {
       optionConditionalWrapper.css({display: 'none'});
-      optionConditionalWrapperAlt.css({display: 'block'});
-      conditionalAddAnother.css({display: 'none'});
     }
 
     radioOption.on('change', function() {
       if (radioOption.is(':checked')) {
         onRadioChange();
         optionConditionalWrapper.css({display: 'block'});
-        optionConditionalWrapperAlt.css({display: 'none'});
-        conditionalAddAnother.css({display: 'block'});
       }
     });
   }
@@ -308,8 +301,6 @@ var onRadioChange = function() {
     if (radioOptionTwo.is(':checked')) {
       onRadioChange();
       optionConditionalWrapper.css({display: 'none'});
-      optionConditionalWrapperAlt.css({display: 'block'});
-      conditionalAddAnother.css({display: 'none'});
     }
   });
 
