@@ -1,0 +1,130 @@
+{% import "../form-elements.njk" as fe %}
+
+
+{#
+ # 13. SUMMARY PAGE SEND CERT ADDRESS
+ #}
+{% macro summary_page_send_cert_address(
+    address={
+      recipientName: 'default-name',
+      department: 'default-department',
+      addressLine1: 'Default address line 1',
+      addressLine2: 'Default address line 2',
+      addressLine3: '',
+      town: 'Town',
+      country: 'Country',
+      postcode: 'Postcode'
+    },
+    lang=lang
+  ) %}
+
+    {% if address.recipientName %}
+      {{ address.recipientName or '' }}<br>
+    {% endif %}
+    {% if address.department %}
+      {{ address.department or '' }}<br>
+    {% endif %}
+    {{ address.addressLine1 or '' }}<br>
+    {% if address.addressLine2 %}
+      {{ address.addressLine2 or '' }}<br>
+    {% endif %}
+    {% if address.addressLine3 %}
+      {{ address.addressLine3 or '' }}<br>
+    {% endif %}
+    {{ address.town or '' }}<br>
+    {% if address.county %}
+      {{ address.county or '' }}<br>
+    {% endif %}
+    {% if address.country %}
+      {{ address.country | translateCountry(lang) }}<br>
+    {% endif %}
+    {% if address.postcode %}
+      {{ address.postcode or '' }}<br>
+    {% endif %}
+
+{% endmacro %}
+
+{#
+ # 14. ADDRESS LINES BLOCK
+#}
+{% macro address_lines_block(
+    label='default-label',
+    error=false,
+    autocompletePrefix='',
+    addressLines1={
+      name: 'address-line-1',
+      value: 'default-value-1',
+      helpText: 'default-help-text-1',
+      pattern: 'default-pattern-1',
+      error: false,
+      errorMessages: []
+    },
+    addressLines2={
+      name: 'address-line-2',
+      value: 'default-value-2',
+      helpText: 'default-help-text-2',
+      pattern: 'default-pattern-2',
+      error: false,
+      errorMessages: []
+    }
+) %}
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+    {% if label != '' or error %}
+      <label
+        class="govuk-label"
+        id="address-lines-label"
+        for="{{ addressLines1.name + '-input' }}">{{ label }}</label>
+    {% endif %}
+
+    {# Optional: Error messages #}
+    {% if error %}
+      {# ADDRESS LINE 1 ERROR MESSAGES  #}
+      {% if addressLines1.errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = addressLines1.errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-full-name-1">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in addressLines1.errorMessages %}
+          <span class="govuk-error-message" id="error-message-full-name-1">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+
+      {# ADDRESS LINE 2 ERROR MESSAGES  #}
+      {% if addressLines2.errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = addressLines2.errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-full-name-2">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in addressLines2.errorMessages %}
+          <span class="govuk-error-message" id="error-message-full-name-2">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    <input
+      class="govuk-input govuk-input--width-20 {% if addressLines1.error %}govuk-input--error{% endif %}"
+      name="{{ addressLines1.name + '-input' }}"
+      {% if addressLines1.error %} aria-describedby="error-message-full-name-1" {% endif %}
+      type="text"
+      id="{{ addressLines1.name + '-input' }}"
+      aria-label="Number and street. Line 1"
+      value="{{ addressLines1.value }}"
+      autocomplete="{{ autocompletePrefix }}address-line1"
+    >
+
+    <input
+      class="govuk-input govuk-input--width-20 {% if addressLines2.error %}govuk-input--error{% endif %} govuk-!-margin-top-1"
+      name="{{ addressLines2.name + '-input' }}"
+      {% if addressLines2.error %}aria-describedby="error-message-full-name-2" {% endif %}
+      type="text"
+      id="{{ addressLines2.name + '-input' }}"
+      aria-label="Number and street. Line 2"
+      value="{{ addressLines2.value }}"
+      autocomplete="{{ autocompletePrefix }}address-line2"
+    >
+
+  </div>
+{% endmacro %}

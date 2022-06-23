@@ -1,0 +1,18 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.help_box(
+  helpLinkText='Help link text',
+  helpContentText=[
+    {
+      textBlock: 'First text block'
+    },
+    {
+      textBlock: 'Text block as a heading',
+      heading: true
+    },
+    {
+      htmlBlock: '<div class="test">Test HTML block</div>'
+    }
+  ],
+  cms=cms
+) }}

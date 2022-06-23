@@ -1,0 +1,44 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.radio_buttons(
+  id='test-id-value',
+  items=[
+    {
+      group: 'default-group',
+      label: 'Display This 1'
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 2',
+      value: ''
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 3',
+      value: 'submit-this-3'
+    },
+    {
+      group: 'default-group',
+      htmlLabel: '<a href="index.html">Test</a>',
+      value: 'submit-this-4'
+    },
+    {
+      group: 'default-group',
+      label: '<p>Example</p>'
+    },
+    {
+      group: 'default-group',
+      dataTarget: 'target-div'
+    },
+    {
+      group: 'default-group',
+      dataTarget: ''
+    },
+    {
+      group: 'default-group',
+      label: 'Conditional label',
+      conditional: '<p>test</p>'
+    }
+  ],
+  cms=cms
+) }}

@@ -1,0 +1,88 @@
+{% import "./date-display.njk" as date_display %}
+
+{#
+ # NAMES HISTORY ROW - takes a name and prints it out in a row
+ #}
+{% macro names_history_row(
+    name={
+      firstName: 'default first name',
+      middleNames: 'default middle names',
+      lastName: 'default last name',
+      sinceMonth: '00',
+      sinceYear: '0000',
+      isCurrent: false,
+      toMonth: '00',
+      toYear: '0000',
+      id: 0
+    },
+    cms={}
+  ) %}
+
+  <tr class="govuk-table__row">
+      <td class="govuk-table__cell">
+        {{ name.firstName or '' }}
+        {% if name.middleNames %}
+          {{ name.middleNames or '' }}
+        {% endif %}
+        {{ name.lastName or '' }}
+      </td>
+    <td class="govuk-table__cell">
+      <span>{{ date_display.date_display(
+              month=name.sinceMonth,
+              year=name.sinceYear,
+              cms=cms
+            ) }} {{ cms.generalContent.to }}<br>
+            {% if name.isCurrent %}{{ cms.generalContent.now }}{% else %}
+            {{ date_display.date_display(
+              month=name.toMonth,
+              year=name.toYear,
+              cms=cms
+            ) }}
+            {% endif %}</span>
+    </td>
+    <td class="govuk-table__cell">
+      <a href={{ 'names/edit/' + name.id }}>{{ cms.generalContent.change }} <span class="govuk-visually-hidden">{{ cms.generalContent.name }}</span></a>
+      <br>
+      <a href={{ 'names/delete/' + name.id }}>{{ cms.generalContent.delete }} <span class="govuk-visually-hidden">{{ cms.generalContent.name }}</span></a>
+    </td>
+  </tr>
+
+{% endmacro %}
+
+{#
+ # SUMMARY PAGE NAMES HISTORY ROW - takes a name and prints it out in a row
+ #}
+{% macro summary_page_names_history(
+    name={
+      firstName: 'default first name',
+      middleNames: 'default middle names',
+      lastName: 'default last name',
+      sinceMonth: '00',
+      sinceYear: '0000',
+      isCurrent: false,
+      toMonth: '00',
+      toYear: '0000',
+      id: 0
+    },
+    cms={}
+  ) %}
+
+    {{ name.firstName or '' }}
+        {% if name.middleNames %}
+          {{ name.middleNames or '' }}
+        {% endif %} {{ name.lastName or '' }}<br>
+      {{ cms.otherNames.usedFrom }}
+      {{ date_display.date_display(
+          month=name.sinceMonth,
+          year=name.sinceYear,
+          cms=cms
+        ) }} {{ cms.generalContent.to }} {% if name.isCurrent %}{{ cms.generalContent.now }}{% else %}
+        {{ date_display.date_display(
+          month=name.toMonth,
+          year=name.toYear,
+          cms=cms
+        ) }}
+        {% endif %}<br>
+
+
+{% endmacro %}

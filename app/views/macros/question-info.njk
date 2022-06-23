@@ -1,0 +1,6 @@
+
+{% macro questionInfo(questionText='Question', ofText='of', start=0 , end=10) %}
+    <span class="govuk-caption-m">
+        {{ questionText }} {{ start }} {{ ofText }} {{ end }}
+    </span>
+{% endmacro %}

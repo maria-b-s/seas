@@ -1,0 +1,878 @@
+{# This file contains all standard form elements e.g. a text entry field, a set of radio buttons etc. #}
+
+{#
+ # CONTENTS
+ # --------
+ # 1. Single text entry field
+ # 2. Drop-down box
+ # 3. Radio buttons
+ # 4a. Date entry 1 - DDMMYYY
+ # 4b. Date entry 1 - MMYYY
+ # 4c. Date entry 2 - YYYY
+ # 6. Country
+ # 7. Warning message box
+ # 8. Check boxes
+ # 9. Help box
+ # 10. Page validation error message
+ # 11. [MOVED]
+ # 12. Phone number input
+ # 13. CSRF token
+ # 14. Current address row
+ # 15. Save button
+ # 16. Title data list
+ #}
+
+
+{% macro large_heading(heading='') %}
+  <h1 class="govuk-heading-xl page-heading">{{ heading }}</h1>
+{% endmacro %} {# End large_heading macro #}
+
+{% macro medium_heading(heading='') %}
+  <h1 class="govuk-heading-l page-heading govuk-!-margin-bottom-4">{{ heading }}</h1>
+{% endmacro %} {# End medium_heading macro #}
+
+{% macro small_heading(heading='') %}
+  <h2 class="govuk-heading-m page-heading">{{ heading }}</h2>
+{% endmacro %} {# End small_heading macro #}
+
+{% macro extra_small_heading(heading='') %}
+  <h4 class="govuk-heading-s page-heading">{{ heading }}</h2>
+{% endmacro %} {# End extra_small_heading macro #}
+
+{% macro legend_heading(heading='') %}
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
+  </legend>
+{% endmacro %}
+
+{% macro legend_heading_small(heading='', id='') %}
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+    <h2 class="govuk-fieldset__heading" id="{{ id }}">{{ heading }}</h2>
+  </legend>
+{% endmacro %}
+
+{#
+ # 1. SINGLE TEXT ENTRY FIELD
+ #
+ # name {string} - id for the element
+ # label {string} - A user-friendly label for the input box, only shown if NOT blank
+ #}
+
+
+{% macro text_entry(
+    name='default-name',
+    label='',
+    boldText=false,
+    screenreaderLabel='',
+    value='',
+    helpText='',
+    pattern='',
+    error=false,
+    suggestion=false,
+    errorMessages=[],
+    autocomplete='',
+    inputWidth=20
+  ) %}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+    {# Optional: Label #}
+    {% if label != '' %}
+      <label class="govuk-label{% if boldText %} text-bold{% endif %}" for="{{ name + '-input' }}">
+        {{ label }}
+      </label>
+      {# Optional: Help text #}
+    {% endif %}
+
+    {% if helpText != '' %}
+      <span class="govuk-hint govuk-!-margin-bottom-2">{{ helpText }}</span>
+    {% endif %}
+
+    {# Optional: Error messages #}
+    {% if error %}
+      {% if errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in errorMessages %}
+          <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    {# Input box #}
+    <input
+      class="govuk-input govuk-input--width-{{ inputWidth }} {% if error %}govuk-input--error{% endif %}"
+      name="{{ name + '-input' }}"
+      {% if screenreaderLabel %} aria-label="{{ screenreaderLabel }}" {% endif %}
+      {% if error %} aria-describedby="error-message-{{ name }}" {% endif %}
+      type="text"
+      id="{{ name + '-input' }}"
+      value="{{ value }}"
+      {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+      {% if pattern != '' %}pattern={{pattern}} {% endif %}>
+
+    {% if suggestion %}
+      <div id="suggestion"></div>
+    {% endif %}
+  </div>
+
+{% endmacro %} {# End Text entry macro #}
+
+
+{#
+ # 1.1. UID TEXT ENTRY FIELD
+ #}
+
+{% macro uid_text_entry(
+    name='default-name',
+    label='',
+    helpText='',
+    pattern='',
+    value1='',
+    value2='',
+    value3='',
+    value4='',
+    error=false,
+    errorMessages=[]) %}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    <fieldset class="govuk-fieldset">
+      {# Optional: Label #}
+      {% if label != '' or error %}
+        <legend>
+          <span class="govuk-label">{{ label }}</span>
+        </legend>
+        {# Optional: Help text #}
+        {% if helpText != '' %}
+          <span class="govuk-hint govuk-!-margin-bottom-1">{{ helpText }}</span>
+        {% endif %}
+      {% endif %}
+
+      {# Optional: Error messages #}
+      {% if error %}
+        {% if errorMessages.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorMessages[0] %}
+          <span class="govuk-error-message" id="error-message-uid">{{ errorMessage }}</span>
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorMessages %}
+            {% if loop.index0 !== 0 %}
+              <span class="govuk-error-message" id="error-message-uid">{{ errorMessage }}</span>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+
+      <div class="form-uid">
+        <input
+          class="govuk-input govuk-date-input__input govuk-input--width-2 {% if error %}govuk-input--error{% endif %}"
+          id="{{ name + '-input-1' }}"
+          name="{{ name + '-input-1' }}"
+          {% if error %} aria-describedby="error-message-uid" {% endif %}
+          type="text"
+          id="{{ name + '-input-1' }}"
+          value="{{ value1 }}"
+          title="{{ label }} 1"
+          maxlength="1"
+        >
+        &nbsp;&nbsp;
+        <input
+          class="govuk-input govuk-date-input__input govuk-input--width-2 {% if error %}govuk-input--error{% endif %}"
+          id="{{ name + '-input-2' }}"
+          name="{{ name + '-input-2' }}"
+          {% if error %}aria-describedby="error-message-uid"{% endif %}
+          type="text"
+          id="{{ name + '-input-2' }}"
+          value="{{ value2 }}"
+          title="{{ label }} 2"
+          maxlength="1"
+        >
+        &nbsp;&nbsp;
+        <input
+          class="govuk-input govuk-date-input__input govuk-input--width-2 {% if error %}govuk-input--error{% endif %}"
+          id="{{ name + '-input-3' }}"
+          name="{{ name + '-input-3' }}"
+          {% if error %}aria-describedby="error-message-uid"{% endif %}
+          type="text"
+          id="{{ name + '-input-3' }}"
+          value="{{ value3 }}"
+          title="{{ label }} 3"
+          maxlength="1"
+        >
+        &nbsp;&nbsp;
+        <input
+          class="govuk-input govuk-date-input__input govuk-input--width-2 {% if error %}govuk-input--error{% endif %}"
+          id="{{ name + '-input-4' }}"
+          name="{{ name + '-input-4' }}"
+          {% if error %}aria-describedby="error-message-uid"{% endif %}
+          type="text"
+          id="{{ name + '-input-4' }}"
+          value="{{ value4 }}"
+          title="{{ label }} 4"
+          maxlength="1"
+        >
+      </div>
+    </fieldset>
+  </div>
+
+{% endmacro %} {# End UID entry macro #}
+
+
+{#
+ # 3. RADIO BUTTONS - horizontal or vertical depending on input
+ #}
+{% macro radio_buttons(
+    questionText='',
+    horizontal=false,
+    value='',
+    helpText='',
+    helpTextHint=false,
+    boldText=false,
+    h1Text=false,
+    error=false,
+    errorMessages=[],
+    ariaHiddenHintLabel=false,
+    id='radio-option',
+    items=[
+      { group: 'default-group',
+        answerOption: 'default-option',
+        label: '',
+        value: '',
+        conditional: ''
+      }
+    ],
+    disabledOnSelection=false
+  ) %}
+    {% if questionText or error or helpText %}
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend" id="{{ 'radio-group-' + items[0].group }}">
+        {% if questionText %}
+          {% if boldText %}
+            <span class="govuk-label--s">{{ questionText }}</span>
+          {% elseif h1Text %}
+            {{ medium_heading(heading=questionText) }}
+          {% else %}
+           {{ small_heading(heading=questionText) }}
+            {# <span class="govuk-visually-hidden">{{ questionText }}</span> #}
+          {% endif %}
+        {% endif %}
+        {# Optional: Help text #}
+        {% if helpText != '' %}
+          <p class='{% if helpTextHint %}govuk-hint{% else %}govuk-body{% endif %}'>{{ helpText }}</p>
+        {% endif %}
+
+        {# Optional: Error messages #}
+        {% if error %}
+          {% if errorMessages.length === 1 %}
+            {# If only one error (i.e. general error), only show general error message #}
+            {% set errorMessage = errorMessages[0] %}
+            <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+          {% else %}
+            {# Otherwise, exclude general error and only show specific ones #}
+            {% for errorMessage in errorMessages %}
+              <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      </legend>
+    {% endif %}
+
+    <div class="govuk-radios {% if horizontal %}govuk-radios--inline{% endif %}" data-module="govuk-radios">
+      {% for item in items %}
+
+        {# If item = value (what what previously checked) then add checked="checked" #}
+        {% set wasPreviouslySelected = item.value === value or item.label === value %}
+
+        {# Note: 'for' and 'id' have to be the same, and unique to each radio button #}
+        {# Note: 'name' has to be the same for all radio buttons in the group #}
+
+        <div class="govuk-radios__item {% if item.hintLabel %} govuk-!-margin-bottom-0 {% endif %}">
+          <input
+            {% if disabledOnSelection and value %} disabled {% endif %}
+            class="govuk-radios__input"
+            type="radio"
+            id="{{ id + '-' + item.answerOption }}"
+            name="{{ 'radio-group-' + item.group }}"
+            value="{% if item.value %}{{ item.value }}{% else %}{{ item.label }}{% endif %}"
+            {% if wasPreviouslySelected %} checked="checked"{% endif %}
+            {% if item.dataTarget %}
+              data-aria-controls="{{ item.dataTarget }}"
+            {% endif %}
+          />
+          <label
+            class="govuk-label govuk-radios__label{% if wasPreviouslySelected %} selected{% endif %}"
+            for="{{ id + '-' + item.answerOption }}"
+            id="{{ 'for-' + id + '-' + item.answerOption }}"
+          >
+
+            {% if item.htmlLabel %}
+              {{ item.htmlLabel | safe }}
+            {% else %}
+              {{ item.label }}
+            {% endif %}
+          </label>
+        </div>
+
+        {%if item.hintLabel %}
+          <div {% if ariaHiddenHintLabel %} aria-hidden="true" {% endif %} id={{ "sign-in-item-hint" + loop.index0 }} class="govuk-hint govuk-radios__hint govuk-!-margin-left-7"> {{ item.hintLabel }} </div>
+        {% endif %}
+
+        {{ item.conditional | safe }}
+      {% endfor %}
+    </div>
+
+  {% if questionText or error or helpText %}
+    </fieldset>
+  {% endif %}
+
+{% endmacro %} {# End Radio buttons macro #}
+
+
+{#
+ # 7. WARNING MESSAGE BOX
+ # message {string} - The message the user needs to take note of
+ #}
+{% macro warning(message='Default', cms={}) %}
+  <div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+
+    <strong class="govuk-warning-text__text">
+      <span id='warning' class="govuk-warning-text__assistive">{{ cms.generalContent.warning }}</span>
+      <span id='warning-text'> {{ message }} </span>
+    </strong>
+  </div>
+{% endmacro %}
+
+
+{#
+ # 8. CHECK BOXES - horizontal or vertical depending on input
+ #}
+{% macro check_boxes(questionText='',
+                     error=false,
+                     errorMessages=[],
+                     fieldset=true,
+                     items=[
+                       {
+                         group: 'default-group',
+                         answerOption: 'default-option',
+                         label: '',
+                         htmlLabel: '',
+                         selected: false
+                       }
+                     ])
+%}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    {# Hidden input field to allow for checking if a check box has been selected #}
+    {#<input hidden type="text" name="{{ 'check-group-' + items[0].group }}" value="default"/>#}
+    {% if fieldset %}
+      <fieldset class="govuk-fieldset">
+    {% endif %}
+      {% if error or questionText %}
+        {% if fieldset %}
+          <legend id="{{ 'check-group-' + items[0].group }}" class="govuk-fieldset__legend">
+        {% endif %}
+          {% if questionText %}
+            <span class="govuk-visually-hidden">{{ questionText }}</span>
+          {% endif %}
+          {# Optional: Error messages #}
+          {% if error %}
+            {% if errorMessages.length === 1 %}
+              {# If only one error (i.e. general error), only show general error message #}
+              {% set errorMessage = errorMessages[0] %}
+              <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+            {% else %}
+              {# Otherwise, exclude general error and only show specific ones #}
+              {% for errorMessage in errorMessages %}
+                <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        {% if fieldset %}
+          </legend>
+        {% endif %}
+      {% endif %}
+
+      <div class="govuk-checkboxes">
+      {% for item in items %}
+
+        {% set id = loop.index %}
+        {{ check_boxes_items(group=item.group,
+                             id=id,
+                             label=item.label,
+                             htmlLabel=item.htmlLabel,
+                             value=item.value,
+                             selected=item.selected) }}
+
+      {% endfor %}
+      </div>
+    {% if fieldset %}
+      </fieldset>
+    {% endif %}
+  </div>
+
+{% endmacro %} {# End Check Box macro #}
+
+{#
+ # 8b. CHECK BOXES (items) - the actual tick box items to go inside the check boxes component
+ #}
+{% macro check_boxes_items(
+  group='default-group',
+  id='default-option',
+  label='',
+  htmlLabel='',
+  selected=false,
+  value=''
+) %}
+
+  {# Note: 'for' and 'id' have to be the same, and unique to each check box #}
+  {# Note: 'name' has to be the same for all check boxes in the group #}
+  <div class="govuk-checkboxes__item">
+    <input
+      class="govuk-checkboxes__input"
+      type="checkbox"
+      id="{{ 'check-box-' + id }}"
+      name="{{ 'check-group-' + group }}"
+      value="{% if value %}{{ value }}{% else %}{{ label }}{% endif %}"
+      {% if selected %}checked="checked"{% endif %}
+    >
+    <label class="govuk-label govuk-checkboxes__label" for="{{ 'check-box-' + id }}">
+      {% if htmlLabel %}
+        {{ htmlLabel | safe }}
+      {% else %}
+        {{ label }}
+      {% endif %}
+    </label>
+  </div>
+{% endmacro %} {# End Check Box macro #}
+
+
+
+{#
+ # 9. HELP BOX - expandable help box
+ #}
+{% macro help_box(
+    helpLinkText='Default help link text',
+    helpContentText=[
+      {textBlock: 'Default help content text', heading: false, htmlBlock: ''}
+    ]
+  ) %}
+
+  <div class="govuk-form-group">
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary help-text-link">
+        <span class="govuk-details__summary-text">{{ helpLinkText }}</span>
+      </summary>
+      <div class="govuk-details__text">
+        {% for helpText in helpContentText %}
+          {% if helpText.heading %}
+            <h2 class="govuk-heading-l">{{ helpText.textBlock }}</h2>
+          {% elseif helpText.htmlBlock %}
+            {{ helpText.htmlBlock | safe }}
+          {% else %}
+            <p>
+              {{ helpText.textBlock | safe }}
+            </p>
+          {% endif%}
+        {% endfor %}
+      </div>
+    </details>
+  </div>
+
+{% endmacro %}
+
+
+{#
+ # 10. PAGE VALIDATION ERROR MESSAGE - for top of a page
+ #}
+
+{% macro page_error(
+  errorsPresent=false,
+  validationResults={},
+  enterName=false,
+  cms={}
+) %}
+  {% if errorsPresent %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        {{ cms.pageErrors.heading }}
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for key, validation in validationResults %}
+            {% for errorMessage in validation %}
+              <li><a href="#{{ key }}">{{ errorMessage }}</a></li>
+            {% endfor %}
+
+            {% if (key == 'driving-licence-number-input' and enterName) %}
+              <li id="enter-name-message">{{ cms.pageErrors.enterName | safe }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
+{#
+ # 12. PHONE NUMBER INPUT
+ # Includes a country code lookup and the field for the phone number to be typed in
+ # name {string} - A user-friendly name for the input box
+ # questionText {string} - Question text for the select box, only shown if NOT blank
+ # value {string} - Value that was saved from previous submit for the country code lookup
+ # valueNumber {string} - Value that was saved from previous submit for the phone number
+ # error {boolean} - Whether errors are present
+ # errorMessages {string} - Error messages for the error present in the fields
+ #}
+{% macro phone_number(
+    name='Default',
+    questionText='',
+    helpText='',
+    value='',
+    error=false,
+    errorMessages=[],
+    lang='en'
+  ) %}
+
+    <div class="govuk-form-group govuk-!-margin-bottom-1 {% if error %}govuk-form-group--error{% endif %}">
+      <label class="govuk-label" for="{{ name + '-input' }}">
+        {% if questionText != '' %}
+          {{ questionText }}
+        {% endif %}
+
+        {# Optional: Error messages #}
+        {% if error %}
+          {% for errorMessage in errorMessages %}
+            <span class="govuk-error-message">{{ errorMessage }}</span>
+          {% endfor %}
+        {% endif %}
+      </label>
+
+      {# Optional: Help text #}
+      {% if helpText != '' %}
+        <span class="govuk-hint">{{ helpText }}</span>
+      {% endif %}
+
+      <div class="govuk-form-group">
+        <input
+          class="govuk-input govuk-input--width-20 {% if error %}govuk-input--error{% endif %}"
+          name="{{ name + '-input' }}"
+          type="tel"
+          id="{{ name + '-input' }}"
+          value="{{ value }}"
+          autocomplete="mobile tel"
+        >
+      </div>
+    </div>
+
+{% endmacro %}
+
+{#
+ # 13. CSRF Field
+ #}
+{% macro csrfField(token) %}
+  <input type="hidden" name="_csrf" value="{{ token }}" />
+{% endmacro %}
+
+{# 15. Save button #}
+{% macro save_button(cms={}, classOverride) %}
+  <button type="submit" class="govuk-button {% if classOverride %} {{ classOverride }} {% endif %}" id="save-and-continue">
+    {{ cms.generalContent.continue }}
+  </button>
+{% endmacro %}
+
+{#
+ # 3a. SEND CERT RADIO BUTTONS - horizontal or vertical depending on input
+ #}
+{% macro send_cert_radio_buttons(
+    questionText='',
+    value='',
+    helpText='',
+    error=false,
+    errorMessages=[],
+    items=[
+      { group: 'default-group',
+        answerOption: 'default-option',
+        label: 'Default label',
+        id: 'Default label',
+        dataTarget: '' }
+    ]
+  ) %}
+  {# Hidden input field to allow for checking if a radio button has been selected #}
+  {#<input hidden type="text" name="{{ 'radio-group-' + items[0].group }}" value="default"/> #}
+  {# This line determined whether it is horizontal (inline) or vertical #}
+
+  {% if questionText or error or helpText %}
+    <legend class="govuk-fieldset__legend" id="{{ 'radio-group-' + items[0].group }}">
+      {% if questionText %}
+        {{ large_heading(heading=questionText) }}
+      {% endif %}
+      {# Optional: Help text #}
+      {% if helpText != '' %}
+        {{ helpText | safe }}
+      {% endif %}
+      {# Optional: Error messages #}
+      {% if error %}
+        {% if errorMessages.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorMessages[0] %}
+          <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorMessages %}
+            <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    </legend>
+  {% endif %}
+
+  <div class="govuk-radios">
+    {% for item in items %}
+
+      {# If item = value (what what previously checked) then add checked="checked" #}
+      {% set wasPreviouslySelected = item.id == value %}
+
+      {# Note: 'for' and 'id' have to be the same, and unique to each radio button #}
+      {# Note: 'name' has to be the same for all radio buttons in the group #}
+
+      <div class="govuk-radios__item">
+        <input
+          class="govuk-radios__input"
+          type="radio"
+          id="{{ 'radio-option-' + item.answerOption }}"
+          name="{{ 'radio-group-' + item.group }}"
+          value="{{ item.id }}"
+          {% if wasPreviouslySelected %} checked="checked"{% endif %}
+        />
+        <label
+          class="govuk-label govuk-radios__label{% if wasPreviouslySelected %} selected{% endif %}"
+          for="{{ 'radio-option-' + item.answerOption }}"
+          id="{{ 'for-radio-option-' + item.answerOption }}"
+          data-label="{{ item.label }}"
+        >
+          {{ item.label }}
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endmacro %} {# End Send Cert Radio buttons macro #}
+
+
+{# 16. Title Data List #}
+{# type can be titles or sectors #}
+{% macro text_with_data_list(
+  name='default-name',
+  label='',
+  boldText=false,
+  screenreaderLabel='',
+  value='',
+  helpText='',
+  pattern='',
+  error=false,
+  suggestion=false,
+  errorMessages=[],
+  autocomplete='',
+  dataListOptions=false,
+  widthColumnNumber=5
+) %}
+ 
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+    {# Optional: Label #}
+    {% if label != '' %}
+      <label class="govuk-label{% if boldText %}-bold{% endif %}" for="{{ name + '-input' }}">
+        {{ label }}
+      </label>
+      {# Optional: Help text #}
+      {% if helpText != '' %}
+        <span class="govuk-hint govuk-!-margin-bottom-1">{{ helpText }}</span>
+      {% endif %}
+    {% endif %}
+
+    {# Optional: Error messages #}
+    {% if error %}
+      {% if errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in errorMessages %}
+          <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    {# Input box #}
+    <input
+      class="govuk-input govuk-input--width-{{ widthColumnNumber }} {% if error %} govuk-input--error {% endif %}"
+      name="{{ name + '-input' }}"
+      list="readyOptions"
+      {% if screenreaderLabel %} aria-label="{{ screenreaderLabel }}" {% endif %}
+      {% if error %} aria-describedby="error-message-{{ name }}" {% endif %}
+      type="text"
+      id="{{ name + '-input' }}"
+      value="{{ value }}"
+      {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+      {% if pattern != '' %}pattern={{pattern}} {% endif %}>
+      
+      {% if dataListOptions %}
+        <datalist id="readyOptions">
+          {% for key, value in dataListOptions %}
+            <option value="{{ value }}">
+          {% endfor %}
+        </datalist>
+      {% endif %}
+
+    {% if suggestion %}
+      <div id="suggestion"></div>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{# Generic button #}
+{% macro lookup_button(cms={}) %}
+  <button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-!-margin-bottom-2" id="lookup-button">
+    {{ cms.generalContent.lookupAddress }}
+  </button>
+{% endmacro %}
+
+{# Text Entry Text Area #}
+
+{% macro text_entry_textarea(
+    name='default-name',
+    label='',
+    boldText=false,
+    screenreaderLabel='',
+    value='',
+    helpText="",
+    pattern='',
+    error=false,
+    suggestion=false,
+    errorMessages=[],
+    autocomplete='',
+    textareaWidth=false,
+    rows=5
+  ) %}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+    {# Optional: Label #}
+    {% if label != '' %}
+      <label class="govuk-label{% if boldText %} text-bold{% endif %}" for="{{ name + '-input' }}">
+        {{ label }}
+      </label>
+      {# Optional: Help text #}
+      {% if helpText != '' %}
+        <span class="govuk-hint govuk-!-margin-bottom-1">{{ helpText }}</span>
+      {% endif %}
+    {% endif %}
+
+    {# Optional: Error messages #}
+    {% if error %}
+      {% if errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in errorMessages %}
+          <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    {# Textarea box #}
+    <textarea
+      class="govuk-textarea {% if textareaWidth %} govuk-!-width-{{ textareaWidth }} {% else %} govuk-!-width-full {% endif %} {% if error %}govuk-input--error{% endif %}"
+      name="{{ name + '-input' }}"
+      {% if screenreaderLabel %} aria-label="{{ screenreaderLabel }}" {% endif %}
+      {% if error %} aria-describedby="error-message-{{ name }}" {% endif %}
+      type="text"
+      rows="{{ rows }}"
+      id="{{ name + '-input' }}"
+      {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+      {% if pattern != '' %}pattern={{pattern}} {% endif %}>{{ value }}</textarea>
+
+    {% if suggestion %}
+      <div id="suggestion"></div>
+    {% endif %}
+  </div>
+
+{% endmacro %}
+ {# End Text entry text area macro #}
+
+
+ {#  Text entry text area character count macro #}
+ {% macro text_entry_textarea_char_count(
+    name='default-name',
+    label='',
+    boldText=false,
+    screenreaderLabel='',
+    value='',
+    helpText="",
+    pattern='',
+    error=false,
+    suggestion=false,
+    errorMessages=[],
+    autocomplete='',
+    textareaWidth=false,
+    rows=5,
+    maxLength=200,
+    customId=false
+  ) %}
+
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="{{ maxLength }}">
+  <div class="govuk-form-group">
+
+        {# Optional: Label #}
+    {% if label != '' %}
+      <label for="{% if customId %}{{ customId }}{% else %}with-hint{% endif %}" id='with-hint-label' class="govuk-label{% if boldText %} text-bold {% endif %}">
+        {{ label }}
+      </label>
+      {# Optional: Help text #}
+    {% endif %}
+    {% if helpText != '' %}
+      <span class="govuk-hint govuk-!-margin-bottom-2">{{ helpText }}</span>
+    {% endif %}
+
+    {% if error %}
+      {% if errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in errorMessages %}
+          <span class="govuk-error-message" id="error-message-{{ name }}">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    <textarea class="govuk-textarea govuk-js-character-count {% if textareaWidth %} govuk-!-width-{{ textareaWidth }} {% else %} govuk-!-width-full {% endif %} {% if error %}govuk-input--error{% endif %}"
+      id="{% if customId %}{{ customId }}{% else %}with-hint{% endif %}"
+      {% if screenreaderLabel %} aria-label="{{ screenreaderLabel }}" {% endif %}
+      name="{{ name + '-input' }}"
+      type="text"
+      rows="{{ rows }}"
+      {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+    >{{ value }}</textarea>
+  </div>
+
+  {# Character count would be available for English only, the english strig cannot be translated because they are hardccoded on the gov uk library #}
+  <div id="{% if customId %}{{ customId }}-info{% else %}with-hint-info{% endif %}" class="govuk-hint govuk-character-count__message" aria-live="polite">
+    {{ cms.generalContent.charLimitUpTo }} {{ maxLength }} {{ cms.generalContent.characters }}
+  </div>
+
+</div>
+
+{% endmacro %}
+ {# End Text entry macro #}

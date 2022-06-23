@@ -1,0 +1,75 @@
+{% import "./date-display.njk" as date_display %}
+
+{#
+ # VERIFY NAME
+ #}
+{% macro verify_name(
+  firstName= 'default',
+  middleNames= 'default',
+  lastName= 'default',
+  cms={}
+  ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">
+        <span class="govuk-body govuk-!-font-weight-bold">{{ cms.generalContent.name }}</span><br>
+        {{firstName}} {{middleNames or ''}} {{lastName}}
+      </td>
+    </tr>
+
+{% endmacro %}
+
+{#
+ # VERIFY DATE OF BIRTH
+ #}
+{% macro verify_dob(
+  day='default',
+  month='default',
+  year='default',
+  cms={}
+  ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">
+        <span class="govuk-body govuk-!-font-weight-bold">{{ cms.generalContent.dob }}</span><br>
+        {{ date_display.date_display(
+          day=day,
+          month=month,
+          year=year,
+          cms=cms
+        ) }}
+      </td>
+    </tr>
+{% endmacro %}
+
+{#
+ # VERIFY ADDRESS
+ #}
+{% macro verify_address(
+    address={
+      addressLine1: 'Default address line 1',
+      addressLine2: 'Default address line 2',
+      town: 'Town',
+      country: 'Country',
+      postcode: 'Postcode'
+    },
+    cms={},
+    lang=lang
+  ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">
+        <span class="govuk-body govuk-!-font-weight-bold">{{ cms.confirmVerify.currentAddress }}</span><br>
+        <p class="govuk-!-margin-bottom-0">{{ address.addressLine1 or '' }}<br>
+        {% if address.addressLine2 %}
+          {{ address.addressLine2 or '' }}<br>
+        {% endif %}
+        {{ address.town or '' }}<br>
+        {% if address.county %}
+          {{ address.county or '' }}<br>
+        {% endif %}
+        {% if address.country %}
+          {{ address.country | translateCountry(lang) }}<br>
+        {% endif %}
+        {{ address.postcode or '' }}</p>
+      </td>
+    </tr>
+
+{% endmacro %}

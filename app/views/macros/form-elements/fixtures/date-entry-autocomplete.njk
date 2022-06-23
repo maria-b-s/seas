@@ -1,0 +1,8 @@
+{% import "../date-entry.njk" as date_entry %}
+
+{{ date_entry.date_entry(
+  type='day',
+  questionText='test',
+  autocompletePrefix='bday-',
+  cms=cms
+) }}

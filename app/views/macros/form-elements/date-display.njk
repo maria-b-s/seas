@@ -1,0 +1,25 @@
+{# Date Display #}
+{% macro date_display(
+    day='',
+    month='',
+    year='',
+    cms={}
+  ) %}
+  {% set points = [
+    '',
+    cms.months.jan,
+    cms.months.feb,
+    cms.months.mar,
+    cms.months.apr,
+    cms.months.may,
+    cms.months.jun,
+    cms.months.jul,
+    cms.months.aug,
+    cms.months.sep,
+    cms.months.oct,
+    cms.months.nov,
+    cms.months.dec
+  ] %}
+   {% if day !== '' %}{{day or ''}} {% endif %}{% if month !== '' %}{{points[month] or ''}} {% endif %}{{year or ''}}
+
+{% endmacro %} {# End Date Display macro #}

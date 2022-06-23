@@ -1,0 +1,32 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.check_boxes(
+  questionText='',
+  error=false,
+  errorMessages=[],
+  items=[
+    {
+      group: 'default-group',
+      label: 'Display This 1'
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 2',
+      value: ''
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 3',
+      value: 'submit-this-3'
+    },
+    {
+      group: 'default-group',
+      htmlLabel: '<a href="index.html">Test</a>'
+    },
+    {
+      group: 'default-group',
+      label: '<p>Example</p>'
+    }
+  ],
+  cms=cms
+) }}

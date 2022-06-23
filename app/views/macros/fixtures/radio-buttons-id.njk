@@ -1,0 +1,11 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.radio_buttons(
+  horizontal=true,
+  id='test-id-value',
+  items=[
+    {group: 'driving-licence-av', answerOption: 'yes', label: cms.generalContent.yes, dataTarget: 'driving-licence'},
+    {group: 'driving-licence-av', answerOption: 'no', label: cms.generalContent.no, dataTarget: ''}
+  ],
+  cms=cms
+) }}

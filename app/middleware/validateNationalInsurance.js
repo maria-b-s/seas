@@ -22,7 +22,7 @@ function validateNationalInsurance(req,res, _next) {
     res.render('citizen-application/national-insurance-number', {
       cache: state,
       validation: {
-        'has-national-insurance-number': 'Enter a National Insurance number in the correct format'
+        'has-national-insurance-number': 'Please select whether you have a UK National Insurance number'
       }});
   }
 }

@@ -1,0 +1,12 @@
+{% import "../country-select.njk" as country_select %}
+
+{{ country_select.full(
+  countries=countries,
+  value='Tajikistan',
+  euOnly = true,
+  cms={
+    labels: {
+      selectCountry: 'selectCountryLabel'
+    }
+  }
+) }}
