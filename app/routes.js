@@ -154,8 +154,8 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
-citizenRouter.get('/national-insurance-number', validateNationalInsurance, (req, res) => {
-    return res.render(__dirname + '/views/citizen-application/national-insurance-number');
+citizenRouter.get('/national-insurance-number', (req, res) => {
+    res.render(__dirname + '/views/citizen-application/national-insurance-number', { validation: null });
 });
 
 citizenRouter.post('/national-insurance-number', validateNationalInsurance);

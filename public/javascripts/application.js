@@ -255,7 +255,7 @@ const populateDropdown = list => {
 // };
 
 $(window).on('load', () => {
-    landingSetup();
+    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
     populateDropdown(countryArray);
 });
 
@@ -272,8 +272,49 @@ $(document).on('click', '.country-option', e => {
     countryDropdown.css('display', 'none');
 });
 
+var optionConditionalWrapper = $('#options-conditional');
+var optionConditionalWrapperAlt = $('#options-conditional-alt');
+var radioOption = $('#radio-option-1');
+var radioOptionTwo = $('#radio-option-0');
+var conditionalAddAnother = $('#conditional-add-another');
+
+var onRadioChange = function() {
+    $('.govuk-error-summary').remove();
+    $('.govuk-error-message').empty();
+    $('.govuk-form-group--error').removeClass('govuk-form-group--error');
+  };
+
+  if (radioOption) {
+    if (radioOption.is(':checked')) {
+      optionConditionalWrapper.css({display: 'block'});
+      conditionalAddAnother.css({display: 'block'});
+    } else if (radioOptionTwo.is(':checked')) {
+      optionConditionalWrapper.css({display: 'none'});
+      optionConditionalWrapperAlt.css({display: 'block'});
+      conditionalAddAnother.css({display: 'none'});
+    }
+
+    radioOption.on('change', function() {
+      if (radioOption.is(':checked')) {
+        onRadioChange();
+        optionConditionalWrapper.css({display: 'block'});
+        optionConditionalWrapperAlt.css({display: 'none'});
+        conditionalAddAnother.css({display: 'block'});
+      }
+    });
+  }
+
+  radioOptionTwo.on('change', function() {
+    if (radioOptionTwo.is(':checked')) {
+      onRadioChange();
+      optionConditionalWrapper.css({display: 'none'});
+      optionConditionalWrapperAlt.css({display: 'block'});
+      conditionalAddAnother.css({display: 'none'});
+    }
+  });
+
 $(window).on('resize', () => {
-    landingSetup();
+    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
 });
 
 const getRandomArbitrary = (min, max) => {
