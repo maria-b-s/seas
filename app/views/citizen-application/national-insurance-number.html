@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'drivers-licence'}}" method="post">
+        <form class="form" {% if query['change'] == 'true' %} action='review-application' {% else %}  action="" method="post" {% endif %} method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="ni-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -37,16 +37,16 @@ endset%} {% block beforeContent %}
                         </div>
                         <div class="govuk-radios__conditional" id="conditional-contact">
                             <label class="govuk-label" for="national-insurance-number"> UK National Insurance number </label>
-                            <div id="nino-hint" class="govuk-hint">For example, QQ123456C.</div>
-                            <input
-                              class="govuk-input govuk-!-width-one-half"
-                              id="national-insurance-number"
-                              name="national-insurance-number"
-                              type="text"
-                              spellcheck="false"
-                              aria-describedby="contact-by-email-error"
-                              autocomplete="email"
-                            />
+                            <div id="nino-hint" class="govuk-hint">A National Insurance number is made up of 2 letters, 6 numbers and 1 letter, which is always A, B, C, or D. For example, QQ 12 34 56 C. It can be found on their National Insurance card, benefit letter, payslip, or P60.</div>
+                            <input 
+                                spellcheck="false"
+                                class="govuk-input govuk-input--width-20 " 
+                                name="referred-nino-input" 
+                                type="text" id="referred-nino-input" 
+                                value="" 
+                                autocomplete="on"
+                                id="referred-nino-input"
+                                />
                         </div>
                         <div class="govuk-radios__item">
                             <input

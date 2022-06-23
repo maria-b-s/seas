@@ -1,6 +1,9 @@
 const express = require('express');
 const RandExp = require('randexp');
 
+// middleware import
+const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
+
 const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
@@ -151,10 +154,11 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
-citizenRouter.post('/national-insurance', (req, res) => {
-    if (req.session.data['has-national-insurance-number'] === 'no') return res.redirect('drivers-licence');
-    return res.redirect('national-insurance-number');
+citizenRouter.get('/national-insurance-number', validateNationalInsurance, (req, res) => {
+    return res.render(__dirname + '/views/citizen-application/national-insurance-number');
 });
+
+citizenRouter.post('/national-insurance-number', validateNationalInsurance);
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
