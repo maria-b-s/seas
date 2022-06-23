@@ -272,7 +272,6 @@ $(document).on('click', '.country-option', e => {
     countryDropdown.css('display', 'none');
 });
 
-var optionConditionalWrapper = $('#options-conditional');
 var radioOption = $('#radio-option-1');
 var radioOptionTwo = $('#radio-option-0');
 
@@ -283,26 +282,20 @@ var onRadioChange = function() {
   };
 
   if (radioOption) {
-    if (radioOption.is(':checked')) {
-      optionConditionalWrapper.css({display: 'block'});
-    } else if (radioOptionTwo.is(':checked')) {
-      optionConditionalWrapper.css({display: 'none'});
-    }
-
     radioOption.on('change', function() {
       if (radioOption.is(':checked')) {
         onRadioChange();
-        optionConditionalWrapper.css({display: 'block'});
       }
+    });
+
+    radioOptionTwo.on('change', function() {
+        if (radioOptionTwo.is(':checked')) {
+          onRadioChange();
+        }
     });
   }
 
-  radioOptionTwo.on('change', function() {
-    if (radioOptionTwo.is(':checked')) {
-      onRadioChange();
-      optionConditionalWrapper.css({display: 'none'});
-    }
-  });
+
 
 $(window).on('resize', () => {
     // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
