@@ -279,6 +279,7 @@ var onRadioChange = function() {
     $('.govuk-error-summary').remove();
     $('.govuk-error-message').empty();
     $('.govuk-form-group--error').removeClass('govuk-form-group--error');
+    $('.govuk-input--error').removeClass('govuk-input--error');
   };
 
   if (radioOption) {
