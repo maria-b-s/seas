@@ -2,6 +2,7 @@ const express = require('express');
 const RandExp = require('randexp');
 
 // middleware import
+const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 
 const router = express.Router();
@@ -154,8 +155,16 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
+// Start to declare proper routing
+
+citizenRouter.get('/sex', (req, res) => {
+    res.render('citizen-application/sex', { validation: null });
+});
+
+citizenRouter.post('/sex', validateSex);
+
 citizenRouter.get('/national-insurance-number', (req, res) => {
-    res.render(__dirname + '/views/citizen-application/national-insurance-number', { validation: null });
+    res.render('citizen-application/national-insurance-number', { validation: null });
 });
 
 citizenRouter.post('/national-insurance-number', validateNationalInsurance);
