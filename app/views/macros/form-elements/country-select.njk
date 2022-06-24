@@ -1,0 +1,64 @@
+{#
+ # 6. COUNTRY SELECT BOX
+ # name {string} - A user-friendly name for the input box
+ # questionText {string} - Question text for the select box, only shown if NOT blank
+ # selected="selected" defines which option has been selected and passes this through to JQuery lookup
+ #}
+{% macro full(
+    countries={},
+    name='Default',
+    questionText='',
+    value='',
+    error=false,
+    errorMessages=[],
+    omitUK=false,
+    euOnly=false,
+    lang='en',
+    cms=cms
+  ) %}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+    {% if questionText != '' %}
+    <label class="govuk-label" for="{{ name + '-input' }}">{{ questionText }}</label>
+    {% endif %}
+
+    {# Optional: Error messages #}
+    {% if error %}
+      {% if errorMessages.length === 1 %}
+        {# If only one error (i.e. general error), only show general error message #}
+        {% set errorMessage = errorMessages[0] %}
+        <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+      {% else %}
+        {# Otherwise, exclude general error and only show specific ones #}
+        {% for errorMessage in errorMessages %}
+          <span class="govuk-error-message" id="error-message-full-name">{{ errorMessage }}</span>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+    <select
+      name="{{ name + '-input' }}"
+      id="{{ name + '-input' }}"
+      title="{{ questionText }}"
+      {% if error %} aria-describedby="error-message-full-name" {% endif %}
+      autocorrect="off"
+      autocomplete="off"
+      class="govuk-input govuk-input--width-20 {% if error %}govuk-input--error{% endif %}"
+    >
+      <option value="" {% if value === "" %}selected="selected"{% endif %}>{{ cms.generalContent.selectCountry }}</option>
+      {% for name, country in countries %}
+        {% if (not omitUK or name !== 'United Kingdom') and (not euOnly or country.eu) %}
+          <option
+            value="{{ name }}"
+            {% if value === name %}selected="selected"{% endif %}
+            data-alternative-spellings="{{ country.spellings }}"
+            {% if country.booster %}data-relevancy-booster="{{ country.booster }}"{% endif %}
+            data-country-code="{{ country.telCode | getCountryCode }}"
+          >{{ name | translateCountry(lang) }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+
+{% endmacro %}

@@ -1,0 +1,9 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.check_boxes(
+  questionText='Test',
+  error=true,
+  fieldset=false,
+  errorMessages=['An error message'],
+  cms=cms
+) }}

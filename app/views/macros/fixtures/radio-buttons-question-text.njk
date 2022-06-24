@@ -1,0 +1,14 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.radio_buttons(
+  questionText='Do you have a driving licence?',
+  helpText='Test',
+  error=true,
+  errorMessages=['An error message'],
+  horizontal=true,
+  items=[
+    {group: 'driving-licence-av', answerOption: 'yes', label: cms.generalContent.yes, dataTarget: 'driving-licence'},
+    {group: 'driving-licence-av', answerOption: 'no', label: cms.generalContent.no, dataTarget: ''}
+  ],
+  cms=cms
+) }}

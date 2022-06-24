@@ -1,0 +1,10 @@
+{% macro dbs_contact_details(cms={}) %}
+
+  <p>
+    {{ cms.contactPage.details.join('<br>') | safe }}
+  </p>
+  <p>
+    <a href="https://www.gov.uk/call-charges">{{ cms.contactPage.callCharges }}</a>
+  </p>
+
+{% endmacro %}

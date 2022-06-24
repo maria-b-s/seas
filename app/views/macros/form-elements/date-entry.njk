@@ -1,0 +1,173 @@
+{# 4. Date Entry #}
+{% macro date_entry(
+    type='day',
+    questionText='',
+    past=true,
+    helpText='',
+    boldText=true,
+    group='date-group',
+    valueDay='',
+    valueMonth='',
+    valueYear='',
+    error=false,
+    errorDay=false,
+    errorMonth=false,
+    errorYear=false,
+    errorInvalidDateMessages=[],
+    errorMessagesDay=[],
+    errorMessagesMonth=[],
+    errorMessagesYear=[],
+    autocompletePrefix='',
+    cms={}
+  ) %}
+
+  <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    {% if type === 'day' or type === 'month' %}
+      <fieldset class="govuk-fieldset">
+        <legend>
+    {% else %}
+      <label for="{{ group + '-year' }}">
+    {% endif %}
+      {# Optional: Question Text #}
+      {% if questionText != '' %}
+        {# Show bold heading if basic page #}
+        {% if boldText %}
+          <span class="govuk-label--s">{{ questionText }}</span>
+        {% else %}
+          <span class="govuk-label">{{ questionText }}</span>
+        {% endif %}
+      {% endif %}
+
+      {% if type === 'day' or type === 'month' %}
+        </legend>
+      {% else %}
+        </label>
+      {% endif %}
+
+      {# Optional: Help text #}
+      {% if helpText != '' %}
+        <span class="govuk-hint govuk-!-margin-bottom-1">{{ helpText|safe }}</span>
+      {% else %}
+        {% if past %}
+          <span class="govuk-hint govuk-!-margin-bottom-1">{{ cms.generalContent.forExample }} {%if type === 'day' %}28 {% endif %}{%if type === 'day' or type === 'month' %}03 {% endif %}1980</span>
+        {% else %}
+          <span class="govuk-hint govuk-!-margin-bottom-1">{{ cms.generalContent.forExample }} {%if type === 'day' %}28 {% endif %}{%if type === 'day' or type === 'month' %}03 {% endif %}2025</span>
+        {% endif %}
+      {% endif %}
+
+      {# Optional: Error messages #}
+      {% if error %}
+        {# If there are error messages for the day field, then load display them #}
+        {% if errorMessagesDay.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorMessagesDay[0] %}
+          <span class="govuk-error-message" id="error-message-day">{{ errorMessage }}</span>
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorMessagesDay %}
+              <span class="govuk-error-message" id="error-message-day">{{ errorMessage }}</span>
+          {% endfor %}
+        {% endif %}
+        {# If there are error messages for the month field, then load display them #}
+        {% if errorMessagesMonth.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorMessagesMonth[0] %}
+          <span class="govuk-error-message" id="error-message-month">{{ errorMessage }}</span>
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorMessagesMonth %}
+              <span class="govuk-error-message" id="error-message-month">{{ errorMessage }}</span>
+          {% endfor %}
+        {% endif %}
+        {# If there are error messages for the year field, then load display them #}
+        {% if errorMessagesYear.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorMessagesYear[0] %}
+          <span class="govuk-error-message" id="error-message-year">{{ errorMessage }}</span>
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorMessagesYear %}
+              <span class="govuk-error-message" id="error-message-year">{{ errorMessage }}</span>
+          {% endfor %}
+        {% endif %}
+        {# If there are error messages for the date, then load display them #}
+        {% if errorInvalidDateMessages.length === 1 %}
+          {# If only one error (i.e. general error), only show general error message #}
+          {% set errorMessage = errorInvalidDateMessages[0] %}
+          <span class="govuk-error-message" id="error-message-year">{{ errorMessage }}</span>
+          {% set errorDay = true %}
+          {% set errorMonth = true %}
+          {% set errorYear = true %}
+        {% else %}
+          {# Otherwise, exclude general error and only show specific ones #}
+          {% for errorMessage in errorInvalidDateMessages %}
+              <span class="govuk-error-message" id="error-message-year">{{ errorMessage }}</span>
+            {% set errorDay = true %}
+            {% set errorMonth = true %}
+            {% set errorYear = true %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+
+      <div class="govuk-date-input">
+        {% if type === 'day' %}
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="{{ group + '-day' }}">{{ cms.generalContent.day }}</label>
+            <input
+              maxlength="2"
+              id="{{ group + '-day' }}"
+              {% if errorMessagesDay.length > 0 %} aria-describedby="error-message-day" {% endif %}
+              class="govuk-input govuk-date-input__input govuk-input--width-2 {% if errorDay %}govuk-input--error{% endif %}"
+              type="text"
+              name="{{ group + '-day' }}" value="{{ valueDay }}"
+              {% if autocompletePrefix %}
+                autocomplete="{{ autocompletePrefix }}day"
+              {% endif %}
+            >
+          </div>
+        </div>
+        {% endif %}
+        {% if type === 'day' or type === 'month' %}
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="{{ group + '-month' }}">{{ cms.generalContent.month }}</label>
+            <input
+              maxlength="2"
+              id="{{ group + '-month' }}"
+              {% if errorMessagesMonth.length > 0 %} aria-describedby="error-message-month" {% endif %}
+              class="govuk-input govuk-date-input__input govuk-input--width-2 {% if errorMonth %}govuk-input--error{% endif %}"
+              type="text"
+              name="{{ group + '-month' }}" value="{{ valueMonth }}"
+              {% if autocompletePrefix %}
+                autocomplete="{{ autocompletePrefix }}month"
+              {% endif %}
+            >
+          </div>
+        </div>
+        {% endif %}
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group">
+            {% if type === 'day' or type === 'month' %}
+              <label class="govuk-label" for="{{ group + '-year' }}">{{ cms.generalContent.year }}</label>
+            {% endif %}
+            <input
+              maxlength="4"
+              id="{{ group + '-year' }}"
+              {% if errorMessagesYear.length > 0 or errorInvalidDateMessages.length > 0 %} aria-describedby="error-message-year" {% endif %}
+              class="govuk-input govuk-date-input__input govuk-input--width-4 {% if errorYear %}govuk-input--error{% endif %}"
+              type="text"
+              name="{{ group + '-year' }}" value="{{ valueYear }}"
+              {% if autocompletePrefix %}
+                autocomplete="{{ autocompletePrefix }}year"
+              {% endif %}
+            >
+          </div>
+        </div>
+      </div>
+    {% if type === 'day' or type === 'month' %}
+      </fieldset>
+    {% endif %}
+  </div>
+
+{% endmacro %} {# End Date Entry macro #}

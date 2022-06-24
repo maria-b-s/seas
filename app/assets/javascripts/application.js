@@ -255,7 +255,7 @@ const populateDropdown = list => {
 // };
 
 $(window).on('load', () => {
-    landingSetup();
+    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
     populateDropdown(countryArray);
 });
 
@@ -272,8 +272,34 @@ $(document).on('click', '.country-option', e => {
     countryDropdown.css('display', 'none');
 });
 
+var radioOption = $('#radio-option-1');
+var radioOptionTwo = $('#radio-option-0');
+
+var onRadioChange = function() {
+    $('.govuk-error-summary').remove();
+    $('.govuk-error-message').empty();
+    $('.govuk-form-group--error').removeClass('govuk-form-group--error');
+    $('.govuk-input--error').removeClass('govuk-input--error');
+  };
+
+  if (radioOption) {
+    radioOption.on('change', function() {
+      if (radioOption.is(':checked')) {
+        onRadioChange();
+      }
+    });
+
+    radioOptionTwo.on('change', function() {
+        if (radioOptionTwo.is(':checked')) {
+          onRadioChange();
+        }
+    });
+  }
+
+
+
 $(window).on('resize', () => {
-    landingSetup();
+    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
 });
 
 const getRandomArbitrary = (min, max) => {

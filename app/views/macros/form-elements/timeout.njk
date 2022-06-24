@@ -1,0 +1,34 @@
+{#
+ # MODAL DIALOG TIMEOUT
+ #}
+{% macro modal_timeout(
+    cms=cms,
+    lang='en'
+  ) %}
+
+  <dialog class="govuk-timeout-warning dialog" data-module="govuk-timeout-warning"
+    id="js-timeout-warning"
+    data-milliseconds-idle-timeout="{{ cms.modalTimeout.setup.msIdleTime or '5100000'}}"
+    data-milliseconds-modal-visible="{{ cms.modalTimeout.setup.msVisibleTime or '300000'}}"
+    data-url-redirect="/timeout/end?lang={{ lang }}"
+    data-url-prefix=""
+    data-ls-prefix="dbssub"
+    role="dialog"
+    aria-live="polite"
+    aria-labelledby="dialog-title"
+    aria-describedby="at-timer">
+    <h1 id="dialog-title" class="govuk-heading-l">
+      {{ cms.modalTimeout.title }}
+    </h1>
+    <div class="govuk-body">
+      <div class="timer" aria-hidden="true" aria-relevant="additions"></div>
+      <div class="at-timer govuk-visually-hidden" role="status" id="at-timer"></div>
+      <span class="govuk-visually-hidden" id="dialog-body-countdown-text" aria-hidden="true">{{ cms.modalTimeout.body.countdownText }}</span>
+      <span class="govuk-visually-hidden" id="dialog-body-countdown-extra-text" aria-hidden="true">{{ cms.modalTimeout.body.countdownExtraText }}</span>
+      <span class="govuk-visually-hidden" id="dialog-body-redirected-text" aria-hidden="true">{{ cms.modalTimeout.body.redirectedText }}</span>
+      <span class="govuk-visually-hidden" id="dialog-language" aria-hidden="true">{{ lang }}</span>
+    </div>
+    <button class="govuk-button dialog-button js-dialog-close" data-module="govuk-button">{{ cms.modalTimeout.continueButton }}</button>
+  </dialog>
+
+{% endmacro %}

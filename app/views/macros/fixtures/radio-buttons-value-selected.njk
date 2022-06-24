@@ -1,0 +1,24 @@
+{% import "../form-elements.njk" as fe %}
+
+{{ fe.radio_buttons(
+  id='test-id-value',
+  value='submit-this-2',
+  items=[
+    {
+      group: 'default-group',
+      label: 'Display This 1',
+      value: 'submit-this-1'
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 2',
+      value: 'submit-this-2'
+    },
+    {
+      group: 'default-group',
+      label: 'Display This 3',
+      value: 'submit-this-3'
+    }
+  ],
+  cms=cms
+) }}
