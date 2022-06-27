@@ -14,7 +14,7 @@
         </span>
         </p>
     </div>
-    <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+    <a class="govuk-back-link" href="/citizen-application/sex">Back</a>
 {% endblock %}
 
 {% block content %}
@@ -59,7 +59,7 @@
                                     name="has-national-insurance-number"
                                     type="radio"
                                     value="yes"
-                                    {{ checked("has-national-insurance-number", "yes") }}
+                                    {% if cache['has-national-insurance-number'] === 'yes' %} checked="checked" {% endif %}
                                     data-aria-controls="conditional-contact"
                                 />
                                 <label class="govuk-label govuk-radios__label" for="contact"> Yes </label>
@@ -79,7 +79,8 @@
                                         class="govuk-input govuk-input--width-20  {% if validation['referred-nino-input'] %}govuk-input--error{% endif %}" 
                                         name="referred-nino-input" 
                                         type="text" id="referred-nino-input" 
-                                        value="" 
+                                        
+                                        {% if cache['national-insurance-number'] %} value={{cache['national-insurance-number']}} {% else %} value="" {% endif %}
                                         autocomplete="on"
                                         id="referred-nino-input"
                                     />  
@@ -92,7 +93,7 @@
                                     name="has-national-insurance-number"
                                     type="radio"
                                     value="no"
-                                    {{ checked("has-national-insurance-number", "no") }}
+                                    {% if cache['has-national-insurance-number'] === 'no' %} checked="checked" {% endif %}
                                     data-aria-controls="conditional-contact-2"
                                 />
                                 <label class="govuk-label govuk-radios__label" for="contact-2"> No </label>
