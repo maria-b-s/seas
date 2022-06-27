@@ -6,7 +6,9 @@ function validateSex(req, res) {
     req.session.data.sex = req.body['sex'];
     res.redirect('national-insurance-number');
   } else {
-    res.render('citizen-application/sex', { validation: "Please select your birth given sex" });
+    res.render('citizen-application/sex', { validation: {
+      sex: "Please select your birth given sex"
+    } });
   }
 }
 
