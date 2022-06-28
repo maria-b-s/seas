@@ -37,7 +37,7 @@
 
             {% endif %}
 
-            <form class="form" {% if query['change'] == 'true' %} action='review-application' {% else %}  action="" method="post" {% endif %} method="post">
+            <form class="form" action="" method="post" method="post">
                 <div class="govuk-form-group  {% if validation['has-national-insurance-number'] %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="ni-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -81,11 +81,7 @@
                                         type="text" id="referred-nino-input" 
                                         autocomplete="on"
                                         id="referred-nino-input"
-                                        {% if cache['national-insurance-number'] %}
-                                            value={{cache['national-insurance-number']}}
-                                        {% else %}
-                                            value=''
-                                        {% endif %}
+                                        value="{{cache['referred-nino-input']}}"
                                     />  
                                 </div>
                             </div>
