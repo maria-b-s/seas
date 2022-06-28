@@ -21,9 +21,9 @@ function validateNationalInsurance(req,res, _next) {
       req.session.data["national-insurance-number"] = state['referred-nino-input'];
       res.redirect('drivers-licence');
     } else {
-      res.render('citizen-application/national-insurance-number', { cache: prevValues, validation: {
-        'referred-nino-input': 'Enter a National Insurance number in the correct format'
-      }});
+      res.render('citizen-application/national-insurance-number', { 
+        cache: prevValues, 
+        validation: {  'referred-nino-input': { value: state['referred-nino-input'], message:  'Enter a National Insurance number in the correct format'  }}});
     }
   } else if (state['has-national-insurance-number'] === 'no') {
     req.session.data['has-national-insurance-number'] = 'no';
