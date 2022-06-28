@@ -70,7 +70,7 @@
                                     <label class="govuk-label" for="national-insurance-number"> UK National Insurance number </label>
                                     {% if validation['referred-nino-input'] %}
                                         <span id="ninonr-error" class="govuk-error-message">
-                                            <span class="govuk-visually-hidden">Error:</span> {{ validation['referred-nino-input'].message }}
+                                            <span class="govuk-visually-hidden">Error:</span> {{ validation['referred-nino-input'] }}
                                         </span>
                                     {% endif %}
                                     <div id="nino-hint" class="govuk-hint">A National Insurance number is made up of 2 letters, 6 numbers and 1 letter, which is always A, B, C, or D. For example, QQ 12 34 56 C. It can be found on their National Insurance card, benefit letter, payslip, or P60.</div>
@@ -83,7 +83,7 @@
                                         id="referred-nino-input"
                                         {% if cache['national-insurance-number'] %}
                                             value={{cache['national-insurance-number']}}
-                                        {% elif true %}
+                                        {% else %}
                                             value=''
                                         {% endif %}
                                     />  
