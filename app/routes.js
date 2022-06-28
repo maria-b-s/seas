@@ -4,7 +4,7 @@ const RandExp = require('randexp');
 // middleware import
 const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
-const { invalidateCache } = require('./middleware/utilsMiddleware');
+const { invalidateCache, loadPageData } = require('./middleware/utilsMiddleware');
 
 const router = express.Router();
 const citizenRouter = express.Router();
@@ -171,14 +171,10 @@ citizenRouter.get('/sex',invalidateCache, (req, res) => {
 citizenRouter.post('/sex', invalidateCache, validateSex);
 
 citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
-    let prevValues = null;
-    if (req.session.data['has-national-insurance-number']) {
-        prevValues = {
-          ["has-national-insurance-number"]: req.session.data['has-national-insurance-number'],
-          ["national-insurance-number"]: req.session.data["national-insurance-number"]
-        }
-    }
-    res.render('citizen-application/national-insurance-number', { cache: prevValues, validation: null });
+     const inputCache = loadPageData(req);
+     setTimeout(() => {
+        res.render('citizen-application/national-insurance-number', { cache: inputCache, validation: null });
+     }, 100);
 });
 
 citizenRouter.post('/national-insurance-number',invalidateCache, validateNationalInsurance);
