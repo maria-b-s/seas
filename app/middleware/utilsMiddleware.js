@@ -24,7 +24,7 @@ function invalidateCache(req,res,next) {
 
 function savePageData(req, data, withCache = false) {
   const urlOfPage = req.originalUrl.split('?')[0];
-  console.log(urlOfPage);
+  
   if (Object.keys(data).length > 0) {
     let dataPayload = { ...data };
 
