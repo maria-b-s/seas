@@ -24,8 +24,9 @@ const orgSetup = () => {
     return anotherNameRadio.hide();
 };
 
-$('[name="whos-check"]').on('click', orgSetup);
-$(window).on('load', orgSetup);
+// Prevent the div with information from hiding part of SEAS-379
+// $('[name="whos-check"]').on('click', orgSetup);
+// $(window).on('load', orgSetup);
 
 $('.delete-name').click(e => {
     fetch(`/citizen-application/delete-name?index=${parseInt(e.currentTarget.id, 10)}`, {

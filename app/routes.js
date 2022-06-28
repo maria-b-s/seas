@@ -172,9 +172,9 @@ citizenRouter.post('/sex', invalidateCache, validateSex);
 
 citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
      const inputCache = loadPageData(req);
-     setTimeout(() => {
-        res.render('citizen-application/national-insurance-number', { cache: inputCache, validation: null });
-     }, 100);
+
+    res.render('citizen-application/national-insurance-number', { cache: inputCache, validation: null });
+
 });
 
 citizenRouter.post('/national-insurance-number',invalidateCache, validateNationalInsurance);
