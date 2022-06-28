@@ -68,14 +68,14 @@
     </p>
 </div>
 
-<a class="govuk-back-link" href="/dashboard/home">Back</a>
+<a class="govuk-back-link" href="/dashboard/details">Back</a>
 
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <h4 class="govuk-heading-m">Application details</h4>
+            <h4 class="govuk-heading-m"> Are you sure you want to cancel this application? </h4>
         </div>
 
         {% if data['name'] %}
@@ -98,20 +98,18 @@
                 <dd class="govuk-summary-list__value">{{data['date']}}</dd>
             </div>
         </dl>
-            {% if data['status'] !== 'Cancelled' %}
 
-                <div style="display: flex; flex-direction: row; justify-content: flex-start;">
+          {% if data['status'] !== 'Cancelled' %}
+            <form action="" method="post" class="form">
+              <input type="hidden" name="confirmCancel" value="cancel">
+              <div style="display: block;">
+                <a href="/dashboard/details-confirm">
+                    <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button">Cancel Application</button>
+                </a>
+              </div>
+            </form>
 
-                    <a href="/registered-body/verify-applicant-id">
-                        <button type="button" class="govuk-button" data-module="govuk-button">View application</button>
-                    </a>
-
-                    <a style='margin-left: 16px;' href="/dashboard/details-confirm">
-                        <button class="govuk-button govuk-button--secondary" type="button" data-module="govuk-button">Cancel Application</button>
-                    </a>
-                </div>
-
-            {% endif %}
+          {% endif %}
         {% endif %}
     </div>
 </div>

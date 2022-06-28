@@ -4,7 +4,7 @@ const RandExp = require('randexp');
 // middleware import
 const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
-const { validateApplicationDetails } = require('./middleware/validateApplicationDetails');
+const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { invalidateCache, loadPageData } = require('./middleware/utilsMiddleware');
 
 const router = express.Router();
@@ -238,22 +238,21 @@ dashboardRouter.get('/details', (req, res) => {
 
     const data = req.session.data;
     const applications = data.applications;
-    let confirmCancel = false;
-
 
     if (applications && req.query.app) {
         const item = applications.find((el) => el.name === req.query.app);
         req.session.data.selectedApplicationToCancel = item;
     }
 
-    if (req.query['confirm-cancel']) {
-        confirmCancel = true;
-    }
-
-    res.render('dashboard/details', {data: req.session.data.selectedApplicationToCancel, confirmCancel: confirmCancel, validation: null });
+    res.render('dashboard/details', {data: req.session.data.selectedApplicationToCancel,  validation: null });
 });
 
-dashboardRouter.post('/details', validateApplicationDetails);
+dashboardRouter.get('/details-confirm', (req, res) => {
+
+    res.render('dashboard/details-confirm', {data: req.session.data.selectedApplicationToCancel, validation: null });
+});
+
+dashboardRouter.post('/details-confirm', validateApplicationDetailsConfirm);
 
 dashboardRouter.get('/delete-notification', (req, res) => {
     const parsedIndex = parseInt(req.query.notif, 10);
