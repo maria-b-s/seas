@@ -79,13 +79,13 @@
                                         class="govuk-input govuk-input--width-20  {% if validation['referred-nino-input'] %}govuk-input--error{% endif %}" 
                                         name="referred-nino-input" 
                                         type="text" id="referred-nino-input" 
-                                        {% if validation['referred-nino-input'] %}
-                                             value={{validation['referred-nino-input'].value}}
-                                        {% elif cache['national-insurance-number'] %}
-                                            value={{cache['national-insurance-number']}}
-                                        {% else %} value="" {% endif %}
                                         autocomplete="on"
                                         id="referred-nino-input"
+                                        {% if cache['national-insurance-number'] %}
+                                            value={{cache['national-insurance-number']}}
+                                        {% elif true %}
+                                            value=''
+                                        {% endif %}
                                     />  
                                 </div>
                             </div>
