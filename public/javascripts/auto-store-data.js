@@ -1,7 +1,7 @@
 /* global $ */
 const body = $('body');
 
-body.on('submit', 'form', () => {
+body.on('submit', 'form', function(){ // Arrow functions are not supported in IE11
     // On form submit, add hidden inputs for checkboxes so the server knows if
     // they've been unchecked. This means we can automatically store and update
     // all form data on the server, including checkboxes that are checked, then
@@ -16,7 +16,7 @@ body.on('submit', 'form', () => {
     const names = {};
 
     if (checkboxes && checkboxes.length) {
-        checkboxes.each(() => {
+        checkboxes.each(function() {
             const $this = $(this);
     
             if (!names[$this.attr('name')]) {

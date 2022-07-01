@@ -5,11 +5,11 @@ if (window.console && window.console.info) {
     window.console.info('GOV.UK Prototype Kit - do not use for production');
 }
 
-$(document).ready(() => {
+$(document).ready(function(){
     window.GOVUKFrontend.initAll();
 });
 
-$('[name="changed-name"]').click(e => {
+$('[name="changed-name"]').click(function(e) {
     const radio = $('.add-another-name');
     if (e.currentTarget.value === 'yes') {
         return radio.show().attr('aria-hidden', 'false');
@@ -19,7 +19,7 @@ $('[name="changed-name"]').click(e => {
 
 const anotherNameRadio = $('.add-another-name');
 
-const orgSetup = () => {
+const orgSetup = function() {
     if ($('input[name="whos-check"]:checked').val() === 'another-org') return anotherNameRadio.show();
     return anotherNameRadio.hide();
 };
@@ -28,12 +28,16 @@ const orgSetup = () => {
 // $('[name="whos-check"]').on('click', orgSetup);
 // $(window).on('load', orgSetup);
 
-$('.delete-name').click(e => {
+$('.delete-name').click(function(e) { // I had to refactor arrow functions to normal function declaration
+    // I don't understand why the previous developer has decided to use the fetch api in this case
+    // The business logic should happen inside the Node.js middleware 
     fetch(`/citizen-application/delete-name?index=${parseInt(e.currentTarget.id, 10)}`, {
         method: 'post',
     })
-        .then(() => window.location.reload())
-        .catch(err => console.log(err));
+        .then(function(){
+            window.location.reload()
+        })
+        .catch(function (err) {console.log(err)});
 });
 
 const countryArray = [
@@ -237,9 +241,9 @@ const countryArray = [
 const countryDropdown = $('.country-dropdown');
 const countryInput = $('.country-input');
 
-const populateDropdown = list => {
+const populateDropdown = function(list) {
     countryDropdown.empty();
-    list.forEach(c => countryDropdown.append(`<h4 class="country-option">${c}</h4>`));
+    list.forEach(function(c) { countryDropdown.append(`<h4 class="country-option">${c}</h4>`) });
 };
 
 // const details = $('.details');
@@ -255,20 +259,24 @@ const populateDropdown = list => {
 //     }
 // };
 
-$(window).on('load', () => {
+// I am not sure why the code commented above has been left in the file
+
+$(window).on('load', function() {
     // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
     populateDropdown(countryArray);
 });
 
-countryInput.keyup(e => {
+countryInput.keyup(function(e) {
     countryDropdown.css('display', 'block');
     const { value } = e.currentTarget;
     populateDropdown(
-        countryArray.filter(country => country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length)),
+        countryArray.filter(function(country) {
+            return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
+        }),
     );
 });
 
-$(document).on('click', '.country-option', e => {
+$(document).on('click', '.country-option', function(e) {
     $('.country-input').val(e.currentTarget.innerHTML);
     countryDropdown.css('display', 'none');
 });
@@ -299,15 +307,16 @@ var onRadioChange = function() {
 
 
 
-$(window).on('resize', () => {
-    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
+$(window).on('resize', function() {
+    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here, I had to comment out
 });
 
-const getRandomArbitrary = (min, max) => {
+const getRandomArbitrary = function(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
-$('.lookup').on('click', async () => {
+// The postcode look up fetch should happen in the Node js middleware not here !
+$('.lookup').on('click', function() {
     const postcode = $('#postcode-lookup');
     const err = $('.error-msg');
     const select = $('.postcode-select');
@@ -315,8 +324,8 @@ $('.lookup').on('click', async () => {
     const firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
     const secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
     fetch(`https://api.postcodes.io/postcodes/${postcode.val()}`)
-        .then(response => response.json())
-        .then(res => {
+        .then(function(response) { return response.json(); })
+        .then(function(res) {
             if (res.status !== 200) {
                 err.css('display', 'block');
                 return postcode.addClass('govuk-input--error');
@@ -326,8 +335,8 @@ $('.lookup').on('click', async () => {
             err.css('display', 'none');
             const street = `${firstStreetBit[getRandomArbitrary(0, 6)]} ${secondStreetBit[getRandomArbitrary(0, 4)]}`;
             Array.from(Array(10))
-                .map(() => `${getRandomArbitrary(3, 50)} ${street}`)
-                .forEach(el => select.append(`<option value="${el}">${el}</option>`));
+                .map(function() {return `${getRandomArbitrary(3, 50)} ${street}` })
+                .forEach(function(el) { select.append(`<option value="${el}">${el}</option>`) });
             $('.hidden-details-city').val(res.result.admin_county);
             $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');
@@ -335,7 +344,7 @@ $('.lookup').on('click', async () => {
 });
 
 /* dbs-check-level */
-const changeContinueBtn = (btnId, value, inputName) => {
+const changeContinueBtn = function(btnId, value, inputName) {
     const btn = $(`#${btnId}`);
     if ($(`input[name="${inputName}"]:checked`).val() === value) {
         btn.text('Continue');
@@ -344,10 +353,20 @@ const changeContinueBtn = (btnId, value, inputName) => {
     }
 };
 
-$('[name="what-dbs-check"]').on('click', () => changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check'));
-$(window).on('load', () => changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check'));
+$('[name="what-dbs-check"]').on('click', function(){
+    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check')
+});
+
+$(window).on('load', function() {
+    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check')
+});
 
 /* applicant-or-post-holder */
 
-$('[name="what-application-type"]').on('click', () => changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type'));
-$(window).on('load', () => changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type'));
+$('[name="what-application-type"]').on('click', function(){
+    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type')
+});
+
+$(window).on('load', function() {
+    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type')
+});
