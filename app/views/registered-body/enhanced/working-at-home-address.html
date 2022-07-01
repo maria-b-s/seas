@@ -1,5 +1,7 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %}
+{% block pageTitle %} Question page {% endblock %} 
+{% set serviceName %} Request a standard or enhanced DBS check {% endset %} 
+{% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -8,12 +10,12 @@ endset%} {% block beforeContent %}
         </span>
     </p>
 </div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+<a class="govuk-back-link" href="/registered-body/enhanced/barred-list-adults">Back</a>
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'../check-answers' if query['change'] == 'true' else '../position'}}" method="post">
+        <form class="form" action="" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -37,7 +39,9 @@ endset%} {% block beforeContent %}
             {% if query['change'] === 'true' %}
             <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            <a href='/registered-body/enhanced/workforce-select'>
+                <button class="govuk-button" type="button" data-module="govuk-button">Continue</button>
+            </a>
             {% endif %}
         </form>
     </div>

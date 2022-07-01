@@ -5,12 +5,37 @@ const RandExp = require('randexp');
 const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
+const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { invalidateCache, loadPageData } = require('./middleware/utilsMiddleware');
 
 const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
 const dashboardRouter = express.Router();
+
+const cms = {
+    generalContent: {
+        continue: "Continue",
+    }
+};
+
+registeredBodyRouter.post('/select-flow', (req, res) => {
+    const applicationType = req.session.data['what-application-type'];
+    res.redirect(
+        `${
+            applicationType === 'Volunteer' ? `volunteer-declaration` : applicationType === 'New employee' ? 'applicant-name' : 'existing-post-holder'
+        }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
+    );
+});
+
+registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+   res.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
+
+});
+
+registeredBodyRouter.post('/enhanced/workforce-select',invalidateCache, validateWorkforceSelect);
 
 // Add your routes here - above the module.exports line
 
@@ -180,14 +205,6 @@ citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
 
 citizenRouter.post('/national-insurance-number',invalidateCache, validateNationalInsurance);
 
-registeredBodyRouter.post('/select-flow', (req, res) => {
-    const applicationType = req.session.data['what-application-type'];
-    res.redirect(
-        `${
-            applicationType === 'Volunteer' ? `volunteer-declaration` : applicationType === 'New employee' ? 'applicant-name' : 'existing-post-holder'
-        }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
-    );
-});
 
 citizenRouter.post('/old-or-new', (req, res) => {
     if (req.session.data['existing-app'] === 'new') {
