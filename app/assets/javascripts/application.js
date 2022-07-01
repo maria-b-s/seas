@@ -319,7 +319,7 @@ $('.lookup').on('click', function() {
             var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
             Array.from(Array(10))
                 .map(function() { return (getRandomArbitrary(3, 50) + " " + street); })
-                .forEach(function(el) { select.append('<option value="${el}">' + el + '</option>') });
+                .forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
             $('.hidden-details-city').val(res.result.admin_county);
             $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');
