@@ -321,9 +321,14 @@ $('.lookup').on('click', function() {
             select.empty();
             err.css('display', 'none');
             var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
-            Array.from(Array(10))
-                .map(function() { return (getRandomArbitrary(3, 50) + " " + street); })
-                .forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
+            
+            var container = [];
+
+            for (var i = 0; i <= 10; i++) {
+                container.push(getRandomArbitrary(3, 50) + " " + street);
+            }
+
+            container.forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
             $('.hidden-details-city').val(res.result.admin_county);
             $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');
