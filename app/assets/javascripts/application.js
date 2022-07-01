@@ -298,7 +298,11 @@ var getRandomArbitrary = function(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
-// The postcode look up fetch should happen in the Node js middleware not here !
+// George C. notes
+// I have refactored the callbacks below because this code was erroring in IE11
+// I do not agree with this implementation and I would regard it as bad practice 
+// the fetch for addresses should not exist and this logic should have been handled in the NodeJs middleware
+// not in the browser based javascript files
 $('.lookup').on('click', function() {
     var postcode = $('#postcode-lookup');
     var err = $('.error-msg');
@@ -335,6 +339,13 @@ var changeContinueBtn = function(btnId, value, inputName) {
         btn.text('Check Answers');
     }
 };
+
+
+// George C. notes
+// I have refactored the callbacks below because this code was erroring in IE11
+// I do not agree with this implementation and I would regard it as bad practice 
+// changeContinueBtn function should not exist and this logic should have been handled in the NodeJs middleware
+// not in the browser based javascript files
 
 $('[name="what-dbs-check"]').on('click', function(){
     changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check')
