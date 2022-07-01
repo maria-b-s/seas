@@ -254,11 +254,9 @@ $(window).on('load', function() {
 countryInput.keyup(function(e) {
     countryDropdown.css('display', 'block');
     var value = e.currentTarget.value;
-    populateDropdown(
-        countryArray.filter(function(country) {
-            return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
-        }),
-    );
+    populateDropdown(countryArray.filter(function(country) {
+        return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
+    }));
 });
 
 $(document).on('click', '.country-option', function(e) {
