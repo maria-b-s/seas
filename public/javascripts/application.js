@@ -10,16 +10,16 @@ $(document).ready(function(){
 });
 
 $('[name="changed-name"]').click(function(e) {
-    const radio = $('.add-another-name');
+    var radio = $('.add-another-name');
     if (e.currentTarget.value === 'yes') {
         return radio.show().attr('aria-hidden', 'false');
     }
     return radio.hide().attr('aria-hidden', 'true');
 });
 
-const anotherNameRadio = $('.add-another-name');
+var anotherNameRadio = $('.add-another-name');
 
-const orgSetup = function() {
+var orgSetup = function() {
     if ($('input[name="whos-check"]:checked').val() === 'another-org') return anotherNameRadio.show();
     return anotherNameRadio.hide();
 };
@@ -40,7 +40,7 @@ $('.delete-name').click(function(e) { // I had to refactor arrow functions to no
     .catch(function (err) {console.log(err)});
 });
 
-const countryArray = [
+var countryArray = [
     'Afghanistan',
     'Albania',
     'Algeria',
@@ -238,10 +238,10 @@ const countryArray = [
     'Zambia',
     'Zimbabwe',
 ];
-const countryDropdown = $('.country-dropdown');
-const countryInput = $('.country-input');
+var countryDropdown = $('.country-dropdown');
+var countryInput = $('.country-input');
 
-const populateDropdown = function(list) {
+var populateDropdown = function(list) {
     countryDropdown.empty();
     list.forEach(function(c) { countryDropdown.append('<h4 class="country-option">' + c + '</h4>') });
 };
@@ -253,7 +253,7 @@ $(window).on('load', function() {
 
 countryInput.keyup(function(e) {
     countryDropdown.css('display', 'block');
-    const { value } = e.currentTarget;
+    var value = e.currentTarget.value;
     populateDropdown(
         countryArray.filter(function(country) {
             return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
@@ -296,18 +296,18 @@ $(window).on('resize', function() {
     // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here, I had to comment out
 });
 
-const getRandomArbitrary = function(min, max) {
+var getRandomArbitrary = function(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
 // The postcode look up fetch should happen in the Node js middleware not here !
 $('.lookup').on('click', function() {
-    const postcode = $('#postcode-lookup');
-    const err = $('.error-msg');
-    const select = $('.postcode-select');
+    var postcode = $('#postcode-lookup');
+    var err = $('.error-msg');
+    var select = $('.postcode-select');
     if (!postcode) return;
-    const firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
-    const secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
+    var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
+    var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
     fetch("https://api.postcodes.io/postcodes/" + postcode.val())
         .then(function(response) { return response.json(); })
         .then(function(res) {
@@ -318,7 +318,7 @@ $('.lookup').on('click', function() {
             select.prop('disabled', false);
             select.empty();
             err.css('display', 'none');
-            const street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
+            var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
             Array.from(Array(10))
                 .map(function() { return (getRandomArbitrary(3, 50) + " " + street); })
                 .forEach(function(el) { select.append('<option value="${el}">' + el + '</option>') });
@@ -329,8 +329,8 @@ $('.lookup').on('click', function() {
 });
 
 /* dbs-check-level */
-const changeContinueBtn = function(btnId, value, inputName) {
-    const btn = $("#" + btnId);
+var changeContinueBtn = function(btnId, value, inputName) {
+    var btn = $("#" + btnId);
     if ($('input[name="' + inputName + '"]:checked').val() === value) {
         btn.text('Continue');
     } else {
