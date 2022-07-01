@@ -24,7 +24,6 @@ function validateWorkforceSelect(req, res){
     res.redirect('/registered-body/position');
   }
 
-};
-
+}
 
 exports.validateWorkforceSelect = validateWorkforceSelect;
