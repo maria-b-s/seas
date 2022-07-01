@@ -16,7 +16,7 @@ function trimDataValuesAndRemoveSpaces(data) {
 }
 
 function invalidateCache(req,res,next) {
-  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Cache-Control', 'no-cache, no-store, must-revalidate,  proxy-revalidate');
   res.header('Expires', '-1');
   res.header('Pragma', 'no-cache');
   next();
