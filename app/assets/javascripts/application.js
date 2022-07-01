@@ -243,26 +243,11 @@ const countryInput = $('.country-input');
 
 const populateDropdown = function(list) {
     countryDropdown.empty();
-    list.forEach(function(c) { countryDropdown.append(`<h4 class="country-option">${c}</h4>`) });
+    list.forEach(function(c) { countryDropdown.append('<h4 class="country-option">' + c + '</h4>') });
 };
 
-// const details = $('.details');
-// const landingSetup = () => {
-//     if ($('.landing-table')) {
-//         if (window.innerWidth < 800) {
-//             details.css('display', 'table-cell');
-//             ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'none'));
-//         } else {
-//             details.css('display', 'none');
-//             ['status', 'type', 'mod-date', 'status-cell', 'type-cell', 'mod-date-cell'].forEach(item => $(`.${item}`).css('display', 'table-cell'));
-//         }
-//     }
-// };
-
-// I am not sure why the code commented above has been left in the file
 
 $(window).on('load', function() {
-    // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here
     populateDropdown(countryArray);
 });
 
@@ -333,10 +318,10 @@ $('.lookup').on('click', function() {
             select.prop('disabled', false);
             select.empty();
             err.css('display', 'none');
-            const street = `${firstStreetBit[getRandomArbitrary(0, 6)]} ${secondStreetBit[getRandomArbitrary(0, 4)]}`;
+            const street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
             Array.from(Array(10))
-                .map(function() {return `${getRandomArbitrary(3, 50)} ${street}` })
-                .forEach(function(el) { select.append(`<option value="${el}">${el}</option>`) });
+                .map(function() { return (getRandomArbitrary(3, 50) + " " + street); })
+                .forEach(function(el) { select.append('<option value="${el}">' + el + '</option>') });
             $('.hidden-details-city').val(res.result.admin_county);
             $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');
@@ -345,8 +330,8 @@ $('.lookup').on('click', function() {
 
 /* dbs-check-level */
 const changeContinueBtn = function(btnId, value, inputName) {
-    const btn = $(`#${btnId}`);
-    if ($(`input[name="${inputName}"]:checked`).val() === value) {
+    const btn = $("#" + btnId);
+    if ($('input[name="' + inputName + '"]:checked').val() === value) {
         btn.text('Continue');
     } else {
         btn.text('Check Answers');
