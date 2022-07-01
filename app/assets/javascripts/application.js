@@ -323,7 +323,7 @@ $('.lookup').on('click', function() {
     if (!postcode) return;
     const firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
     const secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
-    fetch(`https://api.postcodes.io/postcodes/${postcode.val()}`)
+    fetch("https://api.postcodes.io/postcodes/" + postcode.val())
         .then(function(response) { return response.json(); })
         .then(function(res) {
             if (res.status !== 200) {
