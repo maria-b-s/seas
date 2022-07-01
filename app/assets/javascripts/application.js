@@ -31,13 +31,13 @@ const orgSetup = function() {
 $('.delete-name').click(function(e) { // I had to refactor arrow functions to normal function declaration
     // I don't understand why the previous developer has decided to use the fetch api in this case
     // The business logic should happen inside the Node.js middleware 
-    fetch(`/citizen-application/delete-name?index=${parseInt(e.currentTarget.id, 10)}`, {
+    fetch("/citizen-application/delete-name?index=" + String(parseInt(e.currentTarget.id, 10)), {
         method: 'post',
     })
-        .then(function(){
-            window.location.reload()
-        })
-        .catch(function (err) {console.log(err)});
+    .then(function(){
+        window.location.reload()
+    })
+    .catch(function (err) {console.log(err)});
 });
 
 const countryArray = [
