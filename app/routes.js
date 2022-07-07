@@ -278,15 +278,13 @@ dashboardRouter.post('/login', (req,res, _next) => {
 });
 
 
-dashboardRouter.get('/email-otp', (req,res, _next) => {
-
-    const inputCache = loadPageData(req);
+dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
 
     const emailValue = req.query?.email || 'testingvalue@email.com';
-    res.render('dashboard/email-otp', { cache: inputCache, data:  { email: emailValue },  validation: null });
+    res.render('dashboard/email-otp', { cache: null, data:  { email: emailValue },  validation: null });
 });
 
-dashboardRouter.post('/email-otp', (req,res, _next) => {
+dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
     savePageData(req, req.body);
 
     const emailValue = req.query?.email || 'testingvalue@email.com';
