@@ -7,6 +7,7 @@ const { validateNationalInsurance } = require('./middleware/validateNationalInsu
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
+const { result } = require('lodash');
 
 const router = express.Router();
 const citizenRouter = express.Router(); 
@@ -276,17 +277,46 @@ dashboardRouter.post('/login', (req,res, _next) => {
 
 });
 
+
+const obstructEmail = (value) => {
+
+    let resultString = '';
+
+    let temp = value.split('@');
+
+    for (let i = 0; i < temp[0].length; i++) {
+        if ( i < 4) {
+            resultString += '*';
+        } else {
+            resultString += temp[0][i];
+        }
+    }
+
+    resultString += '@';
+
+    for (let i = 0; i < temp[1].length; i++) {
+        if ( i < 4) {
+            resultString += '*';
+        } else {
+            resultString += temp[1][i];
+        }
+    }
+
+    return resultString;
+}
+
 dashboardRouter.get('/email-otp', (req,res, _next) => {
 
     const inputCache = loadPageData(req);
 
-    const emailValue = req.query?.email || 'testingvalue@email.com';
+    const emailValue = obstructEmail(req.query?.email || 'testingvalue@email.com');
     res.render('dashboard/email-otp', { cache: inputCache, data:  { email: emailValue },  validation: null });
 });
 
 dashboardRouter.post('/email-otp', (req,res, _next) => {
     savePageData(req, req.body);
-    const emailValue = req.query?.email || 'testingvalue@email.com';
+
+    const emailValue = obstructEmail(req.query?.email || 'testingvalue@email.com');
     const inputCache = loadPageData(req);
 
     if (!req.body['otp-code']) {
