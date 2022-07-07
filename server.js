@@ -88,6 +88,35 @@ nunjucksConfig.express = app;
 
 const nunjucksAppEnv = nunjucks.configure(appViews, nunjucksConfig);
 
+const obstructEmail = (value) => {
+
+    let resultString = '';
+
+    let temp = value.split('@');
+
+    for (let i = 0; i < temp[0].length; i++) {
+        if ( i < 4) {
+            resultString += '*';
+        } else {
+            resultString += temp[0][i];
+        }
+    }
+
+    resultString += '@';
+
+    for (let i = 0; i < temp[1].length; i++) {
+        if ( i < 4) {
+            resultString += '*';
+        } else {
+            resultString += temp[1][i];
+        }
+    }
+
+    return resultString;
+}
+
+nunjucksAppEnv.addFilter('obstructEmail', obstructEmail);
+
 // Add Nunjucks filters
 utils.addNunjucksFilters(nunjucksAppEnv);
 

@@ -37,7 +37,7 @@
 
         <h1 class="govuk-heading-l">Check your email</h1> 
 
-        <p class='govuk-body'> Enter the 6 digit security code we sent to {{ data.email }}  </p>
+        <p class='govuk-body'> Enter the 6 digit security code we sent to {{ data.email | obstructEmail }}  </p>
 
         <div class="govuk-inset-text">
           This security code will expire in 10 minutes
