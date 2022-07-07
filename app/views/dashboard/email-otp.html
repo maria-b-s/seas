@@ -1,0 +1,48 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check
+{%endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="/dashboard/login?render-login-as={{query['render-login-as']}}">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Check your email</h1> 
+
+        <p class='govuk-body'> Enter the 6 digit security code we sent to {{ data.email }}  </p>
+
+        <div class="govuk-inset-text">
+          This security code will expire in 10 minutes
+        </div>
+
+        <form class="form" action="home" method="post">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="account-number"> Enter security code </label>
+                <input
+                    class="govuk-input govuk-input--width-10"
+                    id="otp-code"
+                    name="otp-code"
+                    type="text"
+                    spellcheck="false"
+                    aria-describedby="account-number-hint"
+                    inputmode="text"
+                />
+            </div>
+
+            <div class="govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+              <p class='govuk-body govuk-!-margin-bottom-1'> Didn't receive your security code, or the security code has expired? </p>
+              <p class='govuk-body' ><a class='govuk-link' href='#'> Resend security code </a> </p>
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

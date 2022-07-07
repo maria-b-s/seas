@@ -9,7 +9,7 @@ const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelec
 const { invalidateCache, loadPageData } = require('./middleware/utilsMiddleware');
 
 const router = express.Router();
-const citizenRouter = express.Router();
+const citizenRouter = express.Router(); 
 const registeredBodyRouter = express.Router();
 const dashboardRouter = express.Router();
 
@@ -249,6 +249,46 @@ dashboardRouter.get('*', (req, res, next) => {
         };
     });
     return next();
+});
+
+// This is a workaround to be able to redirect to the page required in SEAS-429, the development for "index" route was missing
+// This is tech debt and should be implemented correctly
+dashboardRouter.post('/index', (req,res, _next) => {
+    if (req.body['login-method']) {
+        res.redirect('/dashboard/login?render-login-as=' + req.body['login-method']);
+    } else {
+        res.redirect('/dashboard/index');
+    }
+});
+
+
+// This is a workaround to be able to redirect to the page required in SEAS-429, the development for "login" route was missing
+// This is tech debt and should be implemented correctly
+dashboardRouter.post('/login', (req,res, _next) => {
+    const emailValue = req.body?.email || 'testingvalue@email.com';
+    if (req.query['render-login-as'] === 'kba-login' || req.query['render-login-as'] === 'email-password-login') {
+        res.redirect('/dashboard/email-otp?email=' + emailValue + '&render-login-as=' + req.query['render-login-as']);
+    } else if (req.query['render-login-as'] === 'email-2fa-login') {
+        res.redirect('/dashboard/opt-verify');
+    } else {
+        res.redirect('/dashboard/home');
+    }
+
+});
+
+dashboardRouter.get('/email-otp', (req,res, _next) => {
+    const emailValue = req.query?.email || 'testingvalue@email.com';
+    res.render('dashboard/email-otp', { data:  { email: emailValue },  validation: null });
+});
+
+dashboardRouter.post('/email-otp', (req,res, _next) => {
+    console.log('body:', req.body, 'query:', req.query);
+    const emailValue = req.query?.email || 'testingvalue@email.com';
+    if (!req.body['otp-code']) {
+        res.render('dashboard/email-otp', { email: emailValue, cache: { 'otp-code': req.body['otp-code'] },  validation: { 'otp-code': 'Enter OTP code' }});
+    } else {
+        res.redirect('/dashboard/home');
+    }
 });
 
 dashboardRouter.get('/details', (req, res) => {
