@@ -64,7 +64,7 @@
                                 />
                                 <label class="govuk-label govuk-radios__label" for="contact"> Yes </label>
                             </div>
-                            
+
                             <div class="govuk-radios__conditional" id="conditional-contact">
                                 <div class="govuk-form-group {% if validation['referred-nino-input'] %}govuk-form-group--error{% endif %}">
                                     <label class="govuk-label" for="national-insurance-number"> UK National Insurance number </label>
@@ -73,16 +73,16 @@
                                             <span class="govuk-visually-hidden">Error:</span> {{ validation['referred-nino-input'] }}
                                         </span>
                                     {% endif %}
-                                    <div id="nino-hint" class="govuk-hint">A National Insurance number is made up of 2 letters, 6 numbers and 1 letter, which is always A, B, C, or D. For example, QQ 12 34 56 C. It can be found on their National Insurance card, benefit letter, payslip, or P60.</div>
-                                    <input 
+                                    <div id="nino-hint" class="govuk-hint">For example, QQ123456C</div>
+                                    <input
                                         spellcheck="false"
-                                        class="govuk-input govuk-input--width-20  {% if validation['referred-nino-input'] %}govuk-input--error{% endif %}" 
-                                        name="referred-nino-input" 
-                                        type="text" id="referred-nino-input" 
+                                        class="govuk-input govuk-input--width-20  {% if validation['referred-nino-input'] %}govuk-input--error{% endif %}"
+                                        name="referred-nino-input"
+                                        type="text" id="referred-nino-input"
                                         autocomplete="on"
                                         id="referred-nino-input"
                                         value="{{cache['referred-nino-input']}}"
-                                    />  
+                                    />
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
