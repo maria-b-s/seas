@@ -6,7 +6,7 @@ const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
-const { invalidateCache, loadPageData } = require('./middleware/utilsMiddleware');
+const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 
 const router = express.Router();
 const citizenRouter = express.Router(); 
@@ -277,15 +277,20 @@ dashboardRouter.post('/login', (req,res, _next) => {
 });
 
 dashboardRouter.get('/email-otp', (req,res, _next) => {
+
+    const inputCache = loadPageData(req);
+
     const emailValue = req.query?.email || 'testingvalue@email.com';
-    res.render('dashboard/email-otp', { data:  { email: emailValue },  validation: null });
+    res.render('dashboard/email-otp', { cache: inputCache, data:  { email: emailValue },  validation: null });
 });
 
 dashboardRouter.post('/email-otp', (req,res, _next) => {
-    console.log('body:', req.body, 'query:', req.query);
+    savePageData(req, req.body);
     const emailValue = req.query?.email || 'testingvalue@email.com';
+    const inputCache = loadPageData(req);
+
     if (!req.body['otp-code']) {
-        res.render('dashboard/email-otp', { email: emailValue, cache: { 'otp-code': req.body['otp-code'] },  validation: { 'otp-code': 'Enter OTP code' }});
+        res.render('dashboard/email-otp', { email: emailValue, cache: inputCache,  validation: { 'otp-code': 'Enter security code' }});
     } else {
         res.redirect('/dashboard/home');
     }
