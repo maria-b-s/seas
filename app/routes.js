@@ -200,7 +200,6 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
 
     const inputCache = loadPageData(req);
-    console.log('what','asdasda', inputCache);
    res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
 });
 
@@ -226,9 +225,37 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
     if (data['radio-group-alias-input'] === false) {
         res.redirect('/citizen-application/date-of-birth');
     } else if (data['radio-group-alias-input'] === true) {
-        res.redirect('/wipt');
+        res.redirect('/citizen-application/previous-names-form');
     }
 
+});
+
+citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
+
+    const inputCache = loadPageData(req);
+   res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
+});
+
+citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    console.log(req.session.data.prevNames);
+
+    if (!req.session.data.prevNames) {
+        req.session.data.prevNames = [];
+    }
+
+    const newSet = [...req.session.data.prevNames].push(inputCache);
+    req.session.data.prevNames = newSet;
+   res.render('citizen-application/previous-names-list', { cache: inputCache, validation: null });
+});
+
+citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
+
+    const inputCache = loadPageData(req);
+    console.log('prev list', req.session.data.prevNames);
+
+   res.render('citizen-application/previous-names-list', { cache: inputCache, validation: null });
 });
 
 citizenRouter.get('/sex',invalidateCache, (req, res) => {

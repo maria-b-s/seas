@@ -1,0 +1,101 @@
+{% import "../macros/form-elements.njk" as fe %}
+{% import "../macros/question-info.njk" as ql %}
+{% from "../macros/checkboxes/macro.njk" import govukCheckboxes %}
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% extends "layout.html" %}
+{% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%}
+{% block beforeContent %}
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+  </div>
+  <a class="govuk-back-link" href="/citizen-application/previous-names-form">Back</a>
+{% endblock %}
+
+{% block content %}
+
+  {% if validation|length %}
+
+    {% set errorList = [] %}
+
+    {% for key, value in validation %}
+      {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
+    {% endfor %}
+
+    {{ es.govukErrorSummary({
+      "titleText": cms.generalContent.problem,
+      "errorList": errorList 
+      }) 
+    }}
+  {% endif %}
+
+  {{ fe.medium_heading(heading="List of previous names") }}
+
+    <div class="govuk-body govuk-!-margin-top-6">
+
+      {% if list.length === 0 %}
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span  id='warning' class="govuk-warning-text__assistive"> Warning </span>
+            <span  id='warning-text' >List is empty </span>
+          </strong>
+        </div>
+      {% endif %}
+
+      <dl class="govuk-summary-list {% if list.length > 0 %} govuk-!-margin-bottom-9 {% endif %}">
+
+        {% for item in list %}
+            <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              <p class='govuk-body govuk-!-font-weight-bold govuk-!-margin-0' > {{ loop.index + ". " + item.first_name + " " + item.middle_names + " " + item.last_name }} </p>
+              <p class='govuk-body govuk-!-margin-0 govuk-!-margin-top-1'>
+                {{ sectionContent.fromDate + ": " + item.used_from | date  }} 
+              </p>
+              <p class='govuk-body govuk-!-margin-0 govuk-!-margin-top-1'>
+                {{ sectionContent.toDate + ": "  + item.used_to | date }} 
+              </p>
+            </dt>
+            <dd class="govuk-summary-list__actions engagement-list-actions">
+              <a class="govuk-link engagement-list-actions__child" href="/referred-person/previous-names-form?edit={{ loop.index }}{% if withChange %}&change=true{% endif %}">
+                {{ cms.generalContent.change }} <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
+              </a>
+              <a class="govuk-link engagement-list-actions__child" href="/referred-person/previous-names-list?item={{ loop.index }}{% if withChange %}&change=true{% endif %}">
+                {{ cms.generalContent.remove }} <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
+              </a>
+            </dd>
+          </div>
+        {% endfor %}
+
+      </dl>
+
+      <form action="" method="post" class="form">
+        <div class="govuk-form-group govuk-!-margin-bottom-4 {% if validation['radio-group-previous-names-input'] %}govuk-form-group--error{% endif %}">
+
+          {{ fe.radio_buttons(
+            questionText="Do you need to add another previous name?",
+            helpText=false,
+            h1Text=false,
+            value='',
+            error=true,
+            errorMessages=[validation['radio-group-previous-names-input']],
+            horizontal=true,
+            items=[
+              {group: 'previous-names-input',  answerOption: "1", value: "1",  label: "Yes", dataTarget: 'save-and-continue' },
+              {group: 'previous-names-input',  answerOption: "0", value: "0",  label: "No", dataTarget: 'save-and-continue' }
+            ]) 
+          }}
+
+        </div>
+
+          <button style="margin-top: 60px;" class="govuk-button" data-module="govuk-button">Continue</button>
+      </form>
+    </div>
+
+
+{% endblock %}
