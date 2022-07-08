@@ -185,6 +185,24 @@ citizenRouter.post('/where-certificate', (req, res) => {
 
 // Start to declare proper routing
 
+citizenRouter.get('/current-full-name-v2', invalidateCache, (req, res) => {
+   res.render('citizen-application/current-full-name-v2', { cache: req.session.data.fullName, validation: null });
+
+});
+
+citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => {
+    if (req.body['full-name']) {
+        req.session.data.fullName = req.body['full-name'];
+    }
+    res.redirect('/citizen-application/previous-names-q');
+});
+
+citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
+    console.log(req.session.data.fullName);
+   res.render('citizen-application/previous-names-q', { cache: null, validation: null });
+
+});
+
 citizenRouter.get('/sex',invalidateCache, (req, res) => {
     let prevValues = null;
 
