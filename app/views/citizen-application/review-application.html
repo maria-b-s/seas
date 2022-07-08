@@ -31,9 +31,9 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous Names</th>
                     <td class="govuk-table__cell">
+                        {% if not data['prevNames'] or data['prevNames'].length === 0 %} None Entered {% endif %}
                         {% for item in data['prevNames'] %}
-                        {% if not data['prevNames']%} None Entered {% endif %}
-                        {{[ item.first_name | capitalize, ' ' ,item.middle_names, ' ' , item.last_name | capitalize] | join }} <br />
+                            {{[ item.first_name | capitalize, ' ' ,item.middle_names, ' ' , item.last_name | capitalize] | join }} <br />
                         {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
