@@ -248,8 +248,6 @@ citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
         if (state && state.length > 0) {
           const seedingItem = state[Number(req.query.edit) - 1];
 
-            console.log(seedingItem, 'what is');  
-
           const seedingObject = {
             'full-name-middle-names': seedingItem.middle_names,
             'full-name-first-name': seedingItem.first_name,
@@ -339,7 +337,9 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
 
     const item = mapInput(inputCache);
 
-    if (item['first_name'] !== 'Not entered') {
+    if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
+        collection[Number(req.query.edit) - 1] = item;
+      } else if (item['first_name'] !== 'Not entered') {
         collection.push(item);
     }
 
