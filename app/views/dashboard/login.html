@@ -18,7 +18,7 @@
                 <fieldset class="govuk-fieldset">
                     {% if  query["render-login-as"] === 'kba-login' %}
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Enter your details.</h1>
+                        <h1 class="govuk-fieldset__heading">Enter your details</h1>
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-form-group">
@@ -26,12 +26,37 @@
                             <input class="govuk-input govuk-input--width-10" id="csig-num" name="registered-body-nr" type="text" />
                         </div>
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="rb-num"> Counter Signatory Number </label>
+                            <label class="govuk-label" for="rb-num"> Countersignatory number </label>
                             <input class="govuk-input govuk-input--width-10" id="rb-num" name="counter-signatory-nr" type="text" />
                         </div>
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="rb-num">Date of birth</label>
-                            <input class="govuk-input govuk-input--width-10" id="dob-login" name="date-of-birth" type="text" />
+                            <label class="govuk-label" style='font-weight: bold;' for="rb-num">What is your date of birth?</label>
+                            <div id="sign-in-item-hint" class="govuk-hint govuk-hint"> For example, 12 3 1980 </div>
+                                {{ govukDateInput({
+                                    errorMessages: validationErrorMessages,
+                                    id: "dob-input",
+                                    namePrefix: "dob-input",
+                                    items: [
+                                      {
+                                        classes: classesDD or "govuk-input--width-2 ",
+                                        name: "DD",
+                                        label: "Day",
+                                        value: pageData['dob-input-DD']
+                                      },
+                                      {
+                                        classes: classesMM or "govuk-input--width-2 ",
+                                        name: "MM",
+                                        label: "Month",
+                                        value: pageData['dob-input-MM']
+                                      },
+                                      {
+                                        classes: classesYY or "govuk-input--width-4 ",
+                                        name: "YYYY",
+                                        label: "Year",
+                                        value: pageData['dob-input-YYYY']
+                                      }
+                                    ]})
+                                }}
                         </div>
                     </div>
                     {% elif query["render-login-as"] === 'email-google-login' %}
@@ -60,12 +85,16 @@
                     </div>
                     {% elif query["render-login-as"] === 'email-password-login' %}
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Enter your details.</h1>
+                        <h1 class="govuk-fieldset__heading">Enter your details</h1>
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="csig-num"> Email </label>
-                            <input class="govuk-input govuk-input--width-10" id="email" name="email" type="email" />
+                            <label class="govuk-label" for="csig-num"> Registered body number </label>
+                            <input class="govuk-input govuk-input--width-10" id="csig-num" name="registered-body-nr" type="text" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="rb-num"> Countersignatory number </label>
+                            <input class="govuk-input govuk-input--width-10" id="rb-num" name="counter-signatory-nr" type="text" />
                         </div>
                         <div class="govuk-form-group">
                             <label class="govuk-label" for="rb-num"> Password </label>
@@ -76,7 +105,7 @@
                 </fieldset>
             </div>
 
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            <button style="margin-top: 20px;" class="govuk-button" data-module="govuk-button">Continue</button>
         </form>
     </div>
 </div>

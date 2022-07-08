@@ -22,9 +22,9 @@
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="kba-login" name="login-method" type="radio" value="kba-login" />
-                            <label class="govuk-label govuk-radios__label" for="kba-login"> Key based access </label>
+                            <label class="govuk-label govuk-radios__label" for="kba-login"> Knowledge based </label>
                             <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
-                              We'll ask for your Registered Body number, countersignatory number and date of birth
+                                We’ll ask for your Registered Body number, countersignatory number and date of birth. We’ll then send a security code to the email address we have registered to your countersignatory number.
                             </div>
                         </div>
                         {# <div class="govuk-radios__item">
@@ -43,9 +43,9 @@
                         </div> #}
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="sign-in-item-email-password" name="login-method" type="radio" value="email-password-login" />
-                            <label class="govuk-label govuk-radios__label" for="sign-in-item-email-password"> Email and password </label>
-                            <div id="sign-in-item-hint-email-password" class="govuk-hint govuk-radios__hint">
-                              We'll ask for your email and password
+                            <label class="govuk-label govuk-radios__label" for="sign-in-item-email-password"> Password </label>
+                            <div id="sign-in-item-hint-email-password" class="govuk-hint govuk-radios__hint">	
+                                The first time you log in we’ll ask for your date of birth and you’ll set up a password. The next time you log in we’ll just ask for your Registered Body number, countersignatory number and password. We’ll then send a security code to the email address we have registered to your countersignatory number.
                             </div>
                         </div>
                     </div>
