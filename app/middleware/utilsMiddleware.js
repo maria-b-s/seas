@@ -24,21 +24,29 @@ function invalidateCache(req,res,next) {
 
 function savePageData(req, data, withCache = false) {
   const urlOfPage = req.originalUrl.split('?')[0];
-  
+
+  if (!req.session.cache) {
+    req.session.cache = {};
+  }
+
   if (Object.keys(data).length > 0) {
     let dataPayload = { ...data };
 
-    if (withCache && req.session[urlOfPage]) {
-      dataPayload = { ...req.session[urlOfPage], ...dataPayload };
+    if (withCache && req.session.cache[urlOfPage]) {
+      dataPayload = { ...req.session.cache[urlOfPage], ...dataPayload };
     }
 
-    req.session[urlOfPage] = dataPayload;
+    req.session.cache[urlOfPage] = dataPayload;
   }
 }
 
 function loadPageData(req) {
   const urlOfPage = req.originalUrl.split('?')[0];
-  return req.session[urlOfPage];
+
+  if (req.session.cache) {
+    return req.session.cache[urlOfPage];
+  } 
+  return null;
 }
 
 exports.trimDataValuesAndRemoveSpaces = trimDataValuesAndRemoveSpaces;

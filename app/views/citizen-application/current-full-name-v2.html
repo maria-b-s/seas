@@ -1,0 +1,69 @@
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="/citizen-application/otp-verify">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form full-name-form" action="" method="post">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">What is your current full name?</h1>
+                </legend>
+              <div  id="full-name-hint" class="govuk-hint">You must tell us your full name, including any middle names.</div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="full-name-first-name"> First name </label>
+                    <input
+                        class="govuk-input govuk-input--width-20"
+                        id="full-name-first-name"
+                        name="full-name"
+                        type="text"
+                        spellcheck="false"
+                        autocomplete="given-name"
+                        value='{{cache[0]}}'
+                    />
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="full-name-middle-names"> Middle names </label>
+                    <input
+                        class="govuk-input govuk-input--width-20"
+                        id="full-name-middle-names"
+                        name="full-name"
+                        type="text"
+                        spellcheck="false"
+                        autocomplete="name"
+                        value='{{cache[1]}}'
+                    />
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="full-name-last-name"> Last name </label>
+                    <input
+                        class="govuk-input govuk-input--width-20"
+                        id="full-name-last-name"
+                        name="full-name"
+                        type="text"
+                        spellcheck="false"
+                        autocomplete="family-name"
+                        value='{{cache[2]}}'
+                    />
+                </div>
+            </fieldset>
+            <input value="Current" type="hidden" name="name-use-start" />
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const moment = require('moment');
 
 // NPM dependencies
 const bodyParser = require('body-parser');
@@ -116,6 +117,10 @@ const obstructEmail = (value) => {
 }
 
 nunjucksAppEnv.addFilter('obstructEmail', obstructEmail);
+
+const dateFilter = (para) => moment(para).format('DD/MM/YYYY');
+
+nunjucksAppEnv.addFilter('date', dateFilter);
 
 // Add Nunjucks filters
 utils.addNunjucksFilters(nunjucksAppEnv);
@@ -235,6 +240,7 @@ if (useAutoStoreData === 'true') {
 // Clear all data in session if you open /prototype-admin/clear-data
 app.post('/prototype-admin/clear-data', function (req, res) {
     req.session.data = {};
+    req.session.cache = {};
     res.render('prototype-admin/clear-data-success');
 });
 

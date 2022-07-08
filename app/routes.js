@@ -7,7 +7,7 @@ const { validateNationalInsurance } = require('./middleware/validateNationalInsu
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
-const { result } = require('lodash');
+const _ = require('lodash');
 
 const router = express.Router();
 const citizenRouter = express.Router(); 
@@ -184,6 +184,224 @@ citizenRouter.post('/where-certificate', (req, res) => {
 });
 
 // Start to declare proper routing
+
+citizenRouter.get('/current-full-name-v2', invalidateCache, (req, res) => {
+   res.render('citizen-application/current-full-name-v2', { cache: req.session.data.fullName, validation: null });
+
+});
+
+citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => {
+    if (req.body['full-name']) {
+        req.session.data.fullName = req.body['full-name'];
+    }
+    res.redirect('/citizen-application/previous-names-q');
+});
+
+citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
+
+    const inputCache = loadPageData(req);
+   res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
+});
+
+citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
+
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    // To prevent mutability I am creating a new object "data" from the req.body
+    const data = { ...req.body };
+  
+    let validation = null;
+  
+    // Explicit coercion to boolean
+    if (data['radio-group-alias-input']) {
+      data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
+    } else {
+        validation = {};
+        validation['radio-group-alias-input'] = "Select whether you have been known by any other names";
+        res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
+    }
+   
+    if (data['radio-group-alias-input'] === false) {
+        if (req.session.data.prevNames) {
+            delete req.session.data.prevNames;
+        }
+        res.redirect('/citizen-application/date-of-birth');
+    } else if (data['radio-group-alias-input'] === true) {
+        
+        if (req.session.data?.prevNames?.length) {
+            res.redirect('/citizen-application/previous-names-list');
+        } else {
+            res.redirect('/citizen-application/previous-names-form');
+        }
+    }
+
+});
+
+citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
+
+    let inputCache = loadPageData(req);
+
+    if (req.query.edit && req.session) {
+        inputCache = {};
+        const state = req.session?.data?.prevNames || [];
+        if (state && state.length > 0) {
+          const seedingItem = state[Number(req.query.edit) - 1];
+
+          const seedingObject = {
+            'full-name-middle-names': seedingItem.middle_names,
+            'full-name-first-name': seedingItem.first_name,
+            'full-name-last-name': seedingItem.last_name,
+          };
+
+          if (seedingItem.first_name === 'Not entered') {
+            seedingObject['full-name-first-name'] = '';
+          }
+
+          if (seedingItem.used_from && seedingItem.used_from !== 'Not entered') {
+            const seedingItemDateFrom = seedingItem.used_from.split('/');
+            seedingObject['alias-from-MM'] = seedingItemDateFrom[0];
+            seedingObject['alias-from-YYYY'] = seedingItemDateFrom[1];
+          } else {
+            seedingObject['alias-from-MM'] = '';
+            seedingObject['alias-from-YYYY'] = '';
+          }
+
+          if (seedingItem.used_to && seedingItem.used_to !== 'Not entered' ) {
+            const seedingItemDateTo = seedingItem.used_to.split('/');
+            seedingObject['alias-to-MM'] = seedingItemDateTo[0];
+            seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
+            seedingObject['radio-group-alias-input'] = '1';
+          } else {
+            seedingObject['radio-group-alias-input'] = '0';
+            seedingObject['alias-to-MM'] = '';
+            seedingObject['alias-to-YYYY'] = '';
+          }
+
+          inputCache = seedingObject;
+        }
+      }
+
+   res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
+});
+
+let mapInput = (data) => {
+    const resultObj = {};
+
+    let notEntered = 'Not entered';
+
+    if (data['full-name-first-name']) {
+        resultObj.first_name = data['full-name-first-name'];
+    } else {
+        resultObj.first_name = notEntered;
+    }
+
+
+    if (data['full-name-middle-names']) {
+        resultObj.middle_names = data['full-name-middle-names'];
+    } else {
+        resultObj.middle_names = '';
+    }
+        
+
+    if (data['full-name-last-name']) {
+        resultObj.last_name = data['full-name-last-name'];
+    } else {
+        resultObj.last_name = '';
+    }
+
+    if (data['alias-from-MM'] && data['alias-from-YYYY']) {
+        resultObj.used_from = `${data['alias-from-MM'].padStart(2, '0')}/${data['alias-from-YYYY']}`;
+    } else {
+        resultObj.used_from = notEntered;
+    }
+
+    if (data['alias-to-MM'] && data['alias-to-YYYY']) {
+        resultObj.used_to = `${data['alias-to-MM'].padStart(2, '0')}/${data['alias-to-YYYY']}`;
+    }else {
+        resultObj.used_to = notEntered;
+    }
+
+    return resultObj;
+}
+
+citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    let collection = [];
+
+    if (req.session.data.prevNames) {
+        collection = req.session.data.prevNames;
+    }   
+
+    const item = mapInput(inputCache);
+
+    if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
+        collection[Number(req.query.edit) - 1] = item;
+      } else if (item['first_name'] !== 'Not entered') {
+        collection.push(item);
+    }
+
+    req.session.data.prevNames = collection;
+   res.redirect('/citizen-application/previous-names-list');
+});
+
+citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
+
+    const inputCache = loadPageData(req);
+
+    let prevNames = [];
+
+    if (req.session.data.prevNames) {
+        prevNames = req.session.data.prevNames;
+    }
+
+    if (req.query.item && Number.isInteger(Number(req.query.item)) && prevNames[Number(req.query.item) - 1]) {
+        _.pullAt(prevNames, [Number(req.query.item) - 1]);
+      }
+
+      req.session.data.prevNames = prevNames;
+
+   res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
+});
+
+citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => {
+
+    const data = { ...req.body };
+
+    let validation = null;
+
+    let prevNames = [];
+
+    if (req.session.data.prevNames) {
+        prevNames = req.session.data.prevNames;
+    }
+  
+    if (!data['radio-group-previous-names-input']) {
+        validation = { 'radio-group-previous-names-input': " Select if you want to add another previous name " };
+        res.render('citizen-application/previous-names-list', { list: prevNames, cache: null, validation: validation });
+    } else if (data['radio-group-previous-names-input']) {
+      data['radio-group-previous-names-input'] = Boolean(Number(data['radio-group-previous-names-input']));
+
+      const setNewValueNL = data['radio-group-previous-names-input'] === true;
+
+      if (req.session.cache && req.session.cache['/citizen-application/previous-names-form']) {
+        delete req.session.cache['/citizen-application/previous-names-form'];
+      }
+    
+
+      if (setNewValueNL) {
+      let redirectUrlNL = '/citizen-application/previous-names-form';
+      res.redirect(redirectUrlNL);
+        
+      } else if (setNewValueNL === false) {
+          res.redirect('/citizen-application/date-of-birth');
+      }
+    } 
+
+  });
+
 
 citizenRouter.get('/sex',invalidateCache, (req, res) => {
     let prevValues = null;
