@@ -35,6 +35,8 @@ endset%}
   {% endif %}
 
   {{ fe.medium_heading(heading="List of previous names") }}
+    <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
     <div class="govuk-body govuk-!-margin-top-6">
 
@@ -55,10 +57,10 @@ endset%}
             <dt class="govuk-summary-list__key">
               <p class='govuk-body govuk-!-font-weight-bold govuk-!-margin-0' > {{ loop.index + ". " + item.first_name + " " + item.middle_names + " " + item.last_name }} </p>
               <p class='govuk-body govuk-!-margin-0 govuk-!-margin-top-1'>
-                {{ sectionContent.fromDate + ": " + item.used_from | date  }} 
+                From: {{ item.used_from }} 
               </p>
               <p class='govuk-body govuk-!-margin-0 govuk-!-margin-top-1'>
-                {{ sectionContent.toDate + ": "  + item.used_to | date }} 
+                To: {{ item.used_to }} 
               </p>
             </dt>
             <dd class="govuk-summary-list__actions engagement-list-actions">
@@ -93,8 +95,10 @@ endset%}
 
         </div>
 
-          <button style="margin-top: 60px;" class="govuk-button" data-module="govuk-button">Continue</button>
+          <button style="margin-top: 20px;" class="govuk-button" data-module="govuk-button">Continue</button>
       </form>
+      </div>
+      </div>
     </div>
 
 

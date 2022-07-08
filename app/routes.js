@@ -236,26 +236,73 @@ citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
    res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
 });
 
+let mapInput = (data) => {
+    const resultObj = {};
+
+    let notEntered = 'Not entered';
+
+    if (data['full-name-first-name']) {
+        resultObj.first_name = data['full-name-first-name'];
+    } else {
+        resultObj.first_name = notEntered;
+    }
+
+
+    if (data['full-name-middle-names']) {
+        resultObj.middle_names = data['full-name-middle-names'];
+    } else {
+        resultObj.middle_names = notEntered;
+    }
+        
+
+    if (data['full-name-last-name']) {
+        resultObj.last_name = data['full-name-last-name'];
+    } else {
+        resultObj.last_name = notEntered;
+    }
+
+    if (data['alias-from-MM'] && data['alias-from-YYYY']) {
+        resultObj.used_from = `${data['alias-from-MM'].padStart(2, '0')}/${data['alias-from-YYYY']}`;
+    } else {
+        resultObj.used_from = notEntered;
+    }
+
+    if (data['alias-to-MM'] && data['alias-to-YYYY']) {
+        resultObj.used_to = `${data['alias-to-MM'].padStart(2, '0')}/${data['alias-to-YYYY']}`;
+    }else {
+        resultObj.used_to = notEntered;
+    }
+
+    return resultObj;
+}
+
 citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
-    console.log(req.session.data.prevNames);
 
-    if (!req.session.data.prevNames) {
-        req.session.data.prevNames = [];
-    }
+    let collection = [];
 
-    const newSet = [...req.session.data.prevNames].push(inputCache);
-    req.session.data.prevNames = newSet;
-   res.render('citizen-application/previous-names-list', { cache: inputCache, validation: null });
+    if (req.session.data.prevNames) {
+        collection = req.session.data.prevNames;
+    }   
+
+    collection.push(mapInput(inputCache));
+
+    req.session.data.prevNames = collection;
+   res.redirect('/citizen-application/previous-names-list');
 });
 
 citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
 
     const inputCache = loadPageData(req);
-    console.log('prev list', req.session.data.prevNames);
 
-   res.render('citizen-application/previous-names-list', { cache: inputCache, validation: null });
+    let prevNames = [];
+
+    if (req.session.data.prevNames) {
+        prevNames = req.session.data.prevNames;
+    }
+
+   res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
 });
 
 citizenRouter.get('/sex',invalidateCache, (req, res) => {
