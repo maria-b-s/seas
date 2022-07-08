@@ -223,9 +223,17 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
     }
    
     if (data['radio-group-alias-input'] === false) {
+        if (req.session.data.prevNames) {
+            delete req.session.data.prevNames;
+        }
         res.redirect('/citizen-application/date-of-birth');
     } else if (data['radio-group-alias-input'] === true) {
-        res.redirect('/citizen-application/previous-names-form');
+        
+        if (req.session.data?.prevNames?.length) {
+            res.redirect('/citizen-application/previous-names-list');
+        } else {
+            res.redirect('/citizen-application/previous-names-form');
+        }
     }
 
 });
@@ -251,14 +259,14 @@ let mapInput = (data) => {
     if (data['full-name-middle-names']) {
         resultObj.middle_names = data['full-name-middle-names'];
     } else {
-        resultObj.middle_names = notEntered;
+        resultObj.middle_names = '';
     }
         
 
     if (data['full-name-last-name']) {
         resultObj.last_name = data['full-name-last-name'];
     } else {
-        resultObj.last_name = notEntered;
+        resultObj.last_name = '';
     }
 
     if (data['alias-from-MM'] && data['alias-from-YYYY']) {
@@ -304,6 +312,43 @@ citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
 
    res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
 });
+
+citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => {
+
+    const data = { ...req.body };
+
+    let validation = null;
+
+    let prevNames = [];
+
+    if (req.session.data.prevNames) {
+        prevNames = req.session.data.prevNames;
+    }
+  
+    if (!data['radio-group-previous-names-input']) {
+        validation = { 'radio-group-previous-names-input': " Select if you want to add another previous name " };
+        res.render('citizen-application/previous-names-list', { list: prevNames, cache: null, validation: validation });
+    } else if (data['radio-group-previous-names-input']) {
+      data['radio-group-previous-names-input'] = Boolean(Number(data['radio-group-previous-names-input']));
+
+      const setNewValueNL = data['radio-group-previous-names-input'] === true;
+
+      if (req.session.cache && req.session.cache['/citizen-application/previous-names-form']) {
+        delete req.session.cache['/citizen-application/previous-names-form'];
+      }
+    
+
+      if (setNewValueNL) {
+      let redirectUrlNL = '/citizen-application/previous-names-form';
+      res.redirect(redirectUrlNL);
+        
+      } else if (setNewValueNL === false) {
+          res.redirect('/citizen-application/date-of-birth');
+      }
+    } 
+
+  });
+
 
 citizenRouter.get('/sex',invalidateCache, (req, res) => {
     let prevValues = null;

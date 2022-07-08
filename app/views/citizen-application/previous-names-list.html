@@ -19,24 +19,25 @@ endset%}
 
 {% block content %}
 
-  {% if validation|length %}
-
-    {% set errorList = [] %}
-
-    {% for key, value in validation %}
-      {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
-    {% endfor %}
-
-    {{ es.govukErrorSummary({
-      "titleText": cms.generalContent.problem,
-      "errorList": errorList 
-      }) 
-    }}
-  {% endif %}
-
-  {{ fe.medium_heading(heading="List of previous names") }}
     <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% if validation|length %}
+
+        {% set errorList = [] %}
+
+        {% for key, value in validation %}
+          {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
+        {% endfor %}
+
+        {{ es.govukErrorSummary({
+          "titleText": "There is a problem",
+          "errorList": errorList 
+          }) 
+        }}
+      {% endif %}
+
+    {{ fe.medium_heading(heading="List of previous names") }}
 
     <div class="govuk-body govuk-!-margin-top-6">
 
