@@ -12,8 +12,8 @@ $(document).ready(function(){
 
   var optionConditionalWrapper = $('#options-conditional');
   var optionConditionalWrapperAlt = $('#options-conditional-alt');
-  var radioOption = $('#radio-option-0');
-  var radioOptionTwo = $('#radio-option-1');
+  var radioOption = $('#radio-option-1');
+  var radioOptionTwo = $('#radio-option-0');
   var conditionalAddAnother = $('#conditional-add-another');
 
   const onRadioChange = function() {

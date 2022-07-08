@@ -31,12 +31,13 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous Names</th>
                     <td class="govuk-table__cell">
-                        {% for item in data['names'] %} {% if data['names'].length === 0 %} None {% endif %} {{[ data['names'][loop.index
-                        -1].firstName, ' ' ,data['names'][loop.index - 1].middleNames, ' ' , data['names'][loop.index - 1].lastName] | join }} <br />
+                        {% for item in data['prevNames'] %}
+                        {% if data['prevNames'].length === 0 %} None {% endif %}
+                        {{[ item.first_name | capitalize, ' ' ,item.middle_names, ' ' , item.last_name | capitalize] | join }} <br />
                         {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="other-names?change=true">
+                        <a href="/citizen-application/previous-names-q?change=true">
                             Change
                             <span class="govuk-visually-hidden">previous names</span>
                         </a>

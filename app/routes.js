@@ -199,6 +199,10 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
 
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
 
+    if (req.query.change) {
+        req.session.fromPrevNamesToReview = true;
+    }
+
     const inputCache = loadPageData(req);
    res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
 });
@@ -271,9 +275,9 @@ citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
             const seedingItemDateTo = seedingItem.used_to.split('/');
             seedingObject['alias-to-MM'] = seedingItemDateTo[0];
             seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
-            seedingObject['radio-group-alias-input'] = '1';
-          } else {
             seedingObject['radio-group-alias-input'] = '0';
+          } else {
+            seedingObject['radio-group-alias-input'] = '1';
             seedingObject['alias-to-MM'] = '';
             seedingObject['alias-to-YYYY'] = '';
           }
@@ -322,7 +326,7 @@ let mapInput = (data) => {
         resultObj.used_to = notEntered;
     }
 
-    if (data['radio-group-alias-input'] === '0') {
+    if (data['radio-group-alias-input'] === '1') {
         resultObj.used_to = notEntered;
     }
 
@@ -402,7 +406,13 @@ citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => 
       res.redirect(redirectUrlNL);
         
       } else if (setNewValueNL === false) {
-          res.redirect('/citizen-application/date-of-birth');
+
+        if (req.session.fromPrevNamesToReview) {
+            req.session.fromPrevNamesToReview = false;
+            res.redirect('/citizen-application/review-application');
+        } else {
+            res.redirect('/citizen-application/date-of-birth');
+        }
       }
     } 
 
