@@ -230,7 +230,13 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
         if (req.session.data.prevNames) {
             delete req.session.data.prevNames;
         }
-        res.redirect('/citizen-application/date-of-birth');
+        if (req.session.fromPrevNamesToReview) {
+            req.session.fromPrevNamesToReview = false;
+            res.redirect('/citizen-application/review-application');
+        } else {
+            res.redirect('/citizen-application/date-of-birth');
+        }
+
     } else if (data['radio-group-alias-input'] === true) {
         
         if (req.session.data?.prevNames?.length) {
