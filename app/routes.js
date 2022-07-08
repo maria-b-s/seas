@@ -256,10 +256,17 @@ citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
             'full-name-last-name': seedingItem.last_name,
           };
 
-          if (seedingItem.used_from) {
+          if (seedingItem.first_name === 'Not entered') {
+            seedingObject['full-name-first-name'] = '';
+          }
+
+          if (seedingItem.used_from && seedingItem.used_from !== 'Not entered') {
             const seedingItemDateFrom = seedingItem.used_from.split('/');
             seedingObject['alias-from-MM'] = seedingItemDateFrom[0];
             seedingObject['alias-from-YYYY'] = seedingItemDateFrom[1];
+          } else {
+            seedingObject['alias-from-MM'] = '';
+            seedingObject['alias-from-YYYY'] = '';
           }
 
           if (seedingItem.used_to && seedingItem.used_to !== 'Not entered' ) {
@@ -330,7 +337,11 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         collection = req.session.data.prevNames;
     }   
 
-    collection.push(mapInput(inputCache));
+    const item = mapInput(inputCache);
+
+    if (item['first_name'] !== 'Not entered') {
+        collection.push(item);
+    }
 
     req.session.data.prevNames = collection;
    res.redirect('/citizen-application/previous-names-list');
