@@ -198,8 +198,36 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
 });
 
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
-    console.log(req.session.data.fullName);
-   res.render('citizen-application/previous-names-q', { cache: null, validation: null });
+
+    const inputCache = loadPageData(req);
+    console.log('what','asdasda', inputCache);
+   res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
+});
+
+citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
+
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    // To prevent mutability I am creating a new object "data" from the req.body
+    const data = { ...req.body };
+  
+    let validation = null;
+  
+    // Explicit coercion to boolean
+    if (data['radio-group-alias-input']) {
+      data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
+    } else {
+        validation = {};
+        validation['radio-group-alias-input'] = "Select if you been known by any other names";
+        res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
+    }
+   
+    if (data['radio-group-alias-input'] === false) {
+        res.redirect('/wipf');
+    } else if (data['radio-group-alias-input'] === true) {
+        res.redirect('/wipt');
+    }
 
 });
 

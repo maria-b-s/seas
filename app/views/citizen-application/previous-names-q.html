@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% import "../macros/form-elements.njk" as fe %}
+{% import "../macros/question-info.njk" as ql %}
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% from "../macros/date-input/gov-date-input.njk" import govukDateInput %}
+
+{% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request astandard or enhanced DBS check {% endset%} 
+{% block beforeContent %}
+  <div class="govuk-phase-banner">
+      <p class="govuk-phase-banner__content">
+          <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+          <span class="govuk-phase-banner__text">
+              This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+          </span>
+      </p>
+  </div>
+  <a class="govuk-back-link" href="/citizen-application/current-full-name-v2">Back</a>
+  
+{% endblock %}
+
+ {% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if validation|length %}
+
+        {% set errorList = [] %}
+
+        {% for key, value in validation %}
+          {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
+        {% endfor %}
+
+        {{ es.govukErrorSummary({
+          "titleText": "There is a problem",
+          "errorList": errorList 
+          }) 
+        }}
+      {% endif %}
+    </div>
+  </div> 
+  <form action="" method="post" class="form">
+  
+  <div class="govuk-form-group govuk-!-margin-bottom-4 {% if validation['radio-group-alias-input'] %}govuk-form-group--error{% endif %}">
+    
+    
+    {{ fe.radio_buttons(
+      questionText="Have you been known by any other names?",
+      helpText="You must tell us about all other names you’ve used, including middle names. </br>
+      For example, you may have changed your name through marriage or deed poll." | safe,
+      helpTextHint=true,
+      h1Text=true,
+      value=cache['radio-group-alias-input'],
+      error=true,
+      errorMessages=[validation['radio-group-alias-input']],
+      horizontal=true,
+      items=[
+        {group: 'alias-input', answerOption: "1", value: "1",  label: "Yes", dataTarget: 'save-and-continue' },
+        {group: 'alias-input', answerOption: "0", value: "0", label: "No", dataTarget: 'save-and-continue' }
+      ]) 
+    }}
+
+    </div>
+
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Which names should I include?
+        </span>
+      </summary>
+      <div class="govuk-details__text govuk-!-margin-top-2">
+          	
+        <p class='govuk-body' > You must include all names that are on your official documents. For example, your driving licence or passport. </p>
+
+        <p class='govuk-body'> If you’re using two names, for example for professional reasons. You must tell us both names. </p>
+
+        <p class='govuk-body'>  If you were adopted before the age of 10, you do not need to tell us your name at birth.  </p>
+
+        <p class='govuk-body'> We will print your other names on your paper certificate. </br>
+
+          If you’re transgender or non-binary, and do not want the paper certificate to show details of your previous identity, you can contact the 
+          <a href='https://www.gov.uk/guidance/transgender-applications' target="_blank">DBS sensitive applications team</a>.
+        </p>
+      </div>
+    </details>
+
+    <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+  </form>
+
+{% endblock %}

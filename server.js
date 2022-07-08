@@ -235,6 +235,7 @@ if (useAutoStoreData === 'true') {
 // Clear all data in session if you open /prototype-admin/clear-data
 app.post('/prototype-admin/clear-data', function (req, res) {
     req.session.data = {};
+    req.session.cache = {};
     res.render('prototype-admin/clear-data-success');
 });
 

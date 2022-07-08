@@ -28,17 +28,17 @@ function savePageData(req, data, withCache = false) {
   if (Object.keys(data).length > 0) {
     let dataPayload = { ...data };
 
-    if (withCache && req.session[urlOfPage]) {
-      dataPayload = { ...req.session[urlOfPage], ...dataPayload };
+    if (withCache && req.session.cache[urlOfPage]) {
+      dataPayload = { ...req.session.cache[urlOfPage], ...dataPayload };
     }
 
-    req.session[urlOfPage] = dataPayload;
+    req.session.cache[urlOfPage] = dataPayload;
   }
 }
 
 function loadPageData(req) {
   const urlOfPage = req.originalUrl.split('?')[0];
-  return req.session[urlOfPage];
+  return req.session.cache[urlOfPage];
 }
 
 exports.trimDataValuesAndRemoveSpaces = trimDataValuesAndRemoveSpaces;
