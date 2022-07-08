@@ -38,7 +38,11 @@ function savePageData(req, data, withCache = false) {
 
 function loadPageData(req) {
   const urlOfPage = req.originalUrl.split('?')[0];
-  return req.session.cache[urlOfPage];
+
+  if (req.session.cache) {
+    return req.session.cache[urlOfPage];
+  } 
+  return null;
 }
 
 exports.trimDataValuesAndRemoveSpaces = trimDataValuesAndRemoveSpaces;

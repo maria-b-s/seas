@@ -224,7 +224,7 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
     }
    
     if (data['radio-group-alias-input'] === false) {
-        res.redirect('/wipf');
+        res.redirect('/citizen-application/date-of-birth');
     } else if (data['radio-group-alias-input'] === true) {
         res.redirect('/wipt');
     }
