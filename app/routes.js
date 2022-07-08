@@ -7,7 +7,7 @@ const { validateNationalInsurance } = require('./middleware/validateNationalInsu
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
-const { result } = require('lodash');
+const _ = require('lodash');
 
 const router = express.Router();
 const citizenRouter = express.Router(); 
@@ -218,7 +218,7 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
       data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
     } else {
         validation = {};
-        validation['radio-group-alias-input'] = "Select if you been known by any other names";
+        validation['radio-group-alias-input'] = "Select whether you have been known by any other names";
         res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
     }
    
@@ -240,7 +240,43 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
 
 citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
 
-    const inputCache = loadPageData(req);
+    let inputCache = loadPageData(req);
+
+    if (req.query.edit && req.session) {
+        inputCache = {};
+        const state = req.session?.data?.prevNames || [];
+        if (state && state.length > 0) {
+          const seedingItem = state[Number(req.query.edit) - 1];
+
+            console.log(seedingItem, 'what is');  
+
+          const seedingObject = {
+            'full-name-middle-names': seedingItem.middle_names,
+            'full-name-first-name': seedingItem.first_name,
+            'full-name-last-name': seedingItem.last_name,
+          };
+
+          if (seedingItem.used_from) {
+            const seedingItemDateFrom = seedingItem.used_from.split('/');
+            seedingObject['alias-from-MM'] = seedingItemDateFrom[0];
+            seedingObject['alias-from-YYYY'] = seedingItemDateFrom[1];
+          }
+
+          if (seedingItem.used_to && seedingItem.used_to !== 'Not entered' ) {
+            const seedingItemDateTo = seedingItem.used_to.split('/');
+            seedingObject['alias-to-MM'] = seedingItemDateTo[0];
+            seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
+            seedingObject['radio-group-alias-input'] = '1';
+          } else {
+            seedingObject['radio-group-alias-input'] = '0';
+            seedingObject['alias-to-MM'] = '';
+            seedingObject['alias-to-YYYY'] = '';
+          }
+
+          inputCache = seedingObject;
+        }
+      }
+
    res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
 });
 
@@ -309,6 +345,12 @@ citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
     if (req.session.data.prevNames) {
         prevNames = req.session.data.prevNames;
     }
+
+    if (req.query.item && Number.isInteger(Number(req.query.item)) && prevNames[Number(req.query.item) - 1]) {
+        _.pullAt(prevNames, [Number(req.query.item) - 1]);
+      }
+
+      req.session.data.prevNames = prevNames;
 
    res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
 });

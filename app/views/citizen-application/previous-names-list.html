@@ -65,11 +65,11 @@ endset%}
               </p>
             </dt>
             <dd class="govuk-summary-list__actions engagement-list-actions">
-              <a class="govuk-link engagement-list-actions__child" href="/referred-person/previous-names-form?edit={{ loop.index }}{% if withChange %}&change=true{% endif %}">
-                {{ cms.generalContent.change }} <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
+              <a class="govuk-link engagement-list-actions__child" style="margin-right: 20px;" href="/citizen-application/previous-names-form?edit={{ loop.index }}{% if withChange %}&change=true{% endif %}">
+                Change <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
               </a>
-              <a class="govuk-link engagement-list-actions__child" href="/referred-person/previous-names-list?item={{ loop.index }}{% if withChange %}&change=true{% endif %}">
-                {{ cms.generalContent.remove }} <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
+              <a class="govuk-link engagement-list-actions__child" href="/citizen-application/previous-names-list?item={{ loop.index }}{% if withChange %}&change=true{% endif %}">
+                Remove <span class="govuk-visually-hidden"> {{ item.first_name + " " + item.middle_names + " " + item.last_name }} </span>
               </a>
             </dd>
           </div>
