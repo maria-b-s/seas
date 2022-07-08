@@ -322,6 +322,10 @@ let mapInput = (data) => {
         resultObj.used_to = notEntered;
     }
 
+    if (data['radio-group-alias-input'] === '0') {
+        resultObj.used_to = notEntered;
+    }
+
     return resultObj;
 }
 
@@ -339,6 +343,8 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
 
     if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
         collection[Number(req.query.edit) - 1] = item;
+
+
       } else if (item['first_name'] !== 'Not entered') {
         collection.push(item);
     }
