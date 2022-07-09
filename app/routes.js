@@ -412,7 +412,6 @@ citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => 
       res.redirect(redirectUrlNL);
         
       } else if (setNewValueNL === false) {
-        delete req.session.data.prevNames;
         if (req.session.fromPrevNamesToReview) {
             req.session.fromPrevNamesToReview = false;
             res.redirect('/citizen-application/review-application');
