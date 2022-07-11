@@ -16,7 +16,7 @@ $(document).ready(function(){
   var radioOptionTwo = $('#radio-option-0');
   var conditionalAddAnother = $('#conditional-add-another');
 
-  const onRadioChange = function() {
+  var onRadioChange = function() {
     $('.govuk-error-summary').remove();
     $('.govuk-error-message').empty();
     $('.govuk-form-group--error').removeClass('govuk-form-group--error');
