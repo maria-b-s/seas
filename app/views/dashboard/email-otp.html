@@ -12,7 +12,7 @@
           </span>
       </p>
   </div>
-  <a class="govuk-back-link" href="/dashboard/login?render-login-as={{query['render-login-as']}}">Back</a>
+  <a class="govuk-back-link" href="/dashboard/rb-login">Back</a>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +37,7 @@
 
         <h1 class="govuk-heading-l">Check your email</h1> 
 
-        <p class='govuk-body'> Enter the 6 digit security code we sent to {{ data.email | obstructEmail }}  </p>
+        <p class='govuk-body'> Enter the 6 digit security code we sent to {{ "yourSteve@govgmail.com" | obstructEmail }}  </p>
 
         <div class="govuk-inset-text">
           This security code will expire in 10 minutes

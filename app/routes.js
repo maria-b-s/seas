@@ -491,46 +491,75 @@ dashboardRouter.get('*', (req, res, next) => {
     return next();
 });
 
+// Work has been "archived" as requested in the stand up meeting 18 July 2022
 // This is a workaround to be able to redirect to the page required in SEAS-429, the development for "index" route was missing
 // This is tech debt and should be implemented correctly
-dashboardRouter.post('/index', (req,res, _next) => {
-    if (req.body['login-method']) {
-        res.redirect('/dashboard/login?render-login-as=' + req.body['login-method']);
-    } else {
-        res.redirect('/dashboard/index');
-    }
-});
+// dashboardRouter.post('/index', (req,res, _next) => {
+//     if (req.body['login-method']) {
+//         res.redirect('/dashboard/login?render-login-as=' + req.body['login-method']);
+//     } else {
+//         res.redirect('/dashboard/index');
+//     }
+// });
 
 
+// Work has been "archived" as requested in the stand up meeting 18 July 2022
 // This is a workaround to be able to redirect to the page required in SEAS-429, the development for "login" route was missing
 // This is tech debt and should be implemented correctly
-dashboardRouter.post('/login', (req,res, _next) => {
-    const emailValue = req.body?.email || 'testingvalue@email.com';
-    if (req.query['render-login-as'] === 'kba-login' || req.query['render-login-as'] === 'email-password-login') {
-        res.redirect('/dashboard/email-otp?email=' + emailValue + '&render-login-as=' + req.query['render-login-as']);
-    } else if (req.query['render-login-as'] === 'email-2fa-login') {
-        res.redirect('/dashboard/opt-verify');
-    } else {
-        res.redirect('/dashboard/home');
+// dashboardRouter.post('/login', (req,res, _next) => {
+//     const emailValue = req.body?.email || 'testingvalue@email.com';
+//     if (req.query['render-login-as'] === 'kba-login' || req.query['render-login-as'] === 'email-password-login') {
+//         res.redirect('/dashboard/email-otp?email=' + emailValue + '&render-login-as=' + req.query['render-login-as']);
+//     } else if (req.query['render-login-as'] === 'email-2fa-login') {
+//         res.redirect('/dashboard/opt-verify');
+//     } else {
+//         res.redirect('/dashboard/home');
+//     }
+// });
+
+dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
+
+    res.render('dashboard/rb-login', { cache: null,   validation: null });
+});
+
+dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    
+    const dataValidation = {}
+
+    if (!req.body['registered-body-nr']) {
+        dataValidation['registered-body-nr'] = 'Enter registered body number'
     }
 
+    if (!req.body['counter-signatory-nr']) {
+        dataValidation['counter-signatory-nr'] = 'Enter countersignatory number'
+    }
+
+    if (!req.body['password']) {
+        dataValidation['password'] = 'Enter password'
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-login', { cache: inputCache,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/email-otp');
+    }
 });
 
 
 dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
-
-    const emailValue = req.query?.email || 'testingvalue@email.com';
-    res.render('dashboard/email-otp', { cache: null, data:  { email: emailValue },  validation: null });
+    res.render('dashboard/email-otp', { cache: null,  validation: null });
 });
 
 dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
     savePageData(req, req.body);
 
-    const emailValue = req.query?.email || 'testingvalue@email.com';
     const inputCache = loadPageData(req);
 
     if (!req.body['otp-code']) {
-        res.render('dashboard/email-otp', { email: emailValue, cache: inputCache,  validation: { 'otp-code': 'Enter security code' }});
+        res.render('dashboard/email-otp', { cache: inputCache,  validation: { 'otp-code': 'Enter security code' }});
     } else {
         res.redirect('/dashboard/home');
     }

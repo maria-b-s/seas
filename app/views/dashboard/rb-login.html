@@ -1,0 +1,74 @@
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% extends "layout.html" %}
+{% block pageTitle %} Question page {% endblock %}
+{% set serviceName %} Request a standard or enhanced DBS check {%endset%}
+
+{% block beforeContent %}
+  <div class="govuk-phase-banner">
+      <p class="govuk-phase-banner__content">
+          <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+          <span class="govuk-phase-banner__text">
+              This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+          </span>
+      </p>
+  </div>
+  <a class="govuk-back-link" href="/dashboard/start">Back</a>
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %}
+
+          {% set errorList = [] %}
+
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
+
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+        {% endif %}
+          <form class="form" action="" method="post">
+              <div class="govuk-form-group">
+                  <fieldset class="govuk-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                          <h1 class="govuk-fieldset__heading">Enter your details</h1>
+                      </legend>
+                      <div class="govuk-form-group  {% if validation['registered-body-nr'] %}govuk-form-group--error{% endif %}">
+                          <label class="govuk-label" for="registered-body-nr"> Registered body number </label>
+                            {% if validation['registered-body-nr'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{  validation['registered-body-nr'] }}
+                                </span>
+                            {% endif %}
+                          <input class="govuk-input govuk-input--width-10" id="registered-body-nr" name="registered-body-nr" type="text" />
+                      </div>
+                      <div class="govuk-form-group  {% if validation['counter-signatory-nr']%}govuk-form-group--error{% endif %}">
+                          <label class="govuk-label" for="counter-signatory-nr"> Countersignatory number </label>
+                            {% if validation['counter-signatory-nr'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['counter-signatory-nr'] }}
+                                </span>
+                            {% endif %}
+                          <input class="govuk-input govuk-input--width-10" id="counter-signatory-nr" name="counter-signatory-nr" type="text" />
+                      </div>
+                      <div class="govuk-form-group  {% if validation['password'] %}govuk-form-group--error{% endif %}">
+                          <label class="govuk-label" for="password"> Password </label>
+                            {% if validation['password'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['password'] }}
+                                </span>
+                            {% endif %}
+                          <input class="govuk-input govuk-input--width-10" id="password" name="password" type="text" />
+                      </div>
+                  </fieldset>
+              </div>
+
+              <button style="margin-top: 20px;" class="govuk-button" type='submit' data-module="govuk-button">Continue</button>
+          </form>
+      </div>
+  </div>
+{% endblock %}

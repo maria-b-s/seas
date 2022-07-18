@@ -91,6 +91,10 @@ const nunjucksAppEnv = nunjucks.configure(appViews, nunjucksConfig);
 
 const obstructEmail = (value) => {
 
+    if (!value) {
+        return '';
+    }
+
     let resultString = '';
 
     let temp = value.split('@');
