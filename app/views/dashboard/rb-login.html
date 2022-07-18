@@ -44,7 +44,7 @@
                                     <span class="govuk-visually-hidden">Error:</span> {{  validation['registered-body-nr'] }}
                                 </span>
                             {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="registered-body-nr" name="registered-body-nr" type="text" />
+                          <input class="govuk-input govuk-input--width-10" id="registered-body-nr" name="registered-body-nr" value="{{cache['registered-body-nr']}}" type="text" />
                       </div>
                       <div class="govuk-form-group  {% if validation['counter-signatory-nr']%}govuk-form-group--error{% endif %}">
                           <label class="govuk-label" for="counter-signatory-nr"> Countersignatory number </label>
@@ -53,7 +53,7 @@
                                     <span class="govuk-visually-hidden">Error:</span> {{ validation['counter-signatory-nr'] }}
                                 </span>
                             {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="counter-signatory-nr" name="counter-signatory-nr" type="text" />
+                          <input class="govuk-input govuk-input--width-10" id="counter-signatory-nr" name="counter-signatory-nr" value="{{cache['counter-signatory-nr']}}" type="text" />
                       </div>
                       <div class="govuk-form-group  {% if validation['password'] %}govuk-form-group--error{% endif %}">
                           <label class="govuk-label" for="password"> Password </label>
@@ -62,7 +62,7 @@
                                     <span class="govuk-visually-hidden">Error:</span> {{ validation['password'] }}
                                 </span>
                             {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="password" name="password" type="text" />
+                          <input class="govuk-input govuk-input--width-10" id="password" name="password" value="{{cache['password']}}" type="text" />
                       </div>
                   </fieldset>
               </div>
