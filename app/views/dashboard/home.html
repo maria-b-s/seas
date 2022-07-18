@@ -96,13 +96,22 @@
             <th scope="col" class="govuk-table__header mod-date">Modified date</th>
         </tr>
     </thead>
+    
     <tbody class="govuk-table__body">
         {% for app in data['applications'] %}
         <tr class="govuk-table__row">
+            {% if app['status'].id === '1010' or app['status'].id === '1040' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="details?app={{app['name']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="06.010?app={{app['ref']}}">{{app['name']}}</a>
             </td>
-            <td class="govuk-table__cell status-cell">{{app['status']}}</td>
+            {% elif app['status'].id === '1015' %}
+            <td class="govuk-table__cell">
+                <a class="govuk-link details" id="{{loop.index}}-details" href="08.010?app={{app['ref']}}">{{app['name']}}</a>
+            </td>
+            {% else %}
+                <td class="govuk-table__cell status-cell">{{ app['name'] }}</td>
+            {% endif %}
+            <td class="govuk-table__cell status-cell">{{app['status'].text}}</td>
             <td class="govuk-table__cell type-cell">{{app['type']}}</td>
             <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
             <td class="govuk-table__cell">

@@ -58,8 +58,40 @@ const firstNames = [
     'Justin',
     'Sarah',
     'Maria',
+    'Kieran',
+    'Christopher',
+    'Jessica',
+    'Matthew',
+    'Ashley',
+    'Jennifer',
+    'Joshua',
+    'Amanda',
+    'Joseph',
+    'Andrew',
+    'Ryan',
+    'Brandon',
+    'Jason',
+    'Justin',
+    'Sarah',
+    'Maria',
 ];
 const lastNames = [
+    'Collymore',
+    'Stoll',
+    'Verlice',
+    'Adler',
+    'Huxley',
+    'Ledger',
+    'Smith',
+    'Hayes',
+    'Ford',
+    'Finnegan',
+    'Beckett',
+    'Gatlin',
+    'Gray',
+    'Curran',
+    'Crassus',
+    'Anderson',
     'Collymore',
     'Stoll',
     'Verlice',
@@ -461,9 +493,20 @@ const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+const STATUS_COLLECTION = [
+    { id: '1001', text: 'Sent to Applicant' },
+    { id: "1005", text: 'Expired' },
+    { id: '1010', text: 'Verify ID'},
+    { id: "1015", text: 'Ready to submit'},
+    { id: '1020', text: 'Submitted'},
+    { id: '1025', text: 'Sent for case-working'},
+    { id: '1030', text: 'Cancelled'},
+    { id: '1040', text: 'Check answers'}
+];
+
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
-    const statuses = ['Sent to Applicant', 'Expired', 'Verify ID', 'Ready to submit', 'Submitted', 'Sent for case-working', 'Cancelled'];
+    const statuses = STATUS_COLLECTION;
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
 
@@ -475,7 +518,7 @@ dashboardRouter.get('*', (req, res, next) => {
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });
-    req.session.data.applications = Array.from(Array(getRandomArbitrary(8, 15))).map((_, elIndex) => {
+    req.session.data.applications = Array.from(Array(getRandomArbitrary(15, 25))).map((_, elIndex) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
         const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
             extractSetAverage: true,
@@ -483,11 +526,12 @@ dashboardRouter.get('*', (req, res, next) => {
         return {
             ref,
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
-            status: statuses[getRandomArbitrary(0, statuses.length - 1)],
-            type: types[getRandomArbitrary(0, types.length - 1)],
+            status: statuses[getRandomArbitrary(0, statuses.length)],
+            type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });
+
     return next();
 });
 
@@ -571,7 +615,7 @@ dashboardRouter.get('/details', (req, res) => {
     const applications = data.applications;
 
     if (applications && req.query.app) {
-        const item = applications.find((el) => el.name === req.query.app);
+        const item = applications.find((el) => el.ref === req.query.app);
         req.session.data.selectedApplicationToCancel = item;
     }
 
