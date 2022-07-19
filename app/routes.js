@@ -493,15 +493,18 @@ const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+
+// Ids documented here https://carpathia.atlassian.net/wiki/spaces/SEAS/pages/7514423306/Application+Status
 const STATUS_COLLECTION = [
-    { id: '1001', text: 'Sent to Applicant' },
-    { id: "1005", text: 'Expired' },
-    { id: '1010', text: 'Verify ID'},
-    { id: "1015", text: 'Ready to submit'},
-    { id: '1020', text: 'Submitted'},
-    { id: '1025', text: 'Sent for case-working'},
-    { id: '1030', text: 'Cancelled'},
-    { id: '1040', text: 'Check answers'}
+    { id: '001', text: 'SENT TO APPLICANT' },
+    { id: "002", text: 'EXPIRED' },
+    { id: '003', text: 'CHECK ANSWERS'},
+    { id: "004", text: 'APPLICANT AMENDING'},
+    { id: '005', text: 'VERIFY ID'},
+    { id: '006', text: 'READY TO SUBMIT'},
+    { id: '007', text: 'APPLICATION SUBMITED'},
+    { id: '008', text: 'SENT FOR CASE-WORKING'},
+    { id: '009', text: 'CANCELLED'}
 ];
 
 dashboardRouter.get('*', (req, res, next) => {

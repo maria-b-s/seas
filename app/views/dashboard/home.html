@@ -100,22 +100,22 @@
     <tbody class="govuk-table__body">
         {% for app in data['applications'] %}
         <tr class="govuk-table__row">
-            {% if app['status'].id === '1010' or app['status'].id === '1040' %}
+            {% if app['status'].id === '003' or app['status'].id === '005' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="06.010?app={{app['ref']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}">{{app['name']}}</a>
             </td>
-            {% elif app['status'].id === '1015' %}
+            {% elif app['status'].id === '006' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="08.010?app={{app['ref']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/declaration-registered-person?app={{app['ref']}}">{{app['name']}}</a>
             </td>
             {% else %}
                 <td class="govuk-table__cell status-cell">{{ app['name'] }}</td>
             {% endif %}
-            <td class="govuk-table__cell status-cell">{{app['status'].text}}</td>
+            <td class="govuk-table__cell status-cell">{{app['status'].text | lower | capitalize }}</td>
             <td class="govuk-table__cell type-cell">{{app['type']}}</td>
             <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
             <td class="govuk-table__cell">
-                <!--                <a class="govuk-link delete-name" id="{{loop.index}}" href="#">View<span class="govuk-visually-hidden">{{loop.index}}</span> </a>-->
+                <!--  <a class="govuk-link delete-name" id="{{loop.index}}" href="#">View<span class="govuk-visually-hidden">{{loop.index}}</span> </a>-->
             </td>
         </tr>
 
