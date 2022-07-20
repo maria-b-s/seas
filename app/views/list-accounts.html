@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block pageTitle %} Info {% endblock %}
+ {% block beforeContent %}
+  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %}
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class='govuk-header-l' > Current state for accounts </h1>
+      {% for account in accounts %}
+          <span style='width: 100%; display: block; margin-bottom: 10px; border-bottom: 3px solid teal;'> </span>
+          </br>
+          <p> Account {{ loop.index }} - RB Number: <strong style='margin-left: 8px;'> {{ account["rbNumber"] }} </strong> and CS Number: <strong style='margin-left: 8px;'>{{ account["csNumber"] }} </strong></p>
+          <p style='margin: 0px;'> User Date Of birth:   <strong style='margin-left: 8px;'> {{ account["userDob"] }} </strong></p>
+          <p style='margin: 0px;'> User email:   <strong style='margin-left: 8px;'> {{ account["email"] }}</strong> </p>
+          <p style='margin: 0px;'> Has password set:   <strong style='margin-left: 8px;'> {{ account["hasSetPassword"] }}</strong> </p>
+          <p style='margin: 0px;'> Password:   <strong style='margin-left: 8px;'> {{ account["password"] or 'Not set' }}</strong> </p>
+          <p style='margin: 0px;'> Created:   <strong style='margin-left: 8px;'> {{ account["created"] }}</strong> </p>
+        </br>
+        
+      {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

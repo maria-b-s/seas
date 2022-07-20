@@ -245,7 +245,40 @@ if (useAutoStoreData === 'true') {
 app.post('/prototype-admin/clear-data', function (req, res) {
     req.session.data = {};
     req.session.cache = {};
+    generateAccounts(req, true);
     res.render('prototype-admin/clear-data-success');
+});
+
+const generateAccounts = (req, refresh = false) => {
+    if (!req.sesion?.mockDBaccounts) {
+        const accounts = [];
+
+        for (let i = 1; i <= 15; i++) {
+            accounts.push({
+                rbNumber: String(99001 + i),
+                csNumber: String(330020 - i),
+                userDob:  i + 1 + '/09/1989',
+                email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
+                hasSetPassword: i % 2 ? true : false,
+                password: i % 2 ? String('pass' + 12 + i) : null,
+                created: new Date()
+            });
+        }
+        req.session.mockDBaccounts = accounts;
+    } else if (refresh) {
+        delete req.session.mockDBaccounts;
+        generateAccounts(false);
+    }
+}
+
+app.get('/', (req, res, next) => {
+    generateAccounts(req);
+    next();
+});
+
+app.get('/list-accounts', (req, res, next) => {
+    generateAccounts(req);
+    res.render('list-accounts', { accounts: req.session?.mockDBaccounts });
 });
 
 // Redirect root to /docs when in promo mode.
