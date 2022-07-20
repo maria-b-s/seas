@@ -33,14 +33,14 @@
     }}
   {% endif %}
 
-  <h1 class="govuk-heading-l page-heading govuk-!-margin-bottom-4"> Select the relevant workforce (text is work in progress) </h1>
+  <h1 class="govuk-heading-l page-heading govuk-!-margin-bottom-4"> Which workforce will the applicant be working in? </h1>
 
   <form action="" method="post" class="form">
     <div class="govuk-form-group {% if validation['radio-group-workforce-select'] %} govuk-form-group--error {% endif %}">
       {{ fe.radio_buttons(
         questionText=false,
-        helpText=false,
-        h1Text=true,
+        helpText='Selecting the wrong workforce type will delay the application.',
+        h1Text=false,
         value=cache['radio-group-workforce-select'],
         error=true,
         errorMessages=[validation['radio-group-workforce-select']],
