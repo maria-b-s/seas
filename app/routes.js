@@ -565,8 +565,8 @@ dashboardRouter.get('*', (req, res, next) => {
 // });
 
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
-
-    res.render('dashboard/rb-login', { cache: null,   validation: null });
+    const inputCache = loadPageData(req);
+    res.render('dashboard/rb-login', { cache: inputCache,   validation: null });
 });
 
 dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
@@ -574,30 +574,79 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
 
     const inputCache = loadPageData(req);
     
-    const dataValidation = {}
+    const dataValidation = {};
+    let selectedUser = undefined;
 
     if (!req.body['registered-body-nr']) {
-        dataValidation['registered-body-nr'] = 'Enter registered body number'
+        dataValidation['registered-body-nr'] = 'Enter registered body number';
     }
 
     if (!req.body['counter-signatory-nr']) {
         dataValidation['counter-signatory-nr'] = 'Enter countersignatory number'
     }
 
-    if (!req.body['password']) {
-        dataValidation['password'] = 'Enter password'
+    if (req.body['registered-body-nr'] && req.body['counter-signatory-nr']) {
+        const rbNumber = req.body['registered-body-nr'];
+        const csNumber = req.body['counter-signatory-nr'];
+
+        if (req.session?.mockDBaccounts) {
+
+            selectedUser = req.session?.mockDBaccounts.find((el) => rbNumber === el.rbNumber && csNumber === el.csNumber);
+            
+            req.session.selectedRB = selectedUser;
+            console.log('User found', req.session.selectedRB);
+        }
+
+        if (!selectedUser) {
+            dataValidation['general'] = 'Unable to find your details, review your values and try again';
+        }
+
     }
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-login', { cache: inputCache,   validation: dataValidation });
+    } else if (selectedUser && selectedUser.hasSetPassword) {
+        res.redirect('/dashboard/rb-password-check');
     } else {
-        res.redirect('/dashboard/email-otp');
+        res.redirect('/dashboard/rb-dob-check');
     }
+});
+
+dashboardRouter.get('/rb-password-check', invalidateCache, (req, res, _next) => {
+    
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-password-check', { cache: null,   validation: null });
+    }
+});
+
+dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) => {
+
+    const dataValidation = {}
+    
+
+    if (!req.body['password']) {
+        dataValidation['password'] = 'Enter password';
+    } else if (req.body.password !== req.session?.selectedRB?.password) {
+        dataValidation['password'] = 'Password is invalid';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-password-check', { cache: null,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/email-otp')
+    }
+});
+
+dashboardRouter.get('/rb-dob-check', invalidateCache, (req, res, _next) => {
+    res.render('dashboard/rb-dob-check', { cache: null,   validation: null });
 });
 
 
 dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
-    res.render('dashboard/email-otp', { cache: null,  validation: null });
+    res.render('dashboard/email-otp', { cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
 });
 
 dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
@@ -606,7 +655,7 @@ dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
     const inputCache = loadPageData(req);
 
     if (!req.body['otp-code']) {
-        res.render('dashboard/email-otp', { cache: inputCache,  validation: { 'otp-code': 'Enter security code' }});
+        res.render('dashboard/email-otp', { cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'otp-code': 'Enter security code' }});
     } else {
         res.redirect('/dashboard/home');
     }

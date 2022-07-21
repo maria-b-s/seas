@@ -35,7 +35,7 @@
               <div class="govuk-form-group">
                   <fieldset class="govuk-fieldset">
                       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                          <h1 class="govuk-fieldset__heading">Enter your details</h1>
+                          <h1 class="govuk-fieldset__heading">Sign in or register</h1>
                       </legend>
                       <div class="govuk-form-group  {% if validation['registered-body-nr'] %}govuk-form-group--error{% endif %}">
                           <label class="govuk-label" for="registered-body-nr"> Registered body number </label>
@@ -55,19 +55,22 @@
                             {% endif %}
                           <input class="govuk-input govuk-input--width-10" id="counter-signatory-nr" name="counter-signatory-nr" value="{{cache['counter-signatory-nr']}}" type="text" />
                       </div>
-                      <div class="govuk-form-group  {% if validation['password'] %}govuk-form-group--error{% endif %}">
-                          <label class="govuk-label" for="password"> Password </label>
-                            {% if validation['password'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['password'] }}
-                                </span>
-                            {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="password" name="password" value="{{cache['password']}}" type="password" />
-                      </div>
-                  </fieldset>
-              </div>
 
-              <button style="margin-top: 20px;" class="govuk-button" type='submit' data-module="govuk-button">Continue</button>
+                  </fieldset>
+                </div>
+
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Help with your registered body or countersignatory number
+                        </span>
+                  </summary>
+                    <div class="govuk-details__text">
+                       If you do not know your registered body or countersignatory number you should call DBS 0n 03000 200 190
+                    </div>
+                </details>
+
+              <button style="margin-top: 0px;" class="govuk-button" type='submit' data-module="govuk-button">Continue</button>
           </form>
       </div>
   </div>
