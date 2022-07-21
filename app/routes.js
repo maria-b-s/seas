@@ -675,15 +675,17 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
     } else if (user && user.userDob) {
         const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0')  + '/' + req.body['dob-year'];
 
+        console.log('what is the data date', dateRegex.test(dataDate), dataDate, moment(dataDate, 'DD/MM/YYYY'));
+
         if (!dateRegex.test(dataDate)) {
             dataValidation['dob-day'] = 'Enter a valid date';
             dataValidation['dob-month'] = '';
             dataValidation['dob-year'] = '';
-        } else if (!moment(dataDate, "MM/DD/YYYY").isValid()) {
+        } else if (!moment(dataDate, "DD/MM/YYYY").isValid()) {
             dataValidation['dob-day'] = 'Enter a valid date of birth';
             dataValidation['dob-month'] = '';
             dataValidation['dob-year'] = '';
-       } else if (!moment(user.userDob, 'MM/DD/YYYY').isSame(moment(dataDate, 'MM/DD/YYYY'))) {
+       } else if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
         dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
         dataValidation['dob-month'] = '';
         dataValidation['dob-year'] = '';
@@ -720,6 +722,32 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
     const user = req.session?.selectedRB;
 
     console.log(req.body, user);
+
+    if (!req.body['password-first']) {
+        dataValidation['password-first'] = 'Enter password';
+    }
+
+    if (!req.body['password-match']) {
+        dataValidation['password-match'] = 'Enter value to confirm password';
+    }
+
+    if (req.body['password-first'] && req.body['password-match'] && (req.body['password-first'] !== req.body['password-match'])) {
+        dataValidation['password-match'] = 'The password does not match';
+    } else if (user) {
+        let newUserState = { ...user };
+        newUserState.hasSetPassword = true;
+        newUserState.password = req.body['password-first'];
+
+        const newCollection = req.session.mockDBaccounts.map((el) => {
+            if (el.rbNumber === newUserState.rbNumber) {
+                return newUserState;
+            } else {
+                return el;
+            }
+        });
+
+        req.session.mockDBaccounts = newCollection;
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-create-password', { cache: inputCache,   validation: dataValidation });
