@@ -693,7 +693,7 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: dataValidation });
     } else {
-        res.redirect('/dashboard/rb-create-password')
+        res.redirect('/dashboard/email-otp')
     }
 });
 
@@ -724,13 +724,18 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-create-password', { cache: inputCache,   validation: dataValidation });
     } else {
-        res.redirect('/dashboard/email-otp');
+        res.redirect('/dashboard/home');
     }
 });
 
 
 dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
-    res.render('dashboard/email-otp', { cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
+    let backButton = '/dashboard/rb-dob-check';
+    
+    if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
+        backButton = '/dashboard/rb-password-check';
+    }
+    res.render('dashboard/email-otp', { backButton: backButton, cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
 });
 
 dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
@@ -738,8 +743,16 @@ dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
 
     const inputCache = loadPageData(req);
 
+    let backButton = '/dashboard/rb-dob-check';
+
+    if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
+        backButton = '/dashboard/rb-password-check';
+    }
+
     if (!req.body['otp-code']) {
-        res.render('dashboard/email-otp', { cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'otp-code': 'Enter security code' }});
+        res.render('dashboard/email-otp', { backButton: backButton, cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'otp-code': 'Enter security code' }});
+    } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
+        res.redirect('/dashboard/rb-create-password');
     } else {
         res.redirect('/dashboard/home');
     }
