@@ -613,18 +613,22 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
 });
 
 dashboardRouter.get('/rb-password-check', invalidateCache, (req, res, _next) => {
-    
+
+    const inputCache = loadPageData(req);
+
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-password-check', { cache: null,   validation: null });
+        res.render('dashboard/rb-password-check', { cache: inputCache,   validation: null });
     }
 });
 
 dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) => {
 
-    const dataValidation = {}
-    
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    const dataValidation = {};
 
     if (!req.body['password']) {
         dataValidation['password'] = 'Enter password';
@@ -633,7 +637,7 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-password-check', { cache: null,   validation: dataValidation });
+        res.render('dashboard/rb-password-check', { cache: inputCache,   validation: dataValidation });
     } else {
         res.redirect('/dashboard/email-otp')
     }
@@ -715,6 +719,7 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
 
     const user = req.session?.selectedRB;
 
+    console.log(req.body, user);
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-create-password', { cache: inputCache,   validation: dataValidation });
