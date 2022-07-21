@@ -261,7 +261,7 @@ const generateAccounts = (req, refresh = false) => {
                 email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
                 password: i % 2 ? String('pass' + 12 + i) : null,
-                created: new Date()
+                created: moment().format("DD MMM YYYY hh:mm:ss")
             });
         }
         req.session.mockDBaccounts = accounts;
