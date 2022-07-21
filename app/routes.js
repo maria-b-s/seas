@@ -7,6 +7,7 @@ const { validateNationalInsurance } = require('./middleware/validateNationalInsu
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
+const moment = require('moment');
 const _ = require('lodash');
 
 const router = express.Router();
@@ -594,7 +595,6 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
             selectedUser = req.session?.mockDBaccounts.find((el) => rbNumber === el.rbNumber && csNumber === el.csNumber);
             
             req.session.selectedRB = selectedUser;
-            console.log('User found', req.session.selectedRB);
         }
 
         if (!selectedUser) {
@@ -614,7 +614,6 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
 
 dashboardRouter.get('/rb-password-check', invalidateCache, (req, res, _next) => {
     
-
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
@@ -640,8 +639,54 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     }
 });
 
+
+//GET /rb-dob-check
 dashboardRouter.get('/rb-dob-check', invalidateCache, (req, res, _next) => {
-    res.render('dashboard/rb-dob-check', { cache: null,   validation: null });
+    const inputCache = loadPageData(req);
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: null });
+    }
+
+});
+
+
+//POST /rb-dob-check
+dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
+
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    const dataValidation = {};
+
+    const user = req.session?.selectedRB;
+
+
+    if (!req.body['dob-day'] || !req.body['dob-month'] || !req.body['dob-year']) {
+        dataValidation['dob-day'] = 'Enter date of birth';
+        dataValidation['dob-month'] = '';
+        dataValidation['dob-year'] = '';
+    } else if (user && user.userDob) {
+        const dataDate = req.body['dob-day'] + '/' + req.body['dob-month'] + '/' + req.body['dob-year'];
+
+       if (!moment(dataDate).isValid()) {
+        dataValidation['dob-day'] = 'Enter a valid date of birth';
+        dataValidation['dob-month'] = '';
+        dataValidation['dob-year'] = '';
+       } else if (!moment(user.userDob).isSame(dataDate)) {
+        dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
+        dataValidation['dob-month'] = '';
+        dataValidation['dob-year'] = '';
+       }
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/rb-create-password')
+    }
 });
 
 
