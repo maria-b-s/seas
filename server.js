@@ -249,8 +249,8 @@ app.post('/prototype-admin/clear-data', function (req, res) {
     res.render('prototype-admin/clear-data-success');
 });
 
-const generateAccounts = (req, refresh = false) => {
-    if (!req.sesion?.mockDBaccounts) {
+const generateAccounts = (req, refresh) => {
+    if (!req.session?.mockDBaccounts) {
         const accounts = [];
 
         for (let i = 1; i <= 15; i++) {
@@ -265,20 +265,22 @@ const generateAccounts = (req, refresh = false) => {
             });
         }
         req.session.mockDBaccounts = accounts;
-    } else if (refresh) {
+    } else if (req.session.mockDBaccounts && refresh) {
         delete req.session.mockDBaccounts;
-        generateAccounts(false);
+        generateAccounts(req, false);
     }
 }
 
 app.get('/', (req, res, next) => {
-    generateAccounts(req);
+    if (!req.session.mockDBaccounts) {
+        generateAccounts(req, false);
+    }
     next();
 });
 
 app.get('/list-accounts', (req, res, next) => {
     if (!req.session?.mockDBaccounts) {
-        generateAccounts(req);
+        generateAccounts(req, false);
     }
     res.render('list-accounts', { accounts: req.session?.mockDBaccounts });
 });

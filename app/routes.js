@@ -719,10 +719,10 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
 
     const user = req.session?.selectedRB;
 
-    console.log(req.body, user);
-
     if (!req.body['password-first']) {
         dataValidation['password-first'] = 'Enter password';
+    } else if (req.body['password-first'].length < 8) {
+        dataValidation['password-first'] = 'The password has to be at least 8 characters or more';
     }
 
     if (!req.body['password-match']) {

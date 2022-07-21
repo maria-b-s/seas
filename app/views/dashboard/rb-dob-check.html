@@ -43,7 +43,7 @@
                         <span class="govuk-visually-hidden">Error:</span> {{ validation['dob-day'] }}
                     </span>
                 {% endif %}
-
+                <div id="sign-in-item-hint" class="govuk-hint govuk-hint"> For example, 12 3 1980 </div>
                 <div class="govuk-date-input" id="dob">
                     <div class="govuk-date-input__item">
                         <div class="govuk-form-group  {% if validation['dob-day'] %}govuk-form-group--error{% endif %}">
