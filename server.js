@@ -261,7 +261,7 @@ const generateAccounts = (req, refresh = false) => {
                 email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
                 password: i % 2 ? String('pass' + 12 + i) : null,
-                created: moment().format("DD MMM YYYY hh:mm:ss")
+                created: moment(new Date(), 'Europe/London').format("DD MMM YYYY hh:mm:ss")
             });
         }
         req.session.mockDBaccounts = accounts;
@@ -277,7 +277,9 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/list-accounts', (req, res, next) => {
-    generateAccounts(req);
+    if (!req.session?.mockDBaccounts) {
+        generateAccounts(req);
+    }
     res.render('list-accounts', { accounts: req.session?.mockDBaccounts });
 });
 
