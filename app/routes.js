@@ -675,8 +675,6 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
     } else if (user && user.userDob) {
         const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0')  + '/' + req.body['dob-year'];
 
-        console.log('what is the data date', dateRegex.test(dataDate), dataDate, moment(dataDate, 'DD/MM/YYYY'));
-
         if (!dateRegex.test(dataDate)) {
             dataValidation['dob-day'] = 'Enter a valid date';
             dataValidation['dob-month'] = '';
