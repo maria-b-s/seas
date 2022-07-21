@@ -662,20 +662,24 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
     const dataValidation = {};
 
     const user = req.session?.selectedRB;
-
+    const dateRegex =  /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
 
     if (!req.body['dob-day'] || !req.body['dob-month'] || !req.body['dob-year']) {
         dataValidation['dob-day'] = 'Enter date of birth';
         dataValidation['dob-month'] = '';
         dataValidation['dob-year'] = '';
     } else if (user && user.userDob) {
-        const dataDate = req.body['dob-day'] + '/' + req.body['dob-month'] + '/' + req.body['dob-year'];
+        const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0')  + '/' + req.body['dob-year'];
 
-       if (!moment(dataDate).isValid()) {
-        dataValidation['dob-day'] = 'Enter a valid date of birth';
-        dataValidation['dob-month'] = '';
-        dataValidation['dob-year'] = '';
-       } else if (!moment(user.userDob).isSame(dataDate)) {
+        if (!dateRegex.test(dataDate)) {
+            dataValidation['dob-day'] = 'Enter a valid date';
+            dataValidation['dob-month'] = '';
+            dataValidation['dob-year'] = '';
+        } else if (!moment(dataDate, "MM/DD/YYYY").isValid()) {
+            dataValidation['dob-day'] = 'Enter a valid date of birth';
+            dataValidation['dob-month'] = '';
+            dataValidation['dob-year'] = '';
+       } else if (!moment(user.userDob, 'MM/DD/YYYY').isSame(moment(dataDate, 'MM/DD/YYYY'))) {
         dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
         dataValidation['dob-month'] = '';
         dataValidation['dob-year'] = '';
@@ -686,6 +690,36 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
         res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: dataValidation });
     } else {
         res.redirect('/dashboard/rb-create-password')
+    }
+});
+
+//GET /rb-create-password
+dashboardRouter.get('/rb-create-password', invalidateCache, (req, res, _next) => {
+    const inputCache = loadPageData(req);
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-create-password', { cache: inputCache,   validation: null });
+    }
+
+});
+
+//POST /rb-create-password
+dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) => {
+
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    const dataValidation = {};
+
+    const user = req.session?.selectedRB;
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-create-password', { cache: inputCache,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/email-otp');
     }
 });
 
