@@ -643,6 +643,134 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     }
 });
 
+// SEAS 503 Password reset
+dashboardRouter.get('/rb-password-reset', invalidateCache, (req, res, _next) => {
+
+    const inputCache = loadPageData(req);
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-password-reset', { cache: inputCache,   validation: null });
+    }
+});
+
+
+// POST SEAS 503 Password reset 
+dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) => {
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    const user = req.session?.selectedRB;
+    const dataValidation = {};
+
+    if (!user) {
+        res.redirect('/dashboard/rb-login');
+    } else if (!req.body['rb-reset-pass-email']){
+        dataValidation['rb-reset-pass-email'] = 'Enter email';
+    } else if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
+        dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-password-reset', { cache: inputCache,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/reset-pass-email-otp');
+    }
+});
+
+// GET SEAS 503 reset-pass-email-otp
+
+dashboardRouter.get('/reset-pass-email-otp', invalidateCache, (req,res, _next) => {
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/reset-pass-email-otp', { cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
+    }
+});
+
+// POST SEAS 503 reset-pass-email-otp
+
+dashboardRouter.post('/reset-pass-email-otp', invalidateCache, (req,res, _next) => {
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+
+    if (!req.body['reset-pass-email-otp']) {
+        res.render('dashboard/reset-pass-email-otp', { cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'reset-pass-email-otp': 'Enter security code' }});
+    } else {
+        res.redirect('/dashboard/rb-reset-password');
+    }
+});
+
+
+//GET SEAS 503 /rb-reset-password
+dashboardRouter.get('/rb-reset-password', invalidateCache, (req, res, _next) => {
+    const inputCache = loadPageData(req);
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-reset-password', { cache: inputCache,   validation: null });
+    }
+
+});
+
+//POST SEAS 503 /rb-reset-password
+dashboardRouter.post('/rb-reset-password', invalidateCache, (req, res, _next) => {
+
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    const dataValidation = {};
+
+    const user = req.session?.selectedRB;
+
+    if (!req.body['password-first']) {
+        dataValidation['password-first'] = 'Enter password';
+    } else if (req.body['password-first'].length < 8) {
+        dataValidation['password-first'] = 'The password has to be at least 8 characters or more';
+    }
+
+    if (!req.body['password-match']) {
+        dataValidation['password-match'] = 'Enter value to confirm password';
+    }
+
+    if (req.body['password-first'] && req.body['password-match'] && (req.body['password-first'] !== req.body['password-match'])) {
+        dataValidation['password-match'] = 'The password does not match';
+    } else if (user) {
+        let newUserState = { ...user };
+        newUserState.password = req.body['password-first'];
+
+        const newCollection = req.session.mockDBaccounts.map((el) => {
+            if (el.rbNumber === newUserState.rbNumber) {
+                return newUserState;
+            } else {
+                return el;
+            }
+        });
+
+        req.session.mockDBaccounts = newCollection;
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('dashboard/rb-reset-password', { cache: inputCache,   validation: dataValidation });
+    } else {
+        res.redirect('/dashboard/rb-reset-password-confirm');
+    }
+});
+
+// SEAS-503 /rb-reset-password-confirm
+
+dashboardRouter.get('/rb-reset-password-confirm', invalidateCache, (req, res, _next) => {
+    const inputCache = loadPageData(req);
+
+    if (!req.session?.selectedRB) {
+        res.redirect('/dashboard/rb-login');
+    } else {
+        res.render('dashboard/rb-reset-password-confirm', { cache: inputCache,   validation: null });
+    }
+});
 
 //GET /rb-dob-check
 dashboardRouter.get('/rb-dob-check', invalidateCache, (req, res, _next) => {
