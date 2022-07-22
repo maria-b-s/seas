@@ -597,10 +597,10 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
             req.session.selectedRB = selectedUser;
         }
 
-        if (!selectedUser) {
-            dataValidation['general'] = 'Unable to find your details, review your values and try again';
-        }
+    }
 
+    if (req.body['registered-body-nr'] && req.body['counter-signatory-nr'] && !selectedUser) {
+        dataValidation['registered-body-nr'] = 'Unable to find your details, review your values and try again';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -885,7 +885,7 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
 
 dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
     let backButton = '/dashboard/rb-dob-check';
-    
+  
     if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
         backButton = '/dashboard/rb-password-check';
     }
