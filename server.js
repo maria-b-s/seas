@@ -287,7 +287,7 @@ app.get('/list-accounts', (req, res, next) => {
 
 // Redirect root to /docs when in promo mode.
 if (promoMode === 'true') {
-    console.log('Prototype Kit running in promo mode');
+    console.log('Prototype Kit running in promo mode ');
 
     app.get('/', function (req, res) {
         res.redirect('/docs');
