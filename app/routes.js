@@ -885,7 +885,6 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
 
 dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
     let backButton = '/dashboard/rb-dob-check';
-  
     if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
         backButton = '/dashboard/rb-password-check';
     }
