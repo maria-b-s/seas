@@ -230,6 +230,28 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
     res.redirect('/citizen-application/previous-names-q');
 });
 
+citizenRouter.post('/passport',invalidateCache, (req, res, next) => {
+    const inputCache = loadPageData(req);
+    const passportNumbersOnly = /^[0-9]+$/.test(req.session.data['passport-number']);
+    const dataValidation = {};
+        
+    if(!passportNumbersOnly || req.session.data['passport-number'].length !== 9){
+        dataValidation['passport-number'] = 'Enter valid passport number';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/passport', { cache: inputCache,   validation: dataValidation });
+    } else {
+        if(!req.session.data.change){
+            res.redirect('/citizen-application/place-of-birth');
+        } else {
+            res.redirect('/citizen-application/review-application')
+        }
+    }
+    
+   
+});
+
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
 
     if (req.query.change) {
