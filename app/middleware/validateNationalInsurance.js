@@ -13,25 +13,26 @@ function validateNationalInsurance(req, res, _next) {
   const disallowedPrefixes = ['BG', 'GB', 'KN', 'NK', 'NT', 'TN', 'ZZ'];
   let containsDisallowedPrefix = false;
 
-  if(!state['referred-nino-input']){
+
+  if(!state['referred-nino-input'] && state['has-national-insurance-number'] === 'yes'){
     res.render('citizen-application/national-insurance-number', { 
       cache: inputCache, 
       validation: {  'referred-nino-input': 'Enter a National Insurance number in the correct format'  }
     });
     return;
-  } else {
-    if (disallowedPrefixes.some(el => NINO[0].includes(el))) {
-      containsDisallowedPrefix = true;
-    } else {
-      containsDisallowedPrefix = false;
-    }
-  }
+  } 
 
   if (req.query && req.query.change) {
     redirectPath = 'review-application';
   }
  
   if (state['referred-nino-input'] && state['has-national-insurance-number'] === 'yes') {
+    if (disallowedPrefixes.some(el => NINO[0].includes(el))) {
+      containsDisallowedPrefix = true;
+    } else {
+      containsDisallowedPrefix = false;
+    }
+    
     if(ninoRegex && !containsDisallowedPrefix){
       res.redirect(redirectPath);
     }
