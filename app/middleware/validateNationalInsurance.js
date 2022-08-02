@@ -1,36 +1,57 @@
 const { trimDataValuesAndRemoveSpaces, savePageData, loadPageData } = require('./utilsMiddleware');
 
-const REGEX_NINO = new RegExp(/^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-D]{1}$/, 'i');
-
-
 function validateNationalInsurance(req, res, _next) {
-  
+
   const state = trimDataValuesAndRemoveSpaces(req.body);
 
   savePageData(req, state);
-
   const inputCache = loadPageData(req);
 
   let redirectPath = 'drivers-licence';
+  const NINO = state['referred-nino-input'].match(/[^\d]+|\d+/g);
+  const ninoRegex = state['referred-nino-input'].match(/^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-D]{1}$/i);
+  const disallowedPrefixes = ['BG', 'GB', 'KN', 'NK', 'NT', 'TN', 'ZZ'];
+  let containsDisallowedPrefix = false;
+
+  if(!state['referred-nino-input']){
+    res.render('citizen-application/national-insurance-number', { 
+      cache: inputCache, 
+      validation: {  'referred-nino-input': 'Enter a National Insurance number in the correct format'  }
+    });
+    return;
+  } else {
+    if (disallowedPrefixes.some(el => NINO[0].includes(el))) {
+      console.log(`Match using "${NINO[0]}"`);
+      containsDisallowedPrefix = true;
+    } else {
+      console.log(`No match using "${NINO[0]}"`);
+      containsDisallowedPrefix = false;
+    }
+  }
 
   if (req.query && req.query.change) {
     redirectPath = 'review-application';
   }
  
-  if (state['has-national-insurance-number'] && state['has-national-insurance-number'] === 'yes') {
-    if (REGEX_NINO.test(state['referred-nino-input'])) {
-      req.session.data["national-insurance-number"] = state['referred-nino-input'];
+  if (state['referred-nino-input'] && state['has-national-insurance-number'] === 'yes') {
+    if(ninoRegex && !containsDisallowedPrefix){
       res.redirect(redirectPath);
-    } else {
+    }
+    else {
       res.render('citizen-application/national-insurance-number', { 
         cache: inputCache, 
         validation: {  'referred-nino-input': 'Enter a National Insurance number in the correct format'  }
       });
+      
     }
-  } else if (state['has-national-insurance-number'] === 'no') {
+  } 
+
+  else if (state['has-national-insurance-number'] === 'no') {
     req.session.data['has-national-insurance-number'] = 'no';
     res.redirect(redirectPath);
-  } else {
+  } 
+  
+  else {
     res.render('citizen-application/national-insurance-number', {
       cache: inputCache,
       validation: {
