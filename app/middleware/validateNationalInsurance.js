@@ -21,10 +21,8 @@ function validateNationalInsurance(req, res, _next) {
     return;
   } else {
     if (disallowedPrefixes.some(el => NINO[0].includes(el))) {
-      console.log(`Match using "${NINO[0]}"`);
       containsDisallowedPrefix = true;
     } else {
-      console.log(`No match using "${NINO[0]}"`);
       containsDisallowedPrefix = false;
     }
   }
