@@ -6,9 +6,12 @@ const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
+const { validateDriversLicence } = require('./middleware/validateDriversLicence');
+const { validatePassport } = require('./middleware/validatePassport');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
+
 
 const router = express.Router();
 const citizenRouter = express.Router(); 
@@ -230,11 +233,8 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
     res.redirect('/citizen-application/previous-names-q');
 });
 
-citizenRouter.post('/passport',invalidateCache, (req, res, next) => {
-    const inputCache = loadPageData(req);
-    const passportNumbersOnly = /^[0-9]+$/.test(req.session.data['passport-number']);
-    const dataValidation = {};
-        
+citizenRouter.post('/drivers-licence', invalidateCache, validateDriversLicence);
+
     if(!passportNumbersOnly || req.session.data['passport-number'].length !== 9){
         dataValidation['passport-number'] = 'Enter valid passport number';
     }
@@ -248,8 +248,11 @@ citizenRouter.post('/passport',invalidateCache, (req, res, next) => {
             res.redirect('/citizen-application/review-application')
         }
     }
-    
-   
+
+citizenRouter.post('/passport', invalidateCache, validatePassport);
+
+citizenRouter.get('/place-of-birth', invalidateCache, (req, res) => {
+    res.render('citizen-application/place-of-birth', { validation: null });
 });
 
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {

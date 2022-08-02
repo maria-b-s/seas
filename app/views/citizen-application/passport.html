@@ -43,7 +43,7 @@
                             <input
                                 class="govuk-radios__input"
                                 id="passport"
-                                name="passport"
+                                name="has-passport"
                                 type="radio"
                                 value="yes"
                                 aria-label="Yes, input in sub menu"
@@ -70,6 +70,11 @@
                                     autocomplete="name"
                                 />
                             </div>
+                            {% if validation['passport-country-of-issue'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-country-of-issue'] }}
+                                    </span>
+                                {% endif %}
                             {{ country({ label: 'Country of issue', inputClass: 'govuk-!-width-one-half', name: 'passport-country-of-issue', value: data["passport-country-of-issue"] }) }}
                         </div>
 
@@ -77,7 +82,7 @@
                             <input
                                 class="govuk-radios__input"
                                 id="passport-2"
-                                name="passport"
+                                name="has-passport"
                                 type="radio"
                                 value="no"
                                 {{ checked("passport", "no") }}

@@ -90,7 +90,7 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Passport number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}
+                        {% if data['has-passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="passport?change=true">
