@@ -81,7 +81,7 @@
                                         type="text" id="referred-nino-input"
                                         autocomplete="on"
                                         id="referred-nino-input"
-                                        value="{{cache['referred-nino-input']}}"
+                                        value="{{data['referred-nino-input']}}"
                                     />
                                 </div>
                             </div>
@@ -92,7 +92,7 @@
                                     name="has-national-insurance-number"
                                     type="radio"
                                     value="no"
-                                    {% if cache['has-national-insurance-number'] === 'no' %} checked="checked" {% endif %}
+                                    {% if data['has-national-insurance-number'] === 'no' %} checked="checked" {% endif %}
                                     data-aria-controls="conditional-contact-2"
                                 />
                                 <label class="govuk-label govuk-radios__label" for="contact-2"> No </label>

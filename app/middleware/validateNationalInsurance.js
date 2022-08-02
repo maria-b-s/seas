@@ -32,8 +32,10 @@ function validateNationalInsurance(req, res, _next) {
     } else {
       containsDisallowedPrefix = false;
     }
-    
+
     if(ninoRegex && !containsDisallowedPrefix){
+      req.session.data['referred-nino-input'] = state['referred-nino-input'];
+      console.log(req.session.data)
       res.redirect(redirectPath);
     }
     else {

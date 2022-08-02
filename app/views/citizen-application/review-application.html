@@ -66,7 +66,7 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">National insurance number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['has-national-insurance-number'] === 'no'%} N/A {% else %} {{data['national-insurance-number']}} {% endif %}
+                        {% if data['has-national-insurance-number'] === 'no'%} N/A {% else %} {{data['referred-nino-input']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="national-insurance-number?change=true">
