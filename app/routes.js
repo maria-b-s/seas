@@ -235,20 +235,6 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
 
 citizenRouter.post('/drivers-licence', invalidateCache, validateDriversLicence);
 
-    if(!passportNumbersOnly || req.session.data['passport-number'].length !== 9){
-        dataValidation['passport-number'] = 'Enter valid passport number';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('citizen-application/passport', { cache: inputCache,   validation: dataValidation });
-    } else {
-        if(!req.session.data.change){
-            res.redirect('/citizen-application/place-of-birth');
-        } else {
-            res.redirect('/citizen-application/review-application')
-        }
-    }
-
 citizenRouter.post('/passport', invalidateCache, validatePassport);
 
 citizenRouter.get('/place-of-birth', invalidateCache, (req, res) => {
