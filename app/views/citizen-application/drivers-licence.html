@@ -1,4 +1,6 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} 
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -13,7 +15,22 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'review-application' if query['change'] == 'true' else 'passport'}}" method="post">
+        {% if validation | length %}
+
+          {% set errorList = [] %}
+
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
+
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+        {% endif %}
+
+        <form class="form" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="drivers-licence-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -42,6 +59,11 @@ endset%} {% block beforeContent %}
                                 <label class="govuk-label" for="drivers-licence-number"  aria-label="enter your UK Drivers Licence number"> Driving licence number </label>
                                 <div id="nino-hint" class="govuk-hint">For example, MORGA657054SM9IJ</div>
                                 <!-- Need a regex for drivers license   -->
+                                {% if validation['drivers-licence-number'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['drivers-licence-number'] }}
+                                    </span>
+                                {% endif %}
                                 <input
                                     class="govuk-input govuk-!-width-one-half"
                                     id="drivers-licence-number"
