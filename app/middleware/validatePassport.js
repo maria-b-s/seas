@@ -16,9 +16,13 @@ function validatePassport(req, res, _next) {
 
   if(state['has-passport'] == 'no'){
     req.session.data['passport-number'] = null;
-    req.session.data['has-passport'] = null;
+    req.session.data['passport-country-of-issue'] = null;
     req.session.data['has-passport'] = state['has-passport'];
     res.redirect(redirectPath)
+  }
+  
+  if(!state['has-passport']){
+    dataValidation['has-passport'] = 'Select an option';
   }
 
   if((!passportNumbersOnly || state['passport-number'].length !== 9) && state['has-passport'] == 'yes'){

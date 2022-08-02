@@ -235,7 +235,11 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
 
 citizenRouter.post('/drivers-licence', invalidateCache, validateDriversLicence);
 
+citizenRouter.get('/passport', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('citizen-application/passport', { cache: inputCache, validation: null });
 
+});
 
 citizenRouter.post('/passport', invalidateCache, validatePassport);
 
