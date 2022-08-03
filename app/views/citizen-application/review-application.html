@@ -183,6 +183,30 @@ endset%} {% block beforeContent %}
                         </a>
                     </td>
                 </tr>
+                 <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Mobile number</th>
+                    <td class="govuk-table__cell" style="text-transform: uppercase">
+                        {% if data['wants-text'] === 'no'%} N/A {% else %} {{data['phone-number']}} {% endif %}
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a href="telephone-number?change=true">
+                            Change
+                            <span class="govuk-visually-hidden">phone number</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Country of Mobile Number</th>
+                    <td class="govuk-table__cell" style="text-transform: capitalize">
+                        {% if data['wants-text'] === 'no'%} N/A {% else %} {{data['phone-country']}} {% endif %}
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a href="telephone-number?change=true">
+                            Change
+                            <span class="govuk-visually-hidden">country of mobile number</span>
+                        </a>
+                    </td>
+                </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous convictions</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">{{data['previous-convictions']}}</td>

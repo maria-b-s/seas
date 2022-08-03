@@ -8,6 +8,7 @@ const { validateApplicationDetailsConfirm } = require('./middleware/validateAppl
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validatePassport } = require('./middleware/validatePassport');
+const { validatePhone } = require('./middleware/validatePhone');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
@@ -499,6 +500,15 @@ citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/national-insurance-number',invalidateCache, validateNationalInsurance);
+
+citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+   res.render('citizen-application/telephone-numberr', { cache: inputCache, validation: null });
+
+});
+
+citizenRouter.post('/telephone-number',invalidateCache, validatePhone);
 
 
 citizenRouter.post('/old-or-new', (req, res) => {

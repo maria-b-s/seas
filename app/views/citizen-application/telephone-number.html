@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
-
+{% from "country.njk" import country %} 
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
 {% block pageTitle %}
   Question page
 {% endblock %}
@@ -26,21 +27,93 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">What is your telephone number?</h1>
 
-      <form class="form" action="previous-convictions" method="post">
+       {% if validation | length %}
 
-        <div class="govuk-form-group">
-              <label class="govuk-label" for="email">
-                Telephone number
-              </label>
-        <input class="govuk-input govuk-!-width-two-thirds" id="telephone" name="telephone" type="telephone" spellcheck="false" aria-describedby="email-hint" autocomplete="email">
-        </div>
+          {% set errorList = [] %}
 
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
 
-        <button class="govuk-button" data-module="govuk-button">Continue</button>
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
 
-      </form>
+        {% endif %}
+
+   <form class="form" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Can we send you text messages to update you about your application?</h1>
+                    </legend>
+           
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input
+                                class="govuk-radios__input"
+                                id="phone"
+                                name="wants-text"
+                                type="radio"
+                                value="yes"
+                                aria-label="Yes, input in sub menu"
+                                data-aria-controls="conditional-contact"
+                                {% if cache['wants-text'] === 'yes' %} checked="checked" {% endif %}
+                                {{ checked("wants-text", "yes") }}
+                            />
+                            <label class="govuk-label govuk-radios__label" for="phone"> Yes </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-contact">
+                           {% if validation['phone-country'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-country'] }}
+                                </span>
+                            {% endif %}
+                            {{ country({ label: 'Which country is your mobile number registered in?', inputClass: 'govuk-!-width-one-half', name: 'phone-country', value: data["phone-country"] }) }}
+                                
+                            <div class="govuk-form-group {% if validation['phone-number'] %}govuk-form-group--error{% endif %}">    
+                                <label class="govuk-label" for="phone-number">What is your mobile number without the country code?</label>
+                                {% if validation['phone-number'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-number'] }}
+                                    </span>
+                                {% endif %}
+                                <input
+                                    class="govuk-input govuk-!-width-one-half"
+                                    id="phone-number"
+                                    name="phone-number"
+                                    type="text"
+                                    spellcheck="false"
+                                    value='{{data["phone-number"]}}'
+                                    autocomplete="name"
+                                />                       
+                            </div>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input
+                                class="govuk-radios__input"
+                                id="phone-2"
+                                name="wants-text"
+                                type="radio"
+                                value="no"
+                                {% if cache['wants-text'] === 'no' %} checked="checked" {% endif %}
+                                {{ checked("wants-text", "no") }}
+                            />
+                            <label class="govuk-label govuk-radios__label" for="phone-2"> No </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+        </form>
 
     </div>
   </div>
