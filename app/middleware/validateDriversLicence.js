@@ -8,51 +8,37 @@ function validateDriversLicence(req, res, _next) {
   const inputCache = loadPageData(req);
 
   let redirectPath = 'passport';
-  const NINO = state['drivers-licence-number'].match(/[^\d]+|\d+/g);
-
-  if(!state['drivers-licence-number'] && state['has-drivers-license'] === 'no'){
-    res.render('citizen-application/drivers-licence', { 
-      cache: inputCache, 
-      validation: {  'drivers-licence-number': 'Enter a driving licence number'  }
-    });
-    return;
-  } else {
-    if (disallowedPrefixes.some(el => NINO[0].includes(el))) {
-      containsDisallowedPrefix = true;
-    } else {
-      containsDisallowedPrefix = false;
-    }
-  }
-
+  const driversLicence = state['drivers-licence-number'].match(/[^\d]+|\d+/g);
+  const licenseMatchesRegex = /^^[A-Z9]{5}\d{6}[A-Z9]{2}\d[A-Z]{2}$$/.test(state['drivers-licence-number'])
+  let dataValidation = {}
+  
   if (req.query && req.query.change) {
     redirectPath = 'review-application';
   }
- 
-  if (state['drivers-licence-number'] && state['has-drivers-license'] === 'yes') {
-    if(ninoRegex && !containsDisallowedPrefix){
-      res.redirect(redirectPath);
-    }
-    else {
-      res.render('citizen-application/national-insurance-number', { 
-        cache: inputCache, 
-        validation: {  'drivers-licence-number': 'Enter a driving licence number in the correct format'  }
-      });
-      
-    }
-  } 
 
-  else if (state['has-drivers-license'] === 'no') {
-    req.session.data['has-drivers-license'] = 'no';
-    res.redirect(redirectPath);
-  } 
-  
-  else {
-    res.render('citizen-application/national-insurance-number', {
-      cache: inputCache,
-      validation: {
-        'has-drivers-license': 'Please select whether you have a UK National Insurance number'
-      }});
+  if(state['has-drivers-license'] == 'no'){
+    req.session.data['drivers-licence-number'] = null;
+    req.session.data['has-drivers-license'] = state['has-drivers-license'];
+    console.log(req.session.data)
+    res.redirect(redirectPath)
   }
+  
+  if(!state['has-drivers-license']){
+    dataValidation['has-drivers-license'] = 'Select an option';
+  }
+
+  if(!licenseMatchesRegex && state['has-drivers-license'] == 'yes'){
+    dataValidation['drivers-licence-number'] = 'Enter valid driving licence number';
+  }
+
+  if (Object.keys(dataValidation).length) {
+    res.render('citizen-application/drivers-licence', { cache: inputCache,   validation: dataValidation });
+  } else {
+    req.session.data['drivers-licence-number'] = state['drivers-licence-number'];
+    req.session.data['has-drivers-license'] = state['has-drivers-license'];
+    console.log(req.session.data)
+    res.redirect(redirectPath)
+  }  
 }
 
 

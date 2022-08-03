@@ -233,6 +233,11 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
     res.redirect('/citizen-application/previous-names-q');
 });
 
+citizenRouter.get('/drivers-licence', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('citizen-application/drivers-licence', { cache: inputCache, validation: null });
+});
+
 citizenRouter.post('/drivers-licence', invalidateCache, validateDriversLicence);
 
 citizenRouter.get('/passport', invalidateCache, (req, res) => {
