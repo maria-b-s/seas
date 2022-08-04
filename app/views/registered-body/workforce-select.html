@@ -1,6 +1,6 @@
-{% import "../../macros/form-elements.njk" as fe %}
-{% import "../../macros/question-info.njk" as ql %}
-{% import "../../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% import "../macros/form-elements.njk" as fe %}
+{% import "../macros/question-info.njk" as ql %}
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
 {% extends "layout.html" %}
 
 {% block beforeContent %}
@@ -13,7 +13,7 @@
     </p>
 </div>
 
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+<a class="govuk-back-link" href="/registered-body/dbs-check-level">Back</a>
 {% endblock %}
 
  {% block content %}

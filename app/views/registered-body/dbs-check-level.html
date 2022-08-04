@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
 {% block pageTitle %}
 Question page
 {% endblock %}
@@ -23,6 +23,21 @@ Request a standard or enhanced DBS check
 {% endblock %}
 
 {% block content %}
+
+{% if validation|length %}
+
+    {% set errorList = [] %}
+
+    {% for key, value in validation %}
+      {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
+    {% endfor %}
+
+    {{ es.govukErrorSummary({
+      "titleText": 'There is a problem',
+      "errorList": errorList 
+      }) 
+    }}
+  {% endif %}
 
 <div class='govuk-grid-row'>
     <div class='govuk-grid-column-two-thirds'>

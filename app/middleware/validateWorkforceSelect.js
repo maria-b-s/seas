@@ -9,7 +9,6 @@ const cms = {
 function validateWorkforceSelect(req, res){
   savePageData(req, req.body);
   const inputCache = loadPageData(req);
-
   let validation = null;
 
   if (!req.body['radio-group-workforce-select']) {
@@ -21,7 +20,18 @@ function validateWorkforceSelect(req, res){
     res.render('registered-body/enhanced/workforce-select',  { cms, cache: inputCache, validation: validation });
   } else {
     req.session.data['workforce-selected'] = req.body['radio-group-workforce-select'];
-    res.redirect('/registered-body/position');
+    // Standard Route
+    if(req._parsedOriginalUrl.path == '/registered-body/workforce-select'){
+      res.redirect('/registered-body/position');
+    } 
+    // Enhanced Route
+    else {
+      if(req.session.data['workforce-selected'] == 'Adult'){
+        res.redirect('/registered-body/enhanced/barred-list-adults');
+      } else {
+        res.redirect(`/registered-body/enhanced/barred-list-children?selected=${req.session.data['workforce-selected']}`);
+      } 
+    }
   }
 
 }

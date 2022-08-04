@@ -12,6 +12,7 @@ const { validatePhone } = require('./middleware/validatePhone');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
+const { renderString } = require('nunjucks');
 
 
 const router = express.Router();
@@ -34,6 +35,18 @@ registeredBodyRouter.post('/select-flow', (req, res) => {
     );
 });
 
+registeredBodyRouter.get('/workforce-select', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+   res.render('registered-body/workforce-select', { cms, cache: inputCache, validation: null });
+
+});
+
+registeredBodyRouter.post('/workforce-select',invalidateCache, validateWorkforceSelect);
+
+
+// ENHANCED WORKFORCE 
+
 registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
@@ -42,6 +55,84 @@ registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, re
 });
 
 registeredBodyRouter.post('/enhanced/workforce-select',invalidateCache, validateWorkforceSelect);
+
+
+// Adults
+registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/enhanced/barred-list-adults', (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let validation = null;
+    
+    if (!req.body['barred-adults']) {
+
+        validation = {
+          'barred-adults': 'Select an option'
+        }
+    
+        res.render('registered-body/enhanced/barred-list-adults',  { cms, cache: inputCache, validation: validation });
+    } else {
+        req.session.data['barred-adults'] = req.body['barred-adults'];
+        res.redirect('/registered-body/enhanced/working-at-home-address');
+    }
+});
+
+// Children
+registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/enhanced/barred-list-children', (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let validation = null;
+    
+    if (!req.body['barred-children']) {
+
+        validation = {
+          'barred-children': 'Select an option'
+        }
+    
+        res.render('registered-body/enhanced/barred-list-children',  { cms, cache: inputCache, validation: validation });
+    } else {
+        req.session.data['barred-children'] = req.body['barred-children'];
+
+        if(req.query['selected'] == 'Child'){
+            res.redirect('/registered-body/enhanced/working-at-home-address');
+        } else {
+            res.redirect('/registered-body/enhanced/barred-list-adults');
+        }
+    }
+});
+
+// Working at home
+registeredBodyRouter.get('/enhanced/working-at-home-address', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let validation = null;
+    
+    if (!req.body['children-or-adults']) {
+
+        validation = {
+          'children-or-adults': 'Select an option'
+        }
+    
+        res.render('registered-body/enhanced/working-at-home-address',  { cms, cache: inputCache, validation: validation });
+    } else {
+        req.session.data['children-or-adults'] = req.body['children-or-adults'];
+        res.redirect('/registered-body/position');
+    }
+});
 
 // Add your routes here - above the module.exports line
 
@@ -119,12 +210,19 @@ const lastNames = [
 router.post('/dbs-check-answer', (req, res) => {
     // Make a variable and give it the value from 'what-dbs-check'
     const whatDbsCheck = req.session.data['what-dbs-check'];
+    if (!whatDbsCheck) {
+
+        validation = {
+          'what-dbs-check': 'Select an option'
+        }
+    
+        res.render('registered-body/dbs-check-level',  { validation: validation });
+    }
     // Check whether the variable matches a condition
-    if (whatDbsCheck === 'Enhanced with barred list')
-        return res.redirect(`registered-body/enhanced/barred-list-children${req.header('referer').includes('change=true') ? '?change=true' : ''}`);
-    if (req.header('referer').includes('change=true')) return res.redirect('registered-body/check-answers');
-    if (whatDbsCheck === 'Standard') return res.redirect('registered-body/position');
-    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/position');
+    if (whatDbsCheck === 'Enhanced with barred list') return res.redirect('registered-body/enhanced/workforce-select');
+    //if (req.header('referer').includes('change=true')) return res.redirect('registered-body/check-answers');
+    if (whatDbsCheck === 'Standard') return res.redirect('registered-body/workforce-select');
+    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/workforce-select');
     return undefined;
 });
 
