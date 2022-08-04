@@ -84,7 +84,7 @@ registeredBodyRouter.post('/enhanced/barred-list-adults', (req, res) => {
 // Children
 registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+   res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/enhanced/barred-list-children', (req, res) => {
