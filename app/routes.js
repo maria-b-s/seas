@@ -9,10 +9,12 @@ const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelec
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
+const { validateBarred } = require('./middleware/validateBarred');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
 const { renderString } = require('nunjucks');
+
 
 
 const router = express.Router();
@@ -63,23 +65,7 @@ registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, 
    res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/enhanced/barred-list-adults', (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let validation = null;
-    
-    if (!req.body['barred-adults']) {
-
-        validation = {
-          'barred-adults': 'Select an option'
-        }
-    
-        res.render('registered-body/enhanced/barred-list-adults',  { cms, cache: inputCache, validation: validation });
-    } else {
-        req.session.data['barred-adults'] = req.body['barred-adults'];
-        res.redirect('/registered-body/enhanced/working-at-home-address');
-    }
-});
+registeredBodyRouter.post('/enhanced/barred-list-adults',invalidateCache, validateBarred);
 
 // Children
 registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
@@ -87,28 +73,8 @@ registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req
    res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/enhanced/barred-list-children', (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let validation = null;
-    
-    if (!req.body['barred-children']) {
+registeredBodyRouter.post('/enhanced/barred-list-children',invalidateCache, validateBarred);
 
-        validation = {
-          'barred-children': 'Select an option'
-        }
-    
-        res.render('registered-body/enhanced/barred-list-children',  { cms, cache: inputCache, validation: validation });
-    } else {
-        req.session.data['barred-children'] = req.body['barred-children'];
-
-        if(req.query['selected'] == 'Child'){
-            res.redirect('/registered-body/enhanced/working-at-home-address');
-        } else {
-            res.redirect('/registered-body/enhanced/barred-list-adults');
-        }
-    }
-});
 
 // Working at home
 registeredBodyRouter.get('/enhanced/working-at-home-address', invalidateCache, (req, res) => {
