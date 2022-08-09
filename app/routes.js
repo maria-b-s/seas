@@ -675,11 +675,11 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
     let selectedUser = undefined;
 
     if (!req.body['registered-body-nr']) {
-        dataValidation['registered-body-nr'] = 'Enter registered body number';
+        dataValidation['registered-body-nr'] = 'Enter Registered Body number';
     }
 
     if (!req.body['counter-signatory-nr']) {
-        dataValidation['counter-signatory-nr'] = 'Enter countersignatory number'
+        dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number'
     }
 
     if (req.body['registered-body-nr'] && req.body['counter-signatory-nr']) {
