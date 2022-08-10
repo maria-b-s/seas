@@ -716,7 +716,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
     }
 
     if (req.body['registered-body-nr'] && req.body['counter-signatory-nr'] && !selectedUser) {
-        dataValidation['registered-body-nr'] = 'Unable to find your details, review your values and try again';
+        dataValidation['registered-body-nr'] = 'Unable to find your details, please check your number and try again';
     }
 
     if (Object.keys(dataValidation).length) {
