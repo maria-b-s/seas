@@ -14,6 +14,7 @@ const { invalidateCache, loadPageData, savePageData } = require('./middleware/ut
 const moment = require('moment');
 const _ = require('lodash');
 const { renderString } = require('nunjucks');
+const { validateOrganisation } = require('./middleware/validateOrganisation');
 
 
 
@@ -27,6 +28,16 @@ const cms = {
         continue: "Continue",
     }
 };
+
+registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+   res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
+
+});
+
+
+registeredBodyRouter.post('/organisation-name',invalidateCache, validateOrganisation);
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];

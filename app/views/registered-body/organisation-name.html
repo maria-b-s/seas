@@ -1,4 +1,6 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} 
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -12,37 +14,86 @@ endset%} {% block beforeContent %}
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row what-org">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'check-answers' if query['change'] == 'true' else 'applicant-or-post-holder'}}" method="post">
-            <div class="govuk-form-group">
-                <h1 class="govuk-label-wrapper">
 
-                    <label class="govuk-label govuk-label--l"> What organisation is the check for?</label>
-                </h1>
+    <div class="govuk-grid-column-two-thirds">
+         {% if validation | length %}
+
+          {% set errorList = [] %}
+
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
+
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+        {% endif %}
+        <form class="form" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">What organisation is the check for?</h1>
+                    </legend>
+                </fieldset>
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="my-org" name="whos-check" type="radio" value="my-org" {{ checked("whos-check", "my-org") }} />
+                        <input
+                            class="govuk-radios__input"
+                            id="my-org"
+                            name="organisation-check"
+                            type="radio"
+                            value="my-org"
+                            data-aria-controls="conditional-contact-2"
+                            {{ checked("organisation-check", "my-org") }}
+                        />
                         <label class="govuk-label govuk-radios__label" for="my-org"> My organisation </label>
                     </div>
+
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="someone-else" name="whos-check" type="radio" value="another-org" {{ checked("whos-check", "another-org") }}/>
+                        <input
+                            class="govuk-radios__input"
+                            id="someone-else" 
+                            name="organisation-check"
+                            type="radio"
+                            value="another-org"
+                            {{ checked("organisation-check", "another-org") }}
+                            data-aria-controls="conditional-contact"
+                        />
                         <label class="govuk-label govuk-radios__label" for="someone-else"> Another organisation </label>
+                    </div>
+                    <div aria-live="polite">
+                        <div class="govuk-radios__conditional" id="conditional-contact">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="drivers-licence-number">What is the name of the organisation?</label>
+                                {% if validation['organisation-name'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['organisation-name'] }}
+                                    </span>
+                                {% endif %}
+                                <input
+                                    class="govuk-input govuk-!-width-one-half"
+                                    id="organisation-name"
+                                    name="organisation-name"
+                                    type="text"
+                                    spellcheck="false"
+                                    autocomplete="email"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group add-another-name" style="display: none">
-                <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--m" for="event-name"> What is the name of the employer or organisation? </label>
-                </h1>
-                <input class="govuk-input govuk-input--width-20" id="event-name" name="org-name" type="text" value="{{ data['org-name'] }}"/>
-            </div>
+
             {% if query['change'] === 'true' %}
-                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
-                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}
         </form>
     </div>
+
 </div>
 
 {% endblock %}

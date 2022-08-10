@@ -32,8 +32,8 @@ endset%} {% block beforeContent %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Company or organisation</dt>
                 <dd class="govuk-summary-list__value">
-                    {% if data['whos-check'] === 'another-org' %}
-                        <p>{{ data['org-name'] }}</p>
+                    {% if data['organisation-check'] === 'another-org' %}
+                        <p>{{ data['organisation-name'] }}</p>
                     {% else %}
                         <p>My organisation</p>
                     {% endif %}

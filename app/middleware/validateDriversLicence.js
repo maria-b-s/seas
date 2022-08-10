@@ -19,7 +19,6 @@ function validateDriversLicence(req, res, _next) {
   if(state['has-drivers-license'] == 'no'){
     req.session.data['drivers-licence-number'] = null;
     req.session.data['has-drivers-license'] = state['has-drivers-license'];
-    console.log(req.session.data)
     res.redirect(redirectPath)
   }
   
@@ -36,7 +35,6 @@ function validateDriversLicence(req, res, _next) {
   } else {
     req.session.data['drivers-licence-number'] = state['drivers-licence-number'];
     req.session.data['has-drivers-license'] = state['has-drivers-license'];
-    console.log(req.session.data)
     res.redirect(redirectPath)
   }  
 }
