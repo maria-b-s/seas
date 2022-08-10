@@ -33,6 +33,9 @@
     }}
   {% endif %}
 
+  <div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
   <h1 class="govuk-heading-l page-heading govuk-!-margin-bottom-4"> Which workforce will the applicant be working in? </h1>
 
   <form action="" method="post" class="form">
@@ -48,7 +51,7 @@
         items=[
           {group: 'workforce-select', answerOption: 'Adult', value: 'Adult',  label: "Adult", dataTarget: 'save-and-continue' },
           {group: 'workforce-select', answerOption: 'Child', value: 'Child', label: 'Child', dataTarget: 'save-and-continue' },
-          {group: 'workforce-select', answerOption: 'Adult & Child', value: 'Adult & Child', label: 'Adult & Child', dataTarget: 'save-and-continue' },
+          {group: 'workforce-select', answerOption: 'Adult and Child', value: 'Adult and Child', label: 'Adult and Child', dataTarget: 'save-and-continue' },
           {group: 'workforce-select', answerOption: 'Other', value: 'Other', label: 'Other', dataTarget: 'save-and-continue' }
         ],
         disabledOnSelection=false
@@ -60,6 +63,29 @@
     {{ fe.save_button(cms=cms, 'govuk-!-margin-top-4') }}
     
   </form>
+  </div>
+
+
+    <div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related content
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="https://www.gov.uk/government/publications/dbs-workforce-guidance">            	
+                  How to identify the type of workforce that an applicant will be working in
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+    </div>
+
+</div>
 
 
 {% endblock %}
