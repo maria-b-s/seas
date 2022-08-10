@@ -974,7 +974,7 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
     }
 
     if (req.body['password-first'] && req.body['password-match'] && (req.body['password-first'] !== req.body['password-match'])) {
-        dataValidation['password-match'] = 'The password does not match';
+        dataValidation['password-match'] = 'Your passwords do not match, please re-enter and try again';
     } else if (user) {
         let newUserState = { ...user };
         newUserState.hasSetPassword = true;
