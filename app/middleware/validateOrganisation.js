@@ -6,7 +6,6 @@ function validateOrganisation(req, res, _next) {
 
   savePageData(req, state);
   const inputCache = loadPageData(req);
-  console.log(state)
   let redirectPath = 'applicant-or-post-holder';
   const organisationName = state['organisation-name']
   let dataValidation = {}

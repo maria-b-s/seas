@@ -29,6 +29,15 @@ const cms = {
     }
 };
 
+registeredBodyRouter.post('/position', (req, res) => {
+    if(req.query.change == 'true'){
+        res.redirect('check-answers')
+    } else {
+        res.redirect('organisation-name')
+    }
+
+});
+
 registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
