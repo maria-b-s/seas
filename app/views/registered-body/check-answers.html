@@ -89,6 +89,26 @@ endset%} {% block beforeContent %}
                     </a>
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Workforce</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['workforce-selected'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    {% if data['what-dbs-check'] === 'Enhanced with barred list' %}
+                        <a href="enhanced/workforce-select?change=true">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                        </a>
+                    {% else %}
+                        <a href="workforce-select?change=true"
+                        >
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                        </a>
+                    {% endif %}
+                </dd>
+            </div>
         </dl>
 
         <h2 class="govuk-heading-m">Applicant details</h2>
@@ -125,7 +145,7 @@ endset%} {% block beforeContent %}
                 <div class="govuk-checkboxes__item" style='margin-bottom: 1rem'>
                     <input class="govuk-checkboxes__input" id="declare-check-answers" name="declare-check-answers" type="checkbox" value="" />
                     <label class="govuk-label govuk-checkboxes__label" for="declare-check-answers">
-                        I declare that to the best of my knowledge, the details I am providing are correct.
+                        I declare that to the best of my knowledge, the details I'm providing are correct.
                     </label>
                 </div>
                 <input type="hidden" name="answers-checked" value="true" />
