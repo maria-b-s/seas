@@ -18,8 +18,11 @@ endset%} {% block beforeContent %}
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
-                        <h1 class="govuk-fieldset__heading">Is the applicant being re-checked?</h1>
+                        <h1 class="govuk-fieldset__heading">Is this application for a recheck?</h1>
                     </legend>
+                    <div id="changed-name-hint" class="govuk-hint">
+                    A recheck can be done if the applicant already has a DBS check. 
+                    </div>
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="changed-name" name="changed-name" type="radio" value="yes">
@@ -43,6 +46,25 @@ endset%} {% block beforeContent %}
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}
         </form>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related content
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="https://www.gov.uk/dbs-update-service">
+                    DBS Update Service
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
     </div>
 </div>
 
