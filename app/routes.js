@@ -270,9 +270,21 @@ citizenRouter.post('/add-address', (req, res) => {
         postcode: address[3],
         country: address[4],
         startYear: address[5],
+        endYear: address[6]
     });
     req.session.data.addresses = addresses;
     return res.redirect('previous-address');
+});
+
+citizenRouter.get('/remove-address', (req, res) => {
+    let oldArray = req.session.data.addresses
+    
+    newArray = oldArray.filter(function( obj ) {
+        return obj.lineOne !== oldArray[(req.query.address - 1)].lineOne;
+    });
+
+    req.session.data.addresses = newArray
+    res.redirect('previous-address');
 });
 
 citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
