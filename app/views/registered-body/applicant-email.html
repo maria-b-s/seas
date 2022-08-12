@@ -1,4 +1,6 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} 
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+{% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -13,22 +15,42 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+        {% if validation | length %}
+
+          {% set errorList = [] %}
+
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
+
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+        {% endif %}
+
         <h1 class="govuk-heading-l">
             What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} email address?
         </h1>
-        <form class="form" action="check-answers" method="post">
+        <form class="form" method="post">
             <div class="govuk-form-group">
                 <label class="govuk-label" for="applicant-email"> Email address </label>
                 <div id="email-hint" class="govuk-hint">We’ll only use this to contact them about their DBS check</div>
+                {% if validation['applicant-email'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['applicant-email'] }}
+                                    </span>
+                                {% endif %}
                 <input
-                    oncopy="return false"
+                    {# oncopy="return false"
                     oncut="return false"
-                    onpaste="return false"
+                    onpaste="return false" #}
                     class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email"
                     name="applicant-email"
                     value="{{ data['applicant-email'] }}"
-                    type="email"
+                    type="text"
                     spellcheck="false"
                     aria-describedby="email-hint"
                     autocomplete="email"
@@ -36,18 +58,23 @@ endset%} {% block beforeContent %}
             </div>
             <div class="govuk-form-group">
                 <label class="govuk-label" for="applicant-email-confirm"> Confirm email address </label>
+                {% if validation['applicant-email-confirm'] %}
+                                    <span id="ninonr-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['applicant-email-confirm'] }}
+                                    </span>
+                                {% endif %}
                 <input
-                    oncopy="return false"
+                    {# oncopy="return false"
                     oncut="return false"
-                    onpaste="return false"
+                    onpaste="return false" #}
                     class="govuk-input govuk-input--width-20 blocked"
                     id="applicant-email-confirm"
                     name="applicant-email-confirm"
                     value="{{ data['applicant-email'] }}"
-                    type="email"
+                    type="text"
                     spellcheck="false"
                     aria-describedby="email-hint"
-                    autocomplete="email"
+                    autocomplete="off"
                 />
             </div>
 

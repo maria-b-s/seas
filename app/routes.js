@@ -120,6 +120,43 @@ registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
     }
 });
 
+registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/applicant-email', (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+    let applicantEmail = req.body['applicant-email'];
+    let applicantEmailConfirm = req.body['applicant-email-confirm'];
+
+    if(!applicantEmail){
+        dataValidation['applicant-email'] = 'Enter email address';
+    }
+
+    if(!applicantEmailConfirm){
+        dataValidation['applicant-email-confirm'] = 'Enter email address';
+    }
+
+    if(!applicantEmail.includes('@')){
+        dataValidation['applicant-email'] = 'Enter valid email address';
+    }
+
+    if(applicantEmail != applicantEmailConfirm){
+        dataValidation['applicant-email-confirm'] = 'Email addresses do not match'
+    }
+    
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/applicant-email', { cache: inputCache,   validation: dataValidation });
+      } else {
+        res.redirect('check-answers')
+      }  
+
+    
+});
+
 // Add your routes here - above the module.exports line
 
 /* region defs */
