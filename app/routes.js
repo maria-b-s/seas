@@ -120,6 +120,23 @@ registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
     }
 });
 
+registeredBodyRouter.get('/applicant-name', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   res.render('registered-body/applicant-name', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if(req.query.change == "true"){
+        res.redirect('check-answers')
+    } else {
+        res.redirect('applicant-email')
+    }
+    
+});
+
 registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
    res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
