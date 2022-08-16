@@ -61,7 +61,9 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                 </details>
                 <div style="margin-bottom: 2rem">
                     <p class="govuk-body">
+                        {% if query['certificate'] != 'true' %}
                         <a href="/citizen-application/homeless-or-travelling" class="govuk-link">I'm homeless, travelling, or do not have an address</a>
+                        {% endif %}
                     </p>
                 </div>
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
