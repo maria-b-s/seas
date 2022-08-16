@@ -130,12 +130,15 @@ endset%} {% block beforeContent %}
                     <td class="govuk-table__cell" style="text-transform: capitalize">
                         {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
-                        {{data['addresses'][0].townOrCity }} <br />
+                        {{data['addresses'][0].townOrCity }} 
                         {% if data['addresses'][0].postcode.length == 7 %}
                                 {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                            {% else %}
+                        {% endif %} 
+                        {% if data['addresses'][0].postcode.length == 6 %}
                                 {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
-                            {% endif %} 
+                        {% else %}
+                                {{data['addresses'][0].postcode }} 
+                        {% endif %}
                         {{data['addresses'][0].country }} <br />
                     </td>
                     <td class="govuk-table__cell">
