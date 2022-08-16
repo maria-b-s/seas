@@ -29,11 +29,12 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Previous Names</th>
+                    <th scope="row" class="govuk-table__header">Previous names</th>
                     <td class="govuk-table__cell">
                         {% if not data['prevNames'] or data['prevNames'].length === 0 %} None Entered {% endif %}
                         {% for item in data['prevNames'] %}
-                            {{[ item.first_name | capitalize, ' ' ,item.middle_names, ' ' , item.last_name | capitalize] | join }} <br />
+                            {{[ item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' , item.last_name | capitalize] | join }} <br />
+                            {{ [item.used_from , ' - ', item.used_to] | join}}
                         {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
@@ -64,9 +65,9 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">National insurance number</th>
+                    <th scope="row" class="govuk-table__header">National Insurance number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['has-national-insurance-number'] === 'no'%} N/A {% else %} {{data['referred-nino-input']}} {% endif %}
+                        {% if data['has-national-insurance-number'] === 'no'%} Not provided {% else %} {{data['referred-nino-input']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="national-insurance-number?change=true">
@@ -76,9 +77,9 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Driver's licence number</th>
+                    <th scope="row" class="govuk-table__header">Driving licence number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['has-drivers-license'] === 'no'%} N/A {% else %} {{data['drivers-licence-number']}} {% endif %}
+                        {% if data['has-drivers-license'] === 'no'%} Not provided {% else %} {{data['drivers-licence-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="drivers-licence?change=true">
@@ -90,7 +91,7 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Passport number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['has-passport'] === 'no'%} N/A {% else %} {{data['passport-number']}} {% endif %}
+                        {% if data['has-passport'] === 'no'%} Not provided {% else %} {{data['passport-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="passport?change=true">
@@ -102,7 +103,7 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Country of issue</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
-                        {% if data['passport'] === 'no'%} N/A {% else %} {{data['passport-country-of-issue']}} {% endif %}
+                        {% if data['passport'] === 'no'%} Not provided {% else %} {{data['passport-country-of-issue']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="passport?change=true">
@@ -130,11 +131,15 @@ endset%} {% block beforeContent %}
                         {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
                         {{data['addresses'][0].townOrCity }} <br />
-                        {{data['addresses'][0].postcode }} <br />
+                        {% if data['addresses'][0].postcode.length == 7 %}
+                                {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
+                            {% else %}
+                                {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                            {% endif %} 
                         {{data['addresses'][0].country }} <br />
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="address-details?change=true">
                             Change
                             <span class="govuk-visually-hidden">current address</span>
                         </a>
@@ -147,7 +152,13 @@ endset%} {% block beforeContent %}
                         {% if item.lineOne !== '' %} {{item.lineOne}} <br /> {% endif %}
                         {% if item.lineTwo !== '' %} {{item.lineTwo}} <br /> {% endif %}
                         {% if item.townOrCity !== '' %} {{item.townOrCity}} <br /> {% endif %}
-                        {% if item.postcode !== '' %} {{item.postcode}} <br /> {% endif %}
+                        {% if item.postcode !== '' %} 
+                            {% if item.postcode.length == 7 %}
+                                {{item.postcode.slice(0, 4) | upper}} {{item.postcode.slice(4, 7) | upper }} <br />
+                            {% else %}
+                                {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
+                            {% endif %} 
+                        {% endif %}
                         {% if item.country !== '' %} {{item.country}} <br /> {% endif %}
                         <br />
                         {% endfor %}
@@ -160,7 +171,7 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Certificate destination address</th>
+                    <th scope="row" class="govuk-table__header">Certificate postal address</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
                         {% if data['where-to-send-cert'] == 'Current Address' %}
                             {{data['current-address'][0]}} <br />
@@ -186,7 +197,7 @@ endset%} {% block beforeContent %}
                  <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Mobile number</th>
                     <td class="govuk-table__cell" style="text-transform: uppercase">
-                        {% if data['wants-text'] === 'no'%} N/A {% else %} {{data['phone-number']}} {% endif %}
+                        {% if data['wants-text'] === 'no'%} Not provided {% else %} {{data['phone-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="telephone-number?change=true">
@@ -196,9 +207,9 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Country of Mobile Number</th>
+                    <th scope="row" class="govuk-table__header">Country of mobile number</th>
                     <td class="govuk-table__cell" style="text-transform: capitalize">
-                        {% if data['wants-text'] === 'no'%} N/A {% else %} {{data['phone-country']}} {% endif %}
+                        {% if data['wants-text'] === 'no'%} Not provided {% else %} {{data['phone-country']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="telephone-number?change=true">
