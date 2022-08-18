@@ -18,7 +18,7 @@ endset%} {% block beforeContent %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Name</dt>
-                <dd class="govuk-summary-list__value">Jessica Christine Smith</dd>
+                <dd class="govuk-summary-list__value">{{ data['selectedApplication'][0].name}}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -109,8 +109,12 @@ endset%} {% block beforeContent %}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <form action="id-checked" method="post" novalidate>
                 <input type="hidden" name="answers-checked" value="true" />
-                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue to verify application</button>
             </form>
+            <form action='confirm-cancel?app={{query}}' method="post" novalidate>
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</button>
+            </form>
+            <a></a>
         </div>
     </div>
 </div>

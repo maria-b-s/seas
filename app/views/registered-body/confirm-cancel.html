@@ -1,0 +1,85 @@
+{% extends "layout.html" %} {% block pageTitle %} Verify applicant ID {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+
+    {% if data["selectedApplication"][0].status.text == 'CANCELLED'%}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+        Success
+        </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+        <h3 class="govuk-notification-banner__heading">
+        Application cancelled
+        </h3>
+    </div>
+    </div>
+    {% endif %}
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h1 class="govuk-heading-l">Applicant Details</h1>
+        </div>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant name</dt>
+                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].name }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Status</dt>
+                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].status.text }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Type</dt>
+                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].type }}</dd>
+
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date application started</dt>
+                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].date }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+        </dl>
+    
+        {% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form method="post" novalidate>
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</button>
+            </form>
+            <form action='/dashboard/home' method="post" novalidate>
+                <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Return to application list</button>
+            </form>
+            <a></a>
+        </div>
+        {% else %}
+        <p class="govuk-body">
+            We've sent an email to the applicant. <br> <br> 
+
+            You have not been charged for this application.  <br> <br> 
+
+            If the applicant still needs a DBS check, you must start a new application for them.
+        </p>
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action='/dashboard/home' method="post" novalidate>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Return to application list</button>
+            </form>
+            <a></a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

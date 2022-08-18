@@ -174,6 +174,51 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     
 });
 
+registeredBodyRouter.get('/verify-applicant-id', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == req.query.app
+    )
+    
+    req.session.data.selectedApplication = selectedApplication;
+    
+   
+   res.render('registered-body/verify-applicant-id', { cms, cache: inputCache, validation: null, query: req.query.app});
+});
+
+registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   
+   
+   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/confirm-cancel', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    let ref = req.query.app;
+   
+    for(app of req.session.data['applications']){
+        if(app.ref == ref){
+            app.status.id = '009';
+            app.status.text = 'CANCELLED'
+        }
+    }
+
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == ref
+    )
+    
+    req.session.data.selectedApplication = selectedApplication;
+
+   
+   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, validation: null });
+});
+
+
+
+
 // Add your routes here - above the module.exports line
 
 /* region defs */
