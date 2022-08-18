@@ -182,9 +182,8 @@ registeredBodyRouter.get('/verify-applicant-id', invalidateCache, (req, res) => 
     )
     
     req.session.data.selectedApplication = selectedApplication;
-    
-   
-   res.render('registered-body/verify-applicant-id', { cms, cache: inputCache, validation: null, query: req.query.app});
+       
+   res.render('registered-body/verify-applicant-id', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
 });
 
 registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
