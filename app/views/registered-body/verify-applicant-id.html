@@ -111,10 +111,7 @@ endset%} {% block beforeContent %}
                 <input type="hidden" name="answers-checked" value="true" />
                 <button type="submit" class="govuk-button" data-module="govuk-button">Continue to verify application</button>
             </form>
-            <form action='confirm-cancel?app={{query}}' method="post" novalidate>
-                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</button>
-            </form>
-            <a></a>
+            <a href='confirm-cancel?app={{query}}' class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</a>
         </div>
     </div>
 </div>

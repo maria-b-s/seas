@@ -196,7 +196,7 @@ registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
 registeredBodyRouter.post('/confirm-cancel', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    let ref = req.query.app;
+    let ref = req.session.data.app;
    
     for(app of req.session.data['applications']){
         if(app.ref == ref){
@@ -211,8 +211,7 @@ registeredBodyRouter.post('/confirm-cancel', invalidateCache, (req, res) => {
     
     req.session.data.selectedApplication = selectedApplication;
 
-   
-   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, validation: null });
+    res.redirect('back');
 });
 
 

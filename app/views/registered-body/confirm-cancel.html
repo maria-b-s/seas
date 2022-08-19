@@ -56,10 +56,10 @@ endset%} {% block beforeContent %}
     
         {% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <form method="post" novalidate>
+            <form action='confirm-cancel' method="post" novalidate>
                 <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</button>
             </form>
-            <form action='/dashboard/home' method="post" novalidate>
+            <form action='/dashboard/home' novalidate>
                 <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Return to application list</button>
             </form>
             <a></a>
