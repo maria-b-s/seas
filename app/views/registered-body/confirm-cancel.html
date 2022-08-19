@@ -8,7 +8,9 @@ endset%} {% block beforeContent %}
         </span>
     </p>
 </div>
+{% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endif %}
 {% endblock %} {% block content %}
 <div class="govuk-grid-row">
 
@@ -57,7 +59,7 @@ endset%} {% block beforeContent %}
         {% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <form action='confirm-cancel' method="post" novalidate>
-                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel Application</button>
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</button>
             </form>
             <form action='/dashboard/home' novalidate>
                 <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Return to application list</button>
