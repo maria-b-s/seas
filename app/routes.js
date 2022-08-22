@@ -149,6 +149,10 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     let applicantEmail = req.body['applicant-email'];
     let applicantEmailConfirm = req.body['applicant-email-confirm'];
 
+    let enteredEmail = req.session.data['applications'].filter(value =>
+        value.email == applicantEmail
+    )
+
     if(!applicantEmail){
         dataValidation['applicant-email'] = 'Enter email address';
     }
@@ -163,6 +167,10 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
 
     if(applicantEmail != applicantEmailConfirm){
         dataValidation['applicant-email-confirm'] = 'Email addresses do not match'
+    }
+
+    if(enteredEmail.length > 0){
+        dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application'
     }
     
     if (Object.keys(dataValidation).length) {
@@ -758,6 +766,7 @@ dashboardRouter.get('*', (req, res, next) => {
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`
         };
     });
 
