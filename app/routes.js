@@ -35,7 +35,6 @@ registeredBodyRouter.post('/position', (req, res) => {
     } else {
         res.redirect('organisation-name')
     }
-
 });
 
 registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
@@ -43,6 +42,22 @@ registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
 
    res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
 
+});
+
+registeredBodyRouter.post('/existing-post-holder', (req, res) => {
+    if(req.query.change == 'true'){
+        res.redirect('check-answers')
+    } else {
+        res.redirect('applicant-name')
+    }
+});
+
+registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
+    if(req.query.change == 'true'){
+        res.redirect('check-answers')
+    } else {
+        res.redirect('applicant-name')
+    }
 });
 
 

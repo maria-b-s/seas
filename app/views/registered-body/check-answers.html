@@ -117,7 +117,7 @@ endset%} {% block beforeContent %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Name</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ [data['first-name'], ' ' , data['last-name']] | join }}</p>
+                    <p>{{ [data['first-name'] | capitalize, ' ' , data['last-name'] | capitalize] | join }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="applicant-name?change=true">
