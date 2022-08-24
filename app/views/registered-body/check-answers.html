@@ -14,6 +14,112 @@ endset%} {% block beforeContent %}
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
         <h1 class="govuk-heading-l">Check your answers</h1>
+
+        <h2 class="govuk-heading-m">DBS check details</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Check level</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['what-dbs-check'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="dbs-check-level?change=true">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Workforce</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['workforce-selected'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    {% if data['what-dbs-check'] === 'Enhanced with barred list' %}
+                        <a href="enhanced/workforce-select?change=true">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                        </a>
+                    {% else %}
+                        <a href="workforce-select?change=true"
+                        >
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                        </a>
+                    {% endif %}
+                </dd>
+            </div>
+            {% if data['what-dbs-check'] === 'Enhanced with barred list'%}
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Adult barred list check</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['barred-adults'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="#">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Child barred list check</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['barred-children'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="#">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant working with children or adults at their home address</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['children-or-adults'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="#">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+                </div>
+            {% endif %}
+            {# <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Job applicant or post holder</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ data['what-application-type'] }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="applicant-or-post-holder?change=true">
+                        Change
+                        <span class="govuk-visually-hidden"> home address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Free-of-charge volunteer</dt>
+                <dd class="govuk-summary-list__value">
+                    {% if data['what-application-type'] === 'Volunteer' %}
+                        <p>Yes</p>
+                    {% else %}
+                        <p>No</p>
+                    {% endif %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="applicant-or-post-holder?change=true">
+                        Change
+                        <span class="govuk-visually-hidden"> licence period</span>
+                    </a>
+                </dd>
+            </div> #}
+            
+        </dl>
+
         <h2 class="govuk-heading-m">Role details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
@@ -45,42 +151,11 @@ endset%} {% block beforeContent %}
                     </a>
                 </dd>
             </div>
-        </dl>
 
-        <h2 class="govuk-heading-m">DBS check details</h2>
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Check level</dt>
-                <dd class="govuk-summary-list__value">
-                    <p>{{ data['what-dbs-check'] }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a href="dbs-check-level?change=true">
-                        Change
-                        <span class="govuk-visually-hidden"> home address</span>
-                    </a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Job applicant or post holder</dt>
+                <dt class="govuk-summary-list__key">Type of applicant</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['what-application-type'] }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a href="applicant-or-post-holder?change=true">
-                        Change
-                        <span class="govuk-visually-hidden"> home address</span>
-                    </a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Free-of-charge volunteer</dt>
-                <dd class="govuk-summary-list__value">
-                    {% if data['what-application-type'] === 'Volunteer' %}
-                        <p>Yes</p>
-                    {% else %}
-                        <p>No</p>
-                    {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="applicant-or-post-holder?change=true">
@@ -88,28 +163,25 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> licence period</span>
                     </a>
                 </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Workforce</dt>
+            </div> 
+
+            {% if data['what-application-type'] != 'Volunteer' %}
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant being rechecked</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ data['workforce-selected'] }}</p>
+                    <p>{{ data['rechecked'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    {% if data['what-dbs-check'] === 'Enhanced with barred list' %}
-                        <a href="enhanced/workforce-select?change=true">
+                    <a href="applicant-or-post-holder?change=true">
                         Change
-                        <span class="govuk-visually-hidden"> home address</span>
-                        </a>
-                    {% else %}
-                        <a href="workforce-select?change=true"
-                        >
-                        Change
-                        <span class="govuk-visually-hidden"> home address</span>
-                        </a>
-                    {% endif %}
+                        <span class="govuk-visually-hidden"> licence period</span>
+                    </a>
                 </dd>
-            </div>
+            </div> 
+            {% endif %}
         </dl>
+
+        
         
 
         <h2 class="govuk-heading-m">Applicant details</h2>
