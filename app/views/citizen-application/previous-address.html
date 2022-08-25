@@ -21,16 +21,18 @@ endset%} {% block beforeContent %}
                     </legend>
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="changed-name" name="changed-name" type="radio" value="yes" />
+                            <input class="govuk-radios__input" id="changed-name" name="changed-address" type="radio" value="yes" 
+                            data-aria-controls="conditional-contact" 
+                            {{ checked("changed-address", "yes") }}/>
                             <label class="govuk-label govuk-radios__label" for="changed-name"> Yes </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="changed-name-2" name="changed-name" type="radio" value="no" />
+                            <input class="govuk-radios__input" id="changed-name-2" name="changed-address" type="radio" value="no" {{ checked("changed-address", "no") }}/>
                             <label class="govuk-label govuk-radios__label" for="changed-name-2"> No </label>
                         </div>
                     </div>
                 </fieldset>
-                <div aria-live="polite" style="margin-top: 1.5rem">
+                <div class="govuk-radios__conditional" id="conditional-contact" aria-live="polite" style="margin-top: 1.5rem">
                         <p>You must tell us all your addresses for the last 5 years. This includes anywhere you've lived that is not in the UK</p>
                         <p>You cannot leave any gaps but it's fine to have overlapping dates.</p>
                         <p>Include any secondary addresses. For example student accommodation or if you work away from home.</p>
@@ -49,14 +51,13 @@ endset%} {% block beforeContent %}
                       </details>
                     <div class="add-another-name" >
                       <p class="govuk-body">
-                          <a href="homeless-or-travelling" class="govuk-link">I was homeless or travelling and did not have an address</a>
+                          <a href="previous-homeless-or-travelling" class="govuk-link">I was homeless or travelling and did not have an address</a>
                       </p>
-                        <a href="address-lookup">
+                        <a href="previous-address-lookup">
                             <button type="button" class="govuk-button" data-module="govuk-button">Add a previous address</button>
                         </a>
                     </div>
-                </div>
-                <table class="govuk-table">
+                    <table class="govuk-table">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Address</th>
@@ -66,7 +67,7 @@ endset%} {% block beforeContent %}
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        {% for item in data['addresses'] %}
+                        {% for item in data['previous_addresses'] %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
                                 {% if item.lineOne !== '' %} {{ item.lineOne }} <br />
@@ -81,7 +82,7 @@ endset%} {% block beforeContent %}
                             <td class="govuk-table__cell">{{item.endYear}}</td>
                             <td class="govuk-table__cell">
                               
-                                <a class="govuk-link" href="/citizen-application/address-details?lookup=true">Change </a>
+                                <a class="govuk-link" href="previous-address-details?change=true&lookup=true">Change </a>
                                 <br><br>
                                 <a class="govuk-link delete-name" id="{{loop.index - 1}}" href="remove-address?address={{loop.index}}"
                                     >Delete<span class="govuk-visually-hidden">{{loop.index}}</span>
@@ -92,6 +93,8 @@ endset%} {% block beforeContent %}
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
+                
             </div>
 
             <button class="govuk-button" data-module="govuk-button">Continue</button>

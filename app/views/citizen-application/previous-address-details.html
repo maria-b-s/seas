@@ -13,26 +13,26 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'add-address?certificate=true' if query['certificate'] == 'true' else 'add-address'}}" method="post">
+        <form class="form" action="add-previous-address" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">{{'What address do you want your certificate sent to?' if query['certificate'] == 'true' else 'What is your current address?'}}</h1>
+                    <h1 class="govuk-fieldset__heading">{{'What address do you want your certificate sent to?' if query['certificate'] == 'true' else 'What is your previous address?'}}</h1>
                 </legend>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="postcode-lookup"> Number and street </label>
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="postcode-lookup"
-                        name="address"
+                        name="previous_address"
                         type="text"
                         autocomplete="postal-code"
-                        value='{{data["lookup-addr"]}}'
+                        value='{{data["previous-lookup-addr"]}}'
                     />
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="postcode-lookup-2"
-                        name="address"
+                        name="previous_address"
                         type="text"
                         autocomplete="town-or-city"
                         value='{{data["hidden-details-town"]}}'
@@ -44,7 +44,7 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="town-or-city"
-                        name="address"
+                        name="previous_address"
                         type="text"
                         autocomplete="town-or-city"
                         value='{{data["hidden-details-city"]}}'
@@ -57,33 +57,44 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
                     <input
                         class="govuk-input govuk-input--width-10"
                         id="postcode"
-                        name="address"
+                        name="previous_address"
                         type="text"
                         autocomplete="postal-code"
-                        value='{{data["postcode-lookup"]}}'
+                        value='{{data["previous-postcode-lookup"]}}'
                     />
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                 </div>
 
                 {% if query['lookup'] == 'true' %} {{ 
-                    country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address', value: 'United Kingdom' }) }}
-                {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address' }) }}
+                    country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'previous_address', value: 'United Kingdom' }) }}
+                {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'previous_address' }) }}
                 {% endif %}
-                {# {% if query['certificate'] !== 'true' %}
+                {% if query['certificate'] !== 'true' %}
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="year"> <strong>What year did you start living here?</strong> </label>
                         <div id="passport-hint" class="govuk-hint">For example, 1980</div>
                         <input
                             class="govuk-input govuk-input--width-5"
                             id="year"
-                            name="address"
+                            name="previous_address"
                             type="number"
                             maxlength="4"
                             autocomplete="postal-code"
-                            value='{{data["start-date"]}}'
+                            value='{{data["previous-start-date"]}}'
+                        />
+                       
+                        <label class="govuk-label" for="year"> <strong>What year did you stop living here?</strong> </label>
+                        <input
+                            class="govuk-input govuk-input--width-5"
+                            id="year"
+                            name="previous_address"
+                            type="number"
+                            maxlength="4"
+                            autocomplete="postal-code"
+                            value='{{data["previous-end-date"]}}'
                         />
                     </div>
-                {% endif %} #}
+                {% endif %}
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
             </fieldset>
         </form>

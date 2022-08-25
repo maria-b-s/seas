@@ -13,7 +13,7 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="add-homeless-or-travelling" method="post">
+        <form class="form" action="add-previous-homeless-or-travelling" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -26,8 +26,8 @@ endset%} {% block beforeContent %}
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live" name="why-no-address" type="radio" value="Homeless"
-                            data-aria-controls="conditional-homeless" {{ checked("why-no-address", "Homeless") }} />
+                            <input class="govuk-radios__input" id="where-do-you-live" name="previous-why-no-address" type="radio" value="Homeless"
+                            data-aria-controls="conditional-homeless" {{ checked("previous-why-no-address", "Homeless") }} />
                             <label class="govuk-label govuk-radios__label" for="where-do-you-live"> I was homeless </label>
                         </div>
                         <div class="govuk-radios__conditional" id="conditional-homeless">
@@ -37,11 +37,11 @@ endset%} {% block beforeContent %}
                                 <input
                                     class="govuk-input govuk-input--width-10"
                                     id="town-or-city-homeless"
-                                    name="homeless-town-or-city"
+                                    name="previous-homeless-town-or-city"
                                     type="text"
                                     spellcheck="false"
                                     aria-describedby="account-number-hint"
-                                    value='{{data["homeless-town-or-city"]}}'
+                                    value='{{data["previous-homeless-town-or-city"]}}'
                                 />
                             </div>
                             {# <div class="govuk-form-group">
@@ -62,24 +62,24 @@ endset%} {% block beforeContent %}
                                 <input
                                     class="govuk-input govuk-input--width-5"
                                     id="homeless-year"
-                                    name="homeless-start"
+                                    name="previous-homeless-start"
                                     type="number"
                                     maxlength="4"
                                     autocomplete="postal-code"
-                                    value='{{data["homeless-start"]}}'
+                                    value='{{data["previous-homeless-start"]}}'
                                 />
                             </div>
                             <div class="govuk-form-group">
                                 <h1 class="govuk-label-wrapper govuk-heading-s">Are you still homeless here?</h1>
                                 <div class="govuk-radios" data-module="govuk-radios" style="margin-top: 10px">
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="still-homeless-yes" name="still-homeless" type="radio" value="yes" {{
-                                        checked("still-homeless", "yes") }} />
+                                        <input class="govuk-radios__input" id="still-homeless-yes" name="previous-still-homeless" type="radio" value="yes" {{
+                                        checked("previous-still-homeless", "yes") }} />
                                         <label class="govuk-label govuk-radios__label" for="still-homeless-yes"> Yes </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="still-homeless-no" name="still-homeless" type="radio" value="no" {{
-                                        checked("still-homeless", "no") }} data-aria-controls="homeless-end"/>
+                                        <input class="govuk-radios__input" id="still-homeless-no" name="previous-still-homeless" type="radio" value="no" {{
+                                        checked("previous-still-homeless", "no") }} data-aria-controls="homeless-end"/>
                                         <label class="govuk-label govuk-radios__label" for="still-homeless-no"> No </label>
                                     </div>
                                 </div>
@@ -90,19 +90,19 @@ endset%} {% block beforeContent %}
                                         <input
                                             class="govuk-input govuk-input--width-5"
                                             id="year"
-                                            name="homeless-end"
+                                            name="previous-homeless-end"
                                             type="number"
                                             maxlength="4"
                                             autocomplete="postal-code"
-                                            value='{{data["homeless-end"]}}'
+                                            value='{{data["previous-homeless-end"]}}'
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live-2" name="why-no-address" type="radio" value="Travelling"
-                            data-aria-controls="conditional-travelling" {{ checked("why-no-address", "Travelling") }} />
+                            <input class="govuk-radios__input" id="where-do-you-live-2" name="previous-why-no-address" type="radio" value="Travelling"
+                            data-aria-controls="conditional-travelling" {{ checked("previous-why-no-address", "Travelling") }} />
                             <label class="govuk-label govuk-radios__label" for="where-do-you-live-2"> I was travelling </label>
                         </div>
                         <div class="govuk-radios__conditional" id="conditional-travelling">
@@ -117,13 +117,13 @@ endset%} {% block beforeContent %}
                                 <input
                                     class="govuk-input govuk-input--width-10"
                                     id="town-or-city-travelling"
-                                    name="travelling-town-or-city"
+                                    name="previous-travelling-town-or-city"
                                     type="text"
                                     spellcheck="false"
                                     aria-describedby="account-number-hint"
-                                    value='{{data["travelling-town-or-city"]}}'
+                                    value='{{data["previous-travelling-town-or-city"]}}'
                                 />
-                                {{ country({ label: 'Country', inputClass: 'govuk-!-width-one-half', name: 'country-travelling', value: data["country-travelling"] }) }}
+                                {{ country({ label: 'Country', inputClass: 'govuk-!-width-one-half', name: 'previous-country-travelling', value: data["previous-country-travelling"] }) }}
                             </div>
                             <div class="govuk-form-group">
                                 <h1 class="govuk-label-wrapper govuk-heading-s">What year did you start travelling?</h1>
@@ -131,24 +131,24 @@ endset%} {% block beforeContent %}
                                 <input
                                     class="govuk-input govuk-input--width-5"
                                     id="year"
-                                    name="travelling-start"
+                                    name="previous-travelling-start"
                                     type="number"
                                     maxlength="4"
                                     autocomplete="postal-code"
-                                    value='{{data["postcode-lookup"]}}'
+                                    value='{{data["previous-travelling-start"]}}'
                                 />
                             </div>
                             <div class="govuk-form-group">
                                 <h1 class="govuk-label-wrapper govuk-heading-s">Are you still travelling here?</h1>
                                 <div class="govuk-radios" data-module="govuk-radios" style="margin-top: 10px">
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="still-travelling-yes" name="still-travelling" type="radio" value="yes"
-                                        {{ checked("still-homeless", "yes") }} />
+                                        <input class="govuk-radios__input" id="still-travelling-yes" name="previous-still-travelling" type="radio" value="yes"
+                                        {{ checked("previous-still-travelling", "yes") }} />
                                         <label class="govuk-label govuk-radios__label" for="still-travelling-yes"> Yes </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="still-travelling-no" name="still-travelling" type="radio" value="no" {{
-                                        checked("still-homeless", "no") }} data-aria-controls="travelling-end"/>
+                                        <input class="govuk-radios__input" id="still-travelling-no" name="previous-still-travelling" type="radio" value="no" {{
+                                        checked("previous-still-travelling", "no") }} data-aria-controls="travelling-end"/>
                                         <label class="govuk-label govuk-radios__label" for="still-travelling-no"> No </label>
                                     </div>
                                 </div>
@@ -159,19 +159,19 @@ endset%} {% block beforeContent %}
                                         <input
                                             class="govuk-input govuk-input--width-5"
                                             id="year"
-                                            name="travelling-end"
+                                            name="previous-travelling-end"
                                             type="number"
                                             maxlength="4"
                                             autocomplete="postal-code"
-                                            value='{{data["travelling-end"]}}'
+                                            value='{{data["previous-travelling-end"]}}'
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live-2" name="why-no-address" type="radio" value="Other reason"
-                            data-aria-controls="conditional-other" {{ checked("why-no-address", "Other reason") }} />
+                            <input class="govuk-radios__input" id="where-do-you-live-2" name="previous-why-no-address" type="radio" value="Other"
+                            data-aria-controls="conditional-other" {{ checked("previous-why-no-address", "Other") }} />
                             <label class="govuk-label govuk-radios__label" for="where-do-you-live-2"> Other reason</label>
                         </div>
                     </div>

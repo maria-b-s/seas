@@ -380,6 +380,38 @@ $('.lookup').on('click', function() {
         });
 });
 
+$('.previous-lookup').on('click', function() {
+  var postcode = $('#previous-postcode-lookup');
+  var err = $('.error-msg');
+  var select = $('.previous-postcode-select');
+  if (!postcode) return;
+  var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
+  var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
+  fetch("https://api.postcodes.io/postcodes/" + postcode.val())
+      .then(function(response) { return response.json(); })
+      .then(function(res) {
+          if (res.status !== 200) {
+              err.css('display', 'block');
+              return postcode.addClass('govuk-input--error');
+          }
+          select.prop('disabled', false);
+          select.empty();
+          err.css('display', 'none');
+          var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
+          
+          var container = [];
+
+          for (var i = 0; i <= 10; i++) {
+              container.push(getRandomArbitrary(3, 50) + " " + street);
+          }
+
+          container.forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
+          $('.hidden-details-city').val(res.result.admin_county);
+          $('.hidden-details-town').val(res.result.parish);
+          return postcode.removeClass('govuk-input--error');
+      });
+});
+
 /* dbs-check-level */
 var changeContinueBtn = function(btnId, value, inputName) {
     var btn = $("#" + btnId);

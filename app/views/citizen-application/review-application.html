@@ -147,15 +147,19 @@ endset%} {% block beforeContent %}
                         {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
                         {{data['addresses'][0].townOrCity }} 
-                        {% if data['addresses'][0].postcode.length == 7 %}
-                            {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
+                        {% if data['addresses'][0].postcode == '' %}
+
                         {% else %}
-                            {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                            {% if data['addresses'][0].postcode.length == 7 %}
+                                {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
+                            {% else %}
+                                {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                            {% endif %}
                         {% endif %}
                         {{data['addresses'][0].country }} <br />
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="address-details?change=true">
+                        <a href="address-lookup?change=true">
                             Change
                             <span class="govuk-visually-hidden">current address</span>
                         </a>
@@ -197,10 +201,14 @@ endset%} {% block beforeContent %}
                             {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
                         {{data['addresses'][0].townOrCity }} 
-                        {% if data['addresses'][0].postcode.length == 7 %}
+                        {% if data['addresses'][0].postcode == '' %}
+                            
+                        {% else %}
+                            {% if data['addresses'][0].postcode.length == 7 %}
                                 {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                         {% else %}
-                            {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                            {% else %}
+                                {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                            {% endif %}
                         {% endif %}
                         {{data['addresses'][0].country }} <br />
                         {% else %}

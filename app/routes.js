@@ -377,39 +377,94 @@ citizenRouter.post('/delete-name', (req, res) => {
 
 citizenRouter.post('/add-address', (req, res) => {
     const { address } = req.session.data;
-    if (req.header('referer').includes('certificate=true')) {
-        req.session.data['send-cert-address'] = [address[0], address[1], address[2], address[3]];
-        return res.redirect('previous-convictions');
-    }
     const addresses = req.session.data.addresses || [];
 
-    addresses.push({
-        lineOne: address[0],
-        lineTwo: address[1],
-        townOrCity: address[2],
-        postcode: address[3],
-        country: address[4],
-        startYear: address[5],
-        endYear: address[6]
+    if(req.query.certificate == 'true'){
+        const sendCert = req.session.data.send_cert_address || [];
+        sendCert.push({
+            lineOne: address[0],
+            lineTwo: address[1],
+            townOrCity: address[2],
+            postcode: address[3],
+            country: address[4],
+            startYear: address[5],
+        });
+
+        req.session.data.send_cert_address = sendCert;
+        console.log(req.session.data)
+        return res.redirect('previous-convictions');
+    }
+    
+    if(req.header('referer').includes('change=true')){
+        addresses.pop();
+        addresses.push({
+            lineOne: address[0],
+            lineTwo: address[1],
+            townOrCity: address[2],
+            postcode: address[3],
+            country: address[4],
+            startYear: address[5],
+        });
+
+        req.session.data.addresses = addresses;
+    
+        return res.redirect('review-application');
+    } else {
+        addresses.push({
+            lineOne: address[0],
+            lineTwo: address[1],
+            townOrCity: address[2],
+            postcode: address[3],
+            country: address[4],
+            startYear: address[5],
+        });
+
+        req.session.data.addresses = addresses;
+    
+        return res.redirect('previous-address');
+    }
+    
+  
+});
+
+citizenRouter.post('/add-previous-address', (req, res) => {
+    const { previous_address } = req.session.data;
+    const previous_addresses = req.session.data.previous_addresses || []
+
+    previous_addresses.push({
+        lineOne: previous_address[0],
+        lineTwo: previous_address[1],
+        townOrCity: previous_address[2],
+        postcode: previous_address[3],
+        country: previous_address[4],
+        startYear: previous_address[5],
+        endYear: previous_address[6]
     });
-    req.session.data.addresses = addresses;
+    req.session.data.previous_addresses = previous_addresses;
     return res.redirect('previous-address');
 });
 
+
 citizenRouter.get('/remove-address', (req, res) => {
-    let oldArray = req.session.data.addresses
+    let oldArray = req.session.data.previous_addresses
     
     newArray = oldArray.filter(function( obj ) {
         return obj.lineOne !== oldArray[(req.query.address - 1)].lineOne;
     });
 
-    req.session.data.addresses = newArray
+    req.session.data.previous_addresses = newArray
     res.redirect('previous-address');
 });
 
 citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
+
     const addresses = req.session.data.addresses || [];
     const whyNoAddress = req.session.data['why-no-address'];
+
+    if(req.header('referer').includes('change=true')){
+        addresses.pop()
+    }
+
     addresses.push({
         lineOne: whyNoAddress,
         lineTwo: '',
@@ -427,7 +482,39 @@ citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
                 : ''
         }`,
     });
+
     req.session.data.addresses = addresses;
+
+    if(req.header('referer').includes('change=true')){
+        return res.redirect('review-application');
+    } else {
+        return res.redirect('previous-address');
+    }
+});
+
+citizenRouter.post('/add-previous-homeless-or-travelling', (req, res) => {
+    console.log(req.session.data)
+    const previous_addresses = req.session.data.previous_addresses || [];
+    const whyNoAddress = req.session.data['previous-why-no-address'];
+    previous_addresses.push({
+        lineOne: whyNoAddress,
+        lineTwo: '',
+        townOrCity: whyNoAddress === 'Homeless' ? req.session.data['previous-homeless-town-or-city'] : '',
+        county: whyNoAddress === 'Homeless' ? req.session.data['previous-homeless-county'] : req.session.data['previous-travelling-county'],
+        postcode: '',
+        country: 'United Kingdom',
+        startYear: `${req.session.data[whyNoAddress === 'Homeless' ? 'previous-homeless-start' : 'previous-travelling-start']} ${
+            whyNoAddress === 'Homeless'
+                ? req.session.data['previous-still-homeless'] === 'yes'
+                    ? 'Still Homeless'
+                    : ''
+                : req.session.data['previous-still-travelling']
+                ? 'Still Travelling'
+                : ''
+        }`,
+    });
+    req.session.data.previous_addresses = previous_addresses;
+    console.log(req.session.data.previous_addresses)
     return res.redirect('previous-address');
 });
 
@@ -448,6 +535,14 @@ citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => 
         req.session.data.fullName = req.body['full-name'];
     }
     res.redirect('/citizen-application/previous-names-q');
+});
+
+citizenRouter.post('/place-of-birth',invalidateCache, (req, res, next) => {
+    if (req.query['full-name'] == 'true') {
+        res.redirect('/citizen-application/review-application');
+    } else {
+        res.redirect('/citizen-application/address-lookup');
+    }
 });
 
 citizenRouter.get('/drivers-licence', invalidateCache, (req, res) => {
@@ -486,6 +581,7 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
 
     // To prevent mutability I am creating a new object "data" from the req.body
     const data = { ...req.body };
+    console.log(req.session.data)
   
     let validation = null;
   
@@ -733,6 +829,27 @@ citizenRouter.post('/old-or-new', (req, res) => {
     }
     return res.redirect('sex');
 });
+
+
+citizenRouter.post('/address-lookup',invalidateCache, (req, res, next) => {
+    const inputCache = loadPageData(req);
+    if(req.query.certificate == 'true'){
+        return res.redirect('address-details?certificate=true')
+    } 
+
+    if(req.query.change == 'true'){
+        return res.redirect('address-details?change=true')
+    } else {
+        return res.redirect('address-details');
+    }
+});
+
+citizenRouter.post('/previous-address-lookup',invalidateCache, (req, res, next) => {
+    const inputCache = loadPageData(req);
+
+    return res.redirect('previous-address-details');
+});
+
 
 const getRandomArbitrary = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
