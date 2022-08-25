@@ -391,7 +391,7 @@ citizenRouter.post('/add-address', (req, res) => {
         });
 
         req.session.data.send_cert_address = sendCert;
-        console.log(req.session.data)
+
         return res.redirect('previous-convictions');
     }
     
@@ -493,7 +493,6 @@ citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
 });
 
 citizenRouter.post('/add-previous-homeless-or-travelling', (req, res) => {
-    console.log(req.session.data)
     const previous_addresses = req.session.data.previous_addresses || [];
     const whyNoAddress = req.session.data['previous-why-no-address'];
     previous_addresses.push({
@@ -514,7 +513,6 @@ citizenRouter.post('/add-previous-homeless-or-travelling', (req, res) => {
         }`,
     });
     req.session.data.previous_addresses = previous_addresses;
-    console.log(req.session.data.previous_addresses)
     return res.redirect('previous-address');
 });
 
@@ -581,7 +579,6 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
 
     // To prevent mutability I am creating a new object "data" from the req.body
     const data = { ...req.body };
-    console.log(req.session.data)
   
     let validation = null;
   
