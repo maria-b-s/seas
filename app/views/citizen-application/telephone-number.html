@@ -1,84 +1,60 @@
-{% extends "layout.html" %}
-{% from "country.njk" import country %} 
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% block pageTitle %}
-  Question page
-{% endblock %}
+{% extends "layout.html" %} {% from "country.njk" import country %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block
+pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 
-{% set serviceName %}
-  Request a standard or enhanced DBS check
-{% endset%}
+<script>
+function displayNumber() {
+  var x = document.getElementById("phone-number").value;
+  document.getElementById("number").innerHTML = x;
+}
+</script>
 
-{% block beforeContent %}
 <div class="govuk-phase-banner">
-  <p class="govuk-phase-banner__content">
-    <strong class="govuk-tag govuk-phase-banner__content__tag">
-      alpha
-    </strong>
-    <span class="govuk-phase-banner__text">
-      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-    </span>
-  </p>
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
 </div>
-  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %}
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
 
-{% block content %}
-
-  <div class="govuk-grid-row">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
 
-       {% if validation | length %}
-
-          {% set errorList = [] %}
-
-            {% for key, value in validation %}
-                {% set errorList = (errorList.push({
-                    "text": value,
-                    "href": "#" + key
-                }), errorList) %}
-            {% endfor %}
-
-          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-        {% endif %}
-
-   <form class="form" method="post">
+        <form class="form" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Can we send you text messages to update you about your application?</h1>
                     </legend>
-           
+
+                    <div class="govuk-hint">We’ll only use your mobile number to update you about your DBS application.</div>
+
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input
-                                class="govuk-radios__input"
-                                id="phone"
-                                name="wants-text"
-                                type="radio"
-                                value="yes"
-                                aria-label="Yes, input in sub menu"
-                                data-aria-controls="conditional-contact"
-                                {% if cache['wants-text'] === 'yes' %} checked="checked" {% endif %}
-                                {{ checked("wants-text", "yes") }}
-                            />
+                            <input class="govuk-radios__input" id="phone" name="wants-text" type="radio" value="yes" aria-label="Yes, input in sub
+                            menu" data-aria-controls="conditional-contact" {% if cache['wants-text'] === 'yes' %} checked="checked" {% endif %} {{
+                            checked("wants-text", "yes") }} />
                             <label class="govuk-label govuk-radios__label" for="phone"> Yes </label>
                         </div>
                         <div class="govuk-radios__conditional" id="conditional-contact">
-                           {% if validation['phone-country'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-country'] }}
-                                </span>
-                            {% endif %}
-                            {{ country({ label: 'Which country is your mobile number registered in?', inputClass: 'govuk-!-width-one-half', name: 'phone-country', value: data["phone-country"] }) }}
-                                
-                            <div class="govuk-form-group {% if validation['phone-number'] %}govuk-form-group--error{% endif %}">    
-                                <label class="govuk-label" for="phone-number">What is your mobile number without the country code?</label>
+                            {% if validation['phone-country'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-country'] }}
+                            </span>
+                            {% endif %} {{ country({ label: 'Enter the country that your mobile number is registered in', inputClass:
+                            'govuk-!-width-one-half', name: 'phone-country', value: data["phone-country"] }) }}
+
+                            <div class="govuk-form-group {% if validation['phone-number'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label" for="phone-number">Enter your mobile number</label>
                                 {% if validation['phone-number'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-number'] }}
-                                    </span>
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-number'] }}
+                                </span>
                                 {% endif %}
                                 <input
                                     class="govuk-input govuk-!-width-one-half"
@@ -88,20 +64,17 @@
                                     spellcheck="false"
                                     value='{{data["phone-number"]}}'
                                     autocomplete="name"
-                                />                       
+                                    oninput="displayNumber()"
+                                />
+                                <br /><br />
+                                <label class="govuk-label">We’ll send text messages to:</label>
+                                <p id="number" class="govuk-heading-m"></p>
                             </div>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input
-                                class="govuk-radios__input"
-                                id="phone-2"
-                                name="wants-text"
-                                type="radio"
-                                value="no"
-                                {% if cache['wants-text'] === 'no' %} checked="checked" {% endif %}
-                                {{ checked("wants-text", "no") }}
-                            />
+                            <input class="govuk-radios__input" id="phone-2" name="wants-text" type="radio" value="no" {% if cache['wants-text'] ===
+                            'no' %} checked="checked" {% endif %} {{ checked("wants-text", "no") }} />
                             <label class="govuk-label govuk-radios__label" for="phone-2"> No </label>
                         </div>
                     </div>
@@ -114,8 +87,7 @@
             <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}
         </form>
-
     </div>
-  </div>
+</div>
 
 {% endblock %}
