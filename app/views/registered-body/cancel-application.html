@@ -34,48 +34,32 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Has the applicant's identity been successfully verified?</h1>
+                        <h1 class="govuk-fieldset__heading">Do you want to cancel this application?</h1>
                     </legend>
+                    <div class="govuk-hint">If you cannot verify an applicant’s identity, you must cancel the application.</div>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input
                                 class="govuk-radios__input"
                                 id="verified"
-                                name="verified"
+                                name="cancel"
                                 type="radio"
                                 value="Yes"
                                 data-aria-controls="conditional-contact"
-                                {{ checked("verified", "Yes") }}
+                                {{ checked("cancel", "Yes") }}
                             />
                             <label class="govuk-label govuk-radios__label" for="verified"> Yes </label>
                         </div>
-                        <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group {% if validation['name-of-verifier'] %}govuk-form-group--error{% endif %}">
-                            <label class="govuk-label" for="name-of-verifier"> Name of evidence checker </label>
-                                {% if validation['name-of-verifier'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['name-of-verifier'] }}
-                                    </span>
-                                {% endif %}
-                            <input
-                                class="govuk-input govuk-!-width-one-half"
-                                id="name-of-verifier"
-                                name="name-of-verifier"
-                                type="text"
-                                spellcheck="false"
-                                autocomplete="name"
-                            />
-                            </div>
-                        </div>
+                    
                         <div class="govuk-radios__item">
                             <input
                                 class="govuk-radios__input"
                                 id="verified-2"
-                                name="verified"
+                                name="cancel"
                                 type="radio"
                                 value="No"
                                 data-aria-controls="conditional-contact-2"
-                                {{ checked("verified", "No") }}
+                                {{ checked("cancel", "No") }}
                             />
                             <label class="govuk-label govuk-radios__label" for="verified-2"> No </label>
                         </div>
@@ -86,18 +70,27 @@ endset%} {% block beforeContent %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
         </form>
     </div>
-    <div class="govuk-grid-column-one-third">
-        <aside class="app-related-items" role="complementary">
-            <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
-            <nav role="navigation" aria-labelledby="subsection-title">
-                <ul class="govuk-list govuk-!-font-size-16">
-                    <li>
-                        <a href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021"> Find out how to correctly verify an applicant's ID </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+
+
+     <div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related content
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021">
+                Find out how to correctly verify an applicant's ID
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
     </div>
+
 </div>
 
 {% endblock %}

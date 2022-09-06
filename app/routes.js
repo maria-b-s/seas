@@ -10,6 +10,7 @@ const { validateDriversLicence } = require('./middleware/validateDriversLicence'
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateBarred } = require('./middleware/validateBarred');
+const { cancelApplication } = require('./middleware/cancelApplication');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
@@ -216,25 +217,66 @@ registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
    res.render('registered-body/confirm-cancel', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/confirm-cancel', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+registeredBodyRouter.post('/confirm-cancel',invalidateCache, cancelApplication);
 
-    let ref = req.session.data.app;
+registeredBodyRouter.get('/application-cancelled', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
    
-    for(app of req.session.data['applications']){
-        if(app.ref == ref){
-            app.status.id = '009';
-            app.status.text = 'CANCELLED'
-        }
+   res.render('registered-body/application-cancelled', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.get('/id-checked', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+   
+   
+   res.render('registered-body/id-checked', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if(!req.session.data['verified']){
+        dataValidation['verified'] = 'Select an option';
     }
 
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == ref
-    )
+    if(req.session.data['verified'] == 'Yes' && !req.session.data['name-of-verifier']){
+        dataValidation['verified'] = 'Enter name of evidence checker';
+    }
     
-    req.session.data.selectedApplication = selectedApplication;
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/id-checked', { cache: inputCache,   validation: dataValidation });
+    } else {
+        if(req.session.data['verified'] == 'No'){
+            res.redirect('cancel-application')
+        } else {
+            res.redirect('declaration-registered-person')
+        }
+    }  
+    
+});
 
-    res.redirect('back');
+registeredBodyRouter.post('/cancel-application', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if(!req.session.data['cancel']){
+        dataValidation['cancel'] = 'Select an option';
+    }
+    
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/cancel-application', { cache: inputCache,   validation: dataValidation });
+    } else {
+        if(req.session.data['cancel'] == 'Yes'){
+            cancelApplication(req, res)
+        } else {
+            res.redirect('id-checked')
+        }
+    }  
+    
 });
 
 

@@ -107,10 +107,7 @@ endset%} {% block beforeContent %}
 
 
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <form action="id-checked" method="post" novalidate>
-                <input type="hidden" name="answers-checked" value="true" />
-                <button type="submit" class="govuk-button" data-module="govuk-button">Continue to verify application</button>
-            </form>
+            <a href='id-checked' class="govuk-button" data-module="govuk-button">Continue to verify application</a>
             <a href='confirm-cancel?app={{query}}' class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</a>
         </div>
     </div>

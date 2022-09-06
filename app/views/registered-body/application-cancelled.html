@@ -27,16 +27,24 @@ Request a standard or enhanced DBS check
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #d4351c;">
+    <div class="govuk-panel govuk-panel--confirmation">
       <h1 class="govuk-panel__title">Application cancelled</h1>
       <div class="govuk-panel__body">
-        Reference number<br><strong>HDJ2123F</strong>
+        The DBS application for <strong>{{ data["selectedApplication"][0].ref }}</strong> has been cancelled
       </div>
     </div>
 
-    <p>
-      We have emailed the applicant to let them know the application has been cancelled.
+    <br>
+
+    <p class="govuk-body">
+      You can <a href='/dashboard/home'>track the status of your applications online.</a>
     </p>
+
+    <h2 class="govuk-heading-m">What happens next</h2>
+    <ol class="govuk-list govuk-list--number">
+      <li>If a DBS check is still required you must complete a paper application form.</li>
+      <li>On the paper application form, you should mark the W59 field with a NO.</li>
+    </ol>
 
   </div>
 </div>
