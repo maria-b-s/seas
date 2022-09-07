@@ -10,6 +10,7 @@ const { validateDriversLicence } = require('./middleware/validateDriversLicence'
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateBarred } = require('./middleware/validateBarred');
+const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
@@ -858,6 +859,15 @@ citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
    res.render('citizen-application/telephone-numberr', { cache: inputCache, validation: null });
 
 });
+
+citizenRouter.get('/email-address', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+   res.render('citizen-application/email-address', { cache: inputCache, validation: null });
+
+});
+
+citizenRouter.post('/email-address', invalidateCache, validateEmail);
 
 citizenRouter.post('/telephone-number',invalidateCache, validatePhone);
 
