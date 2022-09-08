@@ -186,6 +186,10 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
         dataValidation['applicant-email-confirm'] = 'Email addresses do not match'
     }
 
+    if(applicantEmail == req.session.selectedRB.email){
+        dataValidation['applicant-email'] = 'Cannot enter own email address';
+    }
+
     if(enteredEmail.length > 0){
         dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application'
     }
