@@ -17,8 +17,9 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Do you have any previous convictions, cautions, reprimands or final warnings?</h1>
+                        <h1 class="govuk-fieldset__heading">Do you have any previous convictions or cautions?</h1>
                     </legend>
+                    <div class="govuk-hint">You can find out more about which convictions or cautions will appear on your DBS certificate in the <a href="https://www.gov.uk/government/publications/dbs-filtering-guidance/dbs-filtering-guide#completion-of-section-e-field-55-on-the-dbs-application-form">DBS filtering guide</a></div>
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="previous-convictions-yes" name="previous-convictions" type="radio" value="yes"  {{ checked("previous-convictions", "yes") }}/>
