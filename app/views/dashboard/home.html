@@ -74,11 +74,7 @@
         </span>
     </p>
 </div>
-<nav class="nav-bar">
-    <a href="#4"> Settings </a>
-</nav>
-{% endblock %} {% block content %}
-
+{% endblock %} {% block content %} {#
 <table class="govuk-table landing-table">
     <caption class="govuk-table__caption govuk-table__caption--m">
         <div class="new-app">
@@ -96,20 +92,24 @@
             <th scope="col" class="govuk-table__header mod-date">Modified date</th>
         </tr>
     </thead>
-    
+
     <tbody class="govuk-table__body">
         {% for app in data['applications'] %}
         <tr class="govuk-table__row">
-            {% if app['status'].id === '002' %}
+            {% if app['status'].id === '003' or app['status'].id === '005' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}"
+                    >{{app['name']}}</a
+                >
             </td>
-            {% elif app['status'].id === '003' %}
+            {% elif app['status'].id === '006' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/declaration-registered-person?app={{app['ref']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/declaration-registered-person?app={{app['ref']}}"
+                    >{{app['name']}}</a
+                >
             </td>
             {% else %}
-                <td class="govuk-table__cell status-cell">{{ app['name'] }}</td>
+            <td class="govuk-table__cell status-cell">{{ app['name'] }}</td>
             {% endif %}
             <td class="govuk-table__cell status-cell">{{app['status'].text | lower | capitalize }}</td>
             <td class="govuk-table__cell type-cell">{{app['type']}}</td>
@@ -122,5 +122,195 @@
         {% endfor %}
     </tbody>
 </table>
+#}
+<div class="govuk-grid-row">
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        <div class="new-app">
+            <h1 class="govuk-heading-l">Applications</h1>
+            <a href="/registered-body/dbs-check-level">
+                <button class="govuk-button" data-module="govuk-button">New Application</button>
+            </a>
+        </div>
+    </caption>
+    <div class="govuk-grid-column-one-quarter">
+        <h2 class="govuk-heading-m">Filter</h2>
+
+        <h3 class="govuk-heading-s">Application action needed</h3>
+
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
+                <label class="govuk-label govuk-checkboxes__label" for="needs-action">Needs action</label>
+            </div>
+        </div>
+
+        <br />
+
+        <h3 class="govuk-heading-s">Status</h3>
+
+        {% for app in data['appStatus'] %}
+
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
+                <label class="govuk-label govuk-checkboxes__label" for="needs-action">{{app.text}}</label>
+            </div>
+        </div>
+
+        <br />
+
+        {% endfor %}
+    </div>
+
+    <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h3 class="govuk-heading-s">Search</h3>
+            </div>
+            <div class="govuk-grid-column-two-thirds">
+                <input class="govuk-input" id="event-name" name="event-name" type="text" />
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <a href="/registered-body/dbs-check-level">
+                    <button class="govuk-button" data-module="govuk-button">Search</button>
+                </a>
+            </div>
+        </div>
+
+        <table class="govuk-table landing-table">
+            <tbody class="govuk-table__body">
+                {% for app in data['applications'] %}
+                <tr class="govuk-table__row">
+                    {# {% if app['status'].id === '003' or app['status'].id === '005' %}
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}"
+                            >{{app['name']}}</a
+                        >
+                    </td>
+                    {% elif app['status'].id === '006' %}
+                    <td class="govuk-table__cell">
+                        <a
+                            class="govuk-link details"
+                            id="{{loop.index}}-details"
+                            href="/registered-body/declaration-registered-person?app={{app['ref']}}"
+                            >{{app['name']}}</a
+                        >
+                    </td>
+                    {% else %}
+                    <td class="govuk-table__cell status-cell">{{ app['name'] }}</td>
+                    {% endif %}
+                    <td class="govuk-table__cell status-cell">{{app['status'].text | lower | capitalize }}</td>
+                    <td class="govuk-table__cell type-cell">{{app['type']}}</td>
+                    <td class="govuk-table__cell mod-date-cell">{{app['date']}}</td>
+                    <td class="govuk-table__cell">
+                        <!--  <a class="govuk-link delete-name" id="{{loop.index}}" href="#">View<span class="govuk-visually-hidden">{{loop.index}}</span> </a>-->
+                    </td>
+                    #}
+                    <td class="govuk-table__cell">
+                        <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-three-quarters">
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-half">
+                                        <h2 class="govuk-heading-m">{{app['name']}}</h2>
+                                    </div>
+                                    <div class="govuk-grid-column-one-quarter">
+                                        <p><a href="/registered-body/verify-applicant-id?app={{app['ref']}}">View details</a></p>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-third">
+                                        <p class="govuk-summary-list__value">Email</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <p class="govuk-summary-list__key">{{app['email']}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-third">
+                                        <p class="govuk-summary-list__value">Date application started</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <p class="govuk-summary-list__key">{{app['date']}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-third">
+                                        <p class="govuk-summary-list__value">Organisation</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <p class="govuk-summary-list__key">TBD</p>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-third">
+                                        <p class="govuk-summary-list__value">Check level</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <p class="govuk-summary-list__key">{{app['type']}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-one-third">
+                                        <p class="govuk-summary-list__value">Last worked on by</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <p class="govuk-summary-list__key">TBD</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="govuk-grid-column-one-quarter">
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full">
+                                        {% if app['status'].id == '002' or app['status'].id == '003'%}
+                                        <strong class="govuk-tag govuk-tag--yellow">{{app['status'].text}}</strong>
+                                        {% elif app['status'].id == '005' or app['status'].id == '006'%}
+                                        <strong class="govuk-tag govuk-tag--red">{{app['status'].text}}</strong>
+                                        {% else %}
+                                        <strong class="govuk-tag govuk-tag--blue">{{app['status'].text}}</strong>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                {% if app['status'].id == '002' or app['status'].id == '003'%}
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full">
+                                        <a href="">Verify applicant ID</a>
+                                    </div>
+                                </div>
+                                <br />
+                                {% endif %}
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full">
+                                        <a href="/registered-body/confirm-cancel?app={{app['ref']}}">Cancel application</a>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full">
+                                        <a href="">Worklog</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
