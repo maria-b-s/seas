@@ -938,7 +938,7 @@ const STATUS_COLLECTION1 = [
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
     req.session.data.appStatus = STATUS_COLLECTION1;
-    const statuses = STATUS_COLLECTION;
+    const statuses = STATUS_COLLECTION1;
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
 

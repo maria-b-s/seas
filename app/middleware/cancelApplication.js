@@ -3,7 +3,7 @@ function cancelApplication(req, res) {
 
     for (app of req.session.data['applications']) {
         if (app.ref == ref) {
-            app.status.id = '009';
+            app.status.id = '005';
             app.status.text = 'CANCELLED';
         }
     }

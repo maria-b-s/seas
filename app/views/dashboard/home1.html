@@ -214,51 +214,51 @@
                                         <h2 class="govuk-heading-m">{{app['name']}}</h2>
                                     </div>
                                     <div class="govuk-grid-column-one-quarter">
-                                        <a href="">View details</a>
+                                        <p><a href="">View details</a></p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
+                                    <div class="govuk-grid-column-one-third">
                                         <p class="govuk-summary-list__value">Email</p>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
+                                    <div class="govuk-grid-column-two-thirds">
                                         <p class="govuk-summary-list__key">{{app['email']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
+                                    <div class="govuk-grid-column-one-third">
                                         <p class="govuk-summary-list__value">Date application started</p>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
+                                    <div class="govuk-grid-column-two-thirds">
                                         <p class="govuk-summary-list__key">{{app['date']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
+                                    <div class="govuk-grid-column-one-third">
                                         <p class="govuk-summary-list__value">Organisation</p>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
+                                    <div class="govuk-grid-column-two-thirds">
                                         <p class="govuk-summary-list__key">TBD</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
+                                    <div class="govuk-grid-column-one-third">
                                         <p class="govuk-summary-list__value">Check level</p>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
+                                    <div class="govuk-grid-column-two-thirds">
                                         <p class="govuk-summary-list__key">{{app['type']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
+                                    <div class="govuk-grid-column-one-third">
                                         <p class="govuk-summary-list__value">Last worked on by</p>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
+                                    <div class="govuk-grid-column-two-thirds">
                                         <p class="govuk-summary-list__key">TBD</p>
                                     </div>
                                 </div>
@@ -277,12 +277,12 @@
                                     </div>
                                 </div>
 
-                                <br /><br />
+                                <br />
 
                                 {% if app['status'].id == '002' or app['status'].id == '003'%}
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
-                                        <a href="">Verify applicant ID</a>
+                                        <a href="/registered-body/verify-applicant-id?app={{app['ref']}}">Verify applicant ID</a>
                                     </div>
                                 </div>
                                 <br />

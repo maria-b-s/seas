@@ -100,11 +100,11 @@
     <tbody class="govuk-table__body">
         {% for app in data['applications'] %}
         <tr class="govuk-table__row">
-            {% if app['status'].id === '003' or app['status'].id === '005' %}
+            {% if app['status'].id === '002' %}
             <td class="govuk-table__cell">
                 <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}">{{app['name']}}</a>
             </td>
-            {% elif app['status'].id === '006' %}
+            {% elif app['status'].id === '003' %}
             <td class="govuk-table__cell">
                 <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/declaration-registered-person?app={{app['ref']}}">{{app['name']}}</a>
             </td>
