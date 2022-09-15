@@ -274,7 +274,7 @@
                                         {% else %}
                                         <strong class="govuk-tag govuk-tag--blue">{{app['status'].text}}</strong>
                                         {% endif %}
-                                        
+
                                     </div>
                                 </div>
 
@@ -283,7 +283,7 @@
                                 {% if app['status'].id == '002' or app['status'].id == '003'%}
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
-                                        <a href="/registered-body/verify-applicant-id?app={{app['ref']}}">Verify applicant ID</a>
+                                        <a href="">Verify applicant ID</a>
                                     </div>
                                 </div>
                                 <br />
@@ -291,7 +291,7 @@
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
-                                        <a href="">Cancel application</a>
+                                        <a href="/registered-body/confirm-cancel?app={{app['ref']}}">Cancel application</a>
                                     </div>
                                 </div>
 
