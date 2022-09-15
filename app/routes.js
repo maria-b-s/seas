@@ -310,7 +310,6 @@ const firstNames = [
     'Kieran',
     'Christopher',
     'Jessica',
-    'Matthew',
     'Ashley',
     'Jennifer',
     'Joshua',
@@ -344,7 +343,6 @@ const lastNames = [
     'Collymore',
     'Stoll',
     'Verlice',
-    'Adler',
     'Huxley',
     'Ledger',
     'Smith',
@@ -916,18 +914,30 @@ const randomDate = (start, end) => {
 // Ids documented here https://carpathia.atlassian.net/wiki/spaces/SEAS/pages/7514423306/Application+Status
 const STATUS_COLLECTION = [
     { id: '001', text: 'SENT TO APPLICANT' },
-    { id: "002", text: 'EXPIRED' },
+    { id: "002", text: 'REJECTED' },
     { id: '003', text: 'CHECK ANSWERS'},
     { id: "004", text: 'APPLICANT AMENDING'},
-    { id: '005', text: 'VERIFY ID'},
+    { id: '005', text: 'ID CHECK REQUIRED'},
     { id: '006', text: 'READY TO SUBMIT'},
     { id: '007', text: 'APPLICATION SUBMITED'},
-    { id: '008', text: 'SENT FOR CASE-WORKING'},
+    { id: '008', text: 'CERTIFICATE ISSUED'},
     { id: '009', text: 'CANCELLED'}
 ];
 
+const STATUS_COLLECTION1 = [
+    { id: '001', text: 'SENT TO APPLICANT' },
+    { id: "002", text: 'ID CHECK REQUIRED' },
+    { id: '003', text: 'READY TO SUBMIT'},
+    { id: "004", text: 'SUBMITTED TO DBS'},
+    { id: '005', text: 'CANCELLED'},
+    { id: '006', text: 'REJECTED'},
+    { id: '007', text: 'CERTIFICATE ISSUED'},
+];
+
+
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
+    req.session.data.appStatus = STATUS_COLLECTION1;
     const statuses = STATUS_COLLECTION;
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
@@ -948,6 +958,8 @@ dashboardRouter.get('*', (req, res, next) => {
         return {
             ref,
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
+            firstName: `${firstNames[elIndex]}`,
+            surname:`${lastNames[elIndex]}`,
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
