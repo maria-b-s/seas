@@ -1,6 +1,5 @@
 {% extends "wide-layout.njk" %} {% block pageTitle %} Landing page {% endblock %} {% block header %}
 
-
 <header class="govuk-header" role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
@@ -100,7 +99,7 @@
         <tr class="govuk-table__row">
             {% if app['status'].id === '003' or app['status'].id === '005' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}"
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/view-details?app={{app['ref']}}"
                     >{{app['name']}}</a
                 >
             </td>
@@ -170,7 +169,7 @@
                 <h3 class="govuk-heading-s">Search</h3>
             </div>
             <div class="govuk-grid-column-two-thirds">
-                <input class="govuk-input" id="event-name" name="event-name" type="text"/>
+                <input class="govuk-input" id="event-name" name="event-name" type="text" />
             </div>
             <div class="govuk-grid-column-one-third">
                 <button class="govuk-button" data-module="govuk-button">Search</button>
@@ -183,7 +182,7 @@
                 <tr class="govuk-table__row">
                     {# {% if app['status'].id === '003' or app['status'].id === '005' %}
                     <td class="govuk-table__cell">
-                        <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}"
+                        <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/view-details?app={{app['ref']}}"
                             >{{app['name']}}</a
                         >
                     </td>
@@ -214,7 +213,7 @@
                                         <h2 class="govuk-heading-m">{{app['name']}}</h2>
                                     </div>
                                     <div class="govuk-grid-column-one-third">
-                                        <p><a href="/registered-body/verify-applicant-id?app={{app['ref']}}">View full details</a></p>
+                                        <p><a href="/registered-body/view-details?app={{app['ref']}}">View full details</a></p>
                                     </div>
                                 </div>
 
@@ -268,27 +267,42 @@
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
                                         {% if app['status'].id == '002' or app['status'].id == '003'%}
-                                        <strong class="govuk-tag govuk-tag--yellow">{{app['status'].text}}</strong>
+                                        <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{app['status'].text}}</strong>
                                         {% elif app['status'].id == '005' or app['status'].id == '006'%}
-                                        <strong class="govuk-tag govuk-tag--red">{{app['status'].text}}</strong>
+                                        <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center"
+                                            >{{app['status'].text}}</strong
+                                        >
                                         {% else %}
-                                        <strong class="govuk-tag govuk-tag--blue">{{app['status'].text}}</strong>
+                                        <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{app['status'].text}}</strong>
                                         {% endif %}
                                     </div>
                                 </div>
 
                                 <br />
 
-                                {% if app['status'].id == '002' or app['status'].id == '003'%}
+                                {% if app['status'].id == '002'%}
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full">
-                                        <a href="">Verify applicant ID</a>
+                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                        <a href="">Download applicant details PDF</a>
                                     </div>
                                 </div>
+                                
                                 <br />
 
+                                  <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                        <a href="">Enter ID check results</a>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                {% endif %} 
+                                
+                                {% if app['status'].id == '002' or app['status'].id == '003'%}
+
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full">
+                                    <div class="govuk-grid-column-full" style="text-align: right">
                                         <a href="/registered-body/confirm-cancel?app={{app['ref']}}">Cancel application</a>
                                     </div>
                                 </div>
@@ -297,7 +311,7 @@
                                 {% endif %}
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full">
+                                    <div class="govuk-grid-column-full" style="text-align: right">
                                         <a href="/registered-body/worklog?app={{app['ref']}}">Worklog</a>
                                     </div>
                                 </div>

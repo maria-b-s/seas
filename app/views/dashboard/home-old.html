@@ -102,7 +102,7 @@
         <tr class="govuk-table__row">
             {% if app['status'].id === '002' %}
             <td class="govuk-table__cell">
-                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/verify-applicant-id?app={{app['ref']}}">{{app['name']}}</a>
+                <a class="govuk-link details" id="{{loop.index}}-details" href="/registered-body/view-details?app={{app['ref']}}">{{app['name']}}</a>
             </td>
             {% elif app['status'].id === '003' %}
             <td class="govuk-table__cell">

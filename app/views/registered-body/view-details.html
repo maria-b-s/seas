@@ -1,0 +1,164 @@
+{% extends "layout.html" %} {% block pageTitle %} Verify applicant ID {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div class="govuk-width-container">
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <h1 class="govuk-heading-l">Application Details</h1>
+            </div>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Name</dt>
+                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Date of birth</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].dob}}</dd>
+
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+              
+            </dl>
+        </div>
+
+        <div class="govuk-width-container">
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <h1 class="govuk-heading-l">Applicant details for ID Check</h1>
+            </div>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Name</dt>
+                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Previous names</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if not selectedApplication[0].prevNames or selectedApplication[0].prevNames.length === 0 %} None {% endif %} {% for item in
+                        selectedApplication[0].prevNames %} {{[ item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' ,
+                        item.last_name | capitalize] | join }} <br />
+                        {% if item.used_to == "Not entered"%} {{ [item.used_from , ' - Present'] | join}} {% else %} {{ [item.used_from , ' - ',
+                        item.used_to] | join}} {% endif %}
+                        <br />
+                        <br />
+                        {% endfor %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Date of birth</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].dob}}</dd>
+
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Sex</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].sex}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">National Insurance number</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].nino}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Driving licence</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].licence}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Passport number</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].passport}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Nationality</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].nationality}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Country of issue</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].passportCountry}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Place of birth</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].addressTown}}, {{selectedApplication[0].addressCountry}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Current address</dt>
+                    <dd class="govuk-summary-list__value">
+                        {{selectedApplication[0].address[0].lineOne }} <br />
+                        {{selectedApplication[0].address[0].lineTwo}} <br />
+                        {{selectedApplication[0].address[0].townOrCity }} <br />{% if selectedApplication[0].address[0].postcode == '' %} {% else %}
+                        {% if selectedApplication[0].address[0].postcode.length == 7 %} {{selectedApplication[0].address[0].postcode.slice(0, 4) |
+                        upper}} {{selectedApplication[0].address[0].postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{selectedApplication[0].address[0].postcode.slice(0, 3) | upper}}
+                        {{selectedApplication[0].address[0].postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {{selectedApplication[0].address[0].country }} <br />
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Previous addresses in last 5 years</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if selectedApplication[0].changedAddress == 'no' %} None {% else %} {% for item in
+                        selectedApplication[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
+                        {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
+                        {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
+                        {% endif %} {% if item.postcode !== '' %} {% if item.postcode.length == 7 %} {{item.postcode.slice(0, 4) | upper}}
+                        {{item.postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {% if item.country !== '' %} {{item.country}} {% endif %}
+                        <br />
+                        {{ [item.startYear , ' - ',item.endYear] | join}}
+                        <br />
+                        <br />
+                        {% endfor %} {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Email address</dt>
+                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].email}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Telephone number</dt>
+                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].phoneNumber}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Previous convictions</dt>
+                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].previousConvictions | capitalize}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+            </dl>
+
+            <p id="download-pdf-hint" class="govuk-body">
+                If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
+            </p>
+            <button type="submit" class="govuk-button" data-module="govuk-button">Download applicant answers PDF</button>
+
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <a href="id-checked" class="govuk-button" data-module="govuk-button">Continue to verify application</a>
+                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

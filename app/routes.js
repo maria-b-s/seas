@@ -203,7 +203,7 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     
 });
 
-registeredBodyRouter.get('/verify-applicant-id', invalidateCache, (req, res) => {
+registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
    
     let selectedApplication = req.session.data['applications'].filter(value =>
@@ -212,7 +212,7 @@ registeredBodyRouter.get('/verify-applicant-id', invalidateCache, (req, res) => 
     
     req.session.data.selectedApplication = selectedApplication;
        
-   res.render('registered-body/verify-applicant-id', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+   res.render('registered-body/view-details', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
 });
 
 registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
@@ -229,6 +229,19 @@ registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
 });
 
 registeredBodyRouter.post('/confirm-cancel',invalidateCache, cancelApplication);
+
+registeredBodyRouter.get('/worklog', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == req.query.app
+    )
+    
+    req.session.data.selectedApplication = selectedApplication;
+   
+   
+   res.render('registered-body/worklog', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+});
 
 registeredBodyRouter.get('/application-cancelled', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -972,6 +985,78 @@ dashboardRouter.get('*', (req, res, next) => {
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`
         };
     });
+
+    req.session.data.applications[0] = {
+        ref: 'MATT0711',
+        name: 'Matthew John Adler',
+        status: statuses[1],
+        type: types[1],
+        date: '07/06/2022',
+        email: 'Matt.Handler@gmail.com',
+        prevNames: [
+            {
+              first_name: 'Matthew',
+              middle_names: 'John',
+              last_name: 'Adler',
+              used_from: '06/1997',
+              used_to: '01/2011'
+            },
+            {
+              first_name: 'Matthew',
+              middle_names: 'John',
+              last_name: 'Richards',
+              used_from: '04/1989',
+              used_to: '06/1997'
+            }
+        ],
+        dob: '12/04/1989',
+        sex: "Male",
+        nino: 'AA112201A',
+        licence: 'MORGA657054SM9IJ',
+        passport: '123456789',
+        passportCountry: 'United Kingdom',
+        nationality: 'British',
+        addressTown: 'Liverpool',
+        addressCountry: 'United Kingdom',
+        address: [
+            {
+              lineOne: '37 Stroma Road',
+              lineTwo: 'Allerton',
+              townOrCity: 'Liverpool',
+              postcode: 'L18 9SN',
+              country: 'United Kingdom'
+            }
+        ],
+        changedAddress: 'yes',
+        previous_addresses: [
+            {
+              lineOne: '12 Main Road',
+              lineTwo: 'Allerton',
+              townOrCity: 'Liverpool',
+              postcode: 'L17 1SN',
+              country: 'United Kingdom',
+              startYear: '2020',
+              endYear: '2021'
+            },
+            {
+              lineOne: '23b River Street',
+              lineTwo: 'Allerton',
+              townOrCity: 'Liverpool',
+              postcode: 'WS2 9PZ',
+              country: 'United Kingdom',
+              startYear: '2017',
+              endYear: '2020'
+            }
+        ],
+        phoneNumber: '07777 111111',
+        previousConvictions: 'no'
+
+
+
+
+    }
+
+
 
     req.session.data.filteredApplications = req.session.data.applications
     return next();
