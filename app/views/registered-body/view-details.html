@@ -18,20 +18,85 @@ endset%} {% block beforeContent %}
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Name</dt>
+                    <dt class="govuk-summary-list__key">Applicant name</dt>
                     <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Date of birth</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].dob}}</dd>
-
+                    <dt class="govuk-summary-list__key">Email address</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].email}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
-              
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Reference number</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].ref}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Date application started</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].date}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Status</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if selectedApplication[0].status.id == '002' or selectedApplication[0].status.id == '003'%}
+                        <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
+                        {% elif selectedApplication[0].status.id or selectedApplication[0].status.id == '006'%}
+                        <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center"
+                            >{{selectedApplication[0].status.text}}</strong
+                        >
+                        {% else %}
+                        <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Organisation</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].organisation}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Job/Role</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].position}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Applicant Type</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].appType}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Volunteer</dt>
+                    <dd class="govuk-summary-list__value">{% if selectedApplication[0].appType == "Volunteer"%} Yes {% else %} No {% endif %}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Check Type</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].type}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Workforce</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].workforce}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Barred list</dt>
+                    <dd class="govuk-summary-list__value">Adult and Child Barred List</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Working with children or adults at home</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].children_or_adults}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
             </dl>
+
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</a>
+            </div>
         </div>
 
         <div class="govuk-width-container">
@@ -133,11 +198,6 @@ endset%} {% block beforeContent %}
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Email address</dt>
-                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].email}}</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Telephone number</dt>
                     <dd class="govuk-summary-list__value">{{ selectedApplication[0].phoneNumber}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
@@ -153,10 +213,12 @@ endset%} {% block beforeContent %}
                 If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
             </p>
             <button type="submit" class="govuk-button" data-module="govuk-button">Download applicant answers PDF</button>
+            <p id="download-pdf-hint" class="govuk-body">
+                If any of the applicant's details are incorrect, you must cancel the application. You can then start a new application for them.
+            </p>
 
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <a href="id-checked" class="govuk-button" data-module="govuk-button">Continue to verify application</a>
-                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</a>
             </div>
         </div>
     </div>

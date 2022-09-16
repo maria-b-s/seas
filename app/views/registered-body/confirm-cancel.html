@@ -10,22 +10,21 @@ endset%} {% block beforeContent %}
 </div>
 {% if selectedApplication[0].status.text != 'CANCELLED'%}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endif %}
-{% endblock %} {% block content %}
+{% endif %} {% endblock %} {% block content %}
 <div class="govuk-grid-row">
-
     {% if selectedApplication[0].status.text == 'CANCELLED'%}
-    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-    <div class="govuk-notification-banner__header">
-        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-        Success
-        </h2>
-    </div>
-    <div class="govuk-notification-banner__content">
-        <h3 class="govuk-notification-banner__heading">
-        Application cancelled
-        </h3>
-    </div>
+    <div
+        class="govuk-notification-banner govuk-notification-banner--success"
+        role="alert"
+        aria-labelledby="govuk-notification-banner-title"
+        data-module="govuk-notification-banner"
+    >
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">Application cancelled</h3>
+        </div>
     </div>
     {% endif %}
     <div class="govuk-grid-column-two-thirds-from-desktop">
@@ -35,12 +34,20 @@ endset%} {% block beforeContent %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant name</dt>
-                <dd class="govuk-summary-list__value">{{  selectedApplication[0].name }}</dd>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].name }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Status</dt>
-                <dd class="govuk-summary-list__value">{{ selectedApplication[0].status.text }}</dd>
+                <dd class="govuk-summary-list__value">
+                    {% if selectedApplication[0].status.id == '002' or selectedApplication[0].status.id == '003'%}
+                    <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
+                    {% elif selectedApplication[0].status.id or selectedApplication[0].status.id == '006'%}
+                    <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center">{{selectedApplication[0].status.text}}</strong>
+                    {% else %}
+                    <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
+                    {% endif %}
+                </dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -55,33 +62,34 @@ endset%} {% block beforeContent %}
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
         </dl>
-    
+
         {% if selectedApplication[0].status.text != 'CANCELLED'%}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <form action='confirm-cancel' method="post" novalidate>
+            <form action="confirm-cancel" method="post" novalidate>
                 <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</button>
             </form>
-            <form action='/dashboard/home' novalidate>
+            <form action="/dashboard/home" novalidate>
                 <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Return to application list</button>
             </form>
             <a></a>
         </div>
         {% else %}
         <p class="govuk-body">
-            We've sent an email to the applicant. <br> <br> 
+            We've sent an email to the applicant. <br />
+            <br />
 
-            You have not been charged for this application.  <br> <br> 
+            You have not been charged for this application. <br />
+            <br />
 
             If the applicant still needs a DBS check, you must start a new application for them.
         </p>
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <form action='/dashboard/home' method="post" novalidate>
+            <form action="/dashboard/home" method="post" novalidate>
                 <button type="submit" class="govuk-button" data-module="govuk-button">Return to application list</button>
             </form>
             <a></a>
         </div>
         {% endif %}
-
     </div>
 </div>
 {% endblock %}

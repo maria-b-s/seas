@@ -982,7 +982,11 @@ dashboardRouter.get('*', (req, res, next) => {
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
-            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`
+            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
+            organisation: "Org ABC",
+            worklog: [{
+                person: "John Smith"
+            }]
         };
     });
 
@@ -1049,10 +1053,50 @@ dashboardRouter.get('*', (req, res, next) => {
             }
         ],
         phoneNumber: '07777 111111',
-        previousConvictions: 'no'
-
-
-
+        previousConvictions: 'no',
+        organisation: 'Castle Healthcare',
+        position: 'Nurse',
+        appType: 'New employee',
+        workforce: 'Adult and Child',
+        children_or_adults: 'No',
+        worklog: [
+            {
+                action: 'Viewed application details',
+                date: '10/06/2022',
+                time: '11:14am',
+                person: 'Gill Henderson (me)'
+            },
+            {
+                action: 'Viewed application details',
+                date: '09/06/2022',
+                time: '02:12pm',
+                person: 'Colin Hawshaw'
+            },
+            {
+                action: 'Viewed application details',
+                date: '09/06/2022',
+                time: '12:05pm',
+                person: 'Colin Hawshaw'
+            },
+            {
+                action: 'Applicant completed application form',
+                date: '08/06/2022',
+                time: '06:44pm',
+                person: 'Applicant'
+            },
+            {
+                action: 'Sent to applicant',
+                date: '07/06/2022',
+                time: '10:17am',
+                person: 'Gill Henderson (me)'
+            },
+            {
+                action: 'Started application',
+                date: '07/06/2022',
+                time: '09:45am',
+                person: 'Gill Henderson (me)'
+            },
+        ],
 
     }
 

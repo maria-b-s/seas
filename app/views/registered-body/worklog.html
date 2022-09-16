@@ -26,12 +26,14 @@ endset%} {% block beforeContent %}
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
+                {% for work in selectedApplication[0].worklog%}
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Viewed application details</td>
-                    <td class="govuk-table__cell">01/01/2022</td>
-                    <td class="govuk-table__cell">7:40pm</td>
-                    <th scope="row" class="govuk-table__header">Gill Henderserson (me)</th>
+                    <td class="govuk-table__cell">{{ work.action }}</td>
+                    <td class="govuk-table__cell">{{ work.date }}</td>
+                    <td class="govuk-table__cell">{{ work.time }}</td>
+                    <th scope="row" class="govuk-table__header">{{ work.person }}</th>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
