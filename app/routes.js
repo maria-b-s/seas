@@ -252,6 +252,11 @@ registeredBodyRouter.get('/application-cancelled', invalidateCache, (req, res) =
 registeredBodyRouter.get('/id-checked', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
    
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == req.query.app
+    )
+    
+    req.session.data.selectedApplication = selectedApplication;
    
    res.render('registered-body/id-checked', { cms, cache: inputCache, validation: null });
 });
