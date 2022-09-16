@@ -217,9 +217,15 @@ registeredBodyRouter.get('/verify-applicant-id', invalidateCache, (req, res) => 
 
 registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == req.query.app
+    )
+    
+    req.session.data.selectedApplication = selectedApplication;
    
    
-   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, validation: null });
+   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
 });
 
 registeredBodyRouter.post('/confirm-cancel',invalidateCache, cancelApplication);
@@ -967,6 +973,7 @@ dashboardRouter.get('*', (req, res, next) => {
         };
     });
 
+    req.session.data.filteredApplications = req.session.data.applications
     return next();
 });
 

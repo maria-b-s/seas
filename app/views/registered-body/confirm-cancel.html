@@ -8,13 +8,13 @@ endset%} {% block beforeContent %}
         </span>
     </p>
 </div>
-{% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
+{% if selectedApplication[0].status.text != 'CANCELLED'%}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endif %}
 {% endblock %} {% block content %}
 <div class="govuk-grid-row">
 
-    {% if data["selectedApplication"][0].status.text == 'CANCELLED'%}
+    {% if selectedApplication[0].status.text == 'CANCELLED'%}
     <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -35,28 +35,28 @@ endset%} {% block beforeContent %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant name</dt>
-                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].name }}</dd>
+                <dd class="govuk-summary-list__value">{{  selectedApplication[0].name }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Status</dt>
-                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].status.text }}</dd>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].status.text }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Type</dt>
-                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].type }}</dd>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].type }}</dd>
 
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Date application started</dt>
-                <dd class="govuk-summary-list__value">{{ data["selectedApplication"][0].date }}</dd>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].date }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
         </dl>
     
-        {% if data["selectedApplication"][0].status.text != 'CANCELLED'%}
+        {% if selectedApplication[0].status.text != 'CANCELLED'%}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <form action='confirm-cancel' method="post" novalidate>
                 <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</button>

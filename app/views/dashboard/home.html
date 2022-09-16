@@ -1,4 +1,6 @@
 {% extends "wide-layout.njk" %} {% block pageTitle %} Landing page {% endblock %} {% block header %}
+
+
 <header class="govuk-header" role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
@@ -168,12 +170,10 @@
                 <h3 class="govuk-heading-s">Search</h3>
             </div>
             <div class="govuk-grid-column-two-thirds">
-                <input class="govuk-input" id="event-name" name="event-name" type="text" />
+                <input class="govuk-input" id="event-name" name="event-name" type="text"/>
             </div>
             <div class="govuk-grid-column-one-third">
-                <a href="/registered-body/dbs-check-level">
-                    <button class="govuk-button" data-module="govuk-button">Search</button>
-                </a>
+                <button class="govuk-button" data-module="govuk-button">Search</button>
             </div>
         </div>
 
@@ -213,8 +213,8 @@
                                     <div class="govuk-grid-column-one-half">
                                         <h2 class="govuk-heading-m">{{app['name']}}</h2>
                                     </div>
-                                    <div class="govuk-grid-column-one-quarter">
-                                        <p><a href="/registered-body/verify-applicant-id?app={{app['ref']}}">View details</a></p>
+                                    <div class="govuk-grid-column-one-third">
+                                        <p><a href="/registered-body/verify-applicant-id?app={{app['ref']}}">View full details</a></p>
                                     </div>
                                 </div>
 
@@ -274,7 +274,6 @@
                                         {% else %}
                                         <strong class="govuk-tag govuk-tag--blue">{{app['status'].text}}</strong>
                                         {% endif %}
-
                                     </div>
                                 </div>
 
@@ -296,10 +295,10 @@
 
                                 <br />
                                 {% endif %}
-                                
+
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
-                                        <a href="">Worklog</a>
+                                        <a href="/registered-body/worklog?app={{app['ref']}}">Worklog</a>
                                     </div>
                                 </div>
                             </div>
