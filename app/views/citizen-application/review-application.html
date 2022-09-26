@@ -50,7 +50,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Date of birth</th>
-                    <td class="govuk-table__cell">{{[data['dob-day'], '/' , data['dob-month'], '/' ,data['dob-year']] | join }}</td>
+                    <td class="govuk-table__cell">{{[data['ca-dob-day'], '/' , data['ca-dob-month'], '/' ,data['ca-dob-year']] | join }}</td>
                     <td class="govuk-table__cell">
                         <a href="date-of-birth?change=true">
                             Change
