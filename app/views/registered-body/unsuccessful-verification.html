@@ -1,0 +1,57 @@
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
+"errorList": errorList }) }} {% endif %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">You must cancel the online application</h1>
+                    </legend>
+          
+                    <p class="govuk-body">
+                        If you or your ID checker cannot verify an applicant's identity then you must cancel their online application. If they still
+                        need a DBS check you must complete a paper application form instead. On the paper application form you should mark question
+                        W59 as no.
+                    </p>
+                </fieldset>
+            </div>
+
+             <a href="/registered-body/confirm-cancel?app={{selectedApplication[0].ref}}">
+                <button class="govuk-button" data-module="govuk-button">Continue to cancel application</button>
+            </a>
+ 
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <a
+                            href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021"
+                        >
+                            Find out how to correctly verify an applicant's ID
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+
+{% endblock %}

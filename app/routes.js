@@ -278,35 +278,27 @@ registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
         res.render('registered-body/id-checked', { cache: inputCache,   validation: dataValidation });
     } else {
         if(req.session.data['verified'] == 'No'){
-            res.redirect('cancel-application')
+            res.redirect('unsuccessful-verification?app=' + req.session.data.selectedApplication[0].ref)
         } else {
             res.redirect('declaration-registered-person')
         }
     }  
-    
 });
 
-registeredBodyRouter.post('/cancel-application', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
+registeredBodyRouter.get('/unsuccessful-verification', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    let dataValidation = {};
 
-
-    if(!req.session.data['cancel']){
-        dataValidation['cancel'] = 'Select an option';
-    }
+    let selectedApplication = req.session.data['applications'].filter(value =>
+        value.ref == req.query.app
+    )
     
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/cancel-application', { cache: inputCache,   validation: dataValidation });
-    } else {
-        if(req.session.data['cancel'] == 'Yes'){
-            cancelApplication(req, res)
-        } else {
-            res.redirect('id-checked')
-        }
-    }  
-    
+    req.session.data.selectedApplication = selectedApplication;
+   
+   
+   res.render('registered-body/unsuccessful-verification', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
 });
+
+
 
 
 
