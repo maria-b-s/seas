@@ -8,11 +8,11 @@ endset%} {% block beforeContent %}
         </span>
     </p>
 </div>
-{% if selectedApplication[0].status.text != 'CANCELLED'%}
+{% if selectedApplication[0].status.text != 'Cancelled'%}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endif %} {% endblock %} {% block content %}
 <div class="govuk-grid-row">
-    {% if selectedApplication[0].status.text == 'CANCELLED'%}
+    {% if selectedApplication[0].status.text == 'Cancelled'%}
     <div
         class="govuk-notification-banner govuk-notification-banner--success"
         role="alert"
@@ -31,7 +31,7 @@ endset%} {% block beforeContent %}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <h1 class="govuk-heading-l">Cancel Application</h1>
         </div>
-        {% if selectedApplication[0].status.text != 'CANCELLED'%}
+        {% if selectedApplication[0].status.text != 'Cancelled'%}
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
@@ -72,7 +72,7 @@ endset%} {% block beforeContent %}
             </div>
         </dl>
 
-        {% if selectedApplication[0].status.text != 'CANCELLED'%}
+        {% if selectedApplication[0].status.text != 'Cancelled'%}
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <form action="confirm-cancel" method="post" novalidate>
                 <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</button>

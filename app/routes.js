@@ -941,13 +941,13 @@ const STATUS_COLLECTION = [
 ];
 
 const STATUS_COLLECTION1 = [
-    { id: '001', text: 'SENT TO APPLICANT' },
-    { id: "002", text: 'ID CHECK REQUIRED' },
-    { id: '003', text: 'READY TO SUBMIT'},
-    { id: "004", text: 'SUBMITTED TO DBS'},
-    { id: '005', text: 'CANCELLED'},
-    { id: '006', text: 'REJECTED'},
-    { id: '007', text: 'CERTIFICATE ISSUED'},
+    { id: '001', text: 'Sent to applicant' },
+    { id: "002", text: 'ID check required' },
+    { id: '003', text: 'Ready to submit'},
+    { id: "004", text: 'Submitted to DBS'},
+    { id: '005', text: 'Cancelled'},
+    { id: '006', text: 'Rejected'},
+    { id: '007', text: 'Cerificate issued'},
 ];
 
 

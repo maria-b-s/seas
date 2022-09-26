@@ -46,14 +46,6 @@
                 </button>
 
                 <ul id="navigation" class="govuk-header__navigation-list">
-                    <li class="govuk-header__navigation-item KL-notify">
-                        <div>
-                            <a href="notifications" class="govuk-header__link">Notifications</a>
-                            {% if data["notifications"].length !== 0 %}
-                            <div>{{data['notifications'].length}}</div>
-                            {% endif %}
-                        </div>
-                    </li>
                     <li class="govuk-header__navigation-item">
                         <a class="govuk-header__link" href="#3"> Support </a>
                     </li>
@@ -136,25 +128,25 @@
     <div class="govuk-grid-column-one-quarter">
         <h2 class="govuk-heading-m">Filter</h2>
 
-        <h3 class="govuk-heading-s">Application action needed</h3>
+        <h3 class="govuk-heading-s govuk-!-font-size-19">Application action needed</h3>
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
-                <label class="govuk-label govuk-checkboxes__label" for="needs-action">Needs action</label>
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="needs-action">Needs action</label>
             </div>
         </div>
 
         <br />
 
-        <h3 class="govuk-heading-s">Status</h3>
+        <h3 class="govuk-heading-s govuk-!-font-size-19">Status</h3>
 
         {% for app in data['appStatus'] %}
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
-                <label class="govuk-label govuk-checkboxes__label" for="needs-action">{{app.text}}</label>
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="needs-action">{{app.text}}</label>
             </div>
         </div>
 
@@ -210,55 +202,55 @@
                             <div class="govuk-grid-column-three-quarters">
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-half">
-                                        <h2 class="govuk-heading-m">{{app['name']}}</h2>
+                                        <p class="govuk-body govuk-!-font-size-19">{{app['name']}}</p>
                                     </div>
                                     <div class="govuk-grid-column-one-third">
-                                        <p><a href="/registered-body/view-details?app={{app['ref']}}">View full details</a></p>
+                                        <p class="govuk-body govuk-!-font-size-16"><a href="/registered-body/view-details?app={{app['ref']}}">View full details</a></p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-third">
-                                        <p class="govuk-summary-list__value">Email</p>
+                                        <p class="govuk-heading-s govuk-!-font-size-16">Email</p>
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <p class="govuk-summary-list__key">{{app['email']}}</p>
+                                        <p class="govuk-body-s">{{app['email']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-third">
-                                        <p class="govuk-summary-list__value">Date application started</p>
+                                        <p class="govuk-heading-s govuk-!-font-size-16">Date application started</p>
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <p class="govuk-summary-list__key">{{app['date']}}</p>
+                                        <p class="govuk-body-s">{{app['date']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-third">
-                                        <p class="govuk-summary-list__value">Organisation</p>
+                                        <p class="govuk-heading-s govuk-!-font-size-16">Organisation</p>
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <p class="govuk-summary-list__key">{{app['organisation']}}</p>
+                                        <p class="govuk-body-s">{{app['organisation']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-third">
-                                        <p class="govuk-summary-list__value">Check level</p>
+                                        <p class="govuk-heading-s govuk-!-font-size-16">Check level</p>
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <p class="govuk-summary-list__key">{{app['type']}}</p>
+                                        <p class="govuk-body-s">{{app['type']}}</p>
                                     </div>
                                 </div>
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-third">
-                                        <p class="govuk-summary-list__value">Last worked on by</p>
+                                        <p class="govuk-heading-s govuk-!-font-size-16">Last worked on by</p>
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
-                                        <p class="govuk-summary-list__key">{{app['worklog'][0].person}}</p>
+                                        <p class="govuk-body-s">{{app['worklog'][0].person}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -267,13 +259,17 @@
                                 <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-full">
                                         {% if app['status'].id == '002' or app['status'].id == '003'%}
-                                        <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{app['status'].text}}</strong>
+                                        <strong class="govuk-tag govuk-tag--yellow govuk-!-font-size-14" style="text-align: center">{{app['status'].text}}</strong>
                                         {% elif app['status'].id == '005' or app['status'].id == '006'%}
-                                        <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center"
+                                        <strong class="govuk-tag govuk-tag--red govuk-!-font-size-14" style="width: 90%; text-align: center"
+                                            >{{app['status'].text}}</strong
+                                        >
+                                        {% elif app['status'].id == '007'%}
+                                        <strong class="govuk-tag govuk-tag--green govuk-!-font-size-14" style="width: 90%; text-align: center"
                                             >{{app['status'].text}}</strong
                                         >
                                         {% else %}
-                                        <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{app['status'].text}}</strong>
+                                        <strong class="govuk-tag govuk-tag--blue govuk-!-font-size-14" style="text-align: center">{{app['status'].text}}</strong>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -282,7 +278,7 @@
 
                                 {% if app['status'].id == '002'%}
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                    <div class="govuk-grid-column-full govuk-!-font-size-16" style="text-align: right">
                                         <a href="">Download applicant details PDF</a>
                                     </div>
                                 </div>
@@ -290,7 +286,7 @@
                                 <br />
 
                                   <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                    <div class="govuk-grid-column-full govuk-!-font-size-16" style="text-align: right">
                                         <a href="/registered-body/id-checked?app={{app['ref']}}">Enter ID check results</a>
                                     </div>
                                 </div>
@@ -298,11 +294,23 @@
                                 <br />
 
                                 {% endif %} 
+
+                                 {% if app['status'].id == '003'%}
+                    
+                                  <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-full govuk-!-font-size-16" style="text-align: right">
+                                        <a href="">Submit application</a>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                {% endif %}
                                 
-                                {% if app['status'].id == '002' or app['status'].id == '003'%}
+                                {% if app['status'].id == '001' or app['status'].id == '002' or app['status'].id == '003'%}
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                    <div class="govuk-grid-column-full govuk-!-font-size-16" style="text-align: right">
                                         <a href="/registered-body/confirm-cancel?app={{app['ref']}}">Cancel application</a>
                                     </div>
                                 </div>
@@ -311,7 +319,7 @@
                                 {% endif %}
 
                                 <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full" style="text-align: right">
+                                    <div class="govuk-grid-column-full govuk-!-font-size-16" style="text-align: right">
                                         <a href="/registered-body/worklog?app={{app['ref']}}">Worklog</a>
                                     </div>
                                 </div>
