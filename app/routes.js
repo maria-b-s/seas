@@ -1154,11 +1154,33 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     }
 });
 
+dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
+    const inputCache = loadPageData(req);
+
+    // if (!req.session?.selectedRB) {
+    //     res.redirect('/dashboard/rb-login');
+    // } else {
+    //     res.render('dashboard/home', { cache: inputCache, validation: null });
+    // }
+
+    console.log(req.query.name)
+
+    if(req.query.name == undefined){
+        req.session.data.filteredApplications = req.session.data.applications;
+    }
+    res.render('dashboard/home', { cache: inputCache, validation: null });
+});
+
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
-    console.log(req.body)
+  
+    let filtered = req.session.data.applications.filter(app => {
+        return app.name.includes(req.body['search-name']);
+      });
+    req.session.data.filteredApplications = filtered
+    res.redirect('/dashboard/home?name=' + req.body['search-name']);
 });
 
 // SEAS 503 Password reset

@@ -137,7 +137,7 @@
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="needs-action">Needs action</label>
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="needs-action">Needs action</label>
             </div>
         </div>
 
@@ -150,7 +150,7 @@
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="needs-action">{{app.text}}</label>
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="needs-action">{{app.text}}</label>
             </div>
         </div>
 
@@ -165,7 +165,7 @@
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" />
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="needs-action">{{org}}</label>
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="needs-action">{{org}}</label>
             </div>
         </div>
 
@@ -206,7 +206,7 @@
 
         <table class="govuk-table landing-table">
             <tbody class="govuk-table__body">
-                {% for app in data['applications'] %}
+                {% for app in data['filteredApplications'] %}
                 <tr class="govuk-table__row">
                     {# {% if app['status'].id === '003' or app['status'].id === '005' %}
                     <td class="govuk-table__cell">
