@@ -578,7 +578,7 @@ citizenRouter.post('/add-previous-homeless-or-travelling', (req, res) => {
 });
 
 citizenRouter.post('/where-certificate', (req, res) => {
-    if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('previous-convictions');
+    if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('email-address');
     return res.redirect('address-lookup?certificate=true');
 });
 
