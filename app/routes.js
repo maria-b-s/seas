@@ -18,52 +18,48 @@ const _ = require('lodash');
 const { renderString } = require('nunjucks');
 const { validateOrganisation } = require('./middleware/validateOrganisation');
 
-
-
 const router = express.Router();
-const citizenRouter = express.Router(); 
+const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
 const dashboardRouter = express.Router();
 
 const cms = {
     generalContent: {
-        continue: "Continue",
-    }
+        continue: 'Continue',
+    },
 };
 
 registeredBodyRouter.post('/position', (req, res) => {
-    if(req.query.change == 'true'){
-        res.redirect('check-answers')
+    if (req.query.change == 'true') {
+        res.redirect('check-answers');
     } else {
-        res.redirect('organisation-name')
+        res.redirect('organisation-name');
     }
 });
 
 registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-   res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
-
+    res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/existing-post-holder', (req, res) => {
-    if(req.query.change == 'true'){
-        res.redirect('check-answers')
+    if (req.query.change == 'true') {
+        res.redirect('check-answers');
     } else {
-        res.redirect('applicant-name')
+        res.redirect('applicant-name');
     }
 });
 
 registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
-    if(req.query.change == 'true'){
-        res.redirect('check-answers')
+    if (req.query.change == 'true') {
+        res.redirect('check-answers');
     } else {
-        res.redirect('applicant-name')
+        res.redirect('applicant-name');
     }
 });
 
-
-registeredBodyRouter.post('/organisation-name',invalidateCache, validateOrganisation);
+registeredBodyRouter.post('/organisation-name', invalidateCache, validateOrganisation);
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
@@ -77,60 +73,54 @@ registeredBodyRouter.post('/select-flow', (req, res) => {
 registeredBodyRouter.get('/workforce-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-   res.render('registered-body/workforce-select', { cms, cache: inputCache, validation: null });
-
+    res.render('registered-body/workforce-select', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/workforce-select',invalidateCache, validateWorkforceSelect);
+registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforceSelect);
 
-
-// ENHANCED WORKFORCE 
+// ENHANCED WORKFORCE
 
 registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-   res.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
-
+    res.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/enhanced/workforce-select',invalidateCache, validateWorkforceSelect);
-
+registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
 
 // Adults
 registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/enhanced/barred-list-adults',invalidateCache, validateBarred);
+registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarred);
 
 // Children
 registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/enhanced/barred-list-children',invalidateCache, validateBarred);
-
+registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarred);
 
 // Working at home
 registeredBodyRouter.get('/enhanced/working-at-home-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let validation = null;
-    
-    if (!req.body['children-or-adults']) {
 
+    if (!req.body['children-or-adults']) {
         validation = {
-          'children-or-adults': 'Select an option'
-        }
-    
-        res.render('registered-body/enhanced/working-at-home-address',  { cms, cache: inputCache, validation: validation });
+            'children-or-adults': 'Select an option',
+        };
+
+        res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: validation });
     } else {
         req.session.data['children-or-adults'] = req.body['children-or-adults'];
         res.redirect('/registered-body/position');
@@ -139,24 +129,23 @@ registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
 
 registeredBodyRouter.get('/applicant-name', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/applicant-name', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/applicant-name', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
-    if(req.query.change == "true"){
-        res.redirect('check-answers')
+    if (req.query.change == 'true') {
+        res.redirect('check-answers');
     } else {
-        res.redirect('applicant-email')
+        res.redirect('applicant-email');
     }
-    
 });
 
 registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/applicant-email', (req, res) => {
@@ -166,99 +155,85 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     let applicantEmail = req.body['applicant-email'];
     let applicantEmailConfirm = req.body['applicant-email-confirm'];
 
-    let enteredEmail = req.session.data['applications'].filter(value =>
-        value.email == applicantEmail
-    )
+    let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
 
-    if(!applicantEmail){
+    if (!applicantEmail) {
         dataValidation['applicant-email'] = 'Enter email address';
     }
 
-    if(!applicantEmailConfirm){
+    if (!applicantEmailConfirm) {
         dataValidation['applicant-email-confirm'] = 'Enter email address';
     }
 
-    if(!applicantEmail.includes('@')){
+    if (!applicantEmail.includes('@')) {
         dataValidation['applicant-email'] = 'Enter valid email address';
     }
 
-    if(applicantEmail != applicantEmailConfirm){
-        dataValidation['applicant-email-confirm'] = 'Email addresses do not match'
+    if (applicantEmail != applicantEmailConfirm) {
+        dataValidation['applicant-email-confirm'] = 'Email addresses do not match';
     }
 
-    if(applicantEmail == req.session.selectedRB.email){
+    if (applicantEmail == req.session.selectedRB.email) {
         dataValidation['applicant-email'] = 'Cannot enter own email address';
     }
 
-    if(enteredEmail.length > 0){
-        dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application'
+    if (enteredEmail.length > 0) {
+        dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application';
     }
-    
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/applicant-email', { cache: inputCache,   validation: dataValidation });
-      } else {
-        res.redirect('check-answers')
-      }  
 
-    
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/applicant-email', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('check-answers');
+    }
 });
 
 registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == req.query.app
-    )
-    
+
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
     req.session.data.selectedApplication = selectedApplication;
-       
-   res.render('registered-body/view-details', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+
+    res.render('registered-body/view-details', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
 });
 
 registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == req.query.app
-    )
-    
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
     req.session.data.selectedApplication = selectedApplication;
-   
-   
-   res.render('registered-body/confirm-cancel', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+
+    res.render('registered-body/confirm-cancel', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
 });
 
-registeredBodyRouter.post('/confirm-cancel',invalidateCache, cancelApplication);
+registeredBodyRouter.post('/confirm-cancel', invalidateCache, cancelApplication);
 
 registeredBodyRouter.get('/worklog', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == req.query.app
-    )
-    
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
     req.session.data.selectedApplication = selectedApplication;
-   
-   
-   res.render('registered-body/worklog', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+
+    res.render('registered-body/worklog', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
 });
 
 registeredBodyRouter.get('/application-cancelled', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   
-   res.render('registered-body/application-cancelled', { cms, cache: inputCache, validation: null });
+
+    res.render('registered-body/application-cancelled', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.get('/id-checked', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == req.query.app
-    )
-    
+
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
     req.session.data.selectedApplication = selectedApplication;
-   
-   res.render('registered-body/id-checked', { cms, cache: inputCache, validation: null });
+
+    res.render('registered-body/id-checked', { cms, cache: inputCache, validation: null });
 });
 
 registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
@@ -266,42 +241,39 @@ registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(!req.session.data['verified']){
+    if (!req.session.data['verified']) {
         dataValidation['verified'] = 'Select an option';
     }
 
-    if(req.session.data['verified'] == 'Yes' && !req.session.data['name-of-verifier']){
+    if (req.session.data['verified'] == 'Yes' && !req.session.data['name-of-verifier']) {
         dataValidation['verified'] = 'Enter name of evidence checker';
     }
-    
+
     if (Object.keys(dataValidation).length) {
-        res.render('registered-body/id-checked', { cache: inputCache,   validation: dataValidation });
+        res.render('registered-body/id-checked', { cache: inputCache, validation: dataValidation });
     } else {
-        if(req.session.data['verified'] == 'No'){
-            res.redirect('unsuccessful-verification?app=' + req.session.data.selectedApplication[0].ref)
+        if (req.session.data['verified'] == 'No') {
+            res.redirect('unsuccessful-verification?app=' + req.session.data.selectedApplication[0].ref);
         } else {
-            res.redirect('declaration-registered-person')
+            res.redirect('declaration-registered-person');
         }
-    }  
+    }
 });
 
 registeredBodyRouter.get('/unsuccessful-verification', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    let selectedApplication = req.session.data['applications'].filter(value =>
-        value.ref == req.query.app
-    )
-    
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
     req.session.data.selectedApplication = selectedApplication;
-   
-   
-   res.render('registered-body/unsuccessful-verification', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication});
+
+    res.render('registered-body/unsuccessful-verification', {
+        cms,
+        cache: inputCache,
+        query: req.query.app,
+        selectedApplication: selectedApplication,
+    });
 });
-
-
-
-
-
 
 // Add your routes here - above the module.exports line
 
@@ -378,12 +350,11 @@ router.post('/dbs-check-answer', (req, res) => {
     // Make a variable and give it the value from 'what-dbs-check'
     const whatDbsCheck = req.session.data['what-dbs-check'];
     if (!whatDbsCheck) {
-
         validation = {
-          'what-dbs-check': 'Select an option'
-        }
-    
-        res.render('registered-body/dbs-check-level',  { validation: validation });
+            'what-dbs-check': 'Select an option',
+        };
+
+        res.render('registered-body/dbs-check-level', { validation: validation });
     }
     // Check whether the variable matches a condition
     if (whatDbsCheck === 'Enhanced with barred list') return res.redirect('registered-body/enhanced/workforce-select');
@@ -440,7 +411,7 @@ citizenRouter.post('/add-address', (req, res) => {
     const { address } = req.session.data;
     const addresses = req.session.data.addresses || [];
 
-    if(req.query.certificate == 'true'){
+    if (req.query.certificate == 'true') {
         const sendCert = req.session.data.send_cert_address || [];
         sendCert.push({
             lineOne: address[0],
@@ -455,8 +426,8 @@ citizenRouter.post('/add-address', (req, res) => {
 
         return res.redirect('email-address');
     }
-    
-    if(req.header('referer').includes('change=true')){
+
+    if (req.header('referer').includes('change=true')) {
         addresses.pop();
         addresses.push({
             lineOne: address[0],
@@ -468,7 +439,7 @@ citizenRouter.post('/add-address', (req, res) => {
         });
 
         req.session.data.addresses = addresses;
-    
+
         return res.redirect('review-application');
     } else {
         addresses.push({
@@ -481,16 +452,14 @@ citizenRouter.post('/add-address', (req, res) => {
         });
 
         req.session.data.addresses = addresses;
-    
+
         return res.redirect('previous-address');
     }
-    
-  
 });
 
 citizenRouter.post('/add-previous-address', (req, res) => {
     const { previous_address } = req.session.data;
-    const previous_addresses = req.session.data.previous_addresses || []
+    const previous_addresses = req.session.data.previous_addresses || [];
 
     previous_addresses.push({
         lineOne: previous_address[0],
@@ -499,31 +468,29 @@ citizenRouter.post('/add-previous-address', (req, res) => {
         postcode: previous_address[3],
         country: previous_address[4],
         startYear: previous_address[5],
-        endYear: previous_address[6]
+        endYear: previous_address[6],
     });
     req.session.data.previous_addresses = previous_addresses;
     return res.redirect('previous-address');
 });
 
-
 citizenRouter.get('/remove-address', (req, res) => {
-    let oldArray = req.session.data.previous_addresses
-    
-    newArray = oldArray.filter(function( obj ) {
-        return obj.lineOne !== oldArray[(req.query.address - 1)].lineOne;
+    let oldArray = req.session.data.previous_addresses;
+
+    newArray = oldArray.filter(function (obj) {
+        return obj.lineOne !== oldArray[req.query.address - 1].lineOne;
     });
 
-    req.session.data.previous_addresses = newArray
+    req.session.data.previous_addresses = newArray;
     res.redirect('previous-address');
 });
 
 citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
-
     const addresses = req.session.data.addresses || [];
     const whyNoAddress = req.session.data['why-no-address'];
 
-    if(req.header('referer').includes('change=true')){
-        addresses.pop()
+    if (req.header('referer').includes('change=true')) {
+        addresses.pop();
     }
 
     addresses.push({
@@ -546,7 +513,7 @@ citizenRouter.post('/add-homeless-or-travelling', (req, res) => {
 
     req.session.data.addresses = addresses;
 
-    if(req.header('referer').includes('change=true')){
+    if (req.header('referer').includes('change=true')) {
         return res.redirect('review-application');
     } else {
         return res.redirect('previous-address');
@@ -585,18 +552,17 @@ citizenRouter.post('/where-certificate', (req, res) => {
 // Start to declare proper routing
 
 citizenRouter.get('/current-full-name-v2', invalidateCache, (req, res) => {
-   res.render('citizen-application/current-full-name-v2', { cache: req.session.data.fullName, validation: null });
-
+    res.render('citizen-application/current-full-name-v2', { cache: req.session.data.fullName, validation: null });
 });
 
-citizenRouter.post('/current-full-name-v2',invalidateCache, (req, res, next) => {
+citizenRouter.post('/current-full-name-v2', invalidateCache, (req, res, next) => {
     if (req.body['full-name']) {
         req.session.data.fullName = req.body['full-name'];
     }
     res.redirect('/citizen-application/previous-names-q');
 });
 
-citizenRouter.post('/place-of-birth',invalidateCache, (req, res, next) => {
+citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
     if (req.query['full-name'] == 'true') {
         res.redirect('/citizen-application/review-application');
     } else {
@@ -606,15 +572,14 @@ citizenRouter.post('/place-of-birth',invalidateCache, (req, res, next) => {
 
 citizenRouter.get('/drivers-licence', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('citizen-application/drivers-licence', { cache: inputCache, validation: null });
+    res.render('citizen-application/drivers-licence', { cache: inputCache, validation: null });
 });
 
 citizenRouter.post('/drivers-licence', invalidateCache, validateDriversLicence);
 
 citizenRouter.get('/passport', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-   res.render('citizen-application/passport', { cache: inputCache, validation: null });
-
+    res.render('citizen-application/passport', { cache: inputCache, validation: null });
 });
 
 citizenRouter.post('/passport', invalidateCache, validatePassport);
@@ -624,34 +589,32 @@ citizenRouter.get('/place-of-birth', invalidateCache, (req, res) => {
 });
 
 citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
-
     if (req.query.change) {
         req.session.fromPrevNamesToReview = true;
     }
 
     const inputCache = loadPageData(req);
-   res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
+    res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
 });
 
 citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
-
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     // To prevent mutability I am creating a new object "data" from the req.body
     const data = { ...req.body };
-  
+
     let validation = null;
-  
+
     // Explicit coercion to boolean
     if (data['radio-group-alias-input']) {
-      data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
+        data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
     } else {
         validation = {};
-        validation['radio-group-alias-input'] = "Select whether you have been known by any other names";
+        validation['radio-group-alias-input'] = 'Select whether you have been known by any other names';
         res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
     }
-   
+
     if (data['radio-group-alias-input'] === false) {
         if (req.session.data.prevNames) {
             delete req.session.data.prevNames;
@@ -662,66 +625,62 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
         } else {
             res.redirect('/citizen-application/date-of-birth');
         }
-
     } else if (data['radio-group-alias-input'] === true) {
-        
         if (req.session.data?.prevNames?.length) {
             res.redirect('/citizen-application/previous-names-list');
         } else {
             res.redirect('/citizen-application/previous-names-form');
         }
     }
-
 });
 
 citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
-
     let inputCache = loadPageData(req);
 
     if (req.query.edit && req.session) {
         inputCache = {};
         const state = req.session?.data?.prevNames || [];
         if (state && state.length > 0) {
-          const seedingItem = state[Number(req.query.edit) - 1];
+            const seedingItem = state[Number(req.query.edit) - 1];
 
-          const seedingObject = {
-            'full-name-middle-names': seedingItem.middle_names,
-            'full-name-first-name': seedingItem.first_name,
-            'full-name-last-name': seedingItem.last_name,
-          };
+            const seedingObject = {
+                'full-name-middle-names': seedingItem.middle_names,
+                'full-name-first-name': seedingItem.first_name,
+                'full-name-last-name': seedingItem.last_name,
+            };
 
-          if (seedingItem.first_name === 'Not entered') {
-            seedingObject['full-name-first-name'] = '';
-          }
+            if (seedingItem.first_name === 'Not entered') {
+                seedingObject['full-name-first-name'] = '';
+            }
 
-          if (seedingItem.used_from && seedingItem.used_from !== 'Not entered') {
-            const seedingItemDateFrom = seedingItem.used_from.split('/');
-            seedingObject['alias-from-MM'] = seedingItemDateFrom[0];
-            seedingObject['alias-from-YYYY'] = seedingItemDateFrom[1];
-          } else {
-            seedingObject['alias-from-MM'] = '';
-            seedingObject['alias-from-YYYY'] = '';
-          }
+            if (seedingItem.used_from && seedingItem.used_from !== 'Not entered') {
+                const seedingItemDateFrom = seedingItem.used_from.split('/');
+                seedingObject['alias-from-MM'] = seedingItemDateFrom[0];
+                seedingObject['alias-from-YYYY'] = seedingItemDateFrom[1];
+            } else {
+                seedingObject['alias-from-MM'] = '';
+                seedingObject['alias-from-YYYY'] = '';
+            }
 
-          if (seedingItem.used_to && seedingItem.used_to !== 'Not entered' ) {
-            const seedingItemDateTo = seedingItem.used_to.split('/');
-            seedingObject['alias-to-MM'] = seedingItemDateTo[0];
-            seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
-            seedingObject['radio-group-alias-input'] = '0';
-          } else {
-            seedingObject['radio-group-alias-input'] = '1';
-            seedingObject['alias-to-MM'] = '';
-            seedingObject['alias-to-YYYY'] = '';
-          }
+            if (seedingItem.used_to && seedingItem.used_to !== 'Not entered') {
+                const seedingItemDateTo = seedingItem.used_to.split('/');
+                seedingObject['alias-to-MM'] = seedingItemDateTo[0];
+                seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
+                seedingObject['radio-group-alias-input'] = '0';
+            } else {
+                seedingObject['radio-group-alias-input'] = '1';
+                seedingObject['alias-to-MM'] = '';
+                seedingObject['alias-to-YYYY'] = '';
+            }
 
-          inputCache = seedingObject;
+            inputCache = seedingObject;
         }
-      }
+    }
 
-   res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
+    res.render('citizen-application/previous-names-form', { cache: inputCache, validation: null });
 });
 
-let mapInput = (data) => {
+let mapInput = data => {
     const resultObj = {};
 
     let notEntered = 'Not entered';
@@ -732,13 +691,11 @@ let mapInput = (data) => {
         resultObj.first_name = notEntered;
     }
 
-
     if (data['full-name-middle-names']) {
         resultObj.middle_names = data['full-name-middle-names'];
     } else {
         resultObj.middle_names = '';
     }
-        
 
     if (data['full-name-last-name']) {
         resultObj.last_name = data['full-name-last-name'];
@@ -754,7 +711,7 @@ let mapInput = (data) => {
 
     if (data['alias-to-MM'] && data['alias-to-YYYY']) {
         resultObj.used_to = `${data['alias-to-MM'].padStart(2, '0')}/${data['alias-to-YYYY']}`;
-    }else {
+    } else {
         resultObj.used_to = notEntered;
     }
 
@@ -763,7 +720,7 @@ let mapInput = (data) => {
     }
 
     return resultObj;
-}
+};
 
 citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     savePageData(req, req.body);
@@ -773,24 +730,21 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
 
     if (req.session.data.prevNames) {
         collection = req.session.data.prevNames;
-    }   
+    }
 
     const item = mapInput(inputCache);
 
     if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
         collection[Number(req.query.edit) - 1] = item;
-
-
-      } else if (item['first_name'] !== 'Not entered') {
+    } else if (item['first_name'] !== 'Not entered') {
         collection.push(item);
     }
 
     req.session.data.prevNames = collection;
-   res.redirect('/citizen-application/previous-names-list');
+    res.redirect('/citizen-application/previous-names-list');
 });
 
 citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
-
     const inputCache = loadPageData(req);
 
     let prevNames = [];
@@ -801,15 +755,14 @@ citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
 
     if (req.query.item && Number.isInteger(Number(req.query.item)) && prevNames[Number(req.query.item) - 1]) {
         _.pullAt(prevNames, [Number(req.query.item) - 1]);
-      }
+    }
 
-      req.session.data.prevNames = prevNames;
+    req.session.data.prevNames = prevNames;
 
-   res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
+    res.render('citizen-application/previous-names-list', { list: prevNames, cache: inputCache, validation: null });
 });
 
-citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => {
-
+citizenRouter.post('/previous-names-list', invalidateCache, (req, res, _next) => {
     const data = { ...req.body };
 
     let validation = null;
@@ -819,76 +772,68 @@ citizenRouter.post('/previous-names-list', invalidateCache,(req, res, _next) => 
     if (req.session.data.prevNames) {
         prevNames = req.session.data.prevNames;
     }
-  
+
     if (!data['radio-group-previous-names-input']) {
-        validation = { 'radio-group-previous-names-input': " Select if you want to add another previous name " };
+        validation = { 'radio-group-previous-names-input': ' Select if you want to add another previous name ' };
         res.render('citizen-application/previous-names-list', { list: prevNames, cache: null, validation: validation });
     } else if (data['radio-group-previous-names-input']) {
-      data['radio-group-previous-names-input'] = Boolean(Number(data['radio-group-previous-names-input']));
+        data['radio-group-previous-names-input'] = Boolean(Number(data['radio-group-previous-names-input']));
 
-      const setNewValueNL = data['radio-group-previous-names-input'] === true;
+        const setNewValueNL = data['radio-group-previous-names-input'] === true;
 
-      if (req.session.cache && req.session.cache['/citizen-application/previous-names-form']) {
-        delete req.session.cache['/citizen-application/previous-names-form'];
-      }
-    
-
-      if (setNewValueNL) {
-      let redirectUrlNL = '/citizen-application/previous-names-form';
-      res.redirect(redirectUrlNL);
-        
-      } else if (setNewValueNL === false) {
-        if (req.session.fromPrevNamesToReview) {
-            req.session.fromPrevNamesToReview = false;
-            res.redirect('/citizen-application/review-application');
-        } else {
-            res.redirect('/citizen-application/date-of-birth');
+        if (req.session.cache && req.session.cache['/citizen-application/previous-names-form']) {
+            delete req.session.cache['/citizen-application/previous-names-form'];
         }
-      }
-    } 
 
-  });
+        if (setNewValueNL) {
+            let redirectUrlNL = '/citizen-application/previous-names-form';
+            res.redirect(redirectUrlNL);
+        } else if (setNewValueNL === false) {
+            if (req.session.fromPrevNamesToReview) {
+                req.session.fromPrevNamesToReview = false;
+                res.redirect('/citizen-application/review-application');
+            } else {
+                res.redirect('/citizen-application/date-of-birth');
+            }
+        }
+    }
+});
 
-
-citizenRouter.get('/sex',invalidateCache, (req, res) => {
+citizenRouter.get('/sex', invalidateCache, (req, res) => {
     let prevValues = null;
 
     if (req.session.data.sex) {
-      prevValues = { sex: req.session.data.sex };
+        prevValues = { sex: req.session.data.sex };
     }
-  
-    res.render('citizen-application/sex', {cache: prevValues, validation: null });
+
+    res.render('citizen-application/sex', { cache: prevValues, validation: null });
 });
 
 citizenRouter.post('/sex', invalidateCache, validateSex);
 
 citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
-     const inputCache = loadPageData(req);
+    const inputCache = loadPageData(req);
 
     res.render('citizen-application/national-insurance-number', { cache: inputCache, validation: null });
-
 });
 
-citizenRouter.post('/national-insurance-number',invalidateCache, validateNationalInsurance);
+citizenRouter.post('/national-insurance-number', invalidateCache, validateNationalInsurance);
 
 citizenRouter.get('/national-insurance-number', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-   res.render('citizen-application/telephone-numberr', { cache: inputCache, validation: null });
-
+    res.render('citizen-application/telephone-numberr', { cache: inputCache, validation: null });
 });
 
 citizenRouter.get('/email-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-   res.render('citizen-application/email-address', { cache: inputCache, validation: null });
-
+    res.render('citizen-application/email-address', { cache: inputCache, validation: null });
 });
 
 citizenRouter.post('/email-address', invalidateCache, validateEmail);
 
-citizenRouter.post('/telephone-number',invalidateCache, validatePhone);
-
+citizenRouter.post('/telephone-number', invalidateCache, validatePhone);
 
 citizenRouter.post('/old-or-new', (req, res) => {
     if (req.session.data['existing-app'] === 'new') {
@@ -897,26 +842,24 @@ citizenRouter.post('/old-or-new', (req, res) => {
     return res.redirect('sex');
 });
 
-
-citizenRouter.post('/address-lookup',invalidateCache, (req, res, next) => {
+citizenRouter.post('/address-lookup', invalidateCache, (req, res, next) => {
     const inputCache = loadPageData(req);
-    if(req.query.certificate == 'true'){
-        return res.redirect('address-details?certificate=true')
-    } 
+    if (req.query.certificate == 'true') {
+        return res.redirect('address-details?certificate=true');
+    }
 
-    if(req.query.change == 'true'){
-        return res.redirect('address-details?change=true')
+    if (req.query.change == 'true') {
+        return res.redirect('address-details?change=true');
     } else {
         return res.redirect('address-details');
     }
 });
 
-citizenRouter.post('/previous-address-lookup',invalidateCache, (req, res, next) => {
+citizenRouter.post('/previous-address-lookup', invalidateCache, (req, res, next) => {
     const inputCache = loadPageData(req);
 
     return res.redirect('previous-address-details');
 });
-
 
 const getRandomArbitrary = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
@@ -926,34 +869,40 @@ const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-
 // Ids documented here https://carpathia.atlassian.net/wiki/spaces/SEAS/pages/7514423306/Application+Status
 const STATUS_COLLECTION = [
     { id: '001', text: 'SENT TO APPLICANT' },
-    { id: "002", text: 'REJECTED' },
-    { id: '003', text: 'CHECK ANSWERS'},
-    { id: "004", text: 'APPLICANT AMENDING'},
-    { id: '005', text: 'ID CHECK REQUIRED'},
-    { id: '006', text: 'READY TO SUBMIT'},
-    { id: '007', text: 'APPLICATION SUBMITED'},
-    { id: '008', text: 'CERTIFICATE ISSUED'},
-    { id: '009', text: 'CANCELLED'}
+    { id: '002', text: 'REJECTED' },
+    { id: '003', text: 'CHECK ANSWERS' },
+    { id: '004', text: 'APPLICANT AMENDING' },
+    { id: '005', text: 'ID CHECK REQUIRED' },
+    { id: '006', text: 'READY TO SUBMIT' },
+    { id: '007', text: 'APPLICATION SUBMITED' },
+    { id: '008', text: 'CERTIFICATE ISSUED' },
+    { id: '009', text: 'CANCELLED' },
 ];
 
 const STATUS_COLLECTION1 = [
     { id: '001', text: 'Sent to applicant' },
-    { id: "002", text: 'ID check required' },
-    { id: '003', text: 'Ready to submit'},
-    { id: "004", text: 'Submitted to DBS'},
-    { id: '005', text: 'Cancelled'},
-    { id: '006', text: 'Rejected'},
-    { id: '007', text: 'Cerificate issued'},
+    { id: '002', text: 'ID check required' },
+    { id: '003', text: 'Ready to submit' },
+    { id: '004', text: 'Submitted to DBS' },
+    { id: '005', text: 'Cancelled' },
+    { id: '006', text: 'Rejected' },
+    { id: '007', text: 'Cerificate issued' },
 ];
 
+const ORGANISATION = [
+    'Org A',
+    'Org B',
+    'Org C',
+    'Castle Healthcare',
+]
 
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
     req.session.data.appStatus = STATUS_COLLECTION1;
+    req.session.data.organisations = ORGANISATION;
     const statuses = STATUS_COLLECTION1;
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
@@ -975,43 +924,49 @@ dashboardRouter.get('*', (req, res, next) => {
             ref,
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
             firstName: `${firstNames[elIndex]}`,
-            surname:`${lastNames[elIndex]}`,
+            middleName: '',
+            surname: `${lastNames[elIndex]}`,
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
-            organisation: "Org ABC",
-            worklog: [{
-                person: "John Smith"
-            }]
+            organisation: `${ORGANISATION[Math.floor(Math.random()*ORGANISATION.length)]}`,
+            worklog: [
+                {
+                    person: 'John Smith',
+                },
+            ],
         };
     });
 
     req.session.data.applications[0] = {
         ref: 'MATT0711',
         name: 'Matthew John Adler',
+        firstName: 'Matthew',
+        middleName: 'John',
+        surname: 'Adler',
         status: statuses[1],
         type: types[1],
         date: '07/06/2022',
         email: 'matthewadler@myemail.com',
         prevNames: [
             {
-              first_name: 'Matthew',
-              middle_names: 'John',
-              last_name: 'Adler',
-              used_from: '06/1997',
-              used_to: '01/2011'
+                first_name: 'Matthew',
+                middle_names: 'John',
+                last_name: 'Adler',
+                used_from: '06/1997',
+                used_to: '01/2011',
             },
             {
-              first_name: 'Matthew',
-              middle_names: 'John',
-              last_name: 'Richards',
-              used_from: '04/1989',
-              used_to: '06/1997'
-            }
+                first_name: 'Matthew',
+                middle_names: 'John',
+                last_name: 'Richards',
+                used_from: '04/1989',
+                used_to: '06/1997',
+            },
         ],
         dob: '12/04/1989',
-        sex: "Male",
+        sex: 'Male',
         nino: 'AA112201A',
         licence: 'MORGA657054SM9IJ',
         passport: '123456789',
@@ -1021,33 +976,33 @@ dashboardRouter.get('*', (req, res, next) => {
         addressCountry: 'United Kingdom',
         address: [
             {
-              lineOne: '37 Stroma Road',
-              lineTwo: 'Allerton',
-              townOrCity: 'Liverpool',
-              postcode: 'L18 9SN',
-              country: 'United Kingdom'
-            }
+                lineOne: '37 Stroma Road',
+                lineTwo: 'Allerton',
+                townOrCity: 'Liverpool',
+                postcode: 'L18 9SN',
+                country: 'United Kingdom',
+            },
         ],
         changedAddress: 'yes',
         previous_addresses: [
             {
-              lineOne: '12 Main Road',
-              lineTwo: 'Allerton',
-              townOrCity: 'Liverpool',
-              postcode: 'L17 1SN',
-              country: 'United Kingdom',
-              startYear: '2020',
-              endYear: '2021'
+                lineOne: '12 Main Road',
+                lineTwo: 'Allerton',
+                townOrCity: 'Liverpool',
+                postcode: 'L17 1SN',
+                country: 'United Kingdom',
+                startYear: '2020',
+                endYear: '2021',
             },
             {
-              lineOne: '23b River Street',
-              lineTwo: 'Allerton',
-              townOrCity: 'Liverpool',
-              postcode: 'WS2 9PZ',
-              country: 'United Kingdom',
-              startYear: '2017',
-              endYear: '2020'
-            }
+                lineOne: '23b River Street',
+                lineTwo: 'Allerton',
+                townOrCity: 'Liverpool',
+                postcode: 'WS2 9PZ',
+                country: 'United Kingdom',
+                startYear: '2017',
+                endYear: '2020',
+            },
         ],
         phoneNumber: '07777 111111',
         previousConvictions: 'no',
@@ -1061,45 +1016,42 @@ dashboardRouter.get('*', (req, res, next) => {
                 action: 'Viewed application details',
                 date: '10/06/2022',
                 time: '11:14am',
-                person: 'Gill Henderson (me)'
+                person: 'Gill Henderson (me)',
             },
             {
                 action: 'Viewed application details',
                 date: '09/06/2022',
                 time: '02:12pm',
-                person: 'Colin Hawshaw'
+                person: 'Colin Hawshaw',
             },
             {
                 action: 'Viewed application details',
                 date: '09/06/2022',
                 time: '12:05pm',
-                person: 'Colin Hawshaw'
+                person: 'Colin Hawshaw',
             },
             {
                 action: 'Applicant completed application form',
                 date: '08/06/2022',
                 time: '06:44pm',
-                person: 'Applicant'
+                person: 'Applicant',
             },
             {
                 action: 'Sent to applicant',
                 date: '07/06/2022',
                 time: '10:17am',
-                person: 'Gill Henderson (me)'
+                person: 'Gill Henderson (me)',
             },
             {
                 action: 'Started application',
                 date: '07/06/2022',
                 time: '09:45am',
-                person: 'Gill Henderson (me)'
+                person: 'Gill Henderson (me)',
             },
         ],
+    };
 
-    }
-
-
-
-    req.session.data.filteredApplications = req.session.data.applications
+    req.session.data.filteredApplications = req.session.data.applications;
     return next();
 });
 
@@ -1113,7 +1065,6 @@ dashboardRouter.get('*', (req, res, next) => {
 //         res.redirect('/dashboard/index');
 //     }
 // });
-
 
 // Work has been "archived" as requested in the stand up meeting 18 July 2022
 // This is a workaround to be able to redirect to the page required in SEAS-429, the development for "login" route was missing
@@ -1131,14 +1082,14 @@ dashboardRouter.get('*', (req, res, next) => {
 
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
-    res.render('dashboard/rb-login', { cache: inputCache,   validation: null });
+    res.render('dashboard/rb-login', { cache: inputCache, validation: null });
 });
 
-dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
+dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
-    
+
     const dataValidation = {};
     let selectedUser = undefined;
 
@@ -1147,7 +1098,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
     }
 
     if (!req.body['counter-signatory-nr']) {
-        dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number'
+        dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number';
     }
 
     if (req.body['registered-body-nr'] && req.body['counter-signatory-nr']) {
@@ -1155,12 +1106,10 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
         const csNumber = req.body['counter-signatory-nr'];
 
         if (req.session?.mockDBaccounts) {
+            selectedUser = req.session?.mockDBaccounts.find(el => rbNumber === el.rbNumber && csNumber === el.csNumber);
 
-            selectedUser = req.session?.mockDBaccounts.find((el) => rbNumber === el.rbNumber && csNumber === el.csNumber);
-            
             req.session.selectedRB = selectedUser;
         }
-
     }
 
     if (req.body['registered-body-nr'] && req.body['counter-signatory-nr'] && !selectedUser) {
@@ -1168,7 +1117,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-login', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-login', { cache: inputCache, validation: dataValidation });
     } else if (selectedUser && selectedUser.hasSetPassword) {
         res.redirect('/dashboard/rb-password-check');
     } else {
@@ -1177,18 +1126,16 @@ dashboardRouter.post('/rb-login', invalidateCache, (req,res, _next) => {
 });
 
 dashboardRouter.get('/rb-password-check', invalidateCache, (req, res, _next) => {
-
     const inputCache = loadPageData(req);
 
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-password-check', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-password-check', { cache: inputCache, validation: null });
     }
 });
 
 dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) => {
-
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
@@ -1201,26 +1148,31 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-password-check', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-password-check', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('/dashboard/email-otp')
+        res.redirect('/dashboard/email-otp');
     }
+});
+
+dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+    console.log(req.body)
 });
 
 // SEAS 503 Password reset
 dashboardRouter.get('/rb-password-reset', invalidateCache, (req, res, _next) => {
-
     const inputCache = loadPageData(req);
 
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-password-reset', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-password-reset', { cache: inputCache, validation: null });
     }
 });
 
-
-// POST SEAS 503 Password reset 
+// POST SEAS 503 Password reset
 dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
@@ -1230,14 +1182,14 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
 
     if (!user) {
         res.redirect('/dashboard/rb-login');
-    } else if (!req.body['rb-reset-pass-email']){
+    } else if (!req.body['rb-reset-pass-email']) {
         dataValidation['rb-reset-pass-email'] = 'Enter email';
     } else if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
         dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-password-reset', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-password-reset', { cache: inputCache, validation: dataValidation });
     } else {
         res.redirect('/dashboard/reset-pass-email-otp');
     }
@@ -1245,28 +1197,31 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
 
 // GET SEAS 503 reset-pass-email-otp
 
-dashboardRouter.get('/reset-pass-email-otp', invalidateCache, (req,res, _next) => {
+dashboardRouter.get('/reset-pass-email-otp', invalidateCache, (req, res, _next) => {
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/reset-pass-email-otp', { cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
+        res.render('dashboard/reset-pass-email-otp', { cache: null, email: req.session?.selectedRB?.email || '', validation: null });
     }
 });
 
 // POST SEAS 503 reset-pass-email-otp
 
-dashboardRouter.post('/reset-pass-email-otp', invalidateCache, (req,res, _next) => {
+dashboardRouter.post('/reset-pass-email-otp', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
 
     if (!req.body['reset-pass-email-otp']) {
-        res.render('dashboard/reset-pass-email-otp', { cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'reset-pass-email-otp': 'Enter security code' }});
+        res.render('dashboard/reset-pass-email-otp', {
+            cache: inputCache,
+            email: req.session?.selectedRB?.email || '',
+            validation: { 'reset-pass-email-otp': 'Enter security code' },
+        });
     } else {
         res.redirect('/dashboard/rb-reset-password');
     }
 });
-
 
 //GET SEAS 503 /rb-reset-password
 dashboardRouter.get('/rb-reset-password', invalidateCache, (req, res, _next) => {
@@ -1275,14 +1230,12 @@ dashboardRouter.get('/rb-reset-password', invalidateCache, (req, res, _next) => 
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-reset-password', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-reset-password', { cache: inputCache, validation: null });
     }
-
 });
 
 //POST SEAS 503 /rb-reset-password
 dashboardRouter.post('/rb-reset-password', invalidateCache, (req, res, _next) => {
-
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
@@ -1300,13 +1253,13 @@ dashboardRouter.post('/rb-reset-password', invalidateCache, (req, res, _next) =>
         dataValidation['password-match'] = 'Enter value to confirm password';
     }
 
-    if (req.body['password-first'] && req.body['password-match'] && (req.body['password-first'] !== req.body['password-match'])) {
+    if (req.body['password-first'] && req.body['password-match'] && req.body['password-first'] !== req.body['password-match']) {
         dataValidation['password-match'] = 'The password does not match';
     } else if (user) {
         let newUserState = { ...user };
         newUserState.password = req.body['password-first'];
 
-        const newCollection = req.session.mockDBaccounts.map((el) => {
+        const newCollection = req.session.mockDBaccounts.map(el => {
             if (el.rbNumber === newUserState.rbNumber) {
                 return newUserState;
             } else {
@@ -1318,7 +1271,7 @@ dashboardRouter.post('/rb-reset-password', invalidateCache, (req, res, _next) =>
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-reset-password', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-reset-password', { cache: inputCache, validation: dataValidation });
     } else {
         res.redirect('/dashboard/rb-reset-password-confirm');
     }
@@ -1332,7 +1285,7 @@ dashboardRouter.get('/rb-reset-password-confirm', invalidateCache, (req, res, _n
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-reset-password-confirm', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-reset-password-confirm', { cache: inputCache, validation: null });
     }
 });
 
@@ -1343,49 +1296,46 @@ dashboardRouter.get('/rb-dob-check', invalidateCache, (req, res, _next) => {
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-dob-check', { cache: inputCache, validation: null });
     }
-
 });
-
 
 //POST /rb-dob-check
 dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
-
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
     const dataValidation = {};
 
     const user = req.session?.selectedRB;
-    const dateRegex =  /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
 
     if (!req.body['dob-day'] || !req.body['dob-month'] || !req.body['dob-year']) {
         dataValidation['dob-day'] = 'Enter date of birth';
         dataValidation['dob-month'] = '';
         dataValidation['dob-year'] = '';
     } else if (user && user.userDob) {
-        const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0')  + '/' + req.body['dob-year'];
+        const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0') + '/' + req.body['dob-year'];
 
         if (!dateRegex.test(dataDate)) {
             dataValidation['dob-day'] = 'Enter a valid date';
             dataValidation['dob-month'] = '';
             dataValidation['dob-year'] = '';
-        } else if (!moment(dataDate, "DD/MM/YYYY").isValid()) {
+        } else if (!moment(dataDate, 'DD/MM/YYYY').isValid()) {
             dataValidation['dob-day'] = 'Enter a valid date of birth';
             dataValidation['dob-month'] = '';
             dataValidation['dob-year'] = '';
-       } else if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
-        dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
-        dataValidation['dob-month'] = '';
-        dataValidation['dob-year'] = '';
-       }
+        } else if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
+            dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
+            dataValidation['dob-month'] = '';
+            dataValidation['dob-year'] = '';
+        }
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-dob-check', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-dob-check', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('/dashboard/email-otp')
+        res.redirect('/dashboard/email-otp');
     }
 });
 
@@ -1396,14 +1346,12 @@ dashboardRouter.get('/rb-create-password', invalidateCache, (req, res, _next) =>
     if (!req.session?.selectedRB) {
         res.redirect('/dashboard/rb-login');
     } else {
-        res.render('dashboard/rb-create-password', { cache: inputCache,   validation: null });
+        res.render('dashboard/rb-create-password', { cache: inputCache, validation: null });
     }
-
 });
 
 //POST /rb-create-password
 dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) => {
-
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
@@ -1421,14 +1369,14 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
         dataValidation['password-match'] = 'Enter value to confirm password';
     }
 
-    if (req.body['password-first'] && req.body['password-match'] && (req.body['password-first'] !== req.body['password-match'])) {
+    if (req.body['password-first'] && req.body['password-match'] && req.body['password-first'] !== req.body['password-match']) {
         dataValidation['password-match'] = 'Your passwords do not match, please re-enter and try again';
     } else if (user) {
         let newUserState = { ...user };
         newUserState.hasSetPassword = true;
         newUserState.password = req.body['password-first'];
 
-        const newCollection = req.session.mockDBaccounts.map((el) => {
+        const newCollection = req.session.mockDBaccounts.map(el => {
             if (el.rbNumber === newUserState.rbNumber) {
                 return newUserState;
             } else {
@@ -1440,22 +1388,21 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('dashboard/rb-create-password', { cache: inputCache,   validation: dataValidation });
+        res.render('dashboard/rb-create-password', { cache: inputCache, validation: dataValidation });
     } else {
         res.redirect('/dashboard/home');
     }
 });
 
-
-dashboardRouter.get('/email-otp', invalidateCache, (req,res, _next) => {
+dashboardRouter.get('/email-otp', invalidateCache, (req, res, _next) => {
     let backButton = '/dashboard/rb-dob-check';
     if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
         backButton = '/dashboard/rb-password-check';
     }
-    res.render('dashboard/email-otp', { backButton: backButton, cache: null, email: req.session?.selectedRB?.email || '',  validation: null });
+    res.render('dashboard/email-otp', { backButton: backButton, cache: null, email: req.session?.selectedRB?.email || '', validation: null });
 });
 
-dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
+dashboardRouter.post('/email-otp', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
@@ -1467,7 +1414,12 @@ dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
     }
 
     if (!req.body['otp-code']) {
-        res.render('dashboard/email-otp', { backButton: backButton, cache: inputCache, email: req.session?.selectedRB?.email || '',  validation: { 'otp-code': 'Enter security code' }});
+        res.render('dashboard/email-otp', {
+            backButton: backButton,
+            cache: inputCache,
+            email: req.session?.selectedRB?.email || '',
+            validation: { 'otp-code': 'Enter security code' },
+        });
     } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
         res.redirect('/dashboard/rb-create-password');
     } else {
@@ -1476,21 +1428,19 @@ dashboardRouter.post('/email-otp', invalidateCache, (req,res, _next) => {
 });
 
 dashboardRouter.get('/details', (req, res) => {
-
     const data = req.session.data;
     const applications = data.applications;
 
     if (applications && req.query.app) {
-        const item = applications.find((el) => el.ref === req.query.app);
+        const item = applications.find(el => el.ref === req.query.app);
         req.session.data.selectedApplicationToCancel = item;
     }
 
-    res.render('dashboard/details', {data: req.session.data.selectedApplicationToCancel,  validation: null });
+    res.render('dashboard/details', { data: req.session.data.selectedApplicationToCancel, validation: null });
 });
 
 dashboardRouter.get('/details-confirm', (req, res) => {
-
-    res.render('dashboard/details-confirm', {data: req.session.data.selectedApplicationToCancel, validation: null });
+    res.render('dashboard/details-confirm', { data: req.session.data.selectedApplicationToCancel, validation: null });
 });
 
 dashboardRouter.post('/details-confirm', validateApplicationDetailsConfirm);
