@@ -453,7 +453,7 @@ citizenRouter.post('/add-address', (req, res) => {
 
         req.session.data.send_cert_address = sendCert;
 
-        return res.redirect('previous-convictions');
+        return res.redirect('email-address');
     }
     
     if(req.header('referer').includes('change=true')){
