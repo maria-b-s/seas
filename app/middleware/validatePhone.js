@@ -7,6 +7,7 @@ function validatePhone(req, res, _next) {
   const inputCache = loadPageData(req);
   let dataValidation = {}
 
+
   const phoneNumbersOnly = /^[0-9]+$/.test(state['phone-number']);
   let redirectPath = 'previous-convictions';
 
@@ -37,7 +38,6 @@ function validatePhone(req, res, _next) {
     res.render('citizen-application/telephone-number', { cache: inputCache,   validation: dataValidation });
   } else {
     req.session.data['phone-number'] = state['phone-number'];
-    req.session.data['phone-country'] = state['phone-country'];
     req.session.data['wants-text'] = state['wants-text'];
     res.redirect(redirectPath)
   }  
