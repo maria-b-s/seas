@@ -39,17 +39,7 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Status</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if selectedApplication[0].status.id == '002' or selectedApplication[0].status.id == '003'%}
-                        <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
-                        {% elif selectedApplication[0].status.id or selectedApplication[0].status.id == '006'%}
-                        <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center"
-                            >{{selectedApplication[0].status.text}}</strong
-                        >
-                        {% else %}
-                        <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
-                        {% endif %}
-                    </dd>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].status['text']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -93,7 +83,6 @@ endset%} {% block beforeContent %}
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
             </dl>
-
         </div>
 
         <div class="govuk-width-container">
@@ -209,16 +198,15 @@ endset%} {% block beforeContent %}
             <p id="download-pdf-hint" class="govuk-body">
                 If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
             </p>
-            <button type="submit" class="govuk-button" data-module="govuk-button">Download applicant answers PDF</button>
+            <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a></p>
             <p id="download-pdf-hint" class="govuk-body">
                 If any of the applicant's details are incorrect, you must cancel the application. You can then start a new application for them.
             </p>
 
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button">Continue to verify application</a>
-                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</a>
+                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel application</a>
             </div>
-         
         </div>
     </div>
 </div>

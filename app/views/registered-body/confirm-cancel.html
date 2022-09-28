@@ -13,33 +13,39 @@ endset%} {% block beforeContent %}
 {% endif %} {% endblock %} {% block content %}
 <div class="govuk-grid-row">
     {% if selectedApplication[0].status.text == 'Cancelled'%}
-    <div
-        class="govuk-notification-banner govuk-notification-banner--success"
-        role="alert"
-        aria-labelledby="govuk-notification-banner-title"
-        data-module="govuk-notification-banner"
-    >
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            <h3 class="govuk-notification-banner__heading">Application cancelled</h3>
+    <div class="govuk-grid-column-two-thirds">
+        <div
+            class="govuk-notification-banner govuk-notification-banner--success"
+            role="alert"
+            aria-labelledby="govuk-notification-banner-title"
+            data-module="govuk-notification-banner"
+        >
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">Application cancelled</h3>
+            </div>
         </div>
     </div>
     {% endif %}
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <h1 class="govuk-heading-l">Cancel Application</h1>
+            {% if selectedApplication[0].status.text != 'Cancelled'%}
+            <h1 class="govuk-heading-l">Cancel application</h1>
+            {% else %}
+            <h1 class="govuk-heading-l">Application details</h1>
+            {% endif %}
         </div>
         {% if selectedApplication[0].status.text != 'Cancelled'%}
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">Warning</span>
-                Are you sure you want to cancel this application? <br>This action can not be undone.
+                Are you sure you want to cancel this application? <br />This action can not be undone.
             </strong>
         </div>
-         {% endif %}
+        {% endif %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant name</dt>
@@ -48,15 +54,7 @@ endset%} {% block beforeContent %}
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Status</dt>
-                <dd class="govuk-summary-list__value">
-                    {% if selectedApplication[0].status.id == '002' or selectedApplication[0].status.id == '003'%}
-                    <strong class="govuk-tag govuk-tag--yellow" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
-                    {% elif selectedApplication[0].status.id or selectedApplication[0].status.id == '006'%}
-                    <strong class="govuk-tag govuk-tag--red" style="width: 90%; text-align: center">{{selectedApplication[0].status.text}}</strong>
-                    {% else %}
-                    <strong class="govuk-tag govuk-tag--blue" style="text-align: center">{{selectedApplication[0].status.text}}</strong>
-                    {% endif %}
-                </dd>
+                <dd class="govuk-summary-list__value">{{selectedApplication[0].status['text']}}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">

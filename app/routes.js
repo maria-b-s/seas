@@ -883,21 +883,16 @@ const STATUS_COLLECTION = [
 ];
 
 const STATUS_COLLECTION1 = [
-    { id: '001', text: 'Sent to applicant' },
-    { id: '002', text: 'ID check required' },
-    { id: '003', text: 'Ready to submit' },
-    { id: '004', text: 'Submitted to DBS' },
-    { id: '005', text: 'Cancelled' },
-    { id: '006', text: 'Rejected' },
-    { id: '007', text: 'Cerificate issued' },
+    { id: '1', text: 'ID check required' },
+    { id: '2', text: 'Ready to submit' },
+    { id: '3', text: 'Sent to applicant' },
+    { id: '4', text: 'Submitted to DBS' },
+    { id: '5', text: 'Cancelled' },
+    { id: '6', text: 'Rejected' },
+    { id: '7', text: 'Cerificate issued' },
 ];
 
-const ORGANISATION = [
-    'Org A',
-    'Org B',
-    'Org C',
-    'Castle Healthcare',
-]
+const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
 
 dashboardRouter.get('*', (req, res, next) => {
     if (req.session.data.applications !== undefined) return next();
@@ -930,7 +925,7 @@ dashboardRouter.get('*', (req, res, next) => {
             type: types[getRandomArbitrary(0, types.length)],
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
-            organisation: `${ORGANISATION[Math.floor(Math.random()*ORGANISATION.length)]}`,
+            organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
             worklog: [
                 {
                     person: 'John Smith',
@@ -941,11 +936,11 @@ dashboardRouter.get('*', (req, res, next) => {
 
     req.session.data.applications[0] = {
         ref: 'MATT0711',
-        name: 'Matthew John Adler',
+        name: 'Matthew Peter Adler',
         firstName: 'Matthew',
-        middleName: 'John',
+        middleName: 'Peter',
         surname: 'Adler',
-        status: statuses[1],
+        status: statuses[0],
         type: types[1],
         date: '07/06/2022',
         email: 'matthewadler@myemail.com',
@@ -968,8 +963,8 @@ dashboardRouter.get('*', (req, res, next) => {
         dob: '12/04/1989',
         sex: 'Male',
         nino: 'AA112201A',
-        licence: 'MORGA657054SM9IJ',
-        passport: '123456789',
+        licence: 'ADLER345456MJ7RJ',
+        passport: '946890102',
         passportCountry: 'United Kingdom',
         nationality: 'British',
         addressTown: 'Liverpool',
@@ -1163,11 +1158,70 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     //     res.render('dashboard/home', { cache: inputCache, validation: null });
     // }
 
-    console.log(req.query.name)
-
-    if(req.query.name == undefined){
+    if (req.query.name == undefined) {
         req.session.data.filteredApplications = req.session.data.applications;
     }
+    if (req.query.sort == 'name-descending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            let fa = a.surname.toLowerCase(),
+                fb = b.surname.toLowerCase();
+
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+    if (req.query.sort == 'name-ascending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications
+            .sort((a, b) => {
+                let fa = a.surname.toLowerCase(),
+                    fb = b.surname.toLowerCase();
+
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            })
+            .reverse();
+    }
+
+    if (req.query.sort == 'action-descending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            return a.status['id'] - b.status['id'];
+        });
+    }
+
+    if (req.query.sort == 'action-ascending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications
+            .sort((a, b) => {
+                return a.status['id'] - b.status['id'];
+            })
+            .reverse();
+    }
+
+    if (req.query.sort == 'date-descending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            let aa = a.date.split('/').reverse().join();
+            let  bb = b.date.split('/').reverse().join();
+            return aa < bb ? -1 : aa > bb ? 1 : 0;
+        });
+    } else {
+        req.session.data.filteredApplications = req.session.data.applications;
+    }
+
     res.render('dashboard/home', { cache: inputCache, validation: null });
 });
 
@@ -1175,11 +1229,23 @@ dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
-  
+
     let filtered = req.session.data.applications.filter(app => {
         return app.name.includes(req.body['search-name']);
-      });
-    req.session.data.filteredApplications = filtered
+    });
+    req.session.data.filteredApplications = filtered;
+    res.redirect('/dashboard/home?name=' + req.body['search-name']);
+});
+
+dashboardRouter.get('/sort', invalidateCache, (req, res, _next) => {
+    savePageData(req, req.body);
+
+    const inputCache = loadPageData(req);
+
+    let filtered = req.session.data.applications.filter(app => {
+        return app.name.includes(req.body['search-name']);
+    });
+    req.session.data.filteredApplications = filtered;
     res.redirect('/dashboard/home?name=' + req.body['search-name']);
 });
 

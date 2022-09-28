@@ -3,7 +3,7 @@ function cancelApplication(req, res) {
 
     for (app of req.session.data['applications']) {
         if (app.ref == ref) {
-            app.status.id = '005';
+            app.status.id = '5';
             app.status.text = 'Cancelled';
         }
     }
@@ -11,6 +11,7 @@ function cancelApplication(req, res) {
     let selectedApplication = req.session.data['applications'].filter(value => value.ref == ref);
 
     req.session.data.selectedApplication = selectedApplication;
+    req.session.data.filteredApplications = req.session.data.applications;
 
     if (req.url == '/confirm-cancel') {
         res.redirect('back');
