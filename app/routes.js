@@ -549,6 +549,7 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
+
 // Start to declare proper routing
 
 citizenRouter.get('/current-full-name-v2', invalidateCache, (req, res) => {
