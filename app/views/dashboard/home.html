@@ -149,8 +149,8 @@
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="app-status-{{app.id}}" name="app-status-{{app.id}}" type="checkbox" value="{{app.id}}" />
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="app-status-{{app.id}}">{{app.text}}</label>
+                <input class="govuk-checkboxes__input" id="app-status-{{app.id}}" name="app-status" type="checkbox" value="{{app.id}}" />
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="app-status">{{app.text}}</label>
             </div>
         </div>
 
@@ -164,8 +164,8 @@
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="organisation-{{org}}" name="organisation-{{org}}" type="checkbox" value="{{org}}" />
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="organisation-{{org}}">{{org}}</label>
+                <input class="govuk-checkboxes__input" id="organisation-{{org}}" name="organisation" type="checkbox" value="{{org}}" />
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="organisation">{{org}}</label>
             </div>
         </div>
 
@@ -181,7 +181,7 @@
             </div>
             <form action="search-name" method="post" novalidate>
                 <div class="govuk-grid-column-three-quarters">
-                    <input class="govuk-input" id="search-name" name="search-name" type="text" />
+                    <input class="govuk-input" id="search-name" name="search-name" type="text"/>
                 </div>
                 <div class="govuk-grid-column-one-quarter">
                     <button type="submit" class="govuk-button" data-module="govuk-button" style="width: 75%; text-align: center; float: right">Search</button>

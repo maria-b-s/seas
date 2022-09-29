@@ -545,7 +545,7 @@ citizenRouter.post('/add-previous-homeless-or-travelling', (req, res) => {
 });
 
 citizenRouter.post('/where-certificate', (req, res) => {
-    if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('email-address');
+    if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('telephone-number');
     return res.redirect('address-lookup?certificate=true');
 });
 
@@ -1174,7 +1174,7 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
                 return 1;
             }
             return 0;
-        });
+        }).reverse();;
     }
 
     if (req.query.sort == 'name-ascending') {
@@ -1192,14 +1192,13 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
                 }
                 return 0;
             })
-            .reverse();
     }
 
     if (req.query.sort == 'action-descending') {
         req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications.sort((a, b) => {
             return a.status['id'] - b.status['id'];
-        });
+        }).reverse();;
     }
 
     if (req.query.sort == 'action-ascending') {
@@ -1208,7 +1207,6 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
             .sort((a, b) => {
                 return a.status['id'] - b.status['id'];
             })
-            .reverse();
     }
 
     if (req.query.sort == 'date-descending') {
@@ -1222,7 +1220,7 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         req.session.data.filteredApplications = req.session.data.applications;
     }
 
-    res.render('dashboard/home', { cache: inputCache, validation: null });
+    res.render('dashboard/home', { cache: inputCache, validation: null, });
 });
 
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
