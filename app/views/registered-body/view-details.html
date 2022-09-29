@@ -14,7 +14,7 @@ endset%} {% block beforeContent %}
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Application Details</h1>
+                <h1 class="govuk-heading-l">Application details</h1>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -80,6 +80,42 @@ endset%} {% block beforeContent %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Working with children or adults at home</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0].children_or_adults}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="govuk-width-container">
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <h1 class="govuk-heading-l">ID check details</h1>
+            </div>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">ID verified by</dt>
+                    <dd class="govuk-summary-list__value">Not completed yet</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Evidence checked by</dt>
+                    <dd class="govuk-summary-list__value">Not completed yet</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+            </dl>
+        </div>
+
+         <div class="govuk-width-container">
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <h1 class="govuk-heading-l">Certificate details</h1>
+            </div>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Certificate issue date</dt>
+                    <dd class="govuk-summary-list__value">Not issued yet</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Result status</dt>
+                    <dd class="govuk-summary-list__value">Not available yet</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
             </dl>
@@ -199,14 +235,18 @@ endset%} {% block beforeContent %}
                 If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
             </p>
             <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a></p>
+            {% if selectedApplication[0].status['text'] != "Cancelled" %}
+
             <p id="download-pdf-hint" class="govuk-body">
                 If any of the applicant's details are incorrect, you must cancel the application. You can then start a new application for them.
             </p>
 
-            <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button">Continue to verify application</a>
+            <div class="govuk-button-group">
+                <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px">Continue to verify application</a>
                 <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel application</a>
             </div>
+
+            {% endif %}
         </div>
     </div>
 </div>
