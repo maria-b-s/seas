@@ -38,7 +38,6 @@ function validatePassport(req, res, _next) {
   } else {
     req.session.data['passport-number'] = state['passport-number'];
     req.session.data['has-passport'] = state['has-passport'];
-    req.session.data['passport-country-of-issue'] = state['passport-country-of-issue'];
     res.redirect(redirectPath)
   }  
 

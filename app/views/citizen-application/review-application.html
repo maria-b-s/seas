@@ -233,18 +233,6 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Email address</th>
-                    <td class="govuk-table__cell" >
-                        {{data['email']}}
-                    </td>
-                    <td class="govuk-table__cell">
-                        <a href="email-address?change=true">
-                            Change
-                            <span class="govuk-visually-hidden">email address</span>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Application updates by text message</th>
                     <td class="govuk-table__cell">
                         {% if data['wants-text'] === 'no'%} No {% else %} Yes {% endif %}
