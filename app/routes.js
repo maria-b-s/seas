@@ -912,7 +912,16 @@ dashboardRouter.get('*', (req, res, next) => {
         };
     });
     req.session.data.applications = Array.from(Array(getRandomArbitrary(15, 25))).map((_, elIndex) => {
-        const date = randomDate(new Date(2021, 11, 10), new Date());
+        const randomdate = randomDate(new Date(2021, 11, 10), new Date());
+        let date = randomdate.getDate();
+        let month = randomdate.getMonth() + 1;
+        if(date < 10){
+            date = '0' + date
+        }
+        if(month < 10){
+            month = '0' + month
+        }
+        const year = randomdate.getFullYear();
         const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
             extractSetAverage: true,
         }).gen();
@@ -924,7 +933,7 @@ dashboardRouter.get('*', (req, res, next) => {
             surname: `${lastNames[elIndex]}`,
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
-            date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+            date: `${date}/${month}/${year}`,
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
             organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
             worklog: [
@@ -1216,12 +1225,20 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
             let aa = a.date.split('/').reverse().join();
             let  bb = b.date.split('/').reverse().join();
             return aa < bb ? -1 : aa > bb ? 1 : 0;
+        }).reverse();
+    } 
+    if (req.query.sort == 'date-ascending') {
+        req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            let aa = a.date.split('/').reverse().join();
+            let  bb = b.date.split('/').reverse().join();
+            return aa < bb ? -1 : aa > bb ? 1 : 0;
         });
     } else {
         req.session.data.filteredApplications = req.session.data.applications;
     }
 
-    res.render('dashboard/home', { cache: inputCache, validation: null, });
+    res.render('dashboard/home', { cache: inputCache, validation: null, filteredApplications:  req.session.data.filteredApplications});
 });
 
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
