@@ -282,7 +282,7 @@ const firstNames = [
     'Kieran',
     'Christopher',
     'Jessica',
-    'Matthew',
+    'Daniel',
     'Ashley',
     'Jennifer',
     'Joshua',
@@ -548,7 +548,6 @@ citizenRouter.post('/where-certificate', (req, res) => {
     if (req.session.data['where-to-send-cert'] === 'Current Address') return res.redirect('telephone-number');
     return res.redirect('address-lookup?certificate=true');
 });
-
 
 // Start to declare proper routing
 
@@ -915,11 +914,11 @@ dashboardRouter.get('*', (req, res, next) => {
         const randomdate = randomDate(new Date(2021, 11, 10), new Date());
         let date = randomdate.getDate();
         let month = randomdate.getMonth() + 1;
-        if(date < 10){
-            date = '0' + date
+        if (date < 10) {
+            date = '0' + date;
         }
-        if(month < 10){
-            month = '0' + month
+        if (month < 10) {
+            month = '0' + month;
         }
         const year = randomdate.getFullYear();
         const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
@@ -1055,8 +1054,11 @@ dashboardRouter.get('*', (req, res, next) => {
             },
         ],
     };
-
+    
     req.session.data.filteredApplications = req.session.data.applications;
+    req.session.data.filteredApplications.sort((a, b) => {
+        return a.status['id'] - b.status['id'];
+    });
     return next();
 });
 
@@ -1167,28 +1169,16 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     // } else {
     //     res.render('dashboard/home', { cache: inputCache, validation: null });
     // }
+    
 
-    if (req.query.name == undefined) {
+    if (Object.keys(req.query).length === 0) {
+        req.session.data.filter = null;
+        req.session.data.search = null;
         req.session.data.filteredApplications = req.session.data.applications;
     }
+
     if (req.query.sort == 'name-descending') {
-        req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            let fa = a.surname.toLowerCase(),
-                fb = b.surname.toLowerCase();
-
-            if (fa < fb) {
-                return -1;
-            }
-            if (fa > fb) {
-                return 1;
-            }
-            return 0;
-        }).reverse();;
-    }
-
-    if (req.query.sort == 'name-ascending') {
-        req.session.data.filteredApplications = req.session.data.applications;
+        //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications
             .sort((a, b) => {
                 let fa = a.surname.toLowerCase(),
@@ -1202,67 +1192,118 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
                 }
                 return 0;
             })
+            .reverse();
+    }
+
+    if (req.query.sort == 'name-ascending') {
+        //req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            let fa = a.surname.toLowerCase(),
+                fb = b.surname.toLowerCase();
+
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
     }
 
     if (req.query.sort == 'action-descending') {
-        req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            return a.status['id'] - b.status['id'];
-        }).reverse();;
-    }
-
-    if (req.query.sort == 'action-ascending') {
-        req.session.data.filteredApplications = req.session.data.applications;
+        //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications
             .sort((a, b) => {
                 return a.status['id'] - b.status['id'];
             })
+            .reverse();
+    }
+
+    if (req.query.sort == 'action-ascending') {
+        //req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications.sort((a, b) => {
+            return a.status['id'] - b.status['id'];
+        });
     }
 
     if (req.query.sort == 'date-descending') {
-        req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            let aa = a.date.split('/').reverse().join();
-            let  bb = b.date.split('/').reverse().join();
-            return aa < bb ? -1 : aa > bb ? 1 : 0;
-        }).reverse();
-    } 
+        //req.session.data.filteredApplications = req.session.data.applications;
+        req.session.data.filteredApplications
+            .sort((a, b) => {
+                let aa = a.date.split('/').reverse().join();
+                let bb = b.date.split('/').reverse().join();
+                return aa < bb ? -1 : aa > bb ? 1 : 0;
+            })
+            .reverse();
+    }
     if (req.query.sort == 'date-ascending') {
-        req.session.data.filteredApplications = req.session.data.applications;
+        //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications.sort((a, b) => {
             let aa = a.date.split('/').reverse().join();
-            let  bb = b.date.split('/').reverse().join();
+            let bb = b.date.split('/').reverse().join();
             return aa < bb ? -1 : aa > bb ? 1 : 0;
         });
-    } else {
-        req.session.data.filteredApplications = req.session.data.applications;
     }
 
-    res.render('dashboard/home', { cache: inputCache, validation: null, filteredApplications:  req.session.data.filteredApplications});
+    res.render('dashboard/home', { cache: inputCache, validation: null, filteredApplications: req.session.data.filteredApplications, query: req.query, search: req.session.data.search, filter: req.session.data.filter});
 });
 
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
+    //req.session.data.filteredApplications = req.session.data.applications;
 
-    const inputCache = loadPageData(req);
-
-    let filtered = req.session.data.applications.filter(app => {
+    let filtered = req.session.data.filteredApplications.filter(app => {
         return app.name.includes(req.body['search-name']);
     });
+    
+    req.session.data.search = req.body['search-name']
     req.session.data.filteredApplications = filtered;
     res.redirect('/dashboard/home?name=' + req.body['search-name']);
 });
 
-dashboardRouter.get('/sort', invalidateCache, (req, res, _next) => {
+dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
-    const inputCache = loadPageData(req);
+    let filteredList = [];
+    let parameterString = ''
 
-    let filtered = req.session.data.applications.filter(app => {
-        return app.name.includes(req.body['search-name']);
-    });
-    req.session.data.filteredApplications = filtered;
-    res.redirect('/dashboard/home?name=' + req.body['search-name']);
+    if (req.body['needs-action'] != '_unchecked') {
+      
+            let filtered = req.session.data.applications.filter(app => {
+                return app.status['id'] < 3
+            });
+            filteredList.push(...filtered);
+            parameterString = 'needs-action'
+
+    }
+    
+    if (req.body['app-status'] != '_unchecked') {
+        for (let i = 0; i < req.body['app-status'].length; i++) {
+            let filtered = req.session.data.applications.filter(app => {
+                return app.status['id'] == req.body['app-status'][i];
+            });
+            filteredList.push(...filtered);
+            parameterString += (req.body['app-status'][i] + '+')
+        }
+        parameterString = parameterString.slice(0, -1)
+    }
+
+    if (req.body['organisation'] != '_unchecked') {
+        for (let i = 0; i < req.body['organisation'].length; i++) {
+            let filtered = req.session.data.applications.filter(app => {
+                return app.organisation == req.body['organisation'][i];
+            });
+            filteredList.push(...filtered);
+            parameterString += (req.body['organisation'][i] + '+')
+        }
+        parameterString = parameterString.slice(0, -1)
+    }
+
+    req.session.data.filteredApplications = filteredList;
+    res.redirect('/dashboard/home?filter=' + parameterString);
+
+    req.session.data.filter = req.body
 });
 
 // SEAS 503 Password reset
