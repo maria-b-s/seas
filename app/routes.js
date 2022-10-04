@@ -1054,7 +1054,7 @@ dashboardRouter.get('*', (req, res, next) => {
             },
         ],
     };
-    
+
     req.session.data.filteredApplications = req.session.data.applications;
     req.session.data.filteredApplications.sort((a, b) => {
         return a.status['id'] - b.status['id'];
@@ -1247,11 +1247,13 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
-    res.render('dashboard/home', { cache: inputCache, 
-        validation: null, 
-        filteredApplications: req.session.data.filteredApplications, 
-        query: req.query, 
-        search: req.session.data.search, 
+
+    res.render('dashboard/home', {
+        cache: inputCache,
+        validation: null,
+        filteredApplications: req.session.data.filteredApplications,
+        query: req.query,
+        search: req.session.data.search,
         needsActionFilter: req.session.data.needsActionFilter,
         appStatusFilter: req.session.data.appStatusFilter,
         orgFilter: req.session.data.orgFilter,
@@ -1265,40 +1267,42 @@ dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     let filtered = req.session.data.filteredApplications.filter(app => {
         return app.name.includes(req.body['search-name']);
     });
-    
-    req.session.data.search = req.body['search-name']
+
+    req.session.data.search = req.body['search-name'];
     req.session.data.filteredApplications = filtered;
     res.redirect('/dashboard/home?name=' + req.body['search-name']);
 });
 
 dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
+  
+    req.session.data.needsActionFilter = null;
+    req.session.data.appStatusFilter = null;
+    req.session.data.orgFilter = null;
 
     let filteredList = [];
-    
-    let parameterString = ''
+
+    let parameterString = '';
 
     if (req.body['needs-action'] != '_unchecked') {
-      
-            let filtered = req.session.data.applications.filter(app => {
-                return app.status['id'] < 3
-            });
-            filteredList.push(...filtered);
-            parameterString = 'needs-action'
-            req.session.data.needsActionFilter = true
-    }   
-    
+        let filtered = req.session.data.applications.filter(app => {
+            return app.status['id'] < 3;
+        });
+        filteredList.push(...filtered);
+        parameterString = 'needs-action';
+        req.session.data.needsActionFilter = true;
+    }
+
     if (req.body['app-status'] != '_unchecked') {
         for (let i = 0; i < req.body['app-status'].length; i++) {
             let filtered = req.session.data.applications.filter(app => {
                 return app.status['id'] == req.body['app-status'][i];
             });
             filteredList.push(...filtered);
-            parameterString += (req.body['app-status'][i] + '+')
+            parameterString += req.body['app-status'][i] + '+';
         }
         parameterString = parameterString.slice(0, -1);
-        req.session.data.appStatusFilter = req.body['app-status']
-        console.log(req.session.data.appStatusFilter)
+        req.session.data.appStatusFilter = req.body['app-status'];
     }
 
     if (req.body['organisation'] != '_unchecked') {
@@ -1307,12 +1311,13 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
                 return app.organisation == req.body['organisation'][i];
             });
             filteredList.push(...filtered);
-            parameterString += (req.body['organisation'][i] + '+')
+            parameterString += req.body['organisation'][i] + '+';
         }
-        parameterString = parameterString.slice(0, -1)
-        req.session.data.orgFilter = req.body['organisation']
+        parameterString = parameterString.slice(0, -1);
+        req.session.data.orgFilter = req.body['organisation'];
     }
 
+    filteredList = filteredList.filter((value, index, self) => index === self.findIndex(t => t.ref === value.ref));
     req.session.data.filteredApplications = filteredList;
     res.redirect('/dashboard/home?filter=' + parameterString);
 });
