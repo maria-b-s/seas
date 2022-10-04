@@ -1169,10 +1169,11 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     // } else {
     //     res.render('dashboard/home', { cache: inputCache, validation: null });
     // }
-    
 
-    if (Object.keys(req.query).length === 0) {
-        req.session.data.filter = null;
+    if (Object.keys(req.query).length === 0 || req.query.filter == '' || req.query.search == '') {
+        req.session.data.needsActionFilter = null;
+        req.session.data.appStatusFilter = null;
+        req.session.data.orgFilter = null;
         req.session.data.search = null;
         req.session.data.filteredApplications = req.session.data.applications;
     }
@@ -1246,7 +1247,15 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
-    res.render('dashboard/home', { cache: inputCache, validation: null, filteredApplications: req.session.data.filteredApplications, query: req.query, search: req.session.data.search, filter: req.session.data.filter});
+    res.render('dashboard/home', { cache: inputCache, 
+        validation: null, 
+        filteredApplications: req.session.data.filteredApplications, 
+        query: req.query, 
+        search: req.session.data.search, 
+        needsActionFilter: req.session.data.needsActionFilter,
+        appStatusFilter: req.session.data.appStatusFilter,
+        orgFilter: req.session.data.orgFilter,
+    });
 });
 
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
@@ -1266,6 +1275,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     let filteredList = [];
+    
     let parameterString = ''
 
     if (req.body['needs-action'] != '_unchecked') {
@@ -1275,8 +1285,8 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
             });
             filteredList.push(...filtered);
             parameterString = 'needs-action'
-
-    }
+            req.session.data.needsActionFilter = true
+    }   
     
     if (req.body['app-status'] != '_unchecked') {
         for (let i = 0; i < req.body['app-status'].length; i++) {
@@ -1286,7 +1296,9 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
             filteredList.push(...filtered);
             parameterString += (req.body['app-status'][i] + '+')
         }
-        parameterString = parameterString.slice(0, -1)
+        parameterString = parameterString.slice(0, -1);
+        req.session.data.appStatusFilter = req.body['app-status']
+        console.log(req.session.data.appStatusFilter)
     }
 
     if (req.body['organisation'] != '_unchecked') {
@@ -1298,12 +1310,11 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
             parameterString += (req.body['organisation'][i] + '+')
         }
         parameterString = parameterString.slice(0, -1)
+        req.session.data.orgFilter = req.body['organisation']
     }
 
     req.session.data.filteredApplications = filteredList;
     res.redirect('/dashboard/home?filter=' + parameterString);
-
-    req.session.data.filter = req.body
 });
 
 // SEAS 503 Password reset

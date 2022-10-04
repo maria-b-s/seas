@@ -78,13 +78,13 @@
     <div class="govuk-grid-column-one-quarter">
         <h2 class="govuk-heading-m">Filter</h2>
         <form action="filter" method="post" novalidate>
-
+        <p>{{filter}}</p>
         <h3 class="govuk-heading-s govuk-!-font-size-14">Application action needed</h3>
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action"
-                {% if filter == 'needs-action' %}
+                {% if needsActionFilter == true %}
                 checked
                 {% endif %}
                 />
@@ -101,6 +101,11 @@
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="app-status-{{app.id}}" name="app-status" type="checkbox" value="{{app.id}}" 
+                {% for id in appStatusFilter %}
+                {% if app.id == id %}
+                checked
+                {%endif%}
+                {% endfor %}
                 />
                 <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="app-status">{{app.text}}</label>
             </div>
@@ -116,7 +121,12 @@
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="organisation-{{org}}" name="organisation" type="checkbox" value="{{org}}" />
+                <input class="govuk-checkboxes__input" id="organisation-{{org}}" name="organisation" type="checkbox" value="{{org}}"
+                {% for organisation in orgFilter %}
+                {% if organisation == org %}
+                checked
+                {%endif%}
+                {% endfor %} />
                 <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="organisation">{{org}}</label>
             </div>
         </div>
