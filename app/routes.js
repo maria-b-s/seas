@@ -1276,6 +1276,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     // Resets filter falues
+    let filteredCopy = req.session.data.applications
     req.session.data.needsActionFilter = null;
     req.session.data.appStatusFilter = null;
     req.session.data.orgFilter = null;
@@ -1305,8 +1306,6 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
         req.session.data.orgFilter = req.body['organisation'];
     }
 
-    let filteredCopy = req.session.data.applications
-
     if(req.body['needs-action'].length == 2){
         filteredCopy = filteredCopy.filter(app => {
             return app.status['id'] < 3;
@@ -1318,6 +1317,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     if(req.body['organisation'].length > 0){
         filteredCopy = filteredCopy.filter(app => req.body['organisation'].includes(app.organisation));
     }
+
 
     filteredList.push(...filteredCopy);
     filteredList = filteredList.filter((value, index, self) => index === self.findIndex(t => t.ref === value.ref));
