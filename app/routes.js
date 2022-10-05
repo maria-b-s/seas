@@ -1247,7 +1247,6 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
-
     res.render('dashboard/home', {
         cache: inputCache,
         validation: null,
@@ -1275,51 +1274,55 @@ dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
 
 dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
-  
+
+    // Resets filter falues
     req.session.data.needsActionFilter = null;
     req.session.data.appStatusFilter = null;
     req.session.data.orgFilter = null;
-
     let filteredList = [];
 
-    let parameterString = '';
+    let parameterString = [];
 
-    if (req.body['needs-action'] != '_unchecked') {
-        let filtered = req.session.data.applications.filter(app => {
-            return app.status['id'] < 3;
-        });
-        filteredList.push(...filtered);
-        parameterString = 'needs-action';
+    if (req.body['needs-action'] == '_unchecked') {
+        req.body['needs-action'] = [];
+    } else {
+        req.body['needs-action'] = ['1', '2'];
+        parameterString.push('needs-action')
         req.session.data.needsActionFilter = true;
     }
 
-    if (req.body['app-status'] != '_unchecked') {
-        for (let i = 0; i < req.body['app-status'].length; i++) {
-            let filtered = req.session.data.applications.filter(app => {
-                return app.status['id'] == req.body['app-status'][i];
-            });
-            filteredList.push(...filtered);
-            parameterString += req.body['app-status'][i] + '+';
-        }
-        parameterString = parameterString.slice(0, -1);
+    if (req.body['app-status'] == '_unchecked') {
+        req.body['app-status'] = [];
+    } else {
+        parameterString.push(...req.body['app-status'])
         req.session.data.appStatusFilter = req.body['app-status'];
     }
 
-    if (req.body['organisation'] != '_unchecked') {
-        for (let i = 0; i < req.body['organisation'].length; i++) {
-            let filtered = req.session.data.applications.filter(app => {
-                return app.organisation == req.body['organisation'][i];
-            });
-            filteredList.push(...filtered);
-            parameterString += req.body['organisation'][i] + '+';
-        }
-        parameterString = parameterString.slice(0, -1);
+    if (req.body['organisation'] == '_unchecked') {
+        req.body['organisation'] = [];
+    } else {
+        parameterString.push(...req.body['organisation'])
         req.session.data.orgFilter = req.body['organisation'];
     }
 
+    let filteredCopy = req.session.data.applications
+
+    if(req.body['needs-action'].length == 2){
+        filteredCopy = filteredCopy.filter(app => {
+            return app.status['id'] < 3;
+        });
+    }
+    if(req.body['app-status'].length > 0){
+        filteredCopy = filteredCopy.filter(app => req.body['app-status'].includes(app.status['id']));
+    }
+    if(req.body['organisation'].length > 0){
+        filteredCopy = filteredCopy.filter(app => req.body['organisation'].includes(app.organisation));
+    }
+
+    filteredList.push(...filteredCopy);
     filteredList = filteredList.filter((value, index, self) => index === self.findIndex(t => t.ref === value.ref));
     req.session.data.filteredApplications = filteredList;
-    res.redirect('/dashboard/home?filter=' + parameterString);
+    res.redirect('/dashboard/home?filter=' + parameterString.join('+'));
 });
 
 // SEAS 503 Password reset
