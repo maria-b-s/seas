@@ -12,6 +12,7 @@ const { validatePhone } = require('./middleware/validatePhone');
 const { validateBarred } = require('./middleware/validateBarred');
 const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
+const { filterAppList } = require('./middleware/filterAppList');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
@@ -1276,53 +1277,38 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     // Resets filter falues
-    let filteredCopy = req.session.data.applications
+    req.session.data.filters = req.body;
     req.session.data.needsActionFilter = null;
     req.session.data.appStatusFilter = null;
     req.session.data.orgFilter = null;
-    let filteredList = [];
 
-    let parameterString = [];
+    filterAppList(req, res)
 
-    if (req.body['needs-action'] == '_unchecked') {
-        req.body['needs-action'] = [];
-    } else {
-        req.body['needs-action'] = ['1', '2'];
-        parameterString.push('needs-action')
-        req.session.data.needsActionFilter = true;
+});
+
+dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
+    savePageData(req, req.body);
+    //req.session.data.filteredApplications = req.session.data.applications;
+
+    if(req.query['delete'] == 'needs-action'){
+        req.session.data.filters['needs-action'] = '_unchecked';
     }
 
-    if (req.body['app-status'] == '_unchecked') {
-        req.body['app-status'] = [];
-    } else {
-        parameterString.push(...req.body['app-status'])
-        req.session.data.appStatusFilter = req.body['app-status'];
-    }
-
-    if (req.body['organisation'] == '_unchecked') {
-        req.body['organisation'] = [];
-    } else {
-        parameterString.push(...req.body['organisation'])
-        req.session.data.orgFilter = req.body['organisation'];
-    }
-
-    if(req.body['needs-action'].length == 2){
-        filteredCopy = filteredCopy.filter(app => {
-            return app.status['id'] < 3;
+    if(req.query['id']){
+        req.session.data.filters['app-status'] = req.session.data.filters['app-status'].filter(app => {
+            return app != req.query['id'];
         });
     }
-    if(req.body['app-status'].length > 0){
-        filteredCopy = filteredCopy.filter(app => req.body['app-status'].includes(app.status['id']));
-    }
-    if(req.body['organisation'].length > 0){
-        filteredCopy = filteredCopy.filter(app => req.body['organisation'].includes(app.organisation));
+
+    if(req.query['org']){
+        req.session.data.filters['organisation'] = req.session.data.filters['organisation'].filter(app => {
+            return app != req.query['org'];
+        });
     }
 
+    console.log("Using these filters", req.session.data.filters)
 
-    filteredList.push(...filteredCopy);
-    filteredList = filteredList.filter((value, index, self) => index === self.findIndex(t => t.ref === value.ref));
-    req.session.data.filteredApplications = filteredList;
-    res.redirect('/dashboard/home?filter=' + parameterString.join('+'));
+    filterAppList(req, res)
 });
 
 // SEAS 503 Password reset
