@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -10,6 +10,10 @@ endset%} {% block beforeContent %}
 </div>
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
+
+{% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
+"errorList": errorList }) }} {% endif %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
@@ -212,14 +216,19 @@ endset%} {% block beforeContent %}
                 </dd>
             </div>
         </dl>
-        <form action="application-sent-to-citizen" method="post" novalidate>
-            <div class="govuk-form-group">
+        <form method="post" novalidate>
+            <div class="govuk-form-group {% if validation['declare-check-answers'] %}govuk-form-group--error{% endif %}">
                 <h2 class="govuk-heading-m">Now send the online application form to the applicant</h2>
                 <div class="govuk-checkboxes__item" style='margin-bottom: 1rem'>
                     <input class="govuk-checkboxes__input" id="declare-check-answers" name="declare-check-answers" type="checkbox" value="" />
                     <label class="govuk-label govuk-checkboxes__label" for="declare-check-answers">
                         I declare that to the best of my knowledge, the details I'm providing are correct.
                     </label>
+                     {% if validation['declare-check-answers'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['declare-check-answers'] }}
+                                </span>
+                    {% endif %}
                 </div>
                 <input type="hidden" name="answers-checked" value="true" />
                 <button type="submit" class="govuk-button" data-module="govuk-button">Send</button>

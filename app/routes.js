@@ -12,6 +12,7 @@ const { validatePhone } = require('./middleware/validatePhone');
 const { validateBarred } = require('./middleware/validateBarred');
 const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
+const { addApplication } = require('./middleware/addApplication');
 const { filterAppList } = require('./middleware/filterAppList');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
@@ -274,6 +275,22 @@ registeredBodyRouter.get('/unsuccessful-verification', invalidateCache, (req, re
         query: req.query.app,
         selectedApplication: selectedApplication,
     });
+});
+
+registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (req.body['declare-check-answers'] == '_unchecked') {
+        dataValidation['declare-check-answers'] = 'Cannot send application without declaration';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/check-answers', { cache: inputCache, validation: dataValidation });
+    } else {
+        addApplication(req, res)
+    }
 });
 
 // Add your routes here - above the module.exports line
@@ -1305,8 +1322,6 @@ dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
             return app != req.query['org'];
         });
     }
-
-    console.log("Using these filters", req.session.data.filters)
 
     filterAppList(req, res)
 });

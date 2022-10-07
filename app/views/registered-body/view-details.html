@@ -189,6 +189,7 @@ endset%} {% block beforeContent %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Current address</dt>
                     <dd class="govuk-summary-list__value">
+                        {% if not selectedApplication[0].address or selectedApplication[0].address.length === 0 %} None {% else %}
                         {{selectedApplication[0].address[0].lineOne }} <br />
                         {{selectedApplication[0].address[0].lineTwo}} <br />
                         {{selectedApplication[0].address[0].townOrCity }} <br />{% if selectedApplication[0].address[0].postcode == '' %} {% else %}
@@ -197,13 +198,14 @@ endset%} {% block beforeContent %}
                         {% else %} {{selectedApplication[0].address[0].postcode.slice(0, 3) | upper}}
                         {{selectedApplication[0].address[0].postcode.slice(3, 6) | upper }} <br />
                         {% endif %} {% endif %} {{selectedApplication[0].address[0].country }} <br />
+                        {% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Previous addresses in last 5 years</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if selectedApplication[0].changedAddress == 'no' %} None {% else %} {% for item in
+                        {% if selectedApplication[0].changedAddress == 'no'  or selectedApplication[0].previous_addresses.length === 0 %} None {% else %} {% for item in
                         selectedApplication[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
                         {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
                         {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />

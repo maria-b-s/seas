@@ -257,6 +257,7 @@ const generateAccounts = (req, refresh) => {
             accounts.push({
                 rbNumber: String(99001 + i),
                 csNumber: String(330020 - i),
+                organisation: 'Organisation-' + i, 
                 userDob:  String(i + 1).padStart(2, '0') + '/09/1989',
                 email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
