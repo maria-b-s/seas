@@ -31,15 +31,10 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous names</th>
                     <td class="govuk-table__cell">
-                        {% if not data['prevNames'] or data['prevNames'].length === 0 %} None {% endif %}
-                        {% for item in data['prevNames'] %}
-                            {{[ item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' , item.last_name | capitalize] | join }} <br />
-                            {% if item.used_to == "Not entered"%}
-                                {{ [item.used_from , ' - Present'] | join}}
-                            {% else %}
-                                {{ [item.used_from , ' - ', item.used_to] | join}}
-                            {% endif %}
-                        {% endfor %}
+                        {% if not data['prevNames'] or data['prevNames'].length === 0 %} None {% endif %} {% for item in data['prevNames'] %} {{[
+                        item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' , item.last_name | capitalize] | join }} <br />
+                        {% if item.used_to == "Not entered"%} {{ [item.used_from , ' - Present'] | join}} {% else %} {{ [item.used_from , ' - ',
+                        item.used_to] | join}} {% endif %} {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="/citizen-application/previous-names-q?change=true">
@@ -60,7 +55,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Sex</th>
-                    <td class="govuk-table__cell" >{{data['sex']}}</td>
+                    <td class="govuk-table__cell">{{data['sex']}}</td>
                     <td class="govuk-table__cell">
                         <a href="sex?change=true">
                             Change
@@ -70,7 +65,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">National Insurance number</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['has-national-insurance-number'] === 'no'%} Not provided {% else %} {{data['referred-nino-input']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -82,7 +77,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Driving licence number</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['has-drivers-license'] === 'no'%} Not provided {% else %} {{data['drivers-licence-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -94,7 +89,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Passport number</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['has-passport'] === 'no'%} Not provided {% else %} {{data['passport-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -107,7 +102,7 @@ endset%} {% block beforeContent %}
                 {% if data['has-passport'] !== 'no'%}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Country of issue</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['passport'] === 'no'%} Not provided {% else %} {{data['passport-country-of-issue']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -120,7 +115,7 @@ endset%} {% block beforeContent %}
                 {% endif %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Place of birth</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {{data['address-town']}}<br />
                         {{data['address-country']}}
                     </td>
@@ -133,7 +128,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous convictions</th>
-                    <td class="govuk-table__cell" >{{data['previous-convictions']}}</td>
+                    <td class="govuk-table__cell">{{data['addresses'].length}}</td>
                     <td class="govuk-table__cell">
                         <a href="previous-convictions?change=true">
                             Change
@@ -143,20 +138,15 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Current address</th>
-                    <td class="govuk-table__cell" >
-                        {{data['addresses'][0].lineOne }} <br />
+                    <td class="govuk-table__cell">
+                        {% if not data['addresses'] or data['addresses'].length === 0 %}  {% else %} {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
-                        {{data['addresses'][0].townOrCity }} 
-                        {% if data['addresses'][0].postcode == '' %}
-
-                        {% else %}
-                            {% if data['addresses'][0].postcode.length == 7 %}
-                                {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                            {% else %}
-                                {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
-                            {% endif %}
+                        {{data['addresses'][0].townOrCity }} {% if data['addresses'][0].postcode == '' %} {% else %} {% if
+                        data['addresses'][0].postcode.length == 7 %} {{data['addresses'][0].postcode.slice(0, 4) | upper}}
+                        {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {{data['addresses'][0].country }} <br />
                         {% endif %}
-                        {{data['addresses'][0].country }} <br />
                     </td>
                     <td class="govuk-table__cell">
                         <a href="address-lookup?change=true">
@@ -167,25 +157,19 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous addresses in last 5 years</th>
-                    <td class="govuk-table__cell" >
-                        {% if data['changed-address'] == 'no' %}
-                            None
-                        {% else %}
-                            {% for item in data['previous_addresses'] %}
-                            {% if item.lineOne !== '' %} {{item.lineOne}} <br /> {% endif %}
-                            {% if item.lineTwo !== '' %} {{item.lineTwo}} <br /> {% endif %}
-                            {% if item.townOrCity !== '' %} {{item.townOrCity}} <br /> {% endif %}
-                            {% if item.postcode !== '' %} 
-                                {% if item.postcode.length == 7 %}
-                                    {{item.postcode.slice(0, 4) | upper}} {{item.postcode.slice(4, 7) | upper }} <br />
-                                {% else %}
-                                    {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
-                                {% endif %} 
-                            {% endif %}
-                            {% if item.country !== '' %} {{item.country}} <br /> {% endif %}
-                            <br />
-                            {% endfor %}
+                    <td class="govuk-table__cell">
+                        {% if data['changed-address'] == 'no'  or  data['previous_addresses'].length === 0 %} None {% else %} 
+                        {% for item in data['previous_addresses'] %} {% if item.lineOne !==
+                        '' %} {{item.lineOne}} <br />
+                        {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
+                        {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
+                        {% endif %} {% if item.postcode !== '' %} {% if item.postcode.length == 7 %} {{item.postcode.slice(0, 4) | upper}}
+                        {{item.postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {% if item.country !== '' %} {{item.country}} <br />
                         {% endif %}
+                        <br />
+                        {% endfor %} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="previous-address">
@@ -196,33 +180,27 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Certificate postal address</th>
-                    <td class="govuk-table__cell" >
-                        {% if data['where-to-send-cert'] == 'Current Address' %}
-                            {{data['addresses'][0].lineOne }} <br />
+                    <td class="govuk-table__cell">
+                        {% if data['where-to-send-cert'] == 'Current Address' %} 
+                            {% if not data['addresses'] or data['addresses'].length === 0 %}  {% else %} {{data['addresses'][0].lineOne }} <br />
                         {{data['addresses'][0].lineTwo}} <br />
-                        {{data['addresses'][0].townOrCity }} 
-                        {% if data['addresses'][0].postcode == '' %}
-                            
-                        {% else %}
-                            {% if data['addresses'][0].postcode.length == 7 %}
-                                {{data['addresses'][0].postcode.slice(0, 4) | upper}} {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                            {% else %}
-                                {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
-                            {% endif %}
+                        {{data['addresses'][0].townOrCity }} {% if data['addresses'][0].postcode == '' %} {% else %} {% if
+                        data['addresses'][0].postcode.length == 7 %} {{data['addresses'][0].postcode.slice(0, 4) | upper}}
+                        {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {{data['addresses'][0].country }} <br />
                         {% endif %}
-                        {{data['addresses'][0].country }} <br />
                         {% else %}
-                            {% if data['send_cert_address'][0].lineOne !== '' %}{{data['send_cert_address'][0].lineOne }} <br />{% endif %}
-                            {% if data['send_cert_address'][0].lineTwo !== '' %}{{data['send_cert_address'][0].lineTwo }} <br />{% endif %}
-                            {% if data['send_cert_address'][0].townOrCity !== '' %}{{data['send_cert_address'][0].townOrCity}} <br />{% endif %}
-                            {% if data['send_cert_address'][0].postcode !== '' %}
-                                {% if data['send_cert_address'][0].postcode == 7 %}
-                                    {{data['send_cert_address'][0].postcode.slice(0, 4) | upper}} {{data['send_cert_address'][0].postcode.slice(4, 7) | upper }} <br />
-                                {% else %}
-                                    {{data['send_cert_address'][0].postcode.slice(0, 3) | upper}} {{data['send_cert_address'][0].postcode.slice(3, 6) | upper }} <br />
-                                {% endif %} 
-                            {% endif %}
-                            {% if data['send_cert_address'][0].country !== '' and data['send_cert_address'][0] !== undefined %}{{data['send_cert_address'][0]}} <br />{% endif %}
+
+                        {% if not data['send_cert_address'] or data['send_cert_address'].length === 0 %}  {% else %} {{data['send_cert_address'][0].lineOne }} <br />
+                        {{data['send_cert_address'][0].lineTwo}} <br />
+                        {{data['send_cert_address'][0].townOrCity }} {% if data['send_cert_address'][0].postcode == '' %} {% else %} {% if
+                        data['send_cert_address'][0].postcode.length == 7 %} {{data['send_cert_address'][0].postcode.slice(0, 4) | upper}}
+                        {{data['send_cert_address'][0].postcode.slice(4, 7) | upper }} <br />
+                        {% else %} {{data['send_cert_address'][0].postcode.slice(0, 3) | upper}} {{data['send_cert_address'][0].postcode.slice(3, 6) | upper }} <br />
+                        {% endif %} {% endif %} {{data['send_cert_address'][0].country }} <br />
+                        {% endif %}
+                        
                         {% endif%}
                     </td>
                     <td class="govuk-table__cell">
@@ -234,9 +212,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Application updates by text message</th>
-                    <td class="govuk-table__cell">
-                        {% if data['wants-text'] === 'no'%} No {% else %} Yes {% endif %}
-                    </td>
+                    <td class="govuk-table__cell">{% if data['wants-text'] === 'no'%} No {% else %} Yes {% endif %}</td>
                     <td class="govuk-table__cell">
                         <a href="telephone-number?change=true">
                             Change
@@ -244,10 +220,10 @@ endset%} {% block beforeContent %}
                         </a>
                     </td>
                 </tr>
-                {% if  data['wants-text'] === 'yes' %}
-                 <tr class="govuk-table__row">
+                {% if data['wants-text'] === 'yes' %}
+                <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Mobile number</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['wants-text'] === 'no'%} Not provided {% else %} {{data['phone-number']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -259,7 +235,7 @@ endset%} {% block beforeContent %}
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Country of mobile number</th>
-                    <td class="govuk-table__cell" >
+                    <td class="govuk-table__cell">
                         {% if data['wants-text'] === 'no'%} Not provided {% else %} {{data['phone-country']}} {% endif %}
                     </td>
                     <td class="govuk-table__cell">
@@ -273,7 +249,7 @@ endset%} {% block beforeContent %}
             </thead>
         </table>
 
-        <form action='declaration' method="post" novalidate>
+        <form action="declaration" method="post" novalidate>
             <input type="hidden" name="answers-checked" value="true" />
             <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
         </form>

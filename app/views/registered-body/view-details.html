@@ -72,19 +72,28 @@ endset%} {% block beforeContent %}
                     <dd class="govuk-summary-list__value">{{selectedApplication[0].workforce}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
+                {% if selectedApplication[0]['barredAdult'] %}
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Barred list</dt>
-                    <dd class="govuk-summary-list__value">Adult and Child Barred List</dd>
+                    <dt class="govuk-summary-list__key">Adult Barred list</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredAdult']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
+                {% endif %} {% if selectedApplication[0]['barredChildren'] %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Children Barred list</dt>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredChildren']}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                {% endif %} {% if selectedApplication[0].children_or_adults %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Working with children or adults at home</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].children_or_adults}}</dd>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['children_or_adults']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
+                {% endif %}
             </dl>
         </div>
-
+        
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <h1 class="govuk-heading-l">ID check details</h1>
@@ -103,7 +112,7 @@ endset%} {% block beforeContent %}
             </dl>
         </div>
 
-         <div class="govuk-width-container">
+        <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <h1 class="govuk-heading-l">Certificate details</h1>
             </div>
@@ -205,8 +214,8 @@ endset%} {% block beforeContent %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Previous addresses in last 5 years</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if selectedApplication[0].changedAddress == 'no'  or selectedApplication[0].previous_addresses.length === 0 %} None {% else %} {% for item in
-                        selectedApplication[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
+                        {% if selectedApplication[0].changedAddress == 'no' or selectedApplication[0].previous_addresses.length === 0 %} None {% else
+                        %} {% for item in selectedApplication[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
                         {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
                         {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
                         {% endif %} {% if item.postcode !== '' %} {% if item.postcode.length == 7 %} {{item.postcode.slice(0, 4) | upper}}
@@ -236,7 +245,9 @@ endset%} {% block beforeContent %}
             <p id="download-pdf-hint" class="govuk-body">
                 If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
             </p>
-            <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a></p>
+            <p class="govuk-body govuk-!-font-weight-bold">
+                <a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a>
+            </p>
             {% if selectedApplication[0].status['text'] != "Cancelled" %}
 
             <p id="download-pdf-hint" class="govuk-body">
@@ -244,7 +255,9 @@ endset%} {% block beforeContent %}
             </p>
 
             <div class="govuk-button-group">
-                <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px">Continue to verify application</a>
+                <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
+                    >Continue to verify application</a
+                >
                 <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel application</a>
             </div>
 

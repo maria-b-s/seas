@@ -1,6 +1,16 @@
 function addApplication(req, res) {
     let app = req.session.data;
 
+    function createRef() {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < 9; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     // Date
     let currentDate = new Date();
     let date = currentDate.getDate();
@@ -22,8 +32,42 @@ function addApplication(req, res) {
     minutes = minutes < 10 ? '0' + minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
 
-    req.session.data.newRef = 'RAND123';
-    let org = '';
+    //Reset Unused Values
+    if (app['what-dbs-check'] != 'Enhanced with barred list') {
+        app['barred-children'] = null;
+        app['barred-adults'] = null;
+        app['children-or-adults'] = null;
+    }
+
+    if (app['what-dbs-check'] == 'Enhanced with barred list' && app['workforce-selected'] == 'Adult') {
+        app['barred-adults'] = null;
+    }
+
+    if (app['what-dbs-check'] == 'Enhanced with barred list' && app['workforce-selected'] == 'Child') {
+        app['barred-children'] = null;
+    }
+
+    if (app['organisation-check'] == 'my-org') {
+        app['organisation-name'] = null;
+    }
+
+    if (app['what-application-type'] == 'Volunteer') {
+        app['rechecked'] = null;
+    }
+
+    console.log(app);
+
+    //Reference Number
+    app['ref'] = createRef();
+    let existingReference = true;
+    while (existingReference == true) {
+        let existingRef = req.session.data.applications.filter(acc => acc['ref'] == app['ref']);
+        if (existingRef.length > 0) {
+            app['ref'] = createRef();
+        } else {
+            existingReference = false;
+        }
+    }
 
     if (app['organisation-check'] == 'another-org') {
         org = app['organisation-name'];
@@ -32,7 +76,7 @@ function addApplication(req, res) {
     }
 
     let newApp = {
-        ref: 'RAND123',
+        ref: app['ref'],
         name: app['first-name'] + ' ' + app['last-name'],
         firstName: app['first-name'],
         middleName: '',
@@ -60,7 +104,9 @@ function addApplication(req, res) {
         position: app['position-name'],
         appType: app['what-application-type'],
         workforce: app['workforce-selected'],
-        children_or_adults: '',
+        children_or_adults: app['children-or-adults'],
+        barredAdult: app['barred-adults'],
+        barredChildren: app['barred-children'],
         worklog: [
             {
                 action: 'Sent to applicant',
@@ -72,6 +118,22 @@ function addApplication(req, res) {
     };
 
     req.session.data.applications.push(newApp);
+
+    // Clear form data
+    for (var key of Object.keys(req.session.data)) {
+        if (
+            key == 'appStatus' ||
+            key == 'organisations' ||
+            key == 'applications' ||
+            key == 'filteredApplications' ||
+            key == 'registered-body-nr' ||
+            key == 'counter-signatory-nr'
+        ) {
+        } else {
+            req.session.data[key] = null;
+        }
+    }
+
     res.redirect('application-sent-to-citizen');
 }
 
