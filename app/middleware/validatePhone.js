@@ -9,11 +9,11 @@ function validatePhone(req, res, _next) {
 
 
   const phoneNumbersOnly = /^[0-9]+$/.test(state['phone-number']);
-  let redirectPath = 'review-application';
+  let redirectPath = 'previous-convictions';
 
-  // if (req.query && req.query.change) {
-  //   redirectPath = 'review-application';
-  // }
+  if (req.query && req.query.change) {
+    redirectPath = 'review-application';
+  }
 
   if(state['wants-text'] == 'no'){
     req.session.data['phone-number'] = null;

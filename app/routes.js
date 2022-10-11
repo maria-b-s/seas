@@ -907,7 +907,7 @@ const STATUS_COLLECTION1 = [
     { id: '4', text: 'Submitted to DBS' },
     { id: '5', text: 'Cancelled' },
     { id: '6', text: 'Rejected' },
-    { id: '7', text: 'Cerificate issued' },
+    { id: '7', text: 'Certificate issued' },
 ];
 
 const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
