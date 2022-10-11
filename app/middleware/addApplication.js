@@ -55,8 +55,6 @@ function addApplication(req, res) {
         app['rechecked'] = null;
     }
 
-    console.log(app);
-
     //Reference Number
     app['ref'] = createRef();
     let existingReference = true;
@@ -118,6 +116,7 @@ function addApplication(req, res) {
     };
 
     req.session.data.applications.push(newApp);
+    req.session.data.newRef = app['ref'];
 
     // Clear form data
     for (var key of Object.keys(req.session.data)) {
@@ -127,7 +126,8 @@ function addApplication(req, res) {
             key == 'applications' ||
             key == 'filteredApplications' ||
             key == 'registered-body-nr' ||
-            key == 'counter-signatory-nr'
+            key == 'counter-signatory-nr' ||
+            key == 'newRef'
         ) {
         } else {
             req.session.data[key] = null;

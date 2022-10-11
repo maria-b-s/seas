@@ -31,11 +31,25 @@ const cms = {
     },
 };
 
+registeredBodyRouter.get('/position', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/position', { cms, cache: inputCache, validation: null });
+});
+
 registeredBodyRouter.post('/position', (req, res) => {
-    if (req.query.change == 'true') {
-        res.redirect('check-answers');
+    const inputCache = loadPageData(req);
+    let validation = {};
+
+    if (!req.body['position-name']) {
+        validation['position-name'] = 'Enter job/role';
+        res.render('registered-body/position', { cms, cache: inputCache, validation: validation });
     } else {
-        res.redirect('organisation-name');
+        if (req.query.change == 'true') {
+            res.redirect('check-answers');
+        } else {
+            res.redirect('organisation-name');
+        }
     }
 });
 
@@ -45,7 +59,35 @@ registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
     res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
 });
 
+registeredBodyRouter.get('/existing-post-holder', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: null });
+});
+
 registeredBodyRouter.post('/existing-post-holder', (req, res) => {
+    const inputCache = loadPageData(req);
+    let validation = {};
+
+    if (!req.body['rechecked']) {
+        validation['rechecked'] = 'Select an option';
+        res.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: validation });
+    } else {
+        if (req.query.change == 'true') {
+            res.redirect('check-answers');
+        } else {
+            res.redirect('applicant-name');
+        }
+    }
+});
+
+registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
+    if(req.body['foc_declare'] == '_unchecked'){
+        req.session.data['foc_declare'] = 'Not FOC'
+    } else {
+        req.session.data['foc_declare'] = 'FOC'
+    }
+    
     if (req.query.change == 'true') {
         res.redirect('check-answers');
     } else {
@@ -53,11 +95,29 @@ registeredBodyRouter.post('/existing-post-holder', (req, res) => {
     }
 });
 
-registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
-    if (req.query.change == 'true') {
-        res.redirect('check-answers');
+registeredBodyRouter.get('/applicant-or-post-holder', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+    let validation = {};
+    if (!req.body['what-application-type']) {
+        validation['what-application-type'] = 'Select an option';
+        res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: validation });
     } else {
-        res.redirect('applicant-name');
+        const applicationType = req.body['what-application-type'];
+        res.redirect(
+            `${
+                applicationType === 'Volunteer'
+                    ? `volunteer-declaration`
+                    : applicationType === 'New employee'
+                    ? 'applicant-name'
+                    : 'existing-post-holder'
+            }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
+        );
     }
 });
 
@@ -135,13 +195,28 @@ registeredBodyRouter.get('/applicant-name', invalidateCache, (req, res) => {
 });
 
 registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    let dataValidation = {};
+    let redirectPath = 'applicant-email';
 
-    if (req.query.change == 'true') {
-        res.redirect('check-answers');
+    if (req.query && req.query.change) {
+        redirectPath = 'review-application';
+    }
+
+    if (!req.body['first-name']) {
+        dataValidation['first-name'] = 'Enter first name';
+    }
+
+    if (!req.body['last-name']) {
+        dataValidation['last-name'] = 'Enter last name';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/applicant-name', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('applicant-email');
+        req.session.data['first-name'] = req.body['first-name'];
+        req.session.data['last-name'] = req.body['last-name'];
+        res.redirect(redirectPath);
     }
 });
 
@@ -289,7 +364,7 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/check-answers', { cache: inputCache, validation: dataValidation });
     } else {
-        addApplication(req, res)
+        addApplication(req, res);
     }
 });
 
@@ -1299,31 +1374,30 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     req.session.data.appStatusFilter = null;
     req.session.data.orgFilter = null;
 
-    filterAppList(req, res)
-
+    filterAppList(req, res);
 });
 
 dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
     //req.session.data.filteredApplications = req.session.data.applications;
 
-    if(req.query['delete'] == 'needs-action'){
+    if (req.query['delete'] == 'needs-action') {
         req.session.data.filters['needs-action'] = '_unchecked';
     }
 
-    if(req.query['id']){
+    if (req.query['id']) {
         req.session.data.filters['app-status'] = req.session.data.filters['app-status'].filter(app => {
             return app != req.query['id'];
         });
     }
 
-    if(req.query['org']){
+    if (req.query['org']) {
         req.session.data.filters['organisation'] = req.session.data.filters['organisation'].filter(app => {
             return app != req.query['org'];
         });
     }
 
-    filterAppList(req, res)
+    filterAppList(req, res);
 });
 
 // SEAS 503 Password reset

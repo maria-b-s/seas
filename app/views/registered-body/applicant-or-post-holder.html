@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as  es %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -11,15 +11,22 @@ endset%} {% block beforeContent %}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
+{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="{{'select-flow?change=true' if query['change'] == 'true' else 'select-flow'}}" method="post">
-            <div class="govuk-form-group">
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation['what-application-type'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
                         <h1 class="govuk-fieldset__heading">What kind of applicant is the check for?</h1>
                     </legend>
+                      {% if validation['what-application-type'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['what-application-type'] }}
+                        </span>
+                    {% endif %}
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="what-application-type" name="what-application-type" type="radio" value="New

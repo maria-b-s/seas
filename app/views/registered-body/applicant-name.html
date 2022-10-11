@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %}{% import "../macros/error-summary/govukErrorSummary.njk" as  es %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -11,6 +11,21 @@ endset%} {% block beforeContent %}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
+{% if validation | length %}
+
+        {% set errorList = [] %}
+
+        {% for key, value in validation %}
+            {% set errorList = (errorList.push({
+                "text": value,
+                "href": "#" + key
+            }), errorList) %}
+        {% endfor %}
+
+        {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+    {% endif %}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -22,8 +37,13 @@ endset%} {% block beforeContent %}
                     </h1>
                 </legend>
                 <div id="passport-hint" class="govuk-hint">We'll only use this to address emails to the applicant.</div>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['first-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="first-name"> First name </label>
+                      {% if validation['first-name'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['first-name'] }}
+                        </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-10"
                         id="first-name"
@@ -34,8 +54,13 @@ endset%} {% block beforeContent %}
                         autocomplete="name"
                     />
                 </div>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['last-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="last-name"> Last name </label>
+                      {% if validation['last-name'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['last-name'] }}
+                        </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-10"
                         id="last-name"

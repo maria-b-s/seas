@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as  es %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -11,15 +11,35 @@ endset%} {% block beforeContent %}
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
+{% if validation | length %}
+
+        {% set errorList = [] %}
+
+        {% for key, value in validation %}
+            {% set errorList = (errorList.push({
+                "text": value,
+                "href": "#" + key
+            }), errorList) %}
+        {% endfor %}
+
+        {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+    {% endif %}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form class="form" method="post">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="60">
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['position-name'] %}govuk-form-group--error{% endif %}">
 
                     <h1 class="govuk-label-wrapper">
                         <label class="govuk-label govuk-label--l" for="position-name"> What job or role is the DBS check for? </label>
                     </h1>
+                     {% if validation['position-name'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['position-name'] }}
+                        </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-js-character-count"
                         id="position-name"

@@ -7,8 +7,6 @@ function validateEmail(req, res, _next) {
   savePageData(req, state);
   const inputCache = loadPageData(req);
 
-  console.log(state)
-
   let redirectPath = 'telephone-number';
   let dataValidation = {}
 
