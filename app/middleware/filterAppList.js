@@ -46,7 +46,7 @@ function filterAppList(req, res) {
     filteredList.push(...filteredCopy);
     filteredList = filteredList.filter((value, index, self) => index === self.findIndex(t => t.ref === value.ref));
     req.session.data.filteredApplications = filteredList;
-    res.redirect('/dashboard/home?filter=' + parameterString.join('+'));
+    return parameterString.join('+');
 }
 
 exports.filterAppList = filterAppList;

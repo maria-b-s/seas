@@ -14,6 +14,7 @@ const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { addApplication } = require('./middleware/addApplication');
 const { filterAppList } = require('./middleware/filterAppList');
+const { searchFilter } = require('./middleware/searchFilter');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
@@ -1263,12 +1264,22 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     //     res.render('dashboard/home', { cache: inputCache, validation: null });
     // }
 
-    if (Object.keys(req.query).length === 0 || req.query.filter == '' || req.query.search == '') {
+    if (Object.keys(req.query).length === 0) {
         req.session.data.needsActionFilter = null;
         req.session.data.appStatusFilter = null;
         req.session.data.orgFilter = null;
-        req.session.data.search = null;
+        req.session.data.search = '';
         req.session.data.filteredApplications = req.session.data.applications;
+    }
+
+    if (req.query.filter == '') {
+        req.session.data.needsActionFilter = null;
+        req.session.data.appStatusFilter = null;
+        req.session.data.orgFilter = null;
+    }
+
+    if (req.query.name == '') {
+        req.session.data.search = '';
     }
 
     if (req.query.sort == 'name-descending') {
@@ -1305,7 +1316,7 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
-    
+
     if (req.query.sort == 'action-descending') {
         //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications
@@ -1356,14 +1367,10 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
     //req.session.data.filteredApplications = req.session.data.applications;
-
-    let filtered = req.session.data.filteredApplications.filter(app => {
-        return app.name.includes(req.body['search-name']);
-    });
-
+    let x = filterAppList(req, res);
     req.session.data.search = req.body['search-name'];
-    req.session.data.filteredApplications = filtered;
-    res.redirect('/dashboard/home?name=' + req.body['search-name']);
+    searchFilter(req, res)
+    res.redirect('/dashboard/home?name=' + req.session.data.search);
 });
 
 dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
@@ -1375,7 +1382,12 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     req.session.data.appStatusFilter = null;
     req.session.data.orgFilter = null;
 
-    filterAppList(req, res);
+    let urlString = filterAppList(req, res);
+    console.log(req.session.data.filteredApplications.length)
+    console.log(req.session.data.search)
+    searchFilter(req, res)
+    console.log(req.session.data.filteredApplications.length)
+    res.redirect('/dashboard/home?filter=' + urlString);
 });
 
 dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
@@ -1398,7 +1410,9 @@ dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
         });
     }
 
-    filterAppList(req, res);
+    let urlString = filterAppList(req, res);
+    searchFilter(req, res)
+    res.redirect('/dashboard/home?filter=' + urlString);
 });
 
 // SEAS 503 Password reset
