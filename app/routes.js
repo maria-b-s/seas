@@ -1305,6 +1305,7 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
+    
     if (req.query.sort == 'action-descending') {
         //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications
