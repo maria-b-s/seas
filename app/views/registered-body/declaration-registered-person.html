@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -9,15 +9,15 @@ endset%} {% block beforeContent %}
     </p>
 </div>
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
-
+{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
+"errorList": errorList }) }} {% endif %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="application-sent" method="post">
-            <div class="govuk-form-group">
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">Declaration</h1>
                     </legend>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
@@ -29,6 +29,11 @@ endset%} {% block beforeContent %}
                                     guidance.
                                 </p>
                             </label>
+                            {% if validation['confirm'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['confirm'] }}
+                            </span>
+                            {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" value="" />
@@ -38,6 +43,11 @@ endset%} {% block beforeContent %}
                                     that knowingly to make a false statement for this purpose may be a criminal offence.
                                 </p>
                             </label>
+                            {% if validation['declare'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['declare'] }}
+                            </span>
+                            {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="certify" name="certify" type="checkbox" value="carcasses" />
@@ -48,6 +58,11 @@ endset%} {% block beforeContent %}
                                     defined in the Police Act 1997 (Criminal Records) Regulations 2002.
                                 </p>
                             </label>
+                            {% if validation['certify'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['certify'] }}
+                            </span>
+                            {% endif %}
                         </div>
                     </div>
                 </fieldset>

@@ -13,6 +13,7 @@ const { validateBarred } = require('./middleware/validateBarred');
 const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { addApplication } = require('./middleware/addApplication');
+const { sendApplication } = require('./middleware/sendApplication');
 const { filterAppList } = require('./middleware/filterAppList');
 const { searchFilter } = require('./middleware/searchFilter');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
@@ -83,12 +84,12 @@ registeredBodyRouter.post('/existing-post-holder', (req, res) => {
 });
 
 registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
-    if(req.body['foc_declare'] == '_unchecked'){
-        req.session.data['foc_declare'] = 'Not FOC'
+    if (req.body['foc_declare'] == '_unchecked') {
+        req.session.data['foc_declare'] = 'Not FOC';
     } else {
-        req.session.data['foc_declare'] = 'FOC'
+        req.session.data['foc_declare'] = 'FOC';
     }
-    
+
     if (req.query.change == 'true') {
         res.redirect('check-answers');
     } else {
@@ -333,8 +334,51 @@ registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
         if (req.session.data['verified'] == 'No') {
             res.redirect('unsuccessful-verification?app=' + req.session.data.selectedApplication[0].ref);
         } else {
-            res.redirect('declaration-registered-person');
+            res.redirect('declaration-registered-person?app=' + req.session.data.selectedApplication[0].ref);
         }
+    }
+});
+
+registeredBodyRouter.get('/declaration-registered-person', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
+    req.session.data.selectedApplication = selectedApplication;
+
+    res.render('registered-body/declaration-registered-person', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/declaration-registered-person', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    req.session.data.confirm = null;
+    req.session.data.declare = null;
+    req.session.data.certify = null;
+
+    req.session.data.confirm = req.body['confirm'];
+    req.session.data.declare = req.body['declare'];
+    req.session.data.certify = req.body['certify'];
+
+    if (req.session.data.confirm == '_unchecked') {
+        dataValidation['confirm'] = 'Must be checked to send application';
+    }
+
+    if (req.session.data.declare == '_unchecked') {
+        dataValidation['declare'] = 'Must be checked to send application';
+    }
+
+    if (req.session.data.certify == '_unchecked') {
+        dataValidation['certify'] = 'Must be checked to send application';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/declaration-registered-person', { cache: inputCache, validation: dataValidation });
+    } else {
+        sendApplication(req, res);
+        res.redirect('application-sent?app=' + req.session.data.selectedApplication[0].ref);
     }
 });
 
@@ -1316,7 +1360,6 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         });
     }
 
-
     if (req.query.sort == 'action-descending') {
         //req.session.data.filteredApplications = req.session.data.applications;
         req.session.data.filteredApplications
@@ -1369,7 +1412,7 @@ dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     //req.session.data.filteredApplications = req.session.data.applications;
     let x = filterAppList(req, res);
     req.session.data.search = req.body['search-name'];
-    searchFilter(req, res)
+    searchFilter(req, res);
     res.redirect('/dashboard/home?name=' + req.session.data.search);
 });
 
@@ -1383,10 +1426,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     req.session.data.orgFilter = null;
 
     let urlString = filterAppList(req, res);
-    console.log(req.session.data.filteredApplications.length)
-    console.log(req.session.data.search)
-    searchFilter(req, res)
-    console.log(req.session.data.filteredApplications.length)
+    searchFilter(req, res);
     res.redirect('/dashboard/home?filter=' + urlString);
 });
 
@@ -1411,7 +1451,7 @@ dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
     }
 
     let urlString = filterAppList(req, res);
-    searchFilter(req, res)
+    searchFilter(req, res);
     res.redirect('/dashboard/home?filter=' + urlString);
 });
 
