@@ -1410,6 +1410,13 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
     //req.session.data.filteredApplications = req.session.data.applications;
+    if (!req.session.data.filters) {
+        req.session.data.filters = {
+            'needs-action': '_unchecked',
+            'app-status': '_unchecked',
+            organisation: '_unchecked',
+        };
+    }
     let x = filterAppList(req, res);
     req.session.data.search = req.body['search-name'];
     searchFilter(req, res);
