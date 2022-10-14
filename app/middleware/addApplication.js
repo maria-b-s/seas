@@ -117,6 +117,7 @@ function addApplication(req, res) {
 
     req.session.data.applications.push(newApp);
     req.session.data.newRef = app['ref'];
+    req.session.data.submittedEmail = app['applicant-email'];
 
     // Clear form data
     for (var key of Object.keys(req.session.data)) {
@@ -127,7 +128,8 @@ function addApplication(req, res) {
             key == 'filteredApplications' ||
             key == 'registered-body-nr' ||
             key == 'counter-signatory-nr' ||
-            key == 'newRef'
+            key == 'newRef' ||
+            key == 'submittedEmail'
         ) {
         } else {
             req.session.data[key] = null;

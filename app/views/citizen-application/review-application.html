@@ -168,8 +168,9 @@ endset%} {% block beforeContent %}
                         {% else %} {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
                         {% endif %} {% endif %} {% if item.country !== '' %} {{item.country}} <br />
                         {% endif %}
-                        <br />
-                        {% endfor %} {% endif %}
+                         {% if item.endYear == ""%} {{ [item.startYear , ' - Present'] | join}} {% else %} {{ [item.startYear , ' - ',
+                        item.endYear] | join}}{% endif %} <br /> <br />
+                        {% endfor %}   {% endif %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="previous-address">

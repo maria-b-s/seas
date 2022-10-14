@@ -37,13 +37,8 @@ function sendApplication(req, res) {
     });
 
     req.session.data.selectedApplication = selectedApplication;
+    req.session.data.submittedRef = selectedApplication[0].ref
     req.session.data.filteredApplications = req.session.data.applications;
-
-    if (req.url == '/confirm-cancel') {
-        res.redirect('back');
-    } else {
-        res.redirect('application-cancelled');
-    }
 }
 
 exports.sendApplication = sendApplication;
