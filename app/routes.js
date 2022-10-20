@@ -495,10 +495,10 @@ router.post('/dbs-check-answer', (req, res) => {
         res.render('registered-body/dbs-check-level', { validation: validation });
     }
     // Check whether the variable matches a condition
-    if (whatDbsCheck === 'Enhanced with barred list') return res.redirect('registered-body/enhanced/workforce-select');
+    // if (whatDbsCheck === 'Enhanced with barred list') return res.redirect('registered-body/enhanced/workforce-select');
     //if (req.header('referer').includes('change=true')) return res.redirect('registered-body/check-answers');
     if (whatDbsCheck === 'Standard') return res.redirect('registered-body/workforce-select');
-    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/workforce-select');
+    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/enhanced/workforce-select');
     return undefined;
 });
 

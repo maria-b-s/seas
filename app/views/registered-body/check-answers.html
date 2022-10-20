@@ -39,7 +39,7 @@ endset%} {% block beforeContent %}
                     <p>{{ data['workforce-selected'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    {% if data['what-dbs-check'] === 'Enhanced with barred list' %}
+                    {% if data['what-dbs-check'] === 'Enhanced' %}
                         <a href="enhanced/workforce-select?change=true">
                         Change
                         <span class="govuk-visually-hidden"> home address</span>
@@ -53,7 +53,7 @@ endset%} {% block beforeContent %}
                     {% endif %}
                 </dd>
             </div>
-            {% if data['what-dbs-check'] === 'Enhanced with barred list'%}
+            {% if data['what-dbs-check'] === 'Enhanced'%}
             {% if  data['workforce-selected'] == 'Adult' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected'] == 'Other'%}
                 <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Adult barred list check</dt>
@@ -83,7 +83,7 @@ endset%} {% block beforeContent %}
                 </div>
                 {% endif %}
 
-                {% if data['children-or-adults']%}
+                {% if data['workforce-selected'] == 'Child' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected'] == 'Adult'%}
 
                 <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant working with children or adults at their home address</dt>
