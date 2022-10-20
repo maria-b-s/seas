@@ -24,10 +24,10 @@ function validateBarred(req, res){
       res.render('registered-body/enhanced/barred-list-adults',  { cms, cache: inputCache, validation: validation });
     } else {
         req.session.data['barred-adults'] = req.body['barred-adults'];
-        if(req.session.data['workforce-select'] == 'Other'){
-          res.redirect('/registered-body/enhanced/working-at-home-address');
-        } else {
+        if(req.session.data['workforce-selected'] == 'Other'){
           res.redirect('/registered-body/position');
+        } else {
+          res.redirect('/registered-body/enhanced/working-at-home-address');
         }
     }
   } else {
