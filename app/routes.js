@@ -548,20 +548,20 @@ citizenRouter.post('/delete-name', (req, res) => {
 citizenRouter.post('/add-address', (req, res) => {
     const { address } = req.session.data;
     const addresses = req.session.data.addresses || [];
+    let sendCert = req.session.data.send_cert_address || [];
 
     if (req.query.certificate == 'true') {
-        const sendCert = req.session.data.send_cert_address || [];
+        sendCert = [];
         sendCert.push({
             lineOne: address[0],
             lineTwo: address[1],
             townOrCity: address[2],
-            postcode: address[3],
+            postcode: address[3].replace(/\s/g, ""),
             country: address[4],
             startYear: address[5],
         });
 
         req.session.data.send_cert_address = sendCert;
-
         return res.redirect('email-address');
     }
 
@@ -571,7 +571,7 @@ citizenRouter.post('/add-address', (req, res) => {
             lineOne: address[0],
             lineTwo: address[1],
             townOrCity: address[2],
-            postcode: address[3],
+            postcode: address[3].replace(/\s/g, ""),
             country: address[4],
             startYear: address[5],
         });
@@ -584,7 +584,7 @@ citizenRouter.post('/add-address', (req, res) => {
             lineOne: address[0],
             lineTwo: address[1],
             townOrCity: address[2],
-            postcode: address[3],
+            postcode: address[3].replace(/\s/g, ""),
             country: address[4],
             startYear: address[5],
         });
@@ -603,7 +603,7 @@ citizenRouter.post('/add-previous-address', (req, res) => {
         lineOne: previous_address[0],
         lineTwo: previous_address[1],
         townOrCity: previous_address[2],
-        postcode: previous_address[3],
+        postcode: previous_address[3].replace(/\s/g, ""),
         country: previous_address[4],
         startYear: previous_address[5],
         endYear: previous_address[6],
