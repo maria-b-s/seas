@@ -340,7 +340,16 @@
                                     </div>
                                 </div>
 
-                                {% endif %} {% if app['status'].id == '3' or app['status'].id == '1' or app['status'].id == '2'%}
+                                {% endif %} {% if app['status'].id == '3'%}
+
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
+                                        <a href="/registered-body/resend-application?app={{app['ref']}}">Resend application</a>
+                                    </div>
+                                </div>
+                                
+                                
+                                  {% endif %}{% if app['status'].id == '3' or app['status'].id == '1' or app['status'].id == '2'%}
 
                                 <div class="govuk-grid-row">
                                     <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">

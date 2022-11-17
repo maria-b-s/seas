@@ -1,0 +1,69 @@
+{% extends "layout.html" %} {% block pageTitle %} Verify applicant ID {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div
+            class="govuk-notification-banner govuk-notification-banner--success"
+            role="alert"
+            aria-labelledby="govuk-notification-banner-title"
+            data-module="govuk-notification-banner"
+        >
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">Email sent</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h1 class="govuk-heading-l">Email sent to applicant</h1>
+        </div>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h2 class="govuk-heading-m">What happens next</h2>
+        </div>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <ol class="govuk-list govuk-list--bullet">
+                <li>We’ll email the applicant a link to complete their online application.</li>
+                <li>You’ll get a notification in your online account when the applicant has completed their part.</li>
+                <li>You can view and download a copy of the applicant’s answers to verify their identity.</li>
+            </ol>
+        </div>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant name</dt>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].name }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">{{selectedApplication[0].email}}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+        </dl>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action="/dashboard/home" method="post" novalidate>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Return to application list</button>
+            </form>
+            <a></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

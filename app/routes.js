@@ -14,6 +14,7 @@ const { validateEmail } = require('./middleware/validateEmail');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { addApplication } = require('./middleware/addApplication');
 const { sendApplication } = require('./middleware/sendApplication');
+const { resendApplication } = require('./middleware/resendApplication');
 const { filterAppList } = require('./middleware/filterAppList');
 const { searchFilter } = require('./middleware/searchFilter');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
@@ -275,6 +276,28 @@ registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {
     req.session.data.selectedApplication = selectedApplication;
 
     res.render('registered-body/view-details', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
+});
+
+registeredBodyRouter.get('/resend-application', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+  
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
+    req.session.data.selectedApplication = selectedApplication;
+
+    res.render('registered-body/resend-application', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
+});
+
+registeredBodyRouter.post('/resend-application', invalidateCache, resendApplication);
+
+registeredBodyRouter.get('/resend-confirm', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
+
+    req.session.data.selectedApplication = selectedApplication;
+
+    res.render('registered-body/resend-confirm', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
 });
 
 registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {

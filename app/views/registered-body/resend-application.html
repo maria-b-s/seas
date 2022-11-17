@@ -1,0 +1,99 @@
+{% extends "layout.html" %} {% block pageTitle %} Reset application form {% endblock %} {% import "../macros/error-summary/govukErrorSummary.njk" as  es %}{% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a> {% endblock %} {% block content %}
+
+  {% if validation | length %}
+
+          {% set errorList = [] %}
+
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "text": value,
+                    "href": "#" + key
+                }), errorList) %}
+            {% endfor %}
+
+          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+        {% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h1 class="govuk-heading-l">Resend application form</h1>
+        </div>
+
+        <div class="govuk-hint">Send the applicant a link to complete their online application.<br /><br />The email will be sent to:</div>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant name</dt>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].name }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">{{selectedApplication[0].email}}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+        </dl>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h2 class="govuk-heading-m">Is the applicant’s email correct?</h2>
+        </div>
+
+        <div class="govuk-form-group {% if validation['new-email'] %}govuk-form-group--error{% endif %}">
+            <form method="post" novalidate>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    {% if validation['new-email'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['new-email'] }}
+                            </span>
+                            {% endif %}
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="new-email" name="new-email" type="radio" value="Yes"
+                        data-aria-controls="conditional-contact" {{ checked("new-email", "Yes") }} />
+                        <label class="govuk-label govuk-radios__label" for="new-email"> Yes </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="new-email-2" name="new-email" type="radio" value="No"
+                        data-aria-controls="conditional-contact-2" {{ checked("new-email", "No") }} />
+                        <label class="govuk-label govuk-radios__label" for="new-email-2"> No </label>
+                    </div>
+                    <div class="govuk-radios__conditional" id="conditional-contact-2">
+                        <div class="govuk-form-group {% if validation['new-email-address'] %}govuk-form-group--error{% endif %}">
+                            <label class="govuk-label" for="new-email">Applicant email address</label>
+                            {% if validation['new-email-address'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['new-email-address'] }}
+                            </span>
+                            {% endif %}
+                            <input
+                                class="govuk-input govuk-!-width-one-half"
+                                id="new-email-address"
+                                name="new-email-address"
+                                type="text"
+                                spellcheck="false"
+                                autocomplete="name"
+                            />
+                        </div>
+                        <div class="govuk-hint">We’ll use this email address to contact them about their DBS check</div>
+                    </div>
+                </div>
+             
+        </div>
+           <div style="display: flex; flex-direction: row; justify-content: space-between">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Send email</button>
+                </div>
+            </form>
+    </div>
+</div>
+{% endblock %}
