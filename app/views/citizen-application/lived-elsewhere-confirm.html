@@ -1,0 +1,50 @@
+{% import "../macros/error-summary/govukErrorSummary.njk" as es %}{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation['lived-elsewhere-confirm'] %}govuk-form-group--error{% endif %}">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Is this a current address or an address you lived at in the past?</h1>
+                    </legend>
+
+                    <p class="govuk-body">
+                        For example, if you live in student accommodation during term time, but live at another address in the holidays, you must tell
+                        us both addresses. <br /><br />If you work away from home and spend most of the week at another address, you must tell us both
+                        addresses.
+                    </p>
+
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="where-do-you-live" name="lived-elsewhere-confirm" type="radio" value="current" />
+                            <label class="govuk-label govuk-radios__label" for="where-do-you-live">Current</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="where-do-you-live-2" name="lived-elsewhere-confirm" type="radio" value="previous" />
+                            <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">Previous</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

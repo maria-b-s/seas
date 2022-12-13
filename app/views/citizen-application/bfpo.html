@@ -1,0 +1,48 @@
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %} {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({ "text": value, "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem",
+"errorList": errorList }) }} {% endif %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="60">
+                <div class="govuk-form-group {% if validation['bfpo'] %}govuk-form-group--error{% endif %}">
+                    <h1 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="position-name">What {%if query['address'] == 'previous'%}was{%else%}is{% endif %} your BFPO address?</label>
+                    </h1>
+                    {% if validation['bfpo'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['bfpo'] }}
+                    </span>
+                    {% endif %}
+                    <label class="govuk-label"> BFPO number </label>
+                    <input
+                        class="govuk-input govuk-input--width-5"
+                        id="position-name"
+                        name="bfpo"
+                        type="text"
+                        aria-describedby="position-name-info"
+                    />
+                </div>
+            </div>
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

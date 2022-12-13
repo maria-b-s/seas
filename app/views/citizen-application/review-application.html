@@ -137,75 +137,48 @@ endset%} {% block beforeContent %}
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Current address</th>
+                    <th scope="row" class="govuk-table__header">
+                        Current {%if data['current_addresses'].length > 1 %}addresses{%else%}address{%endif%}
+                    </th>
                     <td class="govuk-table__cell">
-                        {% if not data['addresses'] or data['addresses'].length === 0 %}  {% else %} {{data['addresses'][0].lineOne }} <br />
-                        {{data['addresses'][0].lineTwo}} <br />
-                        {{data['addresses'][0].townOrCity }} {% if data['addresses'][0].postcode == '' %} {% else %} {% if
-                        data['addresses'][0].postcode.length == 7 %} {{data['addresses'][0].postcode.slice(0, 4) | upper}}
-                        {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {{data['addresses'][0].country }} <br />
-                        {% endif %}
+                        {% for address in data['current_addresses'] %} {{address['lineOne']}}<br />{{address['townOrCity']}}<br />{{address['country']}}<br />{{address['postcode']}}<br />
+                        From {{address['start-month']}}/{{address['start-year']}} to now
+                        <br />
+                        <br />
+                        {%endfor%}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="address-lookup?change=true">
+                        <a href="#">
                             Change
                             <span class="govuk-visually-hidden">current address</span>
                         </a>
                     </td>
                 </tr>
+                {%if data['previous_addresses'].length > 0 %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous addresses in last 5 years</th>
                     <td class="govuk-table__cell">
-                        {% if data['changed-address'] == 'no'  or  data['previous_addresses'].length === 0 %} None {% else %} 
-                        {% for item in data['previous_addresses'] %} {% if item.lineOne !==
-                        '' %} {{item.lineOne}} <br />
-                        {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
-                        {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
-                        {% endif %} {% if item.postcode !== '' %} {% if item.postcode.length == 7 %} {{item.postcode.slice(0, 4) | upper}}
-                        {{item.postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {% if item.country !== '' %} {{item.country}} <br />
-                        {% endif %}
-                         {% if item.endYear == ""%} {{ [item.startYear , ' - Present'] | join}} {% else %} {{ [item.startYear , ' - ',
-                        item.endYear] | join}}{% endif %} <br /> <br />
-                        {% endfor %}   {% endif %}
+                        {% for address in data['previous_addresses'] %} {{address['lineOne']}}<br />{{address['townOrCity']}}<br />{{address['country']}}<br />{{address['postcode']}}<br />
+                        From {{address['start-month']}}/{{address['start-year']}} to {{address['end-month']}}/{{address['end-year']}}
+                        <br />
+                        <br />
+                        {%endfor%}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="previous-address">
+                        <a href="#">
                             Change
                             <span class="govuk-visually-hidden">5 year address history</span>
                         </a>
                     </td>
                 </tr>
+                {%endif%}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Certificate postal address</th>
                     <td class="govuk-table__cell">
-                        {% if data['where-to-send-cert'] == 'Current Address' %} 
-                            {% if not data['addresses'] or data['addresses'].length === 0 %}  {% else %} {{data['addresses'][0].lineOne }} <br />
-                        {{data['addresses'][0].lineTwo}} <br />
-                        {{data['addresses'][0].townOrCity }} {% if data['addresses'][0].postcode == '' %} {% else %} {% if
-                        data['addresses'][0].postcode.length == 7 %} {{data['addresses'][0].postcode.slice(0, 4) | upper}}
-                        {{data['addresses'][0].postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{data['addresses'][0].postcode.slice(0, 3) | upper}} {{data['addresses'][0].postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {{data['addresses'][0].country }} <br />
-                        {% endif %}
-                        {% else %}
-
-                        {% if not data['send_cert_address'] or data['send_cert_address'].length === 0 %}  {% else %} {{data['send_cert_address'][0].lineOne }} <br />
-                        {{data['send_cert_address'][0].lineTwo}} <br />
-                        {{data['send_cert_address'][0].townOrCity }} {% if data['send_cert_address'][0].postcode == '' %} {% else %} {% if
-                        data['send_cert_address'][0].postcode.length == 7 %} {{data['send_cert_address'][0].postcode.slice(0, 4) | upper}}
-                        {{data['send_cert_address'][0].postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{data['send_cert_address'][0].postcode.slice(0, 3) | upper}} {{data['send_cert_address'][0].postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {{data['send_cert_address'][0].country }} <br />
-                        {% endif %}
-                        
-                        {% endif%}
+                        {{data['cert-address']['lineOne']}}<br />{{data['cert-address']['townOrCity']}}<br />{{data['cert-address']['country']}}<br />{{data['cert-address']['postcode']}}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="send-certificate">
+                        <a href="#">
                             Change
                             <span class="govuk-visually-hidden">certificate destination</span>
                         </a>

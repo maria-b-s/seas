@@ -374,8 +374,8 @@ $('.lookup').on('click', function() {
             }
 
             container.forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
-            $('.hidden-details-city').val(res.result.admin_county);
-            $('.hidden-details-town').val(res.result.parish);
+            $('.hidden-details-country').val(res.result.country);
+            $('.hidden-details-town').val(res.result.admin_district);
             return postcode.removeClass('govuk-input--error');
         });
 });

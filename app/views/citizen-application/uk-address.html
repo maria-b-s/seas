@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
@@ -18,14 +17,19 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Where would you like us to send your DBS certificate?</h1>
+                        <h1 class="govuk-fieldset__heading">
+                            What {%if query['address'] == 'previous'%}was{%else%}is{% endif %} your {%if query['address'] ==
+                            'previous'%}{%else%}current{% endif %} address?
+                        </h1>
                     </legend>
+                    {%if query['address'] == 'previous'%}{%else%}
                     <div id="waste-hint" class="govuk-hint">
                         We can send your certificate to your current address, another personal address (for example a family member), or a care of
                         address.
 
                         <br /><br />You must make sure that you are able to check the information on your DBS certificate is correct.
                     </div>
+                    {% endif %}
 
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="postcode-lookup"> UK postcode </label>
@@ -60,9 +64,7 @@ endset%} {% block beforeContent %}
                             If you have a non-UK address, or your UK address cannot be found, you can add your address manually
 
                             <p class="govuk-body">
-                                <a href="cert-address-manual" class="govuk-button">
-                                    Add address manually
-                                </a>
+                                <a href="uk-address-manual" class="govuk-button"> Add address manually </a>
                             </p>
                         </div>
                     </details>
@@ -75,4 +77,3 @@ endset%} {% block beforeContent %}
 </div>
 
 {% endblock %}
-

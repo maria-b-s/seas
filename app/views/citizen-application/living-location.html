@@ -1,0 +1,65 @@
+{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link"  href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation['location'] %}govuk-form-group--error{% endif %}">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="sex-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            {%if query['address'] == 'previous'%}Where did you live?{%else%}Where do you live?{% endif %}
+                        </h1>
+                    </legend>
+                    {% if validation['location'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['location'] }}
+                    </span>
+                    {% endif %}
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="location" name="location" type="radio" value="UK" />
+                            <label class="govuk-label govuk-radios__label" for="location">I {%if query['address'] == 'previous'%}lived{%else%}live{% endif %} at a UK address</label>
+                        </div>
+                        <h2 class="govuk-heading-m">Or</h2>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="location-2" name="location" type="radio" value="OutsideUK" />
+                            <label class="govuk-label govuk-radios__label" for="location-2"> I {%if query['address'] == 'previous'%}did{%else%}do{% endif %} not live in the UK</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="location-3" name="location" type="radio" value="BFPO" />
+                            <label class="govuk-label govuk-radios__label" for="location-3">I {%if query['address'] == 'previous'%}had{%else%}have{% endif %} a British Forces Post Office (BFPO) address</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="location-4" name="location" type="radio" value="HT" />
+                            <label class="govuk-label govuk-radios__label" for="location-4">
+                                {%if query['address'] == 'previous'%}I was{%else%}I'm{% endif %} homeless or travelling and {%if query['address'] == 'previous'%}did{%else%}do{% endif %} not have an address</label
+                            >
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
