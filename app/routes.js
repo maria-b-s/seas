@@ -1023,25 +1023,86 @@ citizenRouter.post('/previous-address-lookup', invalidateCache, (req, res, next)
     return res.redirect('previous-address-details');
 });
 
+citizenRouter.get('/send-certificate', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('citizen-application/send-certificate', { cache: inputCache, validation: null });
+});
+
 citizenRouter.post('/send-certificate', (req, res) => {
-    req.session.data.temp_current = req.body;
-    return res.redirect('confirm-current-address');
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if (!req.body['postcode-lookup']) {
+        dataValidation['postcode-lookup'] = 'Enter postcode';
+    }
+
+    if (!req.body['lookup-addr']) {
+        dataValidation['lookup-addr'] = 'Select address';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/send-certificate', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
+    } else {
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        req.session.data.temp_current = req.body;
+        return res.redirect('confirm-current-address');
+    }
+});
+
+citizenRouter.get('/cert-address-manual', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('citizen-application/cert-address-manual', { cache: inputCache, validation: null });
 });
 
 citizenRouter.post('/cert-address-manual', (req, res) => {
-    req.session.data.temp_current = req.body;
-    return res.redirect('confirm-current-address');
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if (!req.body['lookup-addr']) {
+        dataValidation['lookup-addr'] = 'Enter address';
+    }
+
+    if (!req.body['hidden-details-town']) {
+        dataValidation['hidden-details-town'] = 'Enter town/city';
+    }
+
+    if (!req.body['hidden-details-country']) {
+        dataValidation['hidden-details-country'] = 'Enter country';
+    }
+
+    if (!req.body['postcode-lookup']) {
+        dataValidation['postcode-lookup'] = 'Enter postcode';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/cert-address-manual', {
+            cache: inputCache,
+            validation: dataValidation,
+            query: req.query,
+        });
+    } else {
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        req.session.data.temp_current = req.body;
+        return res.redirect('confirm-current-address');
+    }
 });
 
 citizenRouter.get('/confirm-current-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-
     res.render('citizen-application/confirm-current-address', { cache: inputCache, validation: null, address: req.session.data.temp_current });
 });
 
 citizenRouter.post('/confirm-current-address', (req, res) => {
     let dataValidation = {};
 
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     if (!req.body['confirm-current-address']) {
@@ -1071,14 +1132,16 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
         req.session.data['cert-address']['start-month'] = req.body['start-month'];
         req.session.data['cert-address']['start-year'] = req.body['start-year'];
 
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        
         if (req.body['confirm-current-address'] == 'Yes') {
             req.session.data['isCurrentAddress'] = true;
             req.session.data.current_address = req.session.data['cert-address'];
-        
-            const current_addresses =  req.session.data.current_addresses || [];
+
+            const current_addresses = req.session.data.current_addresses || [];
             current_addresses.push(req.session.data['cert-address']);
             req.session.data.current_addresses = current_addresses;
-            
+
             res.redirect('lived-elsewhere');
         } else {
             res.redirect('living-location?address=current');
@@ -1094,7 +1157,7 @@ citizenRouter.get('/living-location', invalidateCache, (req, res) => {
 
 citizenRouter.post('/living-location', (req, res) => {
     let dataValidation = {};
-
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let parameterString = '';
     if (req.query.address) {
@@ -1136,26 +1199,45 @@ citizenRouter.get('/uk-address', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/uk-address', (req, res) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
     let parameterString = '';
     if (req.query.address) {
         parameterString = '&address=' + req.query.address;
     }
 
-    if (req.query.address == 'previous') {
-        req.session.data['temp-previous-address'] = {};
-        req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
-        req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
-        req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
-    } else {
-        req.session.data.current_address = {};
-        req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
-        req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data.current_address['country'] = req.body['hidden-details-country'];
-        req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+    if (!req.body['postcode-lookup']) {
+        dataValidation['postcode-lookup'] = 'Enter postcode';
     }
 
-    return res.redirect('address-confirm?location=uk' + parameterString);
+    if (!req.body['lookup-addr']) {
+        dataValidation['lookup-addr'] = 'Select address';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/uk-address', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
+    } else {
+        if (req.query.address == 'previous') {
+            req.session.data['temp-previous-address'] = {};
+            req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
+        } else {
+            req.session.data.current_address = {};
+            req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
+            req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data.current_address['country'] = req.body['hidden-details-country'];
+            req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+        }
+
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        return res.redirect('address-confirm?location=uk' + parameterString);
+    }
 });
 
 citizenRouter.get('/uk-address-manual', invalidateCache, (req, res) => {
@@ -1165,26 +1247,54 @@ citizenRouter.get('/uk-address-manual', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/uk-address-manual', (req, res) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
     let parameterString = '';
     if (req.query.address) {
         parameterString = '&address=' + req.query.address;
     }
 
-    if (req.query.address == 'previous') {
-        req.session.data['temp-previous-address'] = {};
-        req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
-        req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
-        req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
-    } else {
-        req.session.data.current_address = {};
-        req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
-        req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data.current_address['country'] = req.body['hidden-details-country'];
-        req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+    if (!req.body['lookup-addr']) {
+        dataValidation['lookup-addr'] = 'Enter address';
     }
 
-    return res.redirect('address-confirm?location=uk' + parameterString);
+    if (!req.body['hidden-details-town']) {
+        dataValidation['hidden-details-town'] = 'Enter town/city';
+    }
+
+    if (!req.body['hidden-details-country']) {
+        dataValidation['hidden-details-country'] = 'Enter country';
+    }
+
+    if (!req.body['postcode-lookup']) {
+        dataValidation['postcode-lookup'] = 'Enter postcode';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/uk-address-manual', {
+            cache: inputCache,
+            validation: dataValidation,
+            query: req.query,
+        });
+    } else {
+        if (req.query.address == 'previous') {
+            req.session.data['temp-previous-address'] = {};
+            req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
+        } else {
+            req.session.data.current_address = {};
+            req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
+            req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data.current_address['country'] = req.body['hidden-details-country'];
+            req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+        }
+
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        return res.redirect('address-confirm?location=uk' + parameterString);
+    }
 });
 
 // Screen 12.013
@@ -1209,7 +1319,7 @@ citizenRouter.get('/address-confirm', invalidateCache, (req, res) => {
 
 citizenRouter.post('/address-confirm', (req, res) => {
     let dataValidation = {};
-
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     if (!req.body['start-month']) {
@@ -1256,15 +1366,16 @@ citizenRouter.post('/address-confirm', (req, res) => {
 
             previous_addresses.push(req.session.data['temp-previous-address']);
             req.session.data.previous_addresses = previous_addresses;
-            
         } else {
             req.session.data.current_address['start-month'] = req.body['start-month'];
             req.session.data.current_address['start-year'] = req.body['start-year'];
 
-            const current_addresses =  req.session.data.current_addresses || [];
+            const current_addresses = req.session.data.current_addresses || [];
             current_addresses.push(req.session.data.current_address);
             req.session.data.current_addresses = current_addresses;
         }
+
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
         res.redirect('lived-elsewhere');
     }
 });
@@ -1284,6 +1395,7 @@ citizenRouter.post('/bfpo', (req, res) => {
     }
 
     let dataValidation = {};
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let selectedBFPO = BFPO_ADDRESSES.filter(value => value.id == req.body['bfpo'])[0];
 
@@ -1307,6 +1419,7 @@ citizenRouter.post('/bfpo', (req, res) => {
             req.session.data.current_address = selectedBFPO;
         }
 
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
         return res.redirect('address-confirm?location=bfpo' + parameterString);
     }
 });
@@ -1324,6 +1437,7 @@ citizenRouter.post('/no-address', (req, res) => {
     }
 
     let dataValidation = {};
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     if (!req.body['townOrCity']) {
@@ -1342,6 +1456,7 @@ citizenRouter.post('/no-address', (req, res) => {
             req.session.data.current_address = req.body;
         }
 
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
         res.redirect('address-confirm?location=no-address' + parameterString);
     }
 });
@@ -1353,25 +1468,54 @@ citizenRouter.get('/outside-uk', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/outside-uk', (req, res) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
     let parameterString = '';
     if (req.query.address) {
         parameterString = '&address=' + req.query.address;
     }
 
-    if (req.query.address == 'previous') {
-        req.session.data['temp-previous-address'] = {};
-        req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
-        req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
-        req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
-    } else {
-        req.session.data.current_address = {};
-        req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
-        req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
-        req.session.data.current_address['country'] = req.body['hidden-details-country'];
-        req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+    if (!req.body['lookup-addr']) {
+        dataValidation['lookup-addr'] = 'Enter address';
     }
-    return res.redirect('address-confirm?location=outside-uk' + parameterString);
+
+    if (!req.body['hidden-details-town']) {
+        dataValidation['hidden-details-town'] = 'Enter town/city';
+    }
+
+    if (!req.body['hidden-details-country']) {
+        dataValidation['hidden-details-country'] = 'Enter country';
+    }
+
+    if (!req.body['postcode-lookup']) {
+        dataValidation['postcode-lookup'] = 'Enter postcode';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/outside-uk', {
+            cache: inputCache,
+            validation: dataValidation,
+            query: req.query,
+        });
+    } else {
+        if (req.query.address == 'previous') {
+            req.session.data['temp-previous-address'] = {};
+            req.session.data['temp-previous-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['temp-previous-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['temp-previous-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
+        } else {
+            req.session.data.current_address = {};
+            req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
+            req.session.data.current_address['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data.current_address['country'] = req.body['hidden-details-country'];
+            req.session.data.current_address['postcode'] = req.body['postcode-lookup'];
+        }
+
+        req.session.cache[req.originalUrl.split('?')[0]] = {}
+        return res.redirect('address-confirm?location=outside-uk' + parameterString);
+    }
 });
 
 citizenRouter.get('/lived-elsewhere', invalidateCache, (req, res) => {
@@ -1388,6 +1532,7 @@ citizenRouter.get('/lived-elsewhere', invalidateCache, (req, res) => {
 
 citizenRouter.post('/lived-elsewhere', invalidateCache, (req, res) => {
     let dataValidation = {};
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     if (!req.body['lived-elsewhere']) {
@@ -1423,6 +1568,7 @@ citizenRouter.get('/lived-elsewhere-confirm', invalidateCache, (req, res) => {
 
 citizenRouter.post('/lived-elsewhere-confirm', invalidateCache, (req, res) => {
     let dataValidation = {};
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
     if (!req.body['lived-elsewhere-confirm']) {

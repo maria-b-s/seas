@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,6 +13,9 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
@@ -31,24 +34,28 @@ endset%} {% block beforeContent %}
                     </div>
                     {% endif %}
 
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group {% if validation['postcode-lookup'] %}govuk-form-group--error{% endif %}">
                         <label class="govuk-label" for="postcode-lookup"> UK postcode </label>
                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style="display: none">
                             <span class="govuk-visually-hidden">Error:</span> Invalid postcode
                         </p>
-                        <input
-                            class="govuk-input govuk-input--width-10"
-                            id="postcode-lookup"
-                            name="postcode-lookup"
-                            type="text"
-                            autocomplete="postal-code"
-                        />
+                        {% if validation['postcode-lookup'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['postcode-lookup'] }}
+                        </span>
+                        {% endif %} <input class="govuk-input govuk-input--width-10" id="postcode-lookup" name="postcode-lookup" type="text"
+                        autocomplete="postal-code" {% if cache['postcode-lookup'] %} value="{{cache['postcode-lookup']}}" {% endif %} />
                     </div>
 
                     <button class="govuk-button lookup" type="button" data-module="govuk-button">Look up address</button>
 
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
                         <label class="govuk-label" for="sort"> Select your address </label>
+                        {% if validation['lookup-addr'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['lookup-addr'] }}
+                        </span>
+                        {% endif %}
                         <select class="govuk-select govuk-input--width-20 postcode-select" id="sort" name="lookup-addr" disabled>
                             <option class="enter-postcode">Enter postcode</option>
                         </select>

@@ -20,24 +20,25 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
             <div class="govuk-form-group {% if validation['lived-elsewhere-confirm'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Is this a current address or an address you lived at in the past?</h1>
+                        <h1 class="govuk-fieldset__heading">What type of address do you want to tell us about?</h1>
                     </legend>
-
+{# 
                     <p class="govuk-body">
                         For example, if you live in student accommodation during term time, but live at another address in the holidays, you must tell
                         us both addresses. <br /><br />If you work away from home and spend most of the week at another address, you must tell us both
                         addresses.
-                    </p>
+                    </p> #}
 
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live" name="lived-elsewhere-confirm" type="radio" value="current" />
-                            <label class="govuk-label govuk-radios__label" for="where-do-you-live">Current</label>
+                            <input class="govuk-radios__input" id="where-do-you-live-2" name="lived-elsewhere-confirm" type="radio" value="previous" />
+                            <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">An address I lived at in the past</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live-2" name="lived-elsewhere-confirm" type="radio" value="previous" />
-                            <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">Previous</label>
+                            <input class="govuk-radios__input" id="where-do-you-live" name="lived-elsewhere-confirm" type="radio" value="current" />
+                            <label class="govuk-label govuk-radios__label" for="where-do-you-live">Another address I currently live at</label>
                         </div>
+                      
                     </div>
                 </fieldset>
             </div>

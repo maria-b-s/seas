@@ -1,5 +1,5 @@
-{% from "country.njk" import country %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a
-standard or enhanced DBS check {% endset%} {% block beforeContent %}
+{% from "country.njk" import country %}{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block
+pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,41 +13,52 @@ standard or enhanced DBS check {% endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What is your current address?</h1>
                 </legend>
-                <div class="govuk-form-group">
+                   <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="postcode-lookup"> Number and street </label>
-                    <input class="govuk-input govuk-input--width-20" id="postcode-lookup" name="lookup-addr" type="text" autocomplete="postal-code" />
+                    {% if validation['lookup-addr'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['lookup-addr'] }}
+                    </span>
+                    {% endif %} <input class="govuk-input govuk-input--width-20" id="postcode-lookup" name="lookup-addr" type="text"
+                    autocomplete="postal-code" {% if cache['lookup-addr'] %} value="{{cache['lookup-addr']}}" {% endif %}/>
                 </div>
 
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['hidden-details-town'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="town-or-city"> Town or City </label>
-                    <input
-                        class="govuk-input govuk-input--width-20"
-                        id="town-or-city"
-                        name="hidden-details-town"
-                        type="text"
-                        autocomplete="town-or-city"
-                    />
+                    {% if validation['hidden-details-town'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-town'] }}
+                    </span>
+                    {% endif %} <input class="govuk-input govuk-input--width-20" id="town-or-city" name="hidden-details-town" type="text"
+                    autocomplete="town-or-city" {% if cache['hidden-details-town'] %} value="{{cache['hidden-details-town']}}" {% endif %} />
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                 </div>
 
-                {% if query['lookup'] == 'true' %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'hidden-details-country',
-                value: 'United Kingdom' }) }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name:
-                'hidden-details-country' }) }} {% endif %} {# {% if query['certificate'] !== 'true' %}
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="year"> <strong>What year did you start living here?</strong> </label>
-                    <div id="passport-hint" class="govuk-hint">For example, 1980</div>
-                    <input class="govuk-input govuk-input--width-5" id="year" name="address" type="number" maxlength="4" autocomplete="postal-code" />
+                <div class="govuk-form-group {% if validation['hidden-details-country'] %}govuk-form-group--error{% endif %}">
+                {% if validation['hidden-details-country'] %}
+                <span id="ninonr-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-country'] }}
+                </span>
+                {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', error: 'govuk-form-group--error'})
+                }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', value: cache['hidden-details-country'] }) }} {% endif %}
                 </div>
-                {% endif %} #}
 
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['postcode-lookup'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="postcode"> Postcode </label>
-                    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode-lookup" type="text" autocomplete="postal-code" />
+                    {% if validation['postcode-lookup'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['postcode-lookup'] }}
+                    </span>
+                    {% endif %} <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode-lookup" type="text"
+                    autocomplete="postal-code" {% if cache['postcode-lookup'] %} value="{{cache['postcode-lookup']}}" {% endif %}/>
                     <label class="govuk-label" for="postcode-lookup-2"></label>
                 </div>
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
