@@ -352,6 +352,9 @@ $('.lookup').on('click', function() {
     var postcode = $('#postcode-lookup');
     var err = $('.error-msg');
     var select = $('.postcode-select');
+    var selectAddress = $("#selectAddress")
+    var addressManual = $("#address-manual")
+
     if (!postcode) return;
     var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
     var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
@@ -365,9 +368,13 @@ $('.lookup').on('click', function() {
             select.prop('disabled', false);
             select.empty();
             err.css('display', 'none');
+            selectAddress.css('display', 'block');
             var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
             
             var container = [];
+
+            select.append('<option selected="true" disabled="disabled"">...11 addresses found</option>')
+            addressManual.html("If address not listed, enter it manually");
 
             for (var i = 0; i <= 10; i++) {
                 container.push(getRandomArbitrary(3, 50) + " " + street);

@@ -21,8 +21,8 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What is your current address?</h1>
                 </legend>
-                   <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="postcode-lookup"> Number and street </label>
+                <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="postcode-lookup"> Address line 1 </label>
                     {% if validation['lookup-addr'] %}
                     <span id="ninonr-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> {{ validation['lookup-addr'] }}
@@ -31,8 +31,18 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                     autocomplete="postal-code" {% if cache['lookup-addr'] %} value="{{cache['lookup-addr']}}" {% endif %}/>
                 </div>
 
+                <div class="govuk-form-group {% if validation['lookup-addr-2'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="postcode-lookup"> Address line 2 (optional) </label>
+                    {% if validation['lookup-addr-2'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['lookup-addr-2'] }}
+                    </span>
+                    {% endif %} <input class="govuk-input govuk-input--width-20" id="postcode-lookup" name="lookup-addr-2" type="text"
+                    autocomplete="postal-code" {% if cache['lookup-addr-2'] %} value="{{cache['lookup-addr-2']}}" {% endif %}/>
+                </div>
+
                 <div class="govuk-form-group {% if validation['hidden-details-town'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="town-or-city"> Town or City </label>
+                    <label class="govuk-label" for="town-or-city"> Town or city </label>
                     {% if validation['hidden-details-town'] %}
                     <span id="ninonr-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-town'] }}
@@ -43,12 +53,13 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                 </div>
 
                 <div class="govuk-form-group {% if validation['hidden-details-country'] %}govuk-form-group--error{% endif %}">
-                {% if validation['hidden-details-country'] %}
-                <span id="ninonr-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-country'] }}
-                </span>
-                {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', error: 'govuk-form-group--error'})
-                }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', value: cache['hidden-details-country'] }) }} {% endif %}
+                    {% if validation['hidden-details-country'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-country'] }}
+                    </span>
+                    {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', error:
+                    'govuk-form-group--error'}) }} {% else %} {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name:
+                    'hidden-details-country', value: cache['hidden-details-country'] }) }} {% endif %}
                 </div>
 
                 <div class="govuk-form-group {% if validation['postcode-lookup'] %}govuk-form-group--error{% endif %}">

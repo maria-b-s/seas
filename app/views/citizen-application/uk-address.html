@@ -49,7 +49,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
 
                     <button class="govuk-button lookup" type="button" data-module="govuk-button">Look up address</button>
 
-                    <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
+                    <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}"  id="selectAddress" style="display: none">
                         <label class="govuk-label" for="sort"> Select your address </label>
                         {% if validation['lookup-addr'] %}
                         <span id="ninonr-error" class="govuk-error-message">
@@ -63,18 +63,10 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <input class="hidden-details-town" name="hidden-details-town" type="text" hidden />
                     <input class="hidden-details-country" name="hidden-details-country" type="text" hidden />
                     <br />
-                    <details class="govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text"> Add your address manually</span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            If you have a non-UK address, or your UK address cannot be found, you can add your address manually
-
-                            <p class="govuk-body">
-                                <a href="uk-address-manual" class="govuk-button"> Add address manually </a>
-                            </p>
-                        </div>
-                    </details>
+                    
+                    <p class="govuk-body">
+                        <a id="address-manual" href="cert-address-manual" class="govuk-link"> Add address manually</a>
+                    </p>
                 </fieldset>
             </div>
 

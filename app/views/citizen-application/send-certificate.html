@@ -38,20 +38,13 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <span id="ninonr-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span> {{ validation['postcode-lookup'] }}
                         </span>
-                        {% endif %}
-                        <input
-                            class="govuk-input govuk-input--width-10"
-                            id="postcode-lookup"
-                            name="postcode-lookup"
-                            type="text"
-                            autocomplete="postal-code"
-                            {% if cache['postcode-lookup'] %} value="{{cache['postcode-lookup']}}" {% endif %}
-                        />
+                        {% endif %} <input class="govuk-input govuk-input--width-10" id="postcode-lookup" name="postcode-lookup" type="text"
+                        autocomplete="postal-code" {% if cache['postcode-lookup'] %} value="{{cache['postcode-lookup']}}" {% endif %} />
                     </div>
 
                     <button class="govuk-button lookup" type="button" data-module="govuk-button">Look up address</button>
 
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group" id="selectAddress" style="display: none">
                         <label class="govuk-label" for="sort"> Select your address </label>
                         {% if validation['lookup-addr'] %}
                         <span id="ninonr-error" class="govuk-error-message">
@@ -65,18 +58,18 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <input class="hidden-details-town" name="hidden-details-town" type="text" hidden />
                     <input class="hidden-details-country" name="hidden-details-country" type="text" hidden />
                     <br />
-                    <details class="govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text"> Add your address manually</span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            If you have a non-UK address, or your UK address cannot be found, you can add your address manually
+                    <br />
 
-                            <p class="govuk-body">
-                                <a href="cert-address-manual" class="govuk-button"> Add address manually </a>
-                            </p>
-                        </div>
-                    </details>
+                    <p class="govuk-body">
+                        <a id="address-manual" href="cert-address-manual" class="govuk-link"> Add address manually</a>
+                    </p>
+                    <h2 class="govuk-heading-m">Other address types</h2>
+                    <p class="govuk-body">
+                        <a href="bfpo?address=cert" class="govuk-link"> Add a BFPO address </a>
+                    </p>
+                    <p class="govuk-body">
+                        <a href="outside-uk?address=cert" class="govuk-link"> Add a non-UK address </a>
+                    </p>
                 </fieldset>
             </div>
 
