@@ -78,7 +78,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         {% for address in currentAddress %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
                         endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
                         %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
-                        From {{address['start-month']}}/{{address['start-year']}} to now
+                        From {{address['start-month']}} {{address['start-year']}} to now
                         <br />
                         <br />
                         {%endfor%}
@@ -95,7 +95,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         {% for address in previousAddresses %}{% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
                         endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
                         %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
-                        From {{address['start-month']}}/{{address['start-year']}} to {{address['end-month']}}/{{address['end-year']}}
+                        From {{address['start-month']}} {{address['start-year']}} to {{address['end-month']}} {{address['end-year']}}
                         <br />
                         <br />
                         {%endfor%}

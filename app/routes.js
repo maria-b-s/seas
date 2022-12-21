@@ -17,6 +17,7 @@ const { sendApplication } = require('./middleware/sendApplication');
 const { resendApplication } = require('./middleware/resendApplication');
 const { filterAppList } = require('./middleware/filterAppList');
 const { searchFilter } = require('./middleware/searchFilter');
+const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
@@ -1105,8 +1106,13 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
         dataValidation['confirm-current'] = 'Select an option';
     }
 
-    if (req.body['confirm-current-address'] == 'Yes' && !req.body['start-month']) {
-        dataValidation['start-month'] = 'Enter month';
+    if (req.body['confirm-current-address'] == 'Yes') {
+        if (!req.body['start-month']) {
+            dataValidation['start-month'] = 'Enter month';
+        }
+        if (req.body['start-month'] < 1 || req.body['start-month'] > 12 || req.body['start-month'].length != 2) {
+            dataValidation['start-month'] = 'Enter valid month';
+        }
     }
 
     if (req.body['confirm-current-address'] == 'Yes' && !req.body['start-year']) {
@@ -1125,7 +1131,7 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
         req.session.data['cert-address']['townOrCity'] = req.session.data.temp_current['hidden-details-town'];
         req.session.data['cert-address']['country'] = req.session.data.temp_current['hidden-details-country'];
         req.session.data['cert-address']['postcode'] = req.session.data.temp_current['postcode-lookup'];
-        req.session.data['cert-address']['start-month'] = req.body['start-month'];
+        req.session.data['cert-address']['start-month'] = getMonth(req.body['start-month']);
         req.session.data['cert-address']['start-year'] = req.body['start-year'];
 
         req.session.cache[req.originalUrl.split('?')[0]] = {};
@@ -1320,6 +1326,12 @@ citizenRouter.post('/address-confirm', (req, res) => {
         dataValidation['start-month'] = 'Enter month';
     }
 
+    if (req.body['start-month']) {
+        if (req.body['start-month'] < 1 || req.body['start-month'] > 12 || req.body['start-month'].length != 2) {
+            dataValidation['start-month'] = 'Enter valid month';
+        }
+    }
+
     if (!req.body['start-year']) {
         dataValidation['start-year'] = 'Enter year';
     }
@@ -1327,6 +1339,12 @@ citizenRouter.post('/address-confirm', (req, res) => {
     if (req.query.address == 'previous') {
         if (!req.body['end-month']) {
             dataValidation['end-month'] = 'Enter month';
+        }
+
+        if (req.body['end-month']) {
+            if (req.body['end-month'] < 1 || req.body['end-month'] > 12 || req.body['end-month'].length != 2) {
+                dataValidation['end-month'] = 'Enter valid month';
+            }
         }
 
         if (!req.body['end-year']) {
@@ -1352,16 +1370,16 @@ citizenRouter.post('/address-confirm', (req, res) => {
         }
     } else {
         if (req.query.address == 'previous') {
-            req.session.data['temp-previous-address']['start-month'] = req.body['start-month'];
+            req.session.data['temp-previous-address']['start-month'] = getMonth(req.body['start-month']);
             req.session.data['temp-previous-address']['start-year'] = req.body['start-year'];
-            req.session.data['temp-previous-address']['end-month'] = req.body['end-month'];
+            req.session.data['temp-previous-address']['end-month'] = getMonth(req.body['end-month']);
             req.session.data['temp-previous-address']['end-year'] = req.body['end-year'];
             const previous_addresses = req.session.data.previous_addresses || [];
 
             previous_addresses.push(req.session.data['temp-previous-address']);
             req.session.data.previous_addresses = previous_addresses;
         } else {
-            req.session.data.current_address['start-month'] = req.body['start-month'];
+            req.session.data.current_address['start-month'] = getMonth(req.body['start-month']);
             req.session.data.current_address['start-year'] = req.body['start-year'];
 
             const current_addresses = req.session.data.current_addresses || [];
@@ -1424,7 +1442,7 @@ citizenRouter.post('/bfpo', (req, res) => {
             req.session.data.temp_current['hidden-details-country'] = selectedBFPO['country'];
             req.session.data.temp_current['postcode-lookup'] = selectedBFPO['postcode'];
             res.redirect('confirm-current-address');
-        } 
+        }
     }
 });
 
@@ -1512,7 +1530,7 @@ citizenRouter.post('/outside-uk', (req, res) => {
             req.session.data['temp-previous-address']['postcode'] = req.body['postcode-lookup'];
             req.session.cache[req.originalUrl.split('?')[0]] = {};
             return res.redirect('address-confirm?location=outside-uk' + parameterString);
-        } 
+        }
         if (req.query.address == 'current') {
             req.session.data.current_address = {};
             req.session.data.current_address['lineOne'] = req.body['lookup-addr'];
@@ -1526,7 +1544,6 @@ citizenRouter.post('/outside-uk', (req, res) => {
             req.session.data.temp_current = req.body;
             res.redirect('confirm-current-address');
         }
-
     }
 });
 
