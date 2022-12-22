@@ -1197,7 +1197,7 @@ citizenRouter.post('/living-location', (req, res) => {
 citizenRouter.get('/uk-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('citizen-application/uk-address', { cache: inputCache, validation: null, query: req.query.address });
+    res.render('citizen-application/uk-address', { cache: inputCache, validation: null, query: req.query });
 });
 
 citizenRouter.post('/uk-address', (req, res) => {
