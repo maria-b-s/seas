@@ -21,7 +21,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
-                            {% if query['location'] != 'no-address'%}When did you live at at this address? {% else %} When did you start living
+                            {% if query['address'] != 'current'%}When did you live at at this address? {% else %} When did you start living
                             here? {% endif %}
                         </h1>
                         <div id="nino-hint" class="govuk-hint">For example, 03 2007</div>
