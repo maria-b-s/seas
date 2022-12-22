@@ -8,7 +8,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
         </span>
     </p>
 </div>
-<a class="govuk-back-link"  href="javascript:window.history.back()">Back</a>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row">
@@ -33,29 +33,35 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="location" name="location" type="radio" value="UK" />
-                            <label class="govuk-label govuk-radios__label" for="location">I {%if query['address'] == 'previous'%}lived{%else%}live{% endif %} at a UK address</label>
+                            <label class="govuk-label govuk-radios__label" for="location"
+                                >I {%if query['address'] == 'previous'%}lived{%else%}live{% endif %} at a UK address</label
+                            >
                         </div>
                         <br />
                         <h2 class="govuk-heading-m">Or</h2>
                         <br />
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="location-2" name="location" type="radio" value="OutsideUK" />
-                            <label class="govuk-label govuk-radios__label" for="location-2"> I {%if query['address'] == 'previous'%}did{%else%}do{% endif %} not live in the UK</label>
+                            <label class="govuk-label govuk-radios__label" for="location-2">
+                                I {%if query['address'] == 'previous'%}did{%else%}do{% endif %} not live in the UK</label
+                            >
                         </div>
                         <br />
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="location-3" name="location" type="radio" value="BFPO" />
-                            <label class="govuk-label govuk-radios__label" for="location-3">I {%if query['address'] == 'previous'%}had{%else%}have{% endif %} a British Forces Post Office (BFPO) address</label>
+                            <label class="govuk-label govuk-radios__label" for="location-3"
+                                >I {%if query['address'] == 'previous'%}had{%else%}have{% endif %} a British Forces Post Office (BFPO) address</label
+                            >
                         </div>
                         <br />
-                        {%if query['address'] == 'previous'%}
+
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="location-4" name="location" type="radio" value="HT" />
                             <label class="govuk-label govuk-radios__label" for="location-4">
-                                {%if query['address'] == 'previous'%}I was{%else%}I'm{% endif %} homeless or travelling and {%if query['address'] == 'previous'%}did{%else%}do{% endif %} not have an address</label
+                                {%if query['address'] == 'previous'%}I was{%else%}I'm{% endif %} homeless or travelling and {%if query['address'] ==
+                                'previous'%}did{%else%}do{% endif %} not have an address</label
                             >
                         </div>
-                        {% endif %}
                     </div>
                 </fieldset>
             </div>
