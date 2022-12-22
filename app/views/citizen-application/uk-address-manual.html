@@ -19,7 +19,10 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
         <form class="form" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">What is your current address?</h1>
+                    <h1 class="govuk-fieldset__heading">
+                        What {%if query['address'] == 'previous'%}was{%else%}is{% endif %} your {%if query['address'] == 'previous'%}{%else%}current{%
+                        endif %} address?
+                    </h1>
                 </legend>
                 <div class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="postcode-lookup"> Address line 1 </label>
