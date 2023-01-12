@@ -25,14 +25,14 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                             'previous'%}{%else%}current{% endif %} address?
                         </h1>
                     </legend>
-                    {%if query['address'] == 'previous'%}{%else%}
+                    {# {%if query['address'] == 'previous'%}{%else%}
                     <div id="waste-hint" class="govuk-hint">
                         We can send your certificate to your current address, another personal address (for example a family member), or a care of
                         address.
 
                         <br /><br />You must make sure that you are able to check the information on your DBS certificate is correct.
                     </div>
-                    {% endif %}
+                    {% endif %} #}
 
                     <div class="govuk-form-group {% if validation['postcode-lookup'] %}govuk-form-group--error{% endif %}">
                         <label class="govuk-label" for="postcode-lookup"> UK postcode </label>
