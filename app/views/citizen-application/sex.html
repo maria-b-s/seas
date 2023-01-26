@@ -41,7 +41,7 @@ endset%} {% block beforeContent %}
                         </span>
                     {% endif %}
                     <div id="sex-hint" class="govuk-hint">We need to know your sex, so we can check police records.</div>
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="sex" name="sex" type="radio" {% if cache['sex'] === 'Male' %}  checked="checked" {% endif %} value="Male" />
                             <label class="govuk-label govuk-radios__label" for="sex"> Male </label>
@@ -51,6 +51,18 @@ endset%} {% block beforeContent %}
                             <label class="govuk-label govuk-radios__label" for="sex-2"> Female </label>
                         </div>
                     </div>
+
+                    </br>
+                     <details class="govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">Transgender or non-binary applications</span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                Your sex is visible on your paper certificate but is not on your online result. 
+
+For more information, you can read the <a href="https://www.gov.uk/guidance/transgender-applications">guidance on transgender applications</a>. </br></br>If you do not want your previous identity on your paper certificate, you can contact the DBS sensitive applications team.
+                            </div>
+                        </details>
                 </fieldset>
             </div>
             {% if query['change'] === 'true' %}
