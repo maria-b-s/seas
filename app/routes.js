@@ -1870,8 +1870,8 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     }
 
     if (req.body['registered-body-nr'] && req.body['counter-signatory-nr']) {
-        const rbNumber = req.body['registered-body-nr'];
-        const csNumber = req.body['counter-signatory-nr'];
+        const rbNumber = req.body['registered-body-nr'].trim();
+        const csNumber = req.body['counter-signatory-nr'].trim();
 
         if (req.session?.mockDBaccounts) {
             selectedUser = req.session?.mockDBaccounts.find(el => rbNumber === el.rbNumber && csNumber === el.csNumber);
