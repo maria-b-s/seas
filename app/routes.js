@@ -1850,7 +1850,7 @@ dashboardRouter.get('*', (req, res, next) => {
 
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
-    console.log(req.sessionID)
+    console.log("SESSION ID: " + req.sessionID)
     res.render('dashboard/rb-login', { cache: inputCache, validation: null });
 });
 
@@ -1884,8 +1884,6 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
             }
         }
     }
-
-    console.log(req.sessionID)
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-login', { cache: inputCache, validation: dataValidation });
