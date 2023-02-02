@@ -1875,7 +1875,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
 
         if (req.session?.mockDBaccounts) {
             selectedUser = req.session?.mockDBaccounts.find(el => rbNumber === el.rbNumber && csNumber === el.csNumber);
-     
+            
             if (!selectedUser) {
                 dataValidation['registered-body-nr'] = 'Unable to find your details, please check your number and try again';
             } else {
@@ -1883,6 +1883,8 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
             }
         }
     }
+
+    console.log(req.sessionID)
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-login', { cache: inputCache, validation: dataValidation });
