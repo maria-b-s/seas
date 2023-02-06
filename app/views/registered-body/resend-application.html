@@ -47,12 +47,14 @@ endset%} {% block beforeContent %}
         </dl>
 
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <h2 class="govuk-heading-m">Is the applicant’s email correct?</h2>
+            <h2 class="govuk-heading-m">Is the applicant’s email correct?</h2> 
         </div>
+
+        
 
         <div class="govuk-form-group {% if validation['new-email'] %}govuk-form-group--error{% endif %}">
             <form method="post" novalidate>
-                <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                     {% if validation['new-email'] %}
                             <span id="ninonr-error" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span> {{ validation['new-email'] }}
@@ -68,7 +70,9 @@ endset%} {% block beforeContent %}
                         data-aria-controls="conditional-contact-2" {{ checked("new-email", "No") }} />
                         <label class="govuk-label govuk-radios__label" for="new-email-2"> No </label>
                     </div>
-                    <div class="govuk-radios__conditional" id="conditional-contact-2">
+                </div>
+
+                <div class="govuk-radios__conditional" id="conditional-contact-2">
                         <div class="govuk-form-group {% if validation['new-email-address'] %}govuk-form-group--error{% endif %}">
                             <label class="govuk-label" for="new-email">Applicant email address</label>
                             {% if validation['new-email-address'] %}
@@ -87,7 +91,6 @@ endset%} {% block beforeContent %}
                         </div>
                         <div class="govuk-hint">We’ll use this email address to contact them about their DBS check</div>
                     </div>
-                </div>
              
         </div>
            <div style="display: flex; flex-direction: row; justify-content: space-between">

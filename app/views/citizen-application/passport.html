@@ -1,7 +1,5 @@
-{% from "country.njk" import country %} 
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} 
-{% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+{% from "country.njk" import country %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block
+pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -14,20 +12,9 @@
 {% endblock %} {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %}
-
-          {% set errorList = [] %}
-
-            {% for key, value in validation %}
-                {% set errorList = (errorList.push({
-                    "text": value,
-                    "href": "#" + key
-                }), errorList) %}
-            {% endfor %}
-
-          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-        {% endif %}
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
 
         <form class="form" method="post">
             <div class="govuk-form-group">
@@ -35,60 +22,45 @@
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Do you have a current passport?</h1>
                     </legend>
-                    <div id="passport-hint" class="govuk-hint">
-                        If you do not have a passport you can still continue your application.
-                    </div>
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div id="passport-hint" class="govuk-hint">If you do not have a passport you can still continue your application.</div>
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input
-                                class="govuk-radios__input"
-                                id="passport"
-                                name="has-passport"
-                                type="radio"
-                                value="yes"
-                                aria-label="Yes, input in sub menu"
-                                data-aria-controls="conditional-contact"
-                                {{ checked("has-passport", "yes") }}
-                            />
+                            <input class="govuk-radios__input" id="passport" name="has-passport" type="radio" value="yes" aria-label="Yes, input in
+                            sub menu" data-aria-controls="conditional-contact" {{ checked("has-passport", "yes") }} />
                             <label class="govuk-label govuk-radios__label" for="passport"> Yes </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group {% if validation['passport-number'] %}govuk-form-group--error{% endif %}">
-                                <label class="govuk-label" for="passport-number"> Passport number </label>
-                                {% if validation['passport-number'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-number'] }}
-                                    </span>
-                                {% endif %}
-                                <input
-                                    class="govuk-input govuk-!-width-one-half"
-                                    id="passport-number"
-                                    name="passport-number"
-                                    type="text"
-                                    spellcheck="false"
-                                    value='{{data["passport-number"]}}'
-                                    autocomplete="name"
-                                />
-                            </div>
-                            {% if validation['passport-country-of-issue'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-country-of-issue'] }}
-                                    </span>
-                                {% endif %}
-                            {{ country({ label: 'Country of issue', inputClass: 'govuk-!-width-one-half', name: 'passport-country-of-issue', value: data["passport-country-of-issue"] }) }}
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input
-                                class="govuk-radios__input"
-                                id="passport-2"
-                                name="has-passport"
-                                type="radio"
-                                value="no"
-                                {{ checked("has-passport", "no") }}
-                            />
+                            <input class="govuk-radios__input" id="passport-2" name="has-passport" type="radio" value="no" {{ checked("has-passport",
+                            "no") }} />
                             <label class="govuk-label govuk-radios__label" for="passport-2"> No </label>
                         </div>
+                    </div>
+
+                    <div class="govuk-radios__conditional" id="conditional-contact">
+                        <div class="govuk-form-group {% if validation['passport-number'] %}govuk-form-group--error{% endif %}">
+                            <label class="govuk-label" for="passport-number"> Passport number </label>
+                            {% if validation['passport-number'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-number'] }}
+                            </span>
+                            {% endif %}
+                            <input
+                                class="govuk-input govuk-!-width-one-half"
+                                id="passport-number"
+                                name="passport-number"
+                                type="text"
+                                spellcheck="false"
+                                value='{{data["passport-number"]}}'
+                                autocomplete="name"
+                            />
+                        </div>
+                        {% if validation['passport-country-of-issue'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-country-of-issue'] }}
+                        </span>
+                        {% endif %} {{ country({ label: 'Country of issue', inputClass: 'govuk-!-width-one-half', name: 'passport-country-of-issue',
+                        value: data["passport-country-of-issue"] }) }}
                     </div>
                 </fieldset>
             </div>

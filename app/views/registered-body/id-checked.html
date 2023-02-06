@@ -22,34 +22,35 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <h1 class="govuk-fieldset__heading">Has the applicant's identity been successfully verified?</h1>
                     </legend>
                     <div class="govuk-hint">If it is not possible to verify the applicant’s identification, select No.</div>
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="verified" name="verified" type="radio" value="Yes"
                             data-aria-controls="conditional-contact" {{ checked("verified", "Yes") }} />
                             <label class="govuk-label govuk-radios__label" for="verified"> Yes </label>
                         </div>
-                        <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group {% if validation['name-of-verifier'] %}govuk-form-group--error{% endif %}">
-                                <label class="govuk-label" for="name-of-verifier"> Name of evidence checker </label>
-                                {% if validation['name-of-verifier'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['name-of-verifier'] }}
-                                </span>
-                                {% endif %}
-                                <input
-                                    class="govuk-input govuk-!-width-one-half"
-                                    id="name-of-verifier"
-                                    name="name-of-verifier"
-                                    type="text"
-                                    spellcheck="false"
-                                    autocomplete="name"
-                                />
-                            </div>
-                        </div>
+
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="verified-2" name="verified" type="radio" value="No"
                             data-aria-controls="conditional-contact-2" {{ checked("verified", "No") }} />
                             <label class="govuk-label govuk-radios__label" for="verified-2"> No </label>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__conditional" id="conditional-contact">
+                        <div class="govuk-form-group {% if validation['name-of-verifier'] %}govuk-form-group--error{% endif %}">
+                            <label class="govuk-label" for="name-of-verifier"> Name of evidence checker </label>
+                            {% if validation['name-of-verifier'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['name-of-verifier'] }}
+                            </span>
+                            {% endif %}
+                            <input
+                                class="govuk-input govuk-!-width-one-half"
+                                id="name-of-verifier"
+                                name="name-of-verifier"
+                                type="text"
+                                spellcheck="false"
+                                autocomplete="name"
+                            />
                         </div>
                     </div>
                 </fieldset>

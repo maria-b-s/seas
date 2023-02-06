@@ -1,7 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} 
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -15,20 +13,9 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %}
-
-          {% set errorList = [] %}
-
-            {% for key, value in validation %}
-                {% set errorList = (errorList.push({
-                    "text": value,
-                    "href": "#" + key
-                }), errorList) %}
-            {% endfor %}
-
-          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-        {% endif %}
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
 
         <form class="form" method="post">
             <div class="govuk-form-group">
@@ -37,55 +24,46 @@ endset%} {% block beforeContent %}
                         <h1 class="govuk-fieldset__heading">Do you have a current UK driving licence?</h1>
                     </legend>
                     <div id="passport-hint" class="govuk-hint">
-                        If you have a current full or provisional UK driving licence you must provide the number. It must show your current name and address. You cannot use an expired driving licence.
+                        If you have a current full or provisional UK driving licence you must provide the number. It must show your current name and
+                        address. You cannot use an expired driving licence.
                     </div>
                 </fieldset>
-                <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input
-                            class="govuk-radios__input"
-                            id="contact"
-                            name="has-drivers-license"
-                            type="radio"
-                            value="yes"
-                            {{ checked("has-drivers-license", "yes") }}
-                            data-aria-controls="conditional-contact"
-                        />
+                        <input class="govuk-radios__input" id="contact" name="has-drivers-license" type="radio" value="yes" {{
+                        checked("has-drivers-license", "yes") }} data-aria-controls="conditional-contact" />
                         <label class="govuk-label govuk-radios__label" for="contact"> Yes </label>
                     </div>
-                    <div aria-live="polite">
-                        <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="drivers-licence-number"  aria-label="enter your UK Drivers Licence number"> Driving licence number </label>
-                                <div id="nino-hint" class="govuk-hint">For example, MORGA657054SM9IJ</div>
-                                <!-- Need a regex for drivers license   -->
-                                {% if validation['drivers-licence-number'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['drivers-licence-number'] }}
-                                    </span>
-                                {% endif %}
-                                <input
-                                    class="govuk-input govuk-!-width-one-half"
-                                    id="drivers-licence-number"
-                                    name="drivers-licence-number"
-                                    type="text"
-                                    spellcheck="false"
-                                    autocomplete="email"
-                                />
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="govuk-radios__item">
-                        <input
-                            class="govuk-radios__input"
-                            id="contact-2"
-                            name="has-drivers-license"
-                            type="radio"
-                            value="no"
-                            data-aria-controls="conditional-contact-2"
-                            {{ checked("has-drivers-license", "no") }}
-                        />
+                        <input class="govuk-radios__input" id="contact-2" name="has-drivers-license" type="radio" value="no"
+                        data-aria-controls="conditional-contact-2" {{ checked("has-drivers-license", "no") }} />
                         <label class="govuk-label govuk-radios__label" for="contact-2"> No </label>
+                    </div>
+                </div>
+
+                <div aria-live="polite">
+                    <div class="govuk-radios__conditional" id="conditional-contact">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="drivers-licence-number" aria-label="enter your UK Drivers Licence number">
+                                Driving licence number
+                            </label>
+                            <div id="nino-hint" class="govuk-hint">For example, MORGA657054SM9IJ</div>
+                            <!-- Need a regex for drivers license   -->
+                            {% if validation['drivers-licence-number'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['drivers-licence-number'] }}
+                            </span>
+                            {% endif %}
+                            <input
+                                class="govuk-input govuk-!-width-one-half"
+                                id="drivers-licence-number"
+                                name="drivers-licence-number"
+                                type="text"
+                                spellcheck="false"
+                                autocomplete="email"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
