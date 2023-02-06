@@ -1153,8 +1153,7 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
 
 citizenRouter.get('/living-location', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-
-    res.render('citizen-application/living-location', { cache: inputCache, validation: null, query: req.query });
+    res.render('citizen-application/living-location', { cache: inputCache, validation: null, query: req.query, hasCurrent: req.session.data.current_address});
 });
 
 citizenRouter.post('/living-location', (req, res) => {
