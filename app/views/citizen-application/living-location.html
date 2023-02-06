@@ -55,13 +55,15 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         </div>
                         <br />
 
-                        <div class="govuk-radios__item">
+                        {%if query['address'] == 'previous'%}
+                            <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="location-4" name="location" type="radio" value="HT" />
                             <label class="govuk-label govuk-radios__label" for="location-4">
-                                {%if query['address'] == 'previous'%}I was{%else%}I'm{% endif %} homeless or travelling and {%if query['address'] ==
-                                'previous'%}did{%else%}do{% endif %} not have an address</label
+                                I was homeless or travelling and did not have an address
+                           </label
                             >
                         </div>
+                        {% endif %}
                     </div>
                 </fieldset>
             </div>
