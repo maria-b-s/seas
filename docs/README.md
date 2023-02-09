@@ -14,7 +14,7 @@ Use `npm install` to install the necessary dependencies.
 
 ## Running Application
 
-To run application, use `npm start`.
+To run application locally, use `npm start`.
 
 ## Accounts Page
 
