@@ -23,3 +23,8 @@ To log into the RB application, use generated accounts found at http://localhost
 ## Clearing Session Data
 
 To clear session data, click the 'Clear data' link found at bottom of the page.
+
+## Prototype Information
+
+* Postcode addresses are **randomly generated** and are not accurate.
+* DBS Applicatins are also **randomly generated**.
