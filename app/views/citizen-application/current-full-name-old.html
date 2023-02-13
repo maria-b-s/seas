@@ -8,12 +8,12 @@ endset%} {% block beforeContent %}
         </span>
     </p>
 </div>
-<a class="govuk-back-link" href="/citizen-application/start-application">Back</a>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form full-name-form" action="" method="post">
+        <form class="form full-name-form" action="{{'review-application' if query['change'] == 'true' else 'verify-name'}}" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What is your current full name?</h1>
@@ -28,7 +28,7 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="given-name"
-                        value='{{cache[0]}}'
+                        value='{{data["full-name"][0]}}'
                     />
                 </div>
                 <div class="govuk-form-group">
@@ -40,7 +40,7 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="name"
-                        value='{{cache[1]}}'
+                        value='{{data["full-name"][1]}}'
                     />
                 </div>
                 <div class="govuk-form-group">
@@ -52,7 +52,7 @@ endset%} {% block beforeContent %}
                         type="text"
                         spellcheck="false"
                         autocomplete="family-name"
-                        value='{{cache[2]}}'
+                        value='{{data["full-name"][2]}}'
                     />
                 </div>
             </fieldset>

@@ -46,7 +46,7 @@ registeredBodyRouter.post('/position', (req, res) => {
     let validation = {};
 
     if (!req.body['position-name']) {
-        validation['position-name'] = 'Enter job/role';
+        validation['position-name'] = 'Enter a job or role';
         res.render('registered-body/position', { cms, cache: inputCache, validation: validation });
     } else {
         if (req.query.change == 'true') {
@@ -109,7 +109,7 @@ registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, (req, re
     const inputCache = loadPageData(req);
     let validation = {};
     if (!req.body['what-application-type']) {
-        validation['what-application-type'] = 'Select an option';
+        validation['what-application-type'] = 'Select which the applicant the check is for';
         res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: validation });
     } else {
         const applicationType = req.body['what-application-type'];
@@ -183,7 +183,7 @@ registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
 
     if (!req.body['children-or-adults']) {
         validation = {
-            'children-or-adults': 'Select an option',
+            'children-or-adults': 'Select yes if the position involves working with children and/or adults at the applicant’s home address',
         };
 
         res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: validation });
@@ -239,15 +239,15 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
 
     if (!applicantEmail) {
-        dataValidation['applicant-email'] = 'Enter email address';
+        dataValidation['applicant-email'] = 'Enter an email address';
     }
 
     if (!applicantEmailConfirm) {
-        dataValidation['applicant-email-confirm'] = 'Enter email address';
+        dataValidation['applicant-email-confirm'] = 'Enter an email address';
     }
 
     if (!applicantEmail.includes('@')) {
-        dataValidation['applicant-email'] = 'Enter valid email address';
+        dataValidation['applicant-email'] = 'Enter the email address in the correct format, like name@example.com';
     }
 
     if (applicantEmail != applicantEmailConfirm) {
@@ -513,7 +513,7 @@ router.post('/dbs-check-answer', (req, res) => {
     const whatDbsCheck = req.session.data['what-dbs-check'];
     if (!whatDbsCheck) {
         validation = {
-            'what-dbs-check': 'Select an option',
+            'what-dbs-check': 'Select the DBS check you are requesting',
         };
 
         res.render('registered-body/dbs-check-level', { validation: validation });
@@ -714,11 +714,11 @@ citizenRouter.post('/where-certificate', (req, res) => {
 
 // Start to declare proper routing
 
-citizenRouter.get('/current-full-name-v2', invalidateCache, (req, res) => {
-    res.render('citizen-application/current-full-name-v2', { cache: req.session.data.fullName, validation: null });
+citizenRouter.get('/current-full-name', invalidateCache, (req, res) => {
+    res.render('citizen-application/current-full-name', { cache: req.session.data.fullName, validation: null });
 });
 
-citizenRouter.post('/current-full-name-v2', invalidateCache, (req, res, next) => {
+citizenRouter.post('/current-full-name', invalidateCache, (req, res, next) => {
     if (req.body['full-name']) {
         req.session.data.fullName = req.body['full-name'];
     }
@@ -726,10 +726,29 @@ citizenRouter.post('/current-full-name-v2', invalidateCache, (req, res, next) =>
 });
 
 citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
-    if (req.query['full-name'] == 'true') {
-        res.redirect('/citizen-application/review-application');
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if(!req.body['address-town']){
+        dataValidation['address-town'] = 'Enter a town or city';
+    }
+
+    if(!req.body['address-country']){
+        dataValidation['address-country'] = 'Enter a country';
+    }   
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/place-of-birth', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
     } else {
-        res.redirect('/citizen-application/send-certificate');
+        if (req.query['change'] == 'true') {
+            res.redirect('/citizen-application/review-application');
+        } else {
+            res.redirect('/citizen-application/send-certificate');
+        }
     }
 });
 
@@ -959,6 +978,22 @@ citizenRouter.post('/previous-names-list', invalidateCache, (req, res, _next) =>
                 res.redirect('/citizen-application/date-of-birth');
             }
         }
+    }
+});
+
+citizenRouter.get('/date-of-birth', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('citizen-application/date-of-birth', { cache: inputCache, validation: null });
+});
+
+citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
+    const inputCache = loadPageData(req);
+
+    if (req.query.change == 'true') {
+        return res.redirect('review-application');
+    } else {
+        return res.redirect('sex');
     }
 });
 
@@ -1620,6 +1655,67 @@ citizenRouter.post('/lived-elsewhere-confirm', invalidateCache, (req, res) => {
     }
 });
 
+
+citizenRouter.get('/previous-convictions', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('citizen-application/previous-convictions', {
+        cache: inputCache,
+        validation: null,
+    });
+});
+
+citizenRouter.post('/previous-convictions', invalidateCache, (req, res) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if (!req.body['previous-convictions']) {
+        dataValidation['previous-convictions'] = 'Select yes if you have any previous convictions or cautions';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/previous-convictions', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
+    } else {
+        res.redirect('review-application');
+    }
+});
+
+citizenRouter.get('/declaration', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('citizen-application/declaration', {
+        cache: inputCache,
+        validation: null,
+    });
+});
+
+citizenRouter.post('/declaration', invalidateCache, (req, res) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+
+    if (req.body['confirmation'] == '_unchecked') {
+        dataValidation['confirmation'] = 'Select to confirm information is true';
+    }
+
+    if (req.body['ts-n-cs'] == '_unchecked') {
+        dataValidation['ts-n-cs'] = 'Select to agree to the terms and conditions';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/declaration', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
+    } else {
+        res.redirect('confirmation');
+    }
+});
+
 const getRandomArbitrary = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 };
@@ -1849,7 +1945,6 @@ dashboardRouter.get('*', (req, res, next) => {
 
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
-    console.log("SESSION ID: " + req.sessionID)
     res.render('dashboard/rb-login', { cache: inputCache, validation: null });
 });
 
@@ -1910,7 +2005,7 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     const dataValidation = {};
 
     if (!req.body['password']) {
-        dataValidation['password'] = 'Enter password';
+        dataValidation['password'] = 'Enter your password';
     } else if (req.body.password !== req.session?.selectedRB?.password) {
         dataValidation['password'] = 'Password is invalid';
     }
@@ -2342,7 +2437,7 @@ dashboardRouter.post('/email-otp', invalidateCache, (req, res, _next) => {
             backButton: backButton,
             cache: inputCache,
             email: req.session?.selectedRB?.email || '',
-            validation: { 'otp-code': 'Enter security code' },
+            validation: { 'otp-code': 'Enter your security code' },
         });
     } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
         res.redirect('/dashboard/rb-create-password');

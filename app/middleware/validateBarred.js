@@ -18,7 +18,7 @@ function validateBarred(req, res){
     if (!req.body['barred-adults']) {
 
       validation = {
-        'barred-adults': 'Select an option'
+        'barred-adults': 'Select yes if you are entitled to know if the applicant is barred from working with adults'
       }
   
       res.render('registered-body/enhanced/barred-list-adults',  { cms, cache: inputCache, validation: validation });
@@ -34,7 +34,7 @@ function validateBarred(req, res){
     if (!req.body['barred-children']) {
 
       validation = {
-        'barred-children': 'Select an option'
+        'barred-children': 'Select yes if you are entitled to know if the applicant is barred from working with children'
       }
   
       res.render('registered-body/enhanced/barred-list-children',  { cms, cache: inputCache, validation: validation });

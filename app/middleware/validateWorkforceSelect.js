@@ -14,7 +14,7 @@ function validateWorkforceSelect(req, res){
   if (!req.body['radio-group-workforce-select']) {
 
     validation = {
-      'radio-group-workforce-select': 'Select the relevant workforce'
+      'radio-group-workforce-select': 'Select which workforce the applicant will be working in'
     }
 
     res.render('registered-body/enhanced/workforce-select',  { cms, cache: inputCache, validation: validation });

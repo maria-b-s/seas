@@ -1,5 +1,5 @@
-{% from "country.njk" import country %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% from "country.njk" import country %}{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block
+pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,22 +13,39 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">Where were you born?</h1>
                 </legend>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['address-town'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="address-town"> Town or city </label>
-                    <input class="govuk-input govuk-!-width-two-thirds" id="address-town" name="address-town" type="text" autocomplete="" value='{{data["address-town"]}}' />
+                    <input
+                        class="govuk-input govuk-!-width-two-thirds"
+                        id="address-town"
+                        name="address-town"
+                        type="text"
+                        autocomplete=""
+                        value='{{data["address-town"]}}'
+                    />
                 </div>
-                {{ country({ label: 'Country', inputClass: 'govuk-!-width-two-thirds', name: 'address-country', value: data["address-country"] }) }}
+
+                {% if validation['address-country'] %}
+                <span id="ninonr-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> {{ validation['address-country'] }}
+                </span>
+                {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address-country', error: 'govuk-form-group--error'}) }} {%
+                else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address-country', value: data['address-country'] })
+                }} {% endif %}
             </fieldset>
 
             {% if query['change'] === 'true' %}
-                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
-                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}
         </form>
     </div>

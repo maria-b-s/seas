@@ -22,11 +22,11 @@ function validatePassport(req, res, _next) {
   }
   
   if(!state['has-passport']){
-    dataValidation['has-passport'] = 'Select an option';
+    dataValidation['has-passport'] = 'Select yes if you have a current passport';
   }
 
   if((!passportNumbersOnly || state['passport-number'].length !== 9) && state['has-passport'] == 'yes'){
-    dataValidation['passport-number'] = 'Enter valid passport number';
+    dataValidation['passport-number'] = 'Enter passport number';
   }
 
   if(!state['passport-country-of-issue'] && state['has-passport'] == 'yes'){

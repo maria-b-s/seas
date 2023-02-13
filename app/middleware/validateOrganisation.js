@@ -21,7 +21,7 @@ function validateOrganisation(req, res, _next) {
   }
   
   if(!state['organisation-check']){
-    dataValidation['organisation-check'] = 'Select an option';
+    dataValidation['organisation-check'] = 'Select which organisation the check is for';
   }
 
   if(!organisationName && state['organisation-check'] == 'another-org'){

@@ -17,7 +17,7 @@ function validateNationalInsurance(req, res, _next) {
   if(!state['referred-nino-input'] && state['has-national-insurance-number'] === 'yes'){
     res.render('citizen-application/national-insurance-number', { 
       cache: inputCache, 
-      validation: {  'referred-nino-input': 'Enter a National Insurance number in the correct format'  }
+      validation: {  'referred-nino-input': 'Enter a National Insurance number'  }
     });
     return;
   } 
@@ -40,7 +40,7 @@ function validateNationalInsurance(req, res, _next) {
     else {
       res.render('citizen-application/national-insurance-number', { 
         cache: inputCache, 
-        validation: {  'referred-nino-input': 'Enter a National Insurance number in the correct format'  }
+        validation: {  'referred-nino-input': 'National Insurance number must only include letters a to z and numbers'  }
       });
       
     }
@@ -55,7 +55,7 @@ function validateNationalInsurance(req, res, _next) {
     res.render('citizen-application/national-insurance-number', {
       cache: inputCache,
       validation: {
-        'has-national-insurance-number': 'Please select whether you have a UK National Insurance number'
+        'has-national-insurance-number': 'Select yes if you have a UK National Insurance number'
       }});
   }
 }

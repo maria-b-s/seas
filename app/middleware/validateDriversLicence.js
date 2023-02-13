@@ -23,11 +23,15 @@ function validateDriversLicence(req, res, _next) {
   }
   
   if(!state['has-drivers-license']){
-    dataValidation['has-drivers-license'] = 'Select an option';
+    dataValidation['has-drivers-license'] = 'Select yes if you have a current UK driving licence';
+  }
+
+  if(!state['has-drivers-license'] && !state['drivers-licence-number']){
+    dataValidation['has-drivers-license'] = 'Enter your driving licence number';
   }
 
   if(!licenseMatchesRegex && state['has-drivers-license'] == 'yes'){
-    dataValidation['drivers-licence-number'] = 'Enter valid driving licence number';
+    dataValidation['drivers-licence-number'] = 'Driving licence number must only include letters a to z and numbers';
   }
 
   if (Object.keys(dataValidation).length) {

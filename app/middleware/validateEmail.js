@@ -15,11 +15,11 @@ function validateEmail(req, res, _next) {
   }
 
   if(!state['email']){
-    dataValidation['email'] = 'Enter email address';
+    dataValidation['email'] = 'Enter an email address';
   }
 
   if(!state['confirm-email']){
-    dataValidation['confirm-email'] = 'Enter email address';
+    dataValidation['confirm-email'] = 'Enter an email address';
   }
 
   if(state['confirm-email'] != state['email']){
@@ -27,7 +27,7 @@ function validateEmail(req, res, _next) {
   }
 
   if(!state['email'].includes('@')){
-    dataValidation['email'] = 'Enter email address in correct format';
+    dataValidation['email'] = 'Enter the email address in the correct format, like name@example.com';
   }
 
   if (Object.keys(dataValidation).length) {

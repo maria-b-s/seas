@@ -54,8 +54,9 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                         <span id="ninonr-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-country'] }}
                         </span>
-                        {% endif %} {{ country({ label: 'Enter the country that your mobile number is registered in', inputClass:
-                        'govuk-!-width-one-half', name: 'phone-country', value: data["phone-country"] }) }}
+                        {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'phone-country', error: 'govuk-form-group--error'})
+                        }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'phone-country', value:
+                        data['phone-country'] }) }} {% endif %}
 
                         <div class="govuk-form-group {% if validation['phone-number'] %}govuk-form-group--error{% endif %}">
                             <label class="govuk-label" for="phone-number">Enter your mobile number</label>

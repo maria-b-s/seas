@@ -23,15 +23,15 @@ function validatePhone(req, res, _next) {
   }
   
   if(!state['wants-text']){
-    dataValidation['wants-text'] = 'Select an option';
+    dataValidation['wants-text'] = 'Select yes if we can send you text messages about your application';
   }
 
   if(!phoneNumbersOnly && state['wants-text'] == 'yes'){
-    dataValidation['phone-number'] = 'Enter valid mobile number';
+    dataValidation['phone-number'] = 'Enter your mobile number in the correct format';
   }
 
   if(!state['phone-country'] && state['wants-text'] == 'yes'){
-    dataValidation['phone-country'] = 'Enter country the mobile number is registered to';
+    dataValidation['phone-country'] = 'Enter the country your mobile number is registered in';
   }
 
   if (Object.keys(dataValidation).length) {

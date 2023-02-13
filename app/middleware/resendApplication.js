@@ -33,11 +33,11 @@ function resendApplication(req, res) {
     }
 
     if (req.body['new-email'] == "No" && !req.body['new-email-address']) {
-        dataValidation['new-email-address'] = 'Enter email address';
+        dataValidation['new-email-address'] = 'Enter an email address';
     }
 
     if(req.body['new-email'] == "No" && !req.body['new-email-address'].includes('@')){
-        dataValidation['new-email-address'] = 'Enter email address in correct format';
+        dataValidation['new-email-address'] = 'Enter the email address in the correct format, like name@example.com';
       }
 
     if (Object.keys(dataValidation).length) {

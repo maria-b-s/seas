@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Check your answers {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Check your answers {% endblock %}
+{% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -9,14 +9,11 @@ endset%} {% block beforeContent %}
     </p>
 </div>
 <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
-
-{% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
 (errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
 "errorList": errorList }) }} {% endif %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
-
         <h1 class="govuk-heading-l">Check your answers</h1>
 
         <h2 class="govuk-heading-m">DBS check details</h2>
@@ -40,22 +37,21 @@ endset%} {% block beforeContent %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     {% if data['what-dbs-check'] === 'Enhanced' %}
-                        <a href="enhanced/workforce-select?change=true">
+                    <a href="enhanced/workforce-select?change=true">
                         Change
                         <span class="govuk-visually-hidden"> home address</span>
-                        </a>
+                    </a>
                     {% else %}
-                        <a href="workforce-select?change=true"
-                        >
+                    <a href="workforce-select?change=true">
                         Change
                         <span class="govuk-visually-hidden"> home address</span>
-                        </a>
+                    </a>
                     {% endif %}
                 </dd>
             </div>
-            {% if data['what-dbs-check'] === 'Enhanced'%}
-            {% if  data['workforce-selected'] == 'Adult' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected'] == 'Other'%}
-                <div class="govuk-summary-list__row">
+            {% if data['what-dbs-check'] === 'Enhanced'%} {% if data['workforce-selected'] == 'Adult' or data['workforce-selected'] == 'Adult and
+            Child' or data['workforce-selected'] == 'Other'%}
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Adult barred list check</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['barred-adults'] }}</p>
@@ -66,10 +62,10 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> home address</span>
                     </a>
                 </dd>
-                </div>
-                {% endif %}
-                {% if  data['workforce-selected'] == 'Child' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected'] == 'Other'%}
-                <div class="govuk-summary-list__row">
+            </div>
+            {% endif %} {% if data['workforce-selected'] == 'Child' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected']
+            == 'Other'%}
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Child barred list check</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['barred-children'] }}</p>
@@ -80,12 +76,11 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> home address</span>
                     </a>
                 </dd>
-                </div>
-                {% endif %}
+            </div>
+            {% endif %} {% if data['workforce-selected'] == 'Child' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected']
+            == 'Adult'%}
 
-                {% if data['workforce-selected'] == 'Child' or data['workforce-selected'] == 'Adult and Child' or data['workforce-selected'] == 'Adult'%}
-
-                <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant working with children or adults at their home address</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['children-or-adults'] }}</p>
@@ -96,11 +91,9 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> home address</span>
                     </a>
                 </dd>
-                </div>
-                {% endif %}
-
-            {% endif %}
-            {# <div class="govuk-summary-list__row">
+            </div>
+            {% endif %} {% endif %} {#
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Job applicant or post holder</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['what-application-type'] }}</p>
@@ -116,9 +109,9 @@ endset%} {% block beforeContent %}
                 <dt class="govuk-summary-list__key">Free-of-charge volunteer</dt>
                 <dd class="govuk-summary-list__value">
                     {% if data['what-application-type'] === 'Volunteer' %}
-                        <p>Yes</p>
+                    <p>Yes</p>
                     {% else %}
-                        <p>No</p>
+                    <p>No</p>
                     {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
@@ -127,8 +120,8 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> licence period</span>
                     </a>
                 </dd>
-            </div> #}
-            
+            </div>
+            #}
         </dl>
 
         <h2 class="govuk-heading-m">Role details</h2>
@@ -150,9 +143,9 @@ endset%} {% block beforeContent %}
                 <dt class="govuk-summary-list__key">Company or organisation</dt>
                 <dd class="govuk-summary-list__value">
                     {% if data['organisation-check'] === 'another-org' %}
-                        <p>{{ data['organisation-name'] }}</p>
+                    <p>{{ data['organisation-name'] }}</p>
                     {% else %}
-                        <p>My organisation</p>
+                    <p>My organisation</p>
                     {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
@@ -174,10 +167,10 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> licence period</span>
                     </a>
                 </dd>
-            </div> 
+            </div>
 
             {% if data['what-application-type'] != 'Volunteer' %}
-                <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant being rechecked</dt>
                 <dd class="govuk-summary-list__value">
                     <p>{{ data['rechecked'] }}</p>
@@ -188,12 +181,9 @@ endset%} {% block beforeContent %}
                         <span class="govuk-visually-hidden"> licence period</span>
                     </a>
                 </dd>
-            </div> 
+            </div>
             {% endif %}
         </dl>
-
-        
-        
 
         <h2 class="govuk-heading-m">Applicant details</h2>
 
@@ -226,16 +216,16 @@ endset%} {% block beforeContent %}
         <form method="post" novalidate>
             <div class="govuk-form-group {% if validation['declare-check-answers'] %}govuk-form-group--error{% endif %}">
                 <h2 class="govuk-heading-m">Now send the online application form to the applicant</h2>
-                <div class="govuk-checkboxes__item" style='margin-bottom: 1rem'>
+                {% if validation['declare-check-answers'] %}
+                <span id="ninonr-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> {{ validation['declare-check-answers'] }}
+                </span>
+                {% endif %}
+                <div class="govuk-checkboxes__item" style="margin-bottom: 1rem">
                     <input class="govuk-checkboxes__input" id="declare-check-answers" name="declare-check-answers" type="checkbox" value="" />
                     <label class="govuk-label govuk-checkboxes__label" for="declare-check-answers">
                         I declare that to the best of my knowledge, the details I'm providing are correct.
                     </label>
-                     {% if validation['declare-check-answers'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['declare-check-answers'] }}
-                                </span>
-                    {% endif %}
                 </div>
                 <input type="hidden" name="answers-checked" value="true" />
                 <button type="submit" class="govuk-button" data-module="govuk-button">Send</button>
