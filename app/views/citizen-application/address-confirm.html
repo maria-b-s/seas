@@ -21,10 +21,10 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
-                            {% if query['address'] != 'current'%}When did you live at at this address? {% else %} When did you start living
-                            here? {% endif %}
+                            {% if query['address'] != 'current'%}When did you live at at this address? {% else %} When did you start living here? {%
+                            endif %}
                         </h1>
-                        <div id="nino-hint" class="govuk-hint">For example, 03 2007</div>
+                        <div id="nino-hint" class="govuk-hint">For example, 3 2007</div>
                     </legend>
 
                     <p class="govuk-body-m">
@@ -34,54 +34,55 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     </p>
 
                     <div class="govuk-form-group {% if validation['start-month'] or validation['start-year ']%}govuk-form-group--error{% endif %}">
-                        {% if query['address'] == 'previous'%}<label class="govuk-heading-s">Date from</label>{%endif%}
+                        {% if query['address'] == 'previous'%}<label class="govuk-heading-s">Date from</label>{%endif%} {% if
+                        validation['start-month'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['start-month'] }}
+                        </span>
+                        {% endif %} {% if validation['start-year'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['start-year'] }}
+                        </span>
+                        {% endif %}
                         <div class="govuk-date-input__item">
                             <div
                                 class="govuk-form-group {% if validation['start-month'] or validation['start-year']%}govuk-form-group--error{% endif %}"
                             >
                                 <label class="govuk-label govuk-date-input__label">Month</label>
-                                {% if validation['start-month'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['start-month'] }}
-                                </span>
-                                {% endif %} <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="start-month" type="text" {%
-                                if cache['start-month'] %} value="{{cache['start-month']}}" {% endif %}/>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="start-month" type="number" {% if
+                                cache['start-month'] %} value="{{cache['start-month']}}" {% endif %}/>
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label">Year</label>
-                                {% if validation['start-year'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['start-year'] }}
-                                </span>
-                                {% endif %} <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="start-year" type="text" {%
-                                if cache['start-year'] %} value="{{cache['start-year']}}" {% endif %}/>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="start-year" type="number" {% if
+                                cache['start-year'] %} value="{{cache['start-year']}}" {% endif %}/>
                             </div>
                         </div>
                         <br />
                         <br />
                         {%if query['address'] == 'previous'%} {% if query['address'] == 'previous'%}<label class="govuk-heading-s">Date to</label
-                        >{%endif%}
+                        >{%endif%} {% if validation['end-month'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['end-month'] }}
+                        </span>
+                        {% endif %} {% if validation['end-year'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['end-year'] }}
+                        </span>
+                        {% endif %}
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group {% if validation['end-month'] or validation['end-year']%}govuk-form-group--error{% endif %}">
                                 <label class="govuk-label govuk-date-input__label">Month</label>
-                                {% if validation['end-month'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['end-month'] }}
-                                </span>
-                                {% endif %} <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="end-month" type="text" {% if
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="end-month" type="text" {% if
                                 cache['end-month'] %} value="{{cache['end-month']}}" {% endif %}/>
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label">Year</label>
-                                {% if validation['end-year'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['end-year'] }}
-                                </span>
-                                {% endif %} <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="end-year" type="text" {% if
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="end-year" type="text" {% if
                                 cache['end-year'] %} value="{{cache['end-year']}}" {% endif %}/>
                             </div>
                         </div>

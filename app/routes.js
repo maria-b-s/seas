@@ -730,13 +730,13 @@ citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
 
-    if(!req.body['address-town']){
+    if (!req.body['address-town']) {
         dataValidation['address-town'] = 'Enter a town or city';
     }
 
-    if(!req.body['address-country']){
+    if (!req.body['address-country']) {
         dataValidation['address-country'] = 'Enter a country';
-    }   
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('citizen-application/place-of-birth', {
@@ -905,25 +905,90 @@ let mapInput = data => {
 };
 
 citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
+    let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const date = new Date();
+    console.log(req.body)
 
-    let collection = [];
 
-    if (req.session.data.prevNames) {
-        collection = req.session.data.prevNames;
+    if (req.body['alias-from-MM'] < 1 || req.body['alias-from-MM'] > 12) {
+        dataValidation['alias-from-MM'] = 'The month must be between 1 and 12';
     }
 
-    const item = mapInput(inputCache);
-
-    if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
-        collection[Number(req.query.edit) - 1] = item;
-    } else if (item['first_name'] !== 'Not entered') {
-        collection.push(item);
+    if (req.body['alias-from-YYYY'] < 1899 || req.body['alias-from-YYYY'] >= date.getFullYear()) {
+        dataValidation['alias-from-YYYY'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
     }
 
-    req.session.data.prevNames = collection;
-    res.redirect('/citizen-application/previous-names-list');
+    if(req.body['alias-from-YYYY'].length != 4){
+        dataValidation['alias-from-YYYY'] = 'Year must include four numbers';
+    }
+
+    if (!req.body['alias-from-MM']) {
+        dataValidation['alias-from-MM'] = 'Enter a month';
+    }
+
+    if (!req.body['alias-from-YYYY']) {
+        dataValidation['alias-from-YYYY'] = 'Enter a year';
+    }
+
+    if(req.body['radio-group-alias-input'] == 0){
+        if (req.body['alias-to-MM'] < 1 || req.body['alias-to-MM'] > 12) {
+            dataValidation['alias-to-MM'] = 'The month must be between 1 and 12';
+        }
+    
+        if (req.body['alias-to-YYYY'] < 1899 || req.body['alias-to-YYYY'] >= date.getFullYear()) {
+            dataValidation['alias-to-YYYY'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+        }
+    
+        if(req.body['alias-to-YYYY'].length != 4){
+            dataValidation['alias-to-YYYY'] = 'Year must include four numbers';
+        }
+    
+        if (!req.body['alias-to-MM']) {
+            dataValidation['alias-to-MM'] = 'Enter a month';
+        }
+    
+        if (!req.body['alias-to-YYYY']) {
+            dataValidation['alias-to-YYYY'] = 'Enter a year';
+        }
+    }
+
+    if(!req.body['radio-group-alias-input']){
+        dataValidation['radio-group-alias-input'] = 'Select yes if you still use this name';
+    }
+
+    if(!req.body['full-name-first-name']){
+        dataValidation['full-name-first-name'] = 'Enter a first name';
+    }
+
+    if(!req.body['full-name-last-name']){
+        dataValidation['full-name-last-name'] = 'Enter a last name';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/previous-names-form', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
+    } else {
+        let collection = [];
+
+        if (req.session.data.prevNames) {
+            collection = req.session.data.prevNames;
+        }
+    
+        const item = mapInput(inputCache);
+    
+        if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
+            collection[Number(req.query.edit) - 1] = item;
+        } else if (item['first_name'] !== 'Not entered') {
+            collection.push(item);
+        }
+    
+        req.session.data.prevNames = collection;
+        res.redirect('/citizen-application/previous-names-list');
+    }
 });
 
 citizenRouter.get('/previous-names-list', invalidateCache, (req, res) => {
@@ -988,12 +1053,50 @@ citizenRouter.get('/date-of-birth', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
+    let dataValidation = {};
+    savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const date = new Date();
 
-    if (req.query.change == 'true') {
-        return res.redirect('review-application');
+    if (req.body['ca-dob-day'] < 1 || req.body['ca-dob-day'] > 31) {
+        dataValidation['ca-dob-day'] = 'The day of date of birth must be between 1 and 31';
+    }
+
+    if (req.body['ca-dob-month'] < 1 || req.body['ca-dob-month'] > 12) {
+        dataValidation['ca-dob-month'] = 'The month of date of birth must be between 1 and 12';
+    }
+
+    if (req.body['ca-dob-year'] < 1899 || req.body['ca-dob-year'] >= date.getFullYear()) {
+        dataValidation['ca-dob-year'] = 'The year of date of birth must be a number between 1900 and less than or equal to ' + date.getFullYear();
+    }
+
+    if(req.body['ca-dob-year'].length != 4){
+        dataValidation['ca-dob-year'] = 'Year must include four numbers';
+    }
+
+    if (!req.body['ca-dob-day']) {
+        dataValidation['ca-dob-day'] = 'Enter day of birth';
+    }
+
+    if (!req.body['ca-dob-month']) {
+        dataValidation['ca-dob-month'] = 'Enter month of birth';
+    }
+
+    if (!req.body['ca-dob-year']) {
+        dataValidation['ca-dob-year'] = 'Enter year of birth';
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/date-of-birth', {
+            cache: inputCache,
+            validation: dataValidation,
+        });
     } else {
-        return res.redirect('sex');
+        if (req.query.change == 'true') {
+            return res.redirect('review-application');
+        } else {
+            return res.redirect('sex');
+        }
     }
 });
 
@@ -1136,22 +1239,29 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
 
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const date = new Date();
 
     if (!req.body['confirm-current-address']) {
-        dataValidation['confirm-current'] = 'Select an option';
+        dataValidation['confirm-current'] = 'Select yes if this is your current address';
     }
 
     if (req.body['confirm-current-address'] == 'Yes') {
+        if (req.body['start-month'] < 1 || req.body['start-month'] > 12) {
+            dataValidation['start-month'] = 'The month must be between 1 and 12';
+        }
+        if (req.body['start-year'] < 1899 || req.body['start-year'] >= date.getFullYear()) {
+            dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+        }
+    
+        if(req.body['start-year'].length != 4){
+            dataValidation['start-year'] = 'Year must include four numbers';
+        }
         if (!req.body['start-month']) {
-            dataValidation['start-month'] = 'Enter month';
+            dataValidation['start-month'] = 'Enter a month';
         }
-        if (req.body['start-month'] < 1 || req.body['start-month'] > 12 || req.body['start-month'].length != 2) {
-            dataValidation['start-month'] = 'Enter valid month';
+        if (!req.body['start-year']) {
+            dataValidation['start-year'] = 'Enter a year';
         }
-    }
-
-    if (req.body['confirm-current-address'] == 'Yes' && !req.body['start-year']) {
-        dataValidation['start-year'] = 'Enter year';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -1188,7 +1298,12 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
 
 citizenRouter.get('/living-location', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    res.render('citizen-application/living-location', { cache: inputCache, validation: null, query: req.query, hasCurrent: req.session.data.current_address});
+    res.render('citizen-application/living-location', {
+        cache: inputCache,
+        validation: null,
+        query: req.query,
+        hasCurrent: req.session.data.current_address,
+    });
 });
 
 citizenRouter.post('/living-location', (req, res) => {
@@ -1355,34 +1470,41 @@ citizenRouter.post('/address-confirm', (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const date = new Date();
 
+    if (req.body['start-month'] < 1 || req.body['start-month'] > 12) {
+        dataValidation['start-month'] = 'The month must be between 1 and 12';
+    }
+    if (req.body['start-year'] < 1899 || req.body['start-year'] >= date.getFullYear()) {
+        dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+    }
+
+    if(req.body['start-year'].length != 4){
+        dataValidation['start-year'] = 'Year must include four numbers';
+    }
     if (!req.body['start-month']) {
-        dataValidation['start-month'] = 'Enter month';
+        dataValidation['start-month'] = 'Enter a month';
     }
-
-    if (req.body['start-month']) {
-        if (req.body['start-month'] < 1 || req.body['start-month'] > 12 || req.body['start-month'].length != 2) {
-            dataValidation['start-month'] = 'Enter valid month';
-        }
-    }
-
     if (!req.body['start-year']) {
-        dataValidation['start-year'] = 'Enter year';
+        dataValidation['start-year'] = 'Enter a year';
     }
 
     if (req.query.address == 'previous') {
+        if (req.body['end-month'] < 1 || req.body['end-month'] > 12) {
+            dataValidation['end-month'] = 'The month must be between 1 and 12';
+        }
+        if (req.body['end-year'] < 1899 || req.body['end-year'] >= date.getFullYear()) {
+            dataValidation['end-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+        }
+    
+        if(req.body['end-year'].length != 4){
+            dataValidation['end-year'] = 'Year must include four numbers';
+        }
         if (!req.body['end-month']) {
-            dataValidation['end-month'] = 'Enter month';
+            dataValidation['end-month'] = 'Enter a month';
         }
-
-        if (req.body['end-month']) {
-            if (req.body['end-month'] < 1 || req.body['end-month'] > 12 || req.body['end-month'].length != 2) {
-                dataValidation['end-month'] = 'Enter valid month';
-            }
-        }
-
         if (!req.body['end-year']) {
-            dataValidation['end-year'] = 'Enter year';
+            dataValidation['end-year'] = 'Enter a year';
         }
     }
 
@@ -1654,7 +1776,6 @@ citizenRouter.post('/lived-elsewhere-confirm', invalidateCache, (req, res) => {
         res.redirect('living-location?address=' + req.body['lived-elsewhere-confirm']);
     }
 });
-
 
 citizenRouter.get('/previous-convictions', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -1942,7 +2063,6 @@ dashboardRouter.get('*', (req, res, next) => {
 //     }
 // });
 
-
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
     res.render('dashboard/rb-login', { cache: inputCache, validation: null });
@@ -1970,7 +2090,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
 
         if (req.session?.mockDBaccounts) {
             selectedUser = req.session?.mockDBaccounts.find(el => rbNumber === el.rbNumber && csNumber === el.csNumber);
-            
+
             if (!selectedUser) {
                 dataValidation['registered-body-nr'] = 'Unable to find your details, please check your number and try again';
             } else {

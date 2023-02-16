@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %}{% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,22 +13,25 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group">
+            <div class="govuk-form-grou {% if validation %}govuk-form-group--error{% endif %}">
                 <fieldset id="main-content" class="govuk-fieldset" role="group" aria-describedby="dob-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">What is your date of birth?</h1>
                     </legend>
-                    <div id="dob-hint" class="govuk-hint">For example, 31 03 1980</div>
+                    <div id="dob-hint" class="govuk-hint">For example, 31 3 1980</div>
                     <div class="govuk-date-input" id="dob">
                         <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
+                            <div class="govuk-form-group {% if validation['ca-bday-day'] %}govuk-form-group--error{% endif %}">
                                 <label class="govuk-label govuk-date-input__label" for="ca-dob-day"> Day </label>
                                 <input
                                     class="govuk-input govuk-date-input__input govuk-input--width-2"
                                     id="ca-dob-day"
                                     name="ca-dob-day"
-                                    type="text"
+                                    type="number"
                                     autocomplete="bday-day"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
@@ -37,13 +40,13 @@ endset%} {% block beforeContent %}
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
+                            <div class="govuk-form-group {% if validation['ca-bday-month'] %}govuk-form-group--error{% endif %}">
                                 <label class="govuk-label govuk-date-input__label" for="ca-dob-month"> Month </label>
                                 <input
                                     class="govuk-input govuk-date-input__input govuk-input--width-2"
                                     id="ca-dob-month"
                                     name="ca-dob-month"
-                                    type="text"
+                                    type="number"
                                     autocomplete="bday-month"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
@@ -52,13 +55,13 @@ endset%} {% block beforeContent %}
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
+                            <div class="govuk-form-group {% if validation['ca-bday-year'] %}govuk-form-group--error{% endif %}">
                                 <label class="govuk-label govuk-date-input__label" for="ca-dob-year"> Year </label>
                                 <input
                                     class="govuk-input govuk-date-input__input govuk-input--width-4"
                                     id="ca-dob-year"
                                     name="ca-dob-year"
-                                    type="text"
+                                    type="number"
                                     autocomplete="bday-year"
                                     pattern="[0-9]*"
                                     inputmode="numeric"
@@ -69,6 +72,8 @@ endset%} {% block beforeContent %}
                     </div>
                 </fieldset>
             </div>
+
+            <br />
 
             {% if query['change'] === 'true' %}
             <button class="govuk-button" data-module="govuk-button">Check Answers</button>

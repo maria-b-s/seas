@@ -1,4 +1,5 @@
 {% import "../macros/form-elements.njk" as fe %}
+ {% import "../macros/error-summary/govukErrorSummary.njk" as es %}
 {% extends "layout.html" %}
 {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
 endset%}
@@ -42,7 +43,7 @@ endset%}
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What was your name?</h1>
                 </legend>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['full-name-first-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="full-name-first-name"> First name </label>
                     <div id="full-name-hint" class="govuk-hint">	Enter this even if it has not changed</div>
                     <input
@@ -55,7 +56,7 @@ endset%}
                         value='{{cache["full-name-first-name"]}}'
                     />
                 </div>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['full-name-middle-names'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="full-name-middle-names"> 	Middle names (if you have them)</label>
                     <div id="full-name-hint" class="govuk-hint">	Enter these even if they have not changed</div>
                     <input
@@ -68,7 +69,7 @@ endset%}
                         value='{{cache["full-name-middle-names"]}}'
                     />
                 </div>
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if validation['full-name-last-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="full-name-last-name"> Last name </label>
                     <div id="full-name-hint" class="govuk-hint">	Enter this even if it has not changed</div>
                     <input
@@ -83,32 +84,32 @@ endset%}
                 </div>
             </fieldset>
 
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {% if validation['alias-from-MM'] or  validation['alias-from-YYYY'] %}govuk-form-group--error{% endif %}">
               <fieldset class="govuk-fieldset" role="group">
                 <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
                   When did you start using this name? </br>
-                  <p class="govuk-hint"> 	For example, 03 1980 </p> 
+                  <p class="govuk-hint"> 	For example, 3 1980 </p> 
                 </legend>
 
                 <div class="govuk-date-input" id="alias-from">
 
                   <div class="govuk-date-input__item">
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group {% if validation['alias-from-MM'] %}govuk-form-group--error{% endif %}">
                       <label class="govuk-label govuk-date-input__label" for="alias-from-MM">
                         Month
                       </label>
 
-                    <input value='{{cache["alias-from-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-from-MM" name="alias-from-MM" type="text" maxlength="2">
+                    <input value='{{cache["alias-from-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-from-MM" name="alias-from-MM" type="number" maxlength="2">
                     </div>
                   </div>
 
                   <div class="govuk-date-input__item">
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group {% if validation['alias-from-YYYY'] %}govuk-form-group--error{% endif %}">
                       <label class="govuk-label govuk-date-input__label" for="alias-from-YYYY">
                         Year
                       </label>
 
-                    <input value='{{cache["alias-from-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-from-YYYY" name="alias-from-YYYY" type="text" maxlength="4">
+                    <input value='{{cache["alias-from-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-from-YYYY" name="alias-from-YYYY" type="number" maxlength="4">
                     </div>
                   </div>
 
@@ -119,6 +120,7 @@ endset%}
 
               </div>
 
+              <div class="govuk-form-group {% if validation['radio-group-alias-input'] %}govuk-form-group--error{% endif %}">
               {{ fe.radio_buttons(
                 questionText="Do you still use this name?",
                 h1Text=false,
@@ -131,36 +133,37 @@ endset%}
                   {group: 'alias-input', answerOption: "0", value: "0", label: "No", dataTarget: 'save-and-continue' }
                 ]) 
               }}
+              </div>
 
               <div id='options-conditional-alt' style="display: none;" class="govuk-radios__conditional">
-              <div style="margin-top: 40px;" class="govuk-form-group">
+              <div style="margin-top: 40px;" class="govuk-form-group {% if validation['alias-to-MM'] or  validation['alias-to-YYYY'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" role="group">
                   <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
                     When did you stop using this name? </br>
-                    <p class="govuk-hint"> 	For example, 03 2007 </p> 
+                    <p class="govuk-hint"> 	For example, 3 2007 </p> 
                   </legend>
 
 
                   <div class="govuk-date-input" id="alias-to">
 
                     <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
+                      
                         <label class="govuk-label govuk-date-input__label" for="alias-to-MM">
                           Month
                         </label>
 
-                      <input value='{{cache["alias-to-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-to-MM" name="alias-to-MM" type="text" maxlength="2">
-                      </div>
+                      <input value='{{cache["alias-to-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-to-MM" name="alias-to-MM" type="number" maxlength="2">
+                      
                     </div>
 
                     <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
+                     
                         <label class="govuk-label govuk-date-input__label" for="alias-to-YYYY">
                           Year
                         </label>
 
-                      <input value='{{cache["alias-to-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-to-YYYY" name="alias-to-YYYY" type="text" maxlength="4">
-                      </div>
+                      <input value='{{cache["alias-to-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-to-YYYY" name="alias-to-YYYY" type="number" maxlength="4">
+                      
                     </div>
 
                   </div>
