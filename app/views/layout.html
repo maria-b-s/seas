@@ -44,6 +44,12 @@ GOV.UK Prototype Kit
 {{ govukHeader({ homepageUrl: "/", serviceName: serviceName, serviceUrl: "/", containerClasses: "govuk-width-container"}) }}
 {% endblock %}
 {% set mainClasses = mainClasses | default("govuk-main-wrapper--auto-spacing") %}
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N678B7N"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+</body>
 {% if useAutoStoreData %}
 {% block footer %}
 {{govukFooter({ meta: { items: [ { href: "https://govuk-prototype-kit.herokuapp.com/", text: "GOV.UK Prototype Kit " + releaseVersion }, { href:"/prototype-admin/clear-data", text: "Clear data" } ], visuallyHiddenTitle: "Footer links" } }) }}
