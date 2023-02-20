@@ -8,6 +8,8 @@ Documentation is also available when running the app locally at http://localhost
 
 To update kit version, see https://prototype-kit.service.gov.uk/v12/docs/updating-the-kit
 
+To learn more about the prototpe kit, see https://prototype-kit.service.gov.uk/v12/docs/about
+
 ## Installation
 
 Use `npm install` to install the necessary dependencies.
