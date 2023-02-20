@@ -15,7 +15,7 @@ endset%} {% block beforeContent %}
     <div class="govuk-grid-column-full">
         <table class="govuk-table">
             <caption class="govuk-table__caption govuk-table__caption--m">
-                Application Worklog - {{selectedApplication[0].name}} ({{ selectedApplication[0].ref }})
+                Application History - {{selectedApplication[0].name}} ({{ selectedApplication[0].ref }})
             </caption>
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -26,7 +26,7 @@ endset%} {% block beforeContent %}
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                {% for work in selectedApplication[0].worklog%}
+                {% for work in selectedApplication[0].history%}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">{{ work.action }}</td>
                     <td class="govuk-table__cell">{{ work.date }}</td>

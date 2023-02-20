@@ -29,7 +29,7 @@ function sendApplication(req, res) {
     }
 
     let selectedApplication = req.session.data['applications'].filter(value => value.ref == ref);
-    selectedApplication[0]['worklog'].unshift({
+    selectedApplication[0]['history'].unshift({
         action: 'Submitted application to DBS',
         date: `${date}/${month}/${year}`,
         time: strTime,

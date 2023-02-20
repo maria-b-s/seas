@@ -105,7 +105,7 @@ function addApplication(req, res) {
         children_or_adults: app['children-or-adults'],
         barredAdult: app['barred-adults'],
         barredChildren: app['barred-children'],
-        worklog: [
+        history: [
             {
                 action: 'Sent to applicant',
                 date: `${date}/${month}/${year}`,

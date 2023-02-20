@@ -49,7 +49,7 @@ function resendApplication(req, res) {
             selectedApplication[0]['email'] = req.body['new-email-address']
         }
         
-        selectedApplication[0]['worklog'].unshift({
+        selectedApplication[0]['history'].unshift({
             action: 'Resent application',
             date: `${date}/${month}/${year}`,
             time: strTime,

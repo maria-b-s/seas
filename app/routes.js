@@ -313,14 +313,14 @@ registeredBodyRouter.get('/confirm-cancel', invalidateCache, (req, res) => {
 
 registeredBodyRouter.post('/confirm-cancel', invalidateCache, cancelApplication);
 
-registeredBodyRouter.get('/worklog', invalidateCache, (req, res) => {
+registeredBodyRouter.get('/application-history', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
     let selectedApplication = req.session.data['applications'].filter(value => value.ref == req.query.app);
 
     req.session.data.selectedApplication = selectedApplication;
 
-    res.render('registered-body/worklog', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
+    res.render('registered-body/application-history', { cms, cache: inputCache, query: req.query.app, selectedApplication: selectedApplication });
 });
 
 registeredBodyRouter.get('/application-cancelled', invalidateCache, (req, res) => {
@@ -1911,7 +1911,7 @@ dashboardRouter.get('*', (req, res, next) => {
             date: `${date}/${month}/${year}`,
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
             organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
-            worklog: [
+            history: [
                 {
                     person: 'John Smith',
                 },
@@ -1991,7 +1991,7 @@ dashboardRouter.get('*', (req, res, next) => {
         appType: 'New employee',
         workforce: 'Adult and Child',
         children_or_adults: 'No',
-        worklog: [
+        history: [
             {
                 action: 'Viewed application details',
                 date: '10/06/2022',
