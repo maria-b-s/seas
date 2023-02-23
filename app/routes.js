@@ -909,8 +909,6 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     const date = new Date();
-    console.log(req.body)
-
 
     if (req.body['alias-from-MM'] < 1 || req.body['alias-from-MM'] > 12) {
         dataValidation['alias-from-MM'] = 'The month must be between 1 and 12';
@@ -1908,7 +1906,9 @@ dashboardRouter.get('*', (req, res, next) => {
             surname: `${lastNames[elIndex]}`,
             status: statuses[getRandomArbitrary(0, statuses.length)],
             type: types[getRandomArbitrary(0, types.length)],
-            date: `${date}/${month}/${year}`,
+            // date: `${date}/${month}/${year}`,
+            date: randomdate.valueOf(),
+            readableDate: `${date}/${month}/${year}`,
             email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
             organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
             history: [
@@ -1927,7 +1927,8 @@ dashboardRouter.get('*', (req, res, next) => {
         surname: 'Adler',
         status: statuses[0],
         type: types[1],
-        date: '07/06/2022',
+        date: new Date('06/07/2022').valueOf(),
+        readableDate: '07/06/2022',
         email: 'matthewadler@myemail.com',
         prevNames: [
             {
@@ -2139,7 +2140,6 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
 
 dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
-
     // if (!req.session?.selectedRB) {
     //     res.redirect('/dashboard/rb-login');
     // } else {
