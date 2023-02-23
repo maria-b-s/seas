@@ -2164,75 +2164,6 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
         req.session.data.search = '';
     }
 
-    if (req.query.sort == 'name-descending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications
-            .sort((a, b) => {
-                let fa = a.surname.toLowerCase(),
-                    fb = b.surname.toLowerCase();
-
-                if (fa < fb) {
-                    return -1;
-                }
-                if (fa > fb) {
-                    return 1;
-                }
-                return 0;
-            })
-            .reverse();
-    }
-
-    if (req.query.sort == 'name-ascending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            let fa = a.surname.toLowerCase(),
-                fb = b.surname.toLowerCase();
-
-            if (fa < fb) {
-                return -1;
-            }
-            if (fa > fb) {
-                return 1;
-            }
-            return 0;
-        });
-    }
-
-    if (req.query.sort == 'action-descending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications
-            .sort((a, b) => {
-                return a.status['id'] - b.status['id'];
-            })
-            .reverse();
-    }
-
-    if (req.query.sort == 'action-ascending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            return a.status['id'] - b.status['id'];
-        });
-    }
-
-    if (req.query.sort == 'date-descending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications
-            .sort((a, b) => {
-                let aa = a.date.split('/').reverse().join();
-                let bb = b.date.split('/').reverse().join();
-                return aa < bb ? -1 : aa > bb ? 1 : 0;
-            })
-            .reverse();
-    }
-    if (req.query.sort == 'date-ascending') {
-        //req.session.data.filteredApplications = req.session.data.applications;
-        req.session.data.filteredApplications.sort((a, b) => {
-            let aa = a.date.split('/').reverse().join();
-            let bb = b.date.split('/').reverse().join();
-            return aa < bb ? -1 : aa > bb ? 1 : 0;
-        });
-    }
-
     res.render('dashboard/home', {
         cache: inputCache,
         validation: null,
@@ -2247,7 +2178,6 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
 
 dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
-    //req.session.data.filteredApplications = req.session.data.applications;
     if (!req.session.data.filters) {
         req.session.data.filters = {
             'needs-action': '_unchecked',
@@ -2277,8 +2207,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
 
 dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
-    //req.session.data.filteredApplications = req.session.data.applications;
-
+    
     if (req.query['delete'] == 'needs-action') {
         req.session.data.filters['needs-action'] = '_unchecked';
     }
