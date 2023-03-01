@@ -255,13 +255,13 @@ const generateAccounts = (req, refresh) => {
 
         for (let i = 1; i <= 15; i++) {
             accounts.push({
-                rbNumber: String(99001 + i),
-                csNumber: String(330020 - i),
+                rbNumber: String(99000000001 + i),
+                csNumber: String(33000000020 - i),
                 organisation: 'Organisation-' + i, 
                 userDob:  String(i + 1).padStart(2, '0') + '/09/1989',
                 email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
-                password: i % 2 ? String('pass' + 12 + i) : null,
+                password: i % 2 ? String('pass0' + 12 + i) : null,
                 created: moment(new Date(), 'Europe/London').format("DD MMM YYYY hh:mm:ss")
             });
         }

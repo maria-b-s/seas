@@ -43,11 +43,21 @@ registeredBodyRouter.get('/position', invalidateCache, (req, res) => {
 
 registeredBodyRouter.post('/position', (req, res) => {
     const inputCache = loadPageData(req);
-    let validation = {};
+    let dataValidation = {};
+    const validRole = /^[a-zA-Z'\- ]+$/.test(req.body['position-name']);
 
+    if(!validRole){
+        dataValidation['position-name'] = 'Job or role must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+    if (req.body['position-name'].length > 60) {
+        dataValidation['position-name'] = 'Job or role must be 60 characters or fewer';
+    } 
     if (!req.body['position-name']) {
-        validation['position-name'] = 'Enter a job or role';
-        res.render('registered-body/position', { cms, cache: inputCache, validation: validation });
+        dataValidation['position-name'] = 'Enter job or role';
+    } 
+    
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/position', { cache: inputCache, validation: dataValidation });
     } else {
         if (req.query.change == 'true') {
             res.redirect('check-answers');
@@ -74,7 +84,7 @@ registeredBodyRouter.post('/existing-post-holder', (req, res) => {
     let validation = {};
 
     if (!req.body['rechecked']) {
-        validation['rechecked'] = 'Select an option';
+        validation['rechecked'] = 'Select if this application is for a recheck';
         res.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: validation });
     } else {
         if (req.query.change == 'true') {
@@ -109,7 +119,7 @@ registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, (req, re
     const inputCache = loadPageData(req);
     let validation = {};
     if (!req.body['what-application-type']) {
-        validation['what-application-type'] = 'Select which the applicant the check is for';
+        validation['what-application-type'] = 'Select what kind of applicant the check is for';
         res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: validation });
     } else {
         const applicationType = req.body['what-application-type'];
@@ -183,7 +193,7 @@ registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
 
     if (!req.body['children-or-adults']) {
         validation = {
-            'children-or-adults': 'Select yes if the position involves working with children and/or adults at the applicant’s home address',
+            'children-or-adults': 'Select if the position involves working with children or adults at the applicant’s home address',
         };
 
         res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: validation });
@@ -202,11 +212,28 @@ registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
     let redirectPath = 'applicant-email';
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['first-name']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['last-name']);
 
     if (req.query && req.query.change) {
         redirectPath = 'review-application';
     }
 
+    if(!validFirstName){
+        dataValidation['first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if(!validLastName){
+        dataValidation['last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (req.body['first-name'].length > 50) {
+        dataValidation['first-name'] = 'First name must be 50 characters or fewer';
+    }
+    if (req.body['last-name'].length > 50) {
+        dataValidation['last-name'] = 'Last name must be 50 characters or fewer';
+    }
+    
     if (!req.body['first-name']) {
         dataValidation['first-name'] = 'Enter first name';
     }
@@ -235,23 +262,27 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     let dataValidation = {};
     let applicantEmail = req.body['applicant-email'];
     let applicantEmailConfirm = req.body['applicant-email-confirm'];
+    const validEmail = /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['applicant-email']);
+    const validConfirmEmail = /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['applicant-email-confirm']);
 
     let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
 
-    if (!applicantEmail) {
-        dataValidation['applicant-email'] = 'Enter an email address';
+    //E1
+    if (!validEmail) {
+        dataValidation['applicant-email'] = 'Enter email address in the correct format';
     }
 
-    if (!applicantEmailConfirm) {
-        dataValidation['applicant-email-confirm'] = 'Enter an email address';
+    if (!validConfirmEmail) {
+        dataValidation['applicant-email-confirm'] = 'Enter email address in the correct format';
     }
 
-    if (!applicantEmail.includes('@')) {
-        dataValidation['applicant-email'] = 'Enter the email address in the correct format, like name@example.com';
+    //R3
+    if(applicantEmail.length > 100){
+        dataValidation['applicant-email'] = 'Email address must be 100 characters or fewer';
     }
 
-    if (applicantEmail != applicantEmailConfirm) {
-        dataValidation['applicant-email-confirm'] = 'Email addresses do not match';
+    if(applicantEmailConfirm.length > 100){
+        dataValidation['applicant-email-confirm'] = 'Email address must be 100 characters or fewer';
     }
 
     if (applicantEmail == req.session.selectedRB.email) {
@@ -260,6 +291,19 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
 
     if (enteredEmail.length > 0) {
         dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application';
+    }
+
+    //R1
+    if (!applicantEmail) {
+        dataValidation['applicant-email'] = 'Enter email address';
+    }
+
+    if (!applicantEmailConfirm) {
+        dataValidation['applicant-email-confirm'] = 'Enter email address';
+    }
+
+    else if(applicantEmail != applicantEmailConfirm){
+        dataValidation['applicant-email-confirm'] = 'Email address does not match';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -513,7 +557,7 @@ router.post('/dbs-check-answer', (req, res) => {
     const whatDbsCheck = req.session.data['what-dbs-check'];
     if (!whatDbsCheck) {
         validation = {
-            'what-dbs-check': 'Select the DBS check you are requesting',
+            'what-dbs-check': 'Select which DBS check you are requesting',
         };
 
         res.render('registered-body/dbs-check-level', { validation: validation });
@@ -1055,17 +1099,17 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     const date = new Date();
-
+    
     if (req.body['ca-dob-day'] < 1 || req.body['ca-dob-day'] > 31) {
-        dataValidation['ca-dob-day'] = 'The day of date of birth must be between 1 and 31';
+        dataValidation['ca-dob-day'] = 'The day of the date of birth must be between 1 and 31';
     }
 
     if (req.body['ca-dob-month'] < 1 || req.body['ca-dob-month'] > 12) {
-        dataValidation['ca-dob-month'] = 'The month of date of birth must be between 1 and 12';
+        dataValidation['ca-dob-month'] = 'The month of the date of birth must be between 1 and 12';
     }
 
-    if (req.body['ca-dob-year'] < 1899 || req.body['ca-dob-year'] >= date.getFullYear()) {
-        dataValidation['ca-dob-year'] = 'The year of date of birth must be a number between 1900 and less than or equal to ' + date.getFullYear();
+    if (req.body['ca-dob-year'] < 1899 || req.body['ca-dob-year'] >= 2200) {
+        dataValidation['ca-dob-year'] = 'The year of the date of birth must be a number between 1900 and less than or equal to 2200';
     }
 
     if(req.body['ca-dob-year'].length != 4){
@@ -1073,15 +1117,33 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     }
 
     if (!req.body['ca-dob-day']) {
-        dataValidation['ca-dob-day'] = 'Enter day of birth';
+        dataValidation['ca-dob-day'] = 'Date of birth must include a day';
     }
 
     if (!req.body['ca-dob-month']) {
-        dataValidation['ca-dob-month'] = 'Enter month of birth';
+        dataValidation['ca-dob-month'] = 'Date of birth must include a month';
     }
 
     if (!req.body['ca-dob-year']) {
-        dataValidation['ca-dob-year'] = 'Enter year of birth';
+        dataValidation['ca-dob-year'] = 'Date of birth must include a year';
+    }
+
+    else {
+        const inputtedDate = new Date(req.body['ca-dob-year'], req.body['ca-dob-month']-1, req.body['ca-dob-day']);
+
+        if(inputtedDate.toLocaleDateString() >= date.toLocaleDateString()){
+            // if(inputtedDate.getFullYear() > date.getFullYear()){
+            //     dataValidation['ca-dob-year'] = 'Year of birth must be in the past';
+            // }
+            // else if (inputtedDate.getMonth() > date.getMonth()){
+            //     dataValidation['ca-dob-month'] = 'Month of birth must be in the past';
+            // } else {
+            //     dataValidation['ca-dob-day'] = 'Day of birth must be in the past';
+            // }
+
+            dataValidation['date'] = 'Date of birth must be in the past';
+           
+        }
     }
 
     if (Object.keys(dataValidation).length) {
@@ -2075,7 +2137,25 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
 
     const dataValidation = {};
+    const RbNumbersOnly = /^[0-9]+$/.test(req.body['registered-body-nr']);
+    const CsNumbersOnly = /^[0-9]+$/.test(req.body['counter-signatory-nr']);
     let selectedUser = undefined;
+
+    if(!RbNumbersOnly){
+        dataValidation['registered-body-nr'] = 'Registered Body number must be a number';
+    }
+
+    if(!CsNumbersOnly){
+        dataValidation['counter-signatory-nr'] = 'Countersignatory number must be a number';
+    }
+
+    if (req.body['registered-body-nr'].length != 11) {
+        dataValidation['registered-body-nr'] = 'Registered Body number must be 11 characters';
+    }
+
+    if (req.body['counter-signatory-nr'].length != 11) {
+        dataValidation['counter-signatory-nr'] = 'Countersignatory number must be 11 characters';
+    }
 
     if (!req.body['registered-body-nr']) {
         dataValidation['registered-body-nr'] = 'Enter Registered Body number';
@@ -2085,21 +2165,20 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
         dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number';
     }
 
-    if (req.body['registered-body-nr'] && req.body['counter-signatory-nr']) {
+    if ((req.body['registered-body-nr']  && req.body['counter-signatory-nr']) && (req.body['registered-body-nr'].length == 11  && req.body['counter-signatory-nr'].length == 11) && (CsNumbersOnly && RbNumbersOnly)) {
         const rbNumber = req.body['registered-body-nr'].trim();
         const csNumber = req.body['counter-signatory-nr'].trim();
 
         if (req.session?.mockDBaccounts) {
             selectedUser = req.session?.mockDBaccounts.find(el => rbNumber === el.rbNumber && csNumber === el.csNumber);
-
             if (!selectedUser) {
                 dataValidation['registered-body-nr'] = 'Unable to find your details, please check your number and try again';
+                dataValidation['counter-signatory-nr'] = 'Unable to find your details, please check your number and try again';
             } else {
                 req.session.selectedRB = selectedUser;
             }
         }
     }
-
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-login', { cache: inputCache, validation: dataValidation });
     } else if (selectedUser && selectedUser.hasSetPassword) {
@@ -2126,7 +2205,7 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     const dataValidation = {};
 
     if (!req.body['password']) {
-        dataValidation['password'] = 'Enter your password';
+        dataValidation['password'] = 'Enter password';
     } else if (req.body.password !== req.session?.selectedRB?.password) {
         dataValidation['password'] = 'Password is invalid';
     }
@@ -2246,15 +2325,27 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
 
     const inputCache = loadPageData(req);
     const user = req.session?.selectedRB;
+    const validEmail =  /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['rb-reset-pass-email']);
+    console.log(validEmail)
     const dataValidation = {};
 
     if (!user) {
         res.redirect('/dashboard/rb-login');
-    } else if (!req.body['rb-reset-pass-email']) {
-        dataValidation['rb-reset-pass-email'] = 'Enter email';
-    } else if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
-        dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
-    }
+    } else {
+        if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
+            dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
+        }
+        if (!validEmail) {
+            dataValidation['rb-reset-pass-email'] = 'Enter email address in the correct format';
+        }
+        if (req.body['rb-reset-pass-email'].length > 100) {
+            dataValidation['rb-reset-pass-email'] = 'Email address must be 100 characters or fewer';
+        } 
+        if (!req.body['rb-reset-pass-email']) {
+            dataValidation['rb-reset-pass-email'] = 'Enter email address';
+        }
+        
+    }  
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-password-reset', { cache: inputCache, validation: dataValidation });

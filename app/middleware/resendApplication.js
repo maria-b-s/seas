@@ -6,7 +6,12 @@ function resendApplication(req, res) {
     const inputCache = loadPageData(req);
     let ref = req.session.data.app;
     let dataValidation = {};
-    
+
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['new-email-address'],
+        );
+
     // Date
     let currentDate = new Date();
     let date = currentDate.getDate();
@@ -29,26 +34,30 @@ function resendApplication(req, res) {
     var strTime = hours + ':' + minutes + ' ' + ampm;
 
     if (!req.body['new-email']) {
-        dataValidation['new-email'] = 'Select an option';
+        dataValidation['new-email'] = 'Select if the applicant’s email address is correct';
     }
 
-    if (req.body['new-email'] == "No" && !req.body['new-email-address']) {
-        dataValidation['new-email-address'] = 'Enter an email address';
+    if (req.body['new-email'] == 'No') {
+        if (!validEmail) {
+            dataValidation['new-email-address'] = 'Enter email address in the correct format';
+        }
+        if(req.body['new-email-address'].length > 100){
+            dataValidation['new-email-address'] = 'Email address must be 100 characters or fewer';
+        }
+        if (!req.body['new-email-address']) {
+            dataValidation['new-email-address'] = 'Enter email address';
+        }
     }
-
-    if(req.body['new-email'] == "No" && !req.body['new-email-address'].includes('@')){
-        dataValidation['new-email-address'] = 'Enter the email address in the correct format, like name@example.com';
-      }
 
     if (Object.keys(dataValidation).length) {
-        res.render('registered-body/resend-application', { cache: inputCache, validation: dataValidation });
+        res.render('registered-body/resend-application', { cache: inputCache, validation: dataValidation, query: req.query.app, selectedApplication: req.session.data.selectedApplication });
     } else {
         let selectedApplication = req.session.data['applications'].filter(value => value.ref == ref);
-   
-        if(req.body['new-email'] == "No"){
-            selectedApplication[0]['email'] = req.body['new-email-address']
+
+        if (req.body['new-email'] == 'No') {
+            selectedApplication[0]['email'] = req.body['new-email-address'];
         }
-        
+
         selectedApplication[0]['history'].unshift({
             action: 'Resent application',
             date: `${date}/${month}/${year}`,

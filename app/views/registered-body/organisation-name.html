@@ -31,7 +31,7 @@ endset%} {% block beforeContent %}
 
         {% endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">What organisation is the check for?</h1>
@@ -64,32 +64,11 @@ endset%} {% block beforeContent %}
                         <label class="govuk-label govuk-radios__label" for="someone-else"> Another organisation </label>
                     </div>
 
-                    {# <div aria-live="polite">
-                        <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="drivers-licence-number">What is the name of the organisation?</label>
-                                {% if validation['organisation-name'] %}
-                                    <span id="ninonr-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span> {{ validation['organisation-name'] }}
-                                    </span>
-                                {% endif %}
-                                <input
-                                    class="govuk-input govuk-!-width-one-half"
-                                    id="organisation-name"
-                                    name="organisation-name"
-                                    type="text"
-                                    spellcheck="false"
-                                    autocomplete="email"
-                                />
-                            </div>
-                        </div>
-                    </div> #}
-
                 </div>
 
                  <div aria-live="polite">
                         <div class="govuk-radios__conditional" id="conditional-contact">
-                            <div class="govuk-form-group">
+                            <div class="govuk-form-group {% if validation['organisation-name'] %}govuk-form-group--error{% endif %}">
                                 <label class="govuk-label" for="drivers-licence-number">What is the name of the organisation?</label>
                                 {% if validation['organisation-name'] %}
                                     <span id="ninonr-error" class="govuk-error-message">
@@ -103,6 +82,7 @@ endset%} {% block beforeContent %}
                                     type="text"
                                     spellcheck="false"
                                     autocomplete="email"
+                                     value="{{ data['organisation-name'] }}"
                                 />
                             </div>
                         </div>
