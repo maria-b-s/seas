@@ -19,7 +19,7 @@ endset%} {% block beforeContent %}
 
         {% set errorList = [] %}
 
-        {% for key, value in validation %}
+                            {% for key, value in validation %}
             {% set errorList = (errorList.push({
                 "text": value,
                 "href": "#" + key

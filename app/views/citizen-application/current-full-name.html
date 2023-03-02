@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,46 +13,64 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({"text": value,
+        "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form full-name-form" action="" method="post">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">What is your current full name?</h1>
                 </legend>
-              <div  id="full-name-hint" class="govuk-hint">You must tell us your full name, including any middle names.</div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="full-name-first-name"> First name </label>
+                <div id="full-name-hint" class="govuk-hint">You must tell us your full name, including any middle names.</div>
+                <div class="govuk-form-group {% if validation['current-name-first-name'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="current-name-first-name"> First name </label>
+                    {% if validation['current-name-first-name'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-first-name'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
-                        id="full-name-first-name"
-                        name="full-name"
+                        id="current-name-first-name"
+                        name="current-name-first-name"
                         type="text"
                         spellcheck="false"
                         autocomplete="given-name"
-                        value='{{cache[0]}}'
+                        value='{{data["current-name-first-name"]}}'
                     />
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="full-name-middle-names"> Middle names </label>
+                <div class="govuk-form-group {% if validation['current-name-middle-names'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="current-name-middle-names"> Middle names </label>
+                    {% if validation['current-name-middle-names'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-middle-names'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
-                        id="full-name-middle-names"
-                        name="full-name"
+                        id="current-name-middle-names"
+                        name="current-name-middle-names"
                         type="text"
                         spellcheck="false"
                         autocomplete="name"
-                        value='{{cache[1]}}'
+                        value='{{data["current-name-middle-names"]}}'
                     />
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="full-name-last-name"> Last name </label>
+                <div class="govuk-form-group {% if validation['current-name-last-name'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="current-name-last-name"> Last name </label>
+                    {% if validation['current-name-last-name'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-last-name'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
-                        id="full-name-last-name"
-                        name="full-name"
+                        id="current-name-last-name"
+                        name="current-name-last-name"
                         type="text"
                         spellcheck="false"
                         autocomplete="family-name"
-                        value='{{cache[2]}}'
+                        value='{{data["current-name-last-name"]}}'
                     />
                 </div>
             </fieldset>

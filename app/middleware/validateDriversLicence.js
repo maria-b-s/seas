@@ -8,7 +8,6 @@ function validateDriversLicence(req, res, _next) {
   const inputCache = loadPageData(req);
 
   let redirectPath = 'passport';
-  const driversLicence = state['drivers-licence-number'].match(/[^\d]+|\d+/g);
   const licenseMatchesRegex = /^^[A-Z9]{5}\d{6}[A-Z9]{2}\d[A-Z]{2}$$/.test(state['drivers-licence-number'])
   let dataValidation = {}
   
@@ -22,19 +21,22 @@ function validateDriversLicence(req, res, _next) {
     res.redirect(redirectPath)
   }
   
+  if(state['has-drivers-license'] == 'yes'){
+    if(!state['drivers-licence-number']){
+      dataValidation['drivers-license-number'] = 'Enter driving licence number';
+    } else if(state['drivers-licence-number'].length != 16){
+      dataValidation['drivers-licence-number'] = 'Driving licence number must be 16 characters';
+    } else if(!licenseMatchesRegex){
+      dataValidation['drivers-licence-number'] = 'Driving licence number must only include letters a to z and numbers';
+    } 
+  }
+
   if(!state['has-drivers-license']){
-    dataValidation['has-drivers-license'] = 'Select yes if you have a current UK driving licence';
-  }
-
-  if(!state['has-drivers-license'] && !state['drivers-licence-number']){
-    dataValidation['has-drivers-license'] = 'Enter your driving licence number';
-  }
-
-  if(!licenseMatchesRegex && state['has-drivers-license'] == 'yes'){
-    dataValidation['drivers-licence-number'] = 'Driving licence number must only include letters a to z and numbers';
+    dataValidation['has-drivers-license'] = 'Select if you have a current UK driving licence';
   }
 
   if (Object.keys(dataValidation).length) {
+    console.log(dataValidation)
     res.render('citizen-application/drivers-licence', { cache: inputCache,   validation: dataValidation });
   } else {
     req.session.data['drivers-licence-number'] = state['drivers-licence-number'];

@@ -6,8 +6,8 @@ function validatePassport(req, res, _next) {
   savePageData(req, state);
   const inputCache = loadPageData(req);
   let dataValidation = {}
-
-  const passportNumbersOnly = /^[0-9]+$/.test(state['passport-number']);
+  const validCountry = /^[a-zA-Z'\- ]+$/.test(state['passport-country-of-issue']);
+  const validPassport = /^[a-zA-Z0-9]+$/.test(state['passport-number']);
   let redirectPath = 'place-of-birth';
 
   if (req.query && req.query.change) {
@@ -21,16 +21,23 @@ function validatePassport(req, res, _next) {
     res.redirect(redirectPath)
   }
   
+  if(state['has-passport'] == 'yes'){
+    if(!validPassport){
+      dataValidation['passport-number'] = 'Passport number must only include letters a to z and numbers';
+    }
+    if(!validCountry){
+      dataValidation['passport-country-of-issue'] = 'Country of issue must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+    if(!state['passport-country-of-issue']){
+      dataValidation['passport-country-of-issue'] = 'Enter country of issue';
+    }
+    if(!state['passport-number']){
+      dataValidation['passport-number'] = 'Enter passport number';
+    }
+  }
+
   if(!state['has-passport']){
-    dataValidation['has-passport'] = 'Select yes if you have a current passport';
-  }
-
-  if((!passportNumbersOnly || state['passport-number'].length !== 9) && state['has-passport'] == 'yes'){
-    dataValidation['passport-number'] = 'Enter passport number';
-  }
-
-  if(!state['passport-country-of-issue'] && state['has-passport'] == 'yes'){
-    dataValidation['passport-country-of-issue'] = 'Enter country of issue';
+    dataValidation['has-passport'] = 'Select if you have a passport';
   }
 
   if (Object.keys(dataValidation).length) {

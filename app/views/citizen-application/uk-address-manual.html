@@ -57,11 +57,8 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
 
                 <div class="govuk-form-group {% if validation['hidden-details-country'] %}govuk-form-group--error{% endif %}">
                     {% if validation['hidden-details-country'] %}
-                    <span id="ninonr-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['hidden-details-country'] }}
-                    </span>
                     {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name: 'hidden-details-country', error:
-                    'govuk-form-group--error'}) }} {% else %} {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name:
+                    'govuk-form-group--error', errorMessage: validation['hidden-details-country']}) }} {% else %} {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name:
                     'hidden-details-country', value: cache['hidden-details-country'] }) }} {% endif %}
                 </div>
 

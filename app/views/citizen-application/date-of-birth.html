@@ -17,7 +17,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
         "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
         endif %}
         <form class="form" method="post">
-            <div class="govuk-form-grou {% if validation %}govuk-form-group--error{% endif %}">
+            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
                 <fieldset id="main-content" class="govuk-fieldset" role="group" aria-describedby="dob-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">What is your date of birth?</h1>

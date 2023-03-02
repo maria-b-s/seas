@@ -23,6 +23,11 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                 </legend>
                 <div class="govuk-form-group {% if validation['address-town'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="address-town"> Town or city </label>
+                       {% if validation['address-town'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['address-town'] }}
+                            </span>
+                            {% endif %}
                     <input
                         class="govuk-input govuk-!-width-two-thirds"
                         id="address-town"
@@ -34,10 +39,7 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                 </div>
 
                 {% if validation['address-country'] %}
-                <span id="ninonr-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> {{ validation['address-country'] }}
-                </span>
-                {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address-country', error: 'govuk-form-group--error'}) }} {%
+                {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address-country', error: 'govuk-form-group--error', errorMessage: validation['address-country']}) }} {%
                 else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'address-country', value: data['address-country'] })
                 }} {% endif %}
             </fieldset>

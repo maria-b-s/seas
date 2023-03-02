@@ -51,13 +51,10 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
 
                     <div class="govuk-radios__conditional" id="conditional-contact">
                         {% if validation['phone-country'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['phone-country'] }}
-                        </span>
-                        {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'phone-country', error: 'govuk-form-group--error'})
-                        }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'phone-country', value:
-                        data['phone-country'] }) }} {% endif %}
-
+                        {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name: 'phone-country', error: 'govuk-form-group--error',
+                        value: data['phone-country'], errorMessage: validation['phone-country']}) }} {% else %} {{ country({ label: 'Country', inputClass: 'govuk-input--width-20', name:
+                        'phone-country', value: data['phone-country'] }) }} {% endif %}
+                        
                         <div class="govuk-form-group {% if validation['phone-number'] %}govuk-form-group--error{% endif %}">
                             <label class="govuk-label" for="phone-number">Enter your mobile number</label>
                             {% if validation['phone-number'] %}

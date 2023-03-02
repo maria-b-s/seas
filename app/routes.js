@@ -46,16 +46,16 @@ registeredBodyRouter.post('/position', (req, res) => {
     let dataValidation = {};
     const validRole = /^[a-zA-Z'\- ]+$/.test(req.body['position-name']);
 
-    if(!validRole){
+    if (!validRole) {
         dataValidation['position-name'] = 'Job or role must only include letters a to z, hyphens, spaces and apostrophes';
     }
     if (req.body['position-name'].length > 60) {
         dataValidation['position-name'] = 'Job or role must be 60 characters or fewer';
-    } 
+    }
     if (!req.body['position-name']) {
         dataValidation['position-name'] = 'Enter job or role';
-    } 
-    
+    }
+
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/position', { cache: inputCache, validation: dataValidation });
     } else {
@@ -219,11 +219,11 @@ registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
         redirectPath = 'review-application';
     }
 
-    if(!validFirstName){
+    if (!validFirstName) {
         dataValidation['first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
     }
 
-    if(!validLastName){
+    if (!validLastName) {
         dataValidation['last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
     }
 
@@ -233,7 +233,7 @@ registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
     if (req.body['last-name'].length > 50) {
         dataValidation['last-name'] = 'Last name must be 50 characters or fewer';
     }
-    
+
     if (!req.body['first-name']) {
         dataValidation['first-name'] = 'Enter first name';
     }
@@ -262,8 +262,14 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     let dataValidation = {};
     let applicantEmail = req.body['applicant-email'];
     let applicantEmailConfirm = req.body['applicant-email-confirm'];
-    const validEmail = /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['applicant-email']);
-    const validConfirmEmail = /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['applicant-email-confirm']);
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['applicant-email'],
+        );
+    const validConfirmEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['applicant-email-confirm'],
+        );
 
     let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
 
@@ -277,11 +283,11 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
     }
 
     //R3
-    if(applicantEmail.length > 100){
+    if (applicantEmail.length > 100) {
         dataValidation['applicant-email'] = 'Email address must be 100 characters or fewer';
     }
 
-    if(applicantEmailConfirm.length > 100){
+    if (applicantEmailConfirm.length > 100) {
         dataValidation['applicant-email-confirm'] = 'Email address must be 100 characters or fewer';
     }
 
@@ -300,9 +306,7 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
 
     if (!applicantEmailConfirm) {
         dataValidation['applicant-email-confirm'] = 'Enter email address';
-    }
-
-    else if(applicantEmail != applicantEmailConfirm){
+    } else if (applicantEmail != applicantEmailConfirm) {
         dataValidation['applicant-email-confirm'] = 'Email address does not match';
     }
 
@@ -387,13 +391,22 @@ registeredBodyRouter.post('/id-checked', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const validName = /^[a-zA-Z'\- ]+$/.test(req.body['name-of-verifier']);
 
     if (!req.session.data['verified']) {
-        dataValidation['verified'] = 'Select an option';
+        dataValidation['verified'] = 'Select if the applicant’s identity has been successfully verified';
     }
 
-    if (req.session.data['verified'] == 'Yes' && !req.session.data['name-of-verifier']) {
-        dataValidation['verified'] = 'Enter name of evidence checker';
+    if (req.session.data['verified'] == 'Yes') {
+        if (!validName) {
+            dataValidation['name-of-verifier'] = 'Name of evidence checker must only include letters a to z, hyphens, spaces and apostrophes';
+        }
+        if (req.body['name-of-verifier'].length > 100) {
+            dataValidation['name-of-verifier'] = 'Name of evidence checker must be 100 characters or fewer';
+        }
+        if (!req.body['name-of-verifier']) {
+            dataValidation['name-of-verifier'] = 'Enter name of evidence checker';
+        }
     }
 
     if (Object.keys(dataValidation).length) {
@@ -431,15 +444,15 @@ registeredBodyRouter.post('/declaration-registered-person', invalidateCache, (re
     req.session.data.certify = req.body['certify'];
 
     if (req.session.data.confirm == '_unchecked') {
-        dataValidation['confirm'] = 'Must be checked to send application';
+        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (req.session.data.declare == '_unchecked') {
-        dataValidation['declare'] = 'Must be checked to send application';
+        dataValidation['declare'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (req.session.data.certify == '_unchecked') {
-        dataValidation['certify'] = 'Must be checked to send application';
+        dataValidation['certify'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -471,7 +484,7 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
     let dataValidation = {};
 
     if (req.body['declare-check-answers'] == '_unchecked') {
-        dataValidation['declare-check-answers'] = 'Cannot send application without declaration';
+        dataValidation['declare-check-answers'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -763,23 +776,83 @@ citizenRouter.get('/current-full-name', invalidateCache, (req, res) => {
 });
 
 citizenRouter.post('/current-full-name', invalidateCache, (req, res, next) => {
-    if (req.body['full-name']) {
-        req.session.data.fullName = req.body['full-name'];
+    // if (req.body['full-name']) {
+    //     req.session.data.fullName = req.body['full-name'];
+    // }
+    // res.redirect('/citizen-application/previous-names-q');
+
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+    let redirectPath = 'previous-names-q';
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-first-name']);
+    const validMiddleNames = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-middle-names']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-last-name']);
+
+    if (req.query && req.query.change) {
+        redirectPath = 'review-application';
     }
-    res.redirect('/citizen-application/previous-names-q');
+
+    if (!validFirstName) {
+        dataValidation['current-name-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (!validLastName) {
+        dataValidation['current-name-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (req.body['current-name-first-name'].length > 50) {
+        dataValidation['current-name-first-name'] = 'First name must be 50 characters or fewer';
+    }
+
+    if (req.body['current-name-last-name'].length > 50) {
+        dataValidation['current-name-last-name'] = 'Last name must be 50 characters or fewer';
+    }
+
+    if (!req.body['current-name-first-name']) {
+        dataValidation['current-name-first-name'] = 'Enter first name';
+    }
+
+    if (!req.body['current-name-last-name']) {
+        dataValidation['current-name-last-name'] = 'Enter last name';
+    }
+
+    if (req.body['current-name-middle-names']) {
+        if (!validMiddleNames) {
+            dataValidation['current-name-middle-names'] = 'Middle names must only include letters a to z, hyphens, spaces and apostrophes';
+        }
+        if (req.body['current-name-middle-names'].length > 50) {
+            dataValidation['current-name-middle-names'] = 'Middle names must be 50 characters or fewer';
+        }
+    }
+
+    if (Object.keys(dataValidation).length) {
+        res.render('citizen-application/current-full-name', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect(redirectPath);
+    }
 });
 
 citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['address-town']);
+    const validCountry = /^[a-zA-Z'\- ]+$/.test(req.body['address-country']);
+
+    if (!validCity) {
+        dataValidation['address-town'] = 'Town or city you were born must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (!validCountry) {
+        dataValidation['address-country'] = 'Country you were born must only include letters a to z, hyphens, spaces and apostrophes';
+    }
 
     if (!req.body['address-town']) {
-        dataValidation['address-town'] = 'Enter a town or city';
+        dataValidation['address-town'] = 'Enter town or city you were born';
     }
 
     if (!req.body['address-country']) {
-        dataValidation['address-country'] = 'Enter a country';
+        dataValidation['address-country'] = 'Enter country you were born';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -837,7 +910,7 @@ citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
         data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
     } else {
         validation = {};
-        validation['radio-group-alias-input'] = 'Select whether you have been known by any other names';
+        validation['radio-group-alias-input'] = 'Select if you have been known by any other names';
         res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
     }
 
@@ -952,63 +1025,111 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['full-name-first-name']);
+    const validMiddleNames = /^[a-zA-Z'\- ]+$/.test(req.body['full-name-middle-names']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['full-name-last-name']);
+
     const date = new Date();
 
     if (req.body['alias-from-MM'] < 1 || req.body['alias-from-MM'] > 12) {
-        dataValidation['alias-from-MM'] = 'The month must be between 1 and 12';
+        dataValidation['alias-from-MM'] = 'The month you started using name must be between 1 and 12';
     }
 
-    if (req.body['alias-from-YYYY'] < 1899 || req.body['alias-from-YYYY'] >= date.getFullYear()) {
-        dataValidation['alias-from-YYYY'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+    if (req.body['alias-from-YYYY'] < 1899 || req.body['alias-from-YYYY'] > 2200) {
+        dataValidation['alias-from-YYYY'] = 'The year you started using name must be a number between 1900 and less than or equal to 2200';
     }
 
-    if(req.body['alias-from-YYYY'].length != 4){
-        dataValidation['alias-from-YYYY'] = 'Year must include four numbers';
+    if (req.body['alias-from-YYYY'].length != 4) {
+        dataValidation['alias-from-YYYY'] = 'Year you started using name must include four numbers';
     }
 
     if (!req.body['alias-from-MM']) {
-        dataValidation['alias-from-MM'] = 'Enter a month';
+        dataValidation['alias-from-MM'] = 'Enter month you started using name';
     }
 
     if (!req.body['alias-from-YYYY']) {
-        dataValidation['alias-from-YYYY'] = 'Enter a year';
+        dataValidation['alias-from-YYYY'] = 'Enter year you started using name';
+    } else {
+        const inputtedStartDate = new Date(req.body['alias-from-YYYY'], req.body['alias-from-MM'] - 1);
+
+        if (inputtedStartDate.valueOf() >= date.valueOf()) {
+            dataValidation['from'] = 'Date you started using name must be in the past';
+        }
     }
 
-    if(req.body['radio-group-alias-input'] == 0){
+    if (req.body['radio-group-alias-input'] == 0) {
         if (req.body['alias-to-MM'] < 1 || req.body['alias-to-MM'] > 12) {
-            dataValidation['alias-to-MM'] = 'The month must be between 1 and 12';
+            dataValidation['alias-to-MM'] = 'The month you stopped using name must be between 1 and 12';
         }
-    
-        if (req.body['alias-to-YYYY'] < 1899 || req.body['alias-to-YYYY'] >= date.getFullYear()) {
-            dataValidation['alias-to-YYYY'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+
+        if (req.body['alias-to-YYYY'] < 1899 || req.body['alias-to-YYYY'] > 2200) {
+            dataValidation['alias-to-YYYY'] = 'The year you stopped using name must be a number between 1900 and less than or equal to 2200';
         }
-    
-        if(req.body['alias-to-YYYY'].length != 4){
-            dataValidation['alias-to-YYYY'] = 'Year must include four numbers';
+
+        if (req.body['alias-to-YYYY'].length != 4) {
+            dataValidation['alias-to-YYYY'] = 'Year you stopped using name must include four numbers';
         }
-    
+
         if (!req.body['alias-to-MM']) {
-            dataValidation['alias-to-MM'] = 'Enter a month';
+            dataValidation['alias-to-MM'] = 'Enter month you stopped using name';
         }
-    
+
         if (!req.body['alias-to-YYYY']) {
-            dataValidation['alias-to-YYYY'] = 'Enter a year';
+            dataValidation['alias-to-YYYY'] = 'Enter year you stopped using name';
+        } else {
+            const inputtedStartDate = new Date(req.body['alias-from-YYYY'], req.body['alias-from-MM'] - 1);
+            const inputtedEndDate = new Date(req.body['alias-to-YYYY'], req.body['alias-to-MM'] - 1);
+
+            if (inputtedEndDate.valueOf() >= date.valueOf()) {
+                dataValidation['to'] = 'Date you stopped using name must be in the past';
+            }
+
+            if (inputtedStartDate.valueOf() >= inputtedEndDate.valueOf()) {
+                dataValidation['to'] = 'Date you stopped using name must be after start date';
+            }
         }
     }
 
-    if(!req.body['radio-group-alias-input']){
-        dataValidation['radio-group-alias-input'] = 'Select yes if you still use this name';
+    if (!req.body['radio-group-alias-input']) {
+        dataValidation['radio-group-alias-input'] = 'Select if you still use this name';
     }
 
-    if(!req.body['full-name-first-name']){
-        dataValidation['full-name-first-name'] = 'Enter a first name';
+    if (!validFirstName) {
+        dataValidation['full-name-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
     }
 
-    if(!req.body['full-name-last-name']){
-        dataValidation['full-name-last-name'] = 'Enter a last name';
+    if (!validLastName) {
+        dataValidation['full-name-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (req.body['full-name-first-name'].length > 50) {
+        dataValidation['full-name-first-name'] = 'First name must be 50 characters or fewer';
+    }
+
+    if (req.body['full-name-last-name'].length > 50) {
+        dataValidation['full-name-last-name'] = 'Last name must be 50 characters or fewer';
+    }
+
+    if (!req.body['full-name-first-name']) {
+        dataValidation['full-name-first-name'] = 'Enter first name';
+    }
+
+    if (!req.body['full-name-last-name']) {
+        dataValidation['full-name-last-name'] = 'Enter last name';
+    }
+
+    if (req.body['full-name-middle-names']) {
+        if (!validMiddleNames) {
+            dataValidation['full-name-middle-names'] = 'Middle names must only include letters a to z, hyphens, spaces and apostrophes';
+        }
+        if (req.body['full-name-middle-names'].length > 50) {
+            dataValidation['full-name-middle-names'] = 'Middle names must be 50 characters or fewer';
+        }
     }
 
     if (Object.keys(dataValidation).length) {
+        console.log(dataValidation);
         res.render('citizen-application/previous-names-form', {
             cache: inputCache,
             validation: dataValidation,
@@ -1019,15 +1140,15 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         if (req.session.data.prevNames) {
             collection = req.session.data.prevNames;
         }
-    
+
         const item = mapInput(inputCache);
-    
+
         if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
             collection[Number(req.query.edit) - 1] = item;
         } else if (item['first_name'] !== 'Not entered') {
             collection.push(item);
         }
-    
+
         req.session.data.prevNames = collection;
         res.redirect('/citizen-application/previous-names-list');
     }
@@ -1063,7 +1184,7 @@ citizenRouter.post('/previous-names-list', invalidateCache, (req, res, _next) =>
     }
 
     if (!data['radio-group-previous-names-input']) {
-        validation = { 'radio-group-previous-names-input': ' Select if you want to add another previous name ' };
+        validation = { 'radio-group-previous-names-input': ' Select if you need to add another previous name' };
         res.render('citizen-application/previous-names-list', { list: prevNames, cache: null, validation: validation });
     } else if (data['radio-group-previous-names-input']) {
         data['radio-group-previous-names-input'] = Boolean(Number(data['radio-group-previous-names-input']));
@@ -1099,20 +1220,20 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     const date = new Date();
-    
+
     if (req.body['ca-dob-day'] < 1 || req.body['ca-dob-day'] > 31) {
-        dataValidation['ca-dob-day'] = 'The day of the date of birth must be between 1 and 31';
+        dataValidation['ca-dob-day'] = 'The day of date of birth must be between 1 and 31';
     }
 
     if (req.body['ca-dob-month'] < 1 || req.body['ca-dob-month'] > 12) {
-        dataValidation['ca-dob-month'] = 'The month of the date of birth must be between 1 and 12';
+        dataValidation['ca-dob-month'] = 'The month of date of birth must be between 1 and 12';
     }
 
-    if (req.body['ca-dob-year'] < 1899 || req.body['ca-dob-year'] >= 2200) {
-        dataValidation['ca-dob-year'] = 'The year of the date of birth must be a number between 1900 and less than or equal to 2200';
+    if (req.body['ca-dob-year'] < 1899 || req.body['ca-dob-year'] > 2200) {
+        dataValidation['ca-dob-year'] = 'The year of date of birth must be a number between 1900 and less than or equal to 2200';
     }
 
-    if(req.body['ca-dob-year'].length != 4){
+    if (req.body['ca-dob-year'].length != 4) {
         dataValidation['ca-dob-year'] = 'Year must include four numbers';
     }
 
@@ -1126,23 +1247,17 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
 
     if (!req.body['ca-dob-year']) {
         dataValidation['ca-dob-year'] = 'Date of birth must include a year';
-    }
+    } else {
+        const inputtedDate = new Date(req.body['ca-dob-year'], req.body['ca-dob-month'] - 1, req.body['ca-dob-day']);
 
-    else {
-        const inputtedDate = new Date(req.body['ca-dob-year'], req.body['ca-dob-month']-1, req.body['ca-dob-day']);
-
-        if(inputtedDate.toLocaleDateString() >= date.toLocaleDateString()){
-            // if(inputtedDate.getFullYear() > date.getFullYear()){
-            //     dataValidation['ca-dob-year'] = 'Year of birth must be in the past';
-            // }
-            // else if (inputtedDate.getMonth() > date.getMonth()){
-            //     dataValidation['ca-dob-month'] = 'Month of birth must be in the past';
-            // } else {
-            //     dataValidation['ca-dob-day'] = 'Day of birth must be in the past';
-            // }
-
-            dataValidation['date'] = 'Date of birth must be in the past';
-           
+        if (inputtedDate.toLocaleDateString() >= date.toLocaleDateString()) {
+            if (inputtedDate.getFullYear() > date.getFullYear()) {
+                dataValidation['ca-dob-year'] = 'Year of birth must be in the past';
+            } else if (inputtedDate.getMonth() > date.getMonth()) {
+                dataValidation['ca-dob-month'] = 'Month of birth must be in the past';
+            } else if (inputtedDate.getDate() > date.getDate()) {
+                dataValidation['ca-dob-day'] = 'Day of birth must be in the past';
+            }
         }
     }
 
@@ -1263,13 +1378,37 @@ citizenRouter.post('/cert-address-manual', (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const validAddressLine1 = /^[a-zA-Z0-9- '&.,]+$/.test(req.body['lookup-addr']); //A2
+    const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-town']); //A1
+    const validPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(req.body['postcode-lookup']);
+
+    if (!validAddressLine1) {
+        dataValidation['lookup-addr'] =
+            'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
+    }
+
+    if(!validCity){
+        dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
+    }   
+
+    if (!validPostcode) {
+        dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
+    }
+
+    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+        dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
+    }
+
+    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+        dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
+    }
 
     if (!req.body['lookup-addr']) {
-        dataValidation['lookup-addr'] = 'Enter address';
+        dataValidation['lookup-addr'] = 'Enter address line 1';
     }
 
     if (!req.body['hidden-details-town']) {
-        dataValidation['hidden-details-town'] = 'Enter town/city';
+        dataValidation['hidden-details-town'] = 'Enter town or city';
     }
 
     if (!req.body['postcode-lookup']) {
@@ -1312,8 +1451,8 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
         if (req.body['start-year'] < 1899 || req.body['start-year'] >= date.getFullYear()) {
             dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
         }
-    
-        if(req.body['start-year'].length != 4){
+
+        if (req.body['start-year'].length != 4) {
             dataValidation['start-year'] = 'Year must include four numbers';
         }
         if (!req.body['start-month']) {
@@ -1461,17 +1600,42 @@ citizenRouter.post('/uk-address-manual', (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const validAddressLine1 = /^[a-zA-Z0-9- '&.,]+$/.test(req.body['lookup-addr']); //A2
+    const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-town']); //A1
+    const validPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(req.body['postcode-lookup']);
+
     let parameterString = '';
     if (req.query.address) {
         parameterString = '&address=' + req.query.address;
     }
 
+    if (!validAddressLine1) {
+        dataValidation['lookup-addr'] =
+            'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
+    }
+
+    if(!validCity){
+        dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
+    }   
+
+    if (!validPostcode) {
+        dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
+    }
+
+    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+        dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
+    }
+
+    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+        dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
+    }
+
     if (!req.body['lookup-addr']) {
-        dataValidation['lookup-addr'] = 'Enter address';
+        dataValidation['lookup-addr'] = 'Enter address line 1';
     }
 
     if (!req.body['hidden-details-town']) {
-        dataValidation['hidden-details-town'] = 'Enter town/city';
+        dataValidation['hidden-details-town'] = 'Enter town or city';
     }
 
     if (!req.body['postcode-lookup']) {
@@ -1539,7 +1703,7 @@ citizenRouter.post('/address-confirm', (req, res) => {
         dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
     }
 
-    if(req.body['start-year'].length != 4){
+    if (req.body['start-year'].length != 4) {
         dataValidation['start-year'] = 'Year must include four numbers';
     }
     if (!req.body['start-month']) {
@@ -1556,8 +1720,8 @@ citizenRouter.post('/address-confirm', (req, res) => {
         if (req.body['end-year'] < 1899 || req.body['end-year'] >= date.getFullYear()) {
             dataValidation['end-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
         }
-    
-        if(req.body['end-year'].length != 4){
+
+        if (req.body['end-year'].length != 4) {
             dataValidation['end-year'] = 'Year must include four numbers';
         }
         if (!req.body['end-month']) {
@@ -1608,7 +1772,7 @@ citizenRouter.post('/address-confirm', (req, res) => {
     }
 });
 
-const BFPO_ADDRESSES = [{ id: 1, lineOne: 'BFPO 1', postcode: 'BF1 3AA', townOrCity: 'Washington', country: 'USA' }];
+const BFPO_ADDRESSES = [{ id: 2, lineOne: 'BFPO 1', postcode: 'BF1 3AA', townOrCity: 'Washington', country: 'USA' }];
 
 citizenRouter.get('/bfpo', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -1710,22 +1874,48 @@ citizenRouter.post('/outside-uk', (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let parameterString = '';
-    if (req.query.address) {
-        parameterString = '&address=' + req.query.address;
-    }
+    const validAddressLine1 = /^[a-zA-Z0-9- '&.,]+$/.test(req.body['lookup-addr']); //A2
+    const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-town']); //A1
+    const validCountry = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-country']); //A1
 
+    //A2
+    if (!validAddressLine1) {
+        dataValidation['lookup-addr'] =
+            'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
+    }
+    //A1
+    if (!validCity) {
+        dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+    //A1
+    if (!validCountry) {
+        dataValidation['hidden-details-country'] = 'Country must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+    //R4
+    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+        dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
+    }
+    //R4
+    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+        dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
+    }
+    //R4
+    if (req.body['hidden-details-country'].length < 2 && req.body['hidden-details-country'].length > 30) {
+        dataValidation['hidden-details-country'] = 'Address line 1 must be between 2 and 30 characters';
+    }
+    //R1
     if (!req.body['lookup-addr']) {
-        dataValidation['lookup-addr'] = 'Enter address';
+        dataValidation['lookup-addr'] = 'Enter address line 1';
     }
-
+    //R1
     if (!req.body['hidden-details-town']) {
-        dataValidation['hidden-details-town'] = 'Enter town/city';
+        dataValidation['hidden-details-town'] = 'Enter town or city';
     }
-
+    //R1
     if (!req.body['hidden-details-country']) {
         dataValidation['hidden-details-country'] = 'Enter country';
     }
-
+    //R1
     if (!req.body['postcode-lookup']) {
         dataValidation['postcode-lookup'] = 'Enter postcode';
     }
@@ -1852,7 +2042,7 @@ citizenRouter.post('/previous-convictions', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
     if (!req.body['previous-convictions']) {
-        dataValidation['previous-convictions'] = 'Select yes if you have any previous convictions or cautions';
+        dataValidation['previous-convictions'] = 'Select if you have any previous convictions or cautions';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -1880,11 +2070,11 @@ citizenRouter.post('/declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
     if (req.body['confirmation'] == '_unchecked') {
-        dataValidation['confirmation'] = 'Select to confirm information is true';
+        dataValidation['confirmation'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (req.body['ts-n-cs'] == '_unchecked') {
-        dataValidation['ts-n-cs'] = 'Select to agree to the terms and conditions';
+        dataValidation['ts-n-cs'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -2141,11 +2331,11 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     const CsNumbersOnly = /^[0-9]+$/.test(req.body['counter-signatory-nr']);
     let selectedUser = undefined;
 
-    if(!RbNumbersOnly){
+    if (!RbNumbersOnly) {
         dataValidation['registered-body-nr'] = 'Registered Body number must be a number';
     }
 
-    if(!CsNumbersOnly){
+    if (!CsNumbersOnly) {
         dataValidation['counter-signatory-nr'] = 'Countersignatory number must be a number';
     }
 
@@ -2165,7 +2355,14 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
         dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number';
     }
 
-    if ((req.body['registered-body-nr']  && req.body['counter-signatory-nr']) && (req.body['registered-body-nr'].length == 11  && req.body['counter-signatory-nr'].length == 11) && (CsNumbersOnly && RbNumbersOnly)) {
+    if (
+        req.body['registered-body-nr'] &&
+        req.body['counter-signatory-nr'] &&
+        req.body['registered-body-nr'].length == 11 &&
+        req.body['counter-signatory-nr'].length == 11 &&
+        CsNumbersOnly &&
+        RbNumbersOnly
+    ) {
         const rbNumber = req.body['registered-body-nr'].trim();
         const csNumber = req.body['counter-signatory-nr'].trim();
 
@@ -2286,7 +2483,7 @@ dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
 
 dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
-    
+
     if (req.query['delete'] == 'needs-action') {
         req.session.data.filters['needs-action'] = '_unchecked';
     }
@@ -2325,8 +2522,11 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
 
     const inputCache = loadPageData(req);
     const user = req.session?.selectedRB;
-    const validEmail =  /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(req.body['rb-reset-pass-email']);
-    console.log(validEmail)
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['rb-reset-pass-email'],
+        );
+    console.log(validEmail);
     const dataValidation = {};
 
     if (!user) {
@@ -2340,12 +2540,11 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
         }
         if (req.body['rb-reset-pass-email'].length > 100) {
             dataValidation['rb-reset-pass-email'] = 'Email address must be 100 characters or fewer';
-        } 
+        }
         if (!req.body['rb-reset-pass-email']) {
             dataValidation['rb-reset-pass-email'] = 'Enter email address';
         }
-        
-    }  
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-password-reset', { cache: inputCache, validation: dataValidation });
@@ -2521,11 +2720,11 @@ dashboardRouter.post('/rb-create-password', invalidateCache, (req, res, _next) =
     if (!req.body['password-first']) {
         dataValidation['password-first'] = 'Enter password';
     } else if (req.body['password-first'].length < 8) {
-        dataValidation['password-first'] = 'The password has to be at least 8 characters or more';
+        dataValidation['password-first'] = 'Password must be 8 characters or more';
     }
 
     if (!req.body['password-match']) {
-        dataValidation['password-match'] = 'Enter value to confirm password';
+        dataValidation['password-match'] = 'Enter password to confirm';
     }
 
     if (req.body['password-first'] && req.body['password-match'] && req.body['password-first'] !== req.body['password-match']) {
@@ -2565,24 +2764,51 @@ dashboardRouter.post('/email-otp', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
     const inputCache = loadPageData(req);
-
     let backButton = '/dashboard/rb-dob-check';
+    const dataValidation = {};
+    const numbersOnly = /^[0-9]+$/.test(req.body['otp-code']);
 
     if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
         backButton = '/dashboard/rb-password-check';
     }
 
+    // if (!req.body['otp-code']) {
+    //     res.render('dashboard/email-otp', {
+    //         backButton: backButton,
+    //         cache: inputCache,
+    //         email: req.session?.selectedRB?.email || '',
+    //         validation: {dataValidation,
+    //     });
+    // } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
+    //     res.redirect('/dashboard/rb-create-password');
+    // } else {
+    //     res.redirect('/dashboard/home');
+    // }
+
+    if (req.body['otp-code'].length != 6) {
+        dataValidation['otp-code'] = 'Security code must be 6 characters';
+    }
+    if (!numbersOnly) {
+        dataValidation['otp-code'] = 'Security code must be a number';
+    }
+
     if (!req.body['otp-code']) {
+        dataValidation['otp-code'] = 'Enter security code';
+    }
+
+    if (Object.keys(dataValidation).length) {
         res.render('dashboard/email-otp', {
             backButton: backButton,
             cache: inputCache,
             email: req.session?.selectedRB?.email || '',
-            validation: { 'otp-code': 'Enter your security code' },
+            validation: dataValidation,
         });
-    } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
-        res.redirect('/dashboard/rb-create-password');
     } else {
-        res.redirect('/dashboard/home');
+        if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
+            res.redirect('/dashboard/rb-create-password');
+        } else {
+            res.redirect('/dashboard/home');
+        }
     }
 });
 

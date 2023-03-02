@@ -1,40 +1,23 @@
-{% import "../macros/form-elements.njk" as fe %}
- {% import "../macros/error-summary/govukErrorSummary.njk" as es %}
-{% extends "layout.html" %}
-{% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%}
-{% block beforeContent %}
-  <div class="govuk-phase-banner">
+{% import "../macros/form-elements.njk" as fe %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {%
+block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
         <span class="govuk-phase-banner__text">
             This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
         </span>
     </p>
-  </div>
-  <a class="govuk-back-link" href="/citizen-application/previous-names-q">Back</a>
-{% endblock %}
+</div>
+<a class="govuk-back-link" href="/citizen-application/previous-names-q">Back</a>
+{% endblock %} {% block content %}
 
-{% block content %}
-
-  <div class="govuk-grid-row">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% if validation|length %}
-
-        {% set errorList = [] %}
-
-        {% for key, value in validation %}
-          {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
-        {% endfor %}
-
-        {{ es.govukErrorSummary({
-          "titleText": "There is a problem",
-          "errorList": errorList 
-          }) 
-        }}
-      {% endif %}
+        {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({"text": value,
+        "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
     </div>
-  </div> 
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -45,7 +28,12 @@ endset%}
                 </legend>
                 <div class="govuk-form-group {% if validation['full-name-first-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="full-name-first-name"> First name </label>
-                    <div id="full-name-hint" class="govuk-hint">	Enter this even if it has not changed</div>
+                    <div id="full-name-hint" class="govuk-hint">Enter this even if it has not changed</div>
+                    {% if validation['full-name-first-name'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['full-name-first-name'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="full-name-first-name"
@@ -57,8 +45,13 @@ endset%}
                     />
                 </div>
                 <div class="govuk-form-group {% if validation['full-name-middle-names'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="full-name-middle-names"> 	Middle names (if you have them)</label>
-                    <div id="full-name-hint" class="govuk-hint">	Enter these even if they have not changed</div>
+                    <label class="govuk-label" for="full-name-middle-names"> Middle names (if you have them)</label>
+                    <div id="full-name-hint" class="govuk-hint">Enter these even if they have not changed</div>
+                    {% if validation['full-name-middle-names'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['full-name-middle-names'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="full-name-middle-names"
@@ -71,7 +64,12 @@ endset%}
                 </div>
                 <div class="govuk-form-group {% if validation['full-name-last-name'] %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="full-name-last-name"> Last name </label>
-                    <div id="full-name-hint" class="govuk-hint">	Enter this even if it has not changed</div>
+                    <div id="full-name-hint" class="govuk-hint">Enter this even if it has not changed</div>
+                    {% if validation['full-name-last-name'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['full-name-last-name'] }}
+                    </span>
+                    {% endif %}
                     <input
                         class="govuk-input govuk-input--width-20"
                         id="full-name-last-name"
@@ -84,97 +82,128 @@ endset%}
                 </div>
             </fieldset>
 
-            <div class="govuk-form-group {% if validation['alias-from-MM'] or  validation['alias-from-YYYY'] %}govuk-form-group--error{% endif %}">
-              <fieldset class="govuk-fieldset" role="group">
-                <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
-                  When did you start using this name? </br>
-                  <p class="govuk-hint"> 	For example, 3 1980 </p> 
-                </legend>
-
-                <div class="govuk-date-input" id="alias-from">
-
-                  <div class="govuk-date-input__item">
-                    <div class="govuk-form-group {% if validation['alias-from-MM'] %}govuk-form-group--error{% endif %}">
-                      <label class="govuk-label govuk-date-input__label" for="alias-from-MM">
-                        Month
-                      </label>
-
-                    <input value='{{cache["alias-from-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-from-MM" name="alias-from-MM" type="number" maxlength="2">
-                    </div>
-                  </div>
-
-                  <div class="govuk-date-input__item">
-                    <div class="govuk-form-group {% if validation['alias-from-YYYY'] %}govuk-form-group--error{% endif %}">
-                      <label class="govuk-label govuk-date-input__label" for="alias-from-YYYY">
-                        Year
-                      </label>
-
-                    <input value='{{cache["alias-from-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-from-YYYY" name="alias-from-YYYY" type="number" maxlength="4">
-                    </div>
-                  </div>
-
-                </div>
-
-
-              </fieldset>
-
-              </div>
-
-              <div class="govuk-form-group {% if validation['radio-group-alias-input'] %}govuk-form-group--error{% endif %}">
-              {{ fe.radio_buttons(
-                questionText="Do you still use this name?",
-                h1Text=false,
-                value=cache['radio-group-alias-input'], 
-                error=true,
-                errorMessages=[validation['radio-group-alias-input']],
-                horizontal=true,
-                items=[
-                  {group: 'alias-input', answerOption: "1", value: "1",  label: "Yes", dataTarget: 'save-and-continue' },
-                  {group: 'alias-input', answerOption: "0", value: "0", label: "No", dataTarget: 'save-and-continue' }
-                ]) 
-              }}
-              </div>
-
-              <div id='options-conditional-alt' style="display: none;" class="govuk-radios__conditional">
-              <div style="margin-top: 40px;" class="govuk-form-group {% if validation['alias-to-MM'] or  validation['alias-to-YYYY'] %}govuk-form-group--error{% endif %}">
+            <div
+                class="govuk-form-group {% if validation['alias-from-MM'] or validation['alias-from-YYYY'] or validation['from'] %}govuk-form-group--error{% endif %}"
+            >
                 <fieldset class="govuk-fieldset" role="group">
-                  <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
-                    When did you stop using this name? </br>
-                    <p class="govuk-hint"> 	For example, 3 2007 </p> 
-                  </legend>
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                        When did you start using this name? <br />
+                        <p class="govuk-hint">For example, 3 1980</p>
+                    </legend>
 
+                    <div class="govuk-date-input" id="alias-from">
+                        {% if validation['from'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['from'] }}
+                        </span>
+                        {% endif %}
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group {% if validation['alias-from-MM'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label govuk-date-input__label" for="alias-from-MM"> Month </label>
+                                {% if validation['alias-from-MM'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['alias-from-MM'] }}
+                                </span>
+                                {% endif %}
 
-                  <div class="govuk-date-input" id="alias-to">
+                                <input
+                                    value='{{cache["alias-from-MM"]}}'
+                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                    id="alias-from-MM"
+                                    name="alias-from-MM"
+                                    type="number"
+                                    maxlength="2"
+                                />
+                            </div>
+                        </div>
 
-                    <div class="govuk-date-input__item">
-                      
-                        <label class="govuk-label govuk-date-input__label" for="alias-to-MM">
-                          Month
-                        </label>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group {% if validation['alias-from-YYYY'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label govuk-date-input__label" for="alias-from-YYYY"> Year </label>
 
-                      <input value='{{cache["alias-to-MM"]}}' class="govuk-input govuk-date-input__input govuk-input--width-2 " id="alias-to-MM" name="alias-to-MM" type="number" maxlength="2">
-                      
+                                {% if validation['alias-from-YYYY'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['alias-from-YYYY'] }}
+                                </span>
+                                {% endif %}
+                                <input
+                                    value='{{cache["alias-from-YYYY"]}}'
+                                    class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                    id="alias-from-YYYY"
+                                    name="alias-from-YYYY"
+                                    type="number"
+                                    maxlength="4"
+                                />
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="govuk-date-input__item">
-                     
-                        <label class="govuk-label govuk-date-input__label" for="alias-to-YYYY">
-                          Year
-                        </label>
-
-                      <input value='{{cache["alias-to-YYYY"]}}' class="govuk-input govuk-date-input__input govuk-input--width-4 " id="alias-to-YYYY" name="alias-to-YYYY" type="number" maxlength="4">
-                      
-                    </div>
-
-                  </div>
-
                 </fieldset>
+            </div>
 
-              </div>
-              </div>
+            <div class="govuk-form-group {% if validation['radio-group-alias-input'] %}govuk-form-group--error{% endif %}">
+                {{ fe.radio_buttons( questionText="Do you still use this name?", h1Text=false, value=cache['radio-group-alias-input'], error=true,
+                errorMessages=[validation['radio-group-alias-input']], horizontal=true, items=[ {group: 'alias-input', answerOption: "1", value: "1",
+                label: "Yes", dataTarget: 'save-and-continue' }, {group: 'alias-input', answerOption: "0", value: "0", label: "No", dataTarget:
+                'save-and-continue' } ]) }}
+            </div>
 
-            <button style="margin-top: 60px;" class="govuk-button" data-module="govuk-button">Continue</button>
+            <div id="options-conditional-alt" style="display: none" class="govuk-radios__conditional">
+                <div
+                    style="margin-top: 40px"
+                    class="govuk-form-group {% if validation['alias-to-MM'] or validation['alias-to-YYYY'] or validation['to'] %}govuk-form-group--error{% endif %}"
+                >
+                    <fieldset class="govuk-fieldset" role="group">
+                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                            When did you stop using this name? <br />
+                            <p class="govuk-hint">For example, 3 2007</p>
+                        </legend>
 
+                        <div class="govuk-date-input" id="alias-to">
+                            {% if validation['from'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['from'] }}
+                            </span>
+                            {% endif %}
+                            <div class="govuk-date-input__item">
+                                <label class="govuk-label govuk-date-input__label" for="alias-to-MM"> Month </label>
+
+                                {% if validation['alias-to-MM'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['alias-to-MM'] }}
+                                </span>
+                                {% endif %}
+                                <input
+                                    value='{{cache["alias-to-MM"]}}'
+                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                    id="alias-to-MM"
+                                    name="alias-to-MM"
+                                    type="number"
+                                    maxlength="2"
+                                />
+                            </div>
+
+                            <div class="govuk-date-input__item">
+                                <label class="govuk-label govuk-date-input__label" for="alias-to-YYYY"> Year </label>
+                                {% if validation['alias-to-YYYY'] %}
+                                <span id="ninonr-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['alias-to-YYYY'] }}
+                                </span>
+                                {% endif %}
+                                <input
+                                    value='{{cache["alias-to-YYYY"]}}'
+                                    class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                    id="alias-to-YYYY"
+                                    name="alias-to-YYYY"
+                                    type="number"
+                                    maxlength="4"
+                                />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <button style="margin-top: 60px" class="govuk-button" data-module="govuk-button">Continue</button>
         </form>
     </div>
 </div>

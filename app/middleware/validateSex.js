@@ -16,7 +16,7 @@ function validateSex(req, res) {
     res.redirect('national-insurance-number');
   } else {
     res.render('citizen-application/sex', { cache: prevValues, validation: {
-      sex: "Please select your birth given sex"
+      sex: "Select your sex"
     } });
   }
 }

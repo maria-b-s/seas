@@ -18,7 +18,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
         endif %}
 
         <form class="form" method="post">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {% if validation['has-drivers-license'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" aria-describedby="drivers-licence-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Do you have a current UK driving licence?</h1>
@@ -44,12 +44,12 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
 
                 <div aria-live="polite">
                     <div class="govuk-radios__conditional" id="conditional-contact">
-                        <div class="govuk-form-group">
+                        <div class="govuk-form-group {% if validation['drivers-licence-number'] %}govuk-form-group--error{% endif %}">
                             <label class="govuk-label" for="drivers-licence-number" aria-label="enter your UK Drivers Licence number">
                                 Driving licence number
                             </label>
                             <div id="nino-hint" class="govuk-hint">For example, MORGA657054SM9IJ</div>
-                            <!-- Need a regex for drivers license   -->
+
                             {% if validation['drivers-licence-number'] %}
                             <span id="ninonr-error" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span> {{ validation['drivers-licence-number'] }}
@@ -62,6 +62,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                                 type="text"
                                 spellcheck="false"
                                 autocomplete="email"
+                                value='{{data["drivers-licence-number"]}}'
                             />
                         </div>
                     </div>

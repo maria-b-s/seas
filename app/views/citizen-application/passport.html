@@ -56,12 +56,9 @@ pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standa
                             />
                         </div>
 
-                        {% if validation['passport-country-of-issue'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['passport-country-of-issue'] }}
-                        </span>
-                        {{ country({ label: 'Country of issue', inputClass: 'govuk-input--width-20', name: 'passport-country-of-issue', error:
-                        'govuk-form-group--error'}) }} {% else %} {{ country({ label: 'Country (optional)', inputClass: 'govuk-input--width-20', name:
+                        {% if validation['passport-country-of-issue'] %} {{ country({ label: 'Country of issue', inputClass: 'govuk-input--width-20',
+                        name: 'passport-country-of-issue', error: 'govuk-form-group--error', value: data['passport-country-of-issue'], errorMessage:
+                        validation['passport-country-of-issue']}) }} {% else %} {{ country({ label: 'Country of issue', inputClass: 'govuk-input--width-20', name:
                         'passport-country-of-issue', value: data['passport-country-of-issue'] }) }} {% endif %}
                     </div>
                 </fieldset>
