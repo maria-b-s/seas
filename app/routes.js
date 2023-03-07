@@ -96,17 +96,29 @@ registeredBodyRouter.post('/existing-post-holder', (req, res) => {
     }
 });
 
+registeredBodyRouter.get('/volunteer-declaration', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/volunteer-declaration', { cms, cache: inputCache, validation: null });
+});
+
 registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
     if (req.body['foc_declare'] == '_unchecked') {
-        req.session.data['foc_declare'] = 'Not FOC';
-    } else {
-        req.session.data['foc_declare'] = 'FOC';
+        dataValidation['foc_declare'] = 'Tick the box to confirm you agree with the declaration';
     }
 
-    if (req.query.change == 'true') {
-        res.redirect('check-answers');
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/volunteer-declaration', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('applicant-name');
+        if (req.query.change == 'true') {
+            res.redirect('check-answers');
+        } else {
+            res.redirect('applicant-name');
+        }
     }
 });
 
@@ -2407,7 +2419,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     }
 
     if (!req.body['counter-signatory-nr']) {
-        dataValidation['counter-signatory-nr'] = 'Enter Countersignatory number';
+        dataValidation['counter-signatory-nr'] = 'Enter countersignatory number';
     }
 
     if (
@@ -2456,11 +2468,15 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
     const inputCache = loadPageData(req);
     const dataValidation = {};
 
-    if (!req.body['password']) {
+    if (req.body['password'].length < 8) {
+        dataValidation['password'] = 'Password must be 8 characters or more';
+    } else if (!req.body['password']) {
         dataValidation['password'] = 'Enter password';
-    } else if (req.body.password !== req.session?.selectedRB?.password) {
-        dataValidation['password'] = 'Password is invalid';
-    }
+    } 
+    
+    // else if (req.body.password !== req.session?.selectedRB?.password) {
+    //     dataValidation['password'] = 'Password is invalid';
+    // }
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-password-check', { cache: inputCache, validation: dataValidation });
@@ -2587,9 +2603,9 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
     if (!user) {
         res.redirect('/dashboard/rb-login');
     } else {
-        if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
-            dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
-        }
+        // if (user.email.toLowerCase().trim() !== req.body['rb-reset-pass-email'].toLowerCase().trim()) {
+        //     dataValidation['rb-reset-pass-email'] = 'The email entered does not match your records, try again';
+        // }
         if (!validEmail) {
             dataValidation['rb-reset-pass-email'] = 'Enter email address in the correct format';
         }
@@ -2663,11 +2679,11 @@ dashboardRouter.post('/rb-reset-password', invalidateCache, (req, res, _next) =>
     }
 
     if (!req.body['password-match']) {
-        dataValidation['password-match'] = 'Enter value to confirm password';
+        dataValidation['password-match'] = 'Enter password';
     }
 
     if (req.body['password-first'] && req.body['password-match'] && req.body['password-first'] !== req.body['password-match']) {
-        dataValidation['password-match'] = 'The password does not match';
+        dataValidation['password-match'] = 'Passwords do not match';
     } else if (user) {
         let newUserState = { ...user };
         newUserState.password = req.body['password-first'];
@@ -2753,11 +2769,13 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
 
         if (!req.body['dob-year']) {
             dataValidation['dob-year'] = 'Date of birth must include a year';
-        } else {
-            if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
-                dataValidation['dob'] = 'Date of birth does not match';
-            }
-        }
+        } 
+        
+        // else {
+        //     if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
+        //         dataValidation['dob'] = 'Date of birth does not match';
+        //     }
+        // }
     }
 
     if (Object.keys(dataValidation).length) {

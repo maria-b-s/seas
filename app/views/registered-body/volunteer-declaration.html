@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %}{% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,11 +13,13 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({"text": value,
+        "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem', "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {% if validation['foc_declare'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">Free-of-charge volunteer declaration</h1>
                     </legend>
 
@@ -49,9 +51,9 @@ endset%} {% block beforeContent %}
                 </div>
             </details>
             {% if query['change'] === 'true' %}
-                <button class="govuk-button" data-module="govuk-button">Accept and Check Answers</button>
+            <button class="govuk-button" data-module="govuk-button">Accept and Check Answers</button>
             {% else %}
-                <button class="govuk-button" data-module="govuk-button">Accept and continue</button>
+            <button class="govuk-button" data-module="govuk-button">Accept and continue</button>
             {% endif %}
         </form>
     </div>

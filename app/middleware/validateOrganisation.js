@@ -8,7 +8,6 @@ function validateOrganisation(req, res, _next) {
   const inputCache = loadPageData(req);
   let redirectPath = 'applicant-or-post-holder';
   const organisationName = state['organisation-name']
-  const validName = /^[a-zA-Z'\- ]+$/.test(req.body['organisation-name']);
 
   let dataValidation = {}
   
@@ -26,9 +25,6 @@ function validateOrganisation(req, res, _next) {
     dataValidation['organisation-check'] = 'Select which organisation the check is for';
   }
   if(state['organisation-check'] == 'another-org'){
-    if(!validName){
-      dataValidation['organisation-name'] = 'Name of organisation must only include letters a to z, hyphens, spaces and apostrophes';
-    }
     if(organisationName.length > 60){
       dataValidation['organisation-name'] = 'Name of organisation must be 60 characters or fewer';
     }
