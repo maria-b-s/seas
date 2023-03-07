@@ -1,100 +1,96 @@
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% extends "layout.html" %}
-{% block pageTitle %} Question page {% endblock %}
-{% set serviceName %} Request a standard or enhanced DBS check {%endset%}
-
-{% block beforeContent %}
-  <div class="govuk-phase-banner">
-      <p class="govuk-phase-banner__content">
-          <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-          <span class="govuk-phase-banner__text">
-              This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-          </span>
-      </p>
-  </div>
-  <a class="govuk-back-link" href="/dashboard/rb-login">Back</a>
-{% endblock %}
-{% block content %}
-  <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %}
-
-          {% set errorList = [] %}
-
-            {% for key, value in validation %}
-                {% set errorList = (errorList.push({
-                    "text": value,
-                    "href": "#" + key
-                }), errorList) %}
-            {% endfor %}
-
-          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-        {% endif %}
-          <form class="form" action="" method="post">
-              <div class="govuk-form-group">
+{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Request a standard or enhanced DBS check {%endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="/dashboard/rb-login">Back</a>
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
+        <form class="form" action="" method="post">
+            <div class="govuk-form-group {% if validation['dob'] %}govuk-form-group--error{% endif %}">
                 <fieldset id="main-content" class="govuk-fieldset" role="group" aria-describedby="dob-hint">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">What is your date of birth?</h1>
-                </legend>
-                
-                {% if validation['dob-day'] %}
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">What is your date of birth?</h1>
+                    </legend>
+
+                    {% if validation['dob'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['dob'] }}
+                    </span>
+                    {% endif %} {% if validation['dob-day'] %}
                     <span id="ninonr-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> {{ validation['dob-day'] }}
                     </span>
-                {% endif %}
-                <div id="sign-in-item-hint" class="govuk-hint govuk-hint"> For example, 12 3 1980 </div>
-                <div class="govuk-date-input" id="dob">
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group  {% if validation['dob-day'] %}govuk-form-group--error{% endif %}">
-                            <label class="govuk-label govuk-date-input__label" for="dob-day"> Day </label>
-                            <input
-                                class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                id="dob-day"
-                                name="dob-day"
-                                type="text"
-                                value="{{cache['dob-day']}}"
-                                autocomplete="bday-day"
-                                pattern="[0-9]*"
-                                inputmode="numeric"
-                            />
+                    {% endif %} {% if validation['dob-month'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['dob-month'] }}
+                    </span>
+                    {% endif %} {% if validation['dob-year'] %}
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['dob-year'] }}
+                    </span>
+                    {% endif %}
+                    <div id="sign-in-item-hint" class="govuk-hint govuk-hint">For example, 12 3 1980</div>
+                    <div class="govuk-date-input" id="dob">
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group {% if validation['dob-day'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label govuk-date-input__label" for="dob-day"> Day </label>
+                                <input
+                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                    id="dob-day"
+                                    name="dob-day"
+                                    type="text"
+                                    value="{{cache['dob-day']}}"
+                                    autocomplete="bday-day"
+                                    pattern="[0-9]*"
+                                    inputmode="numeric"
+                                />
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group {% if validation['dob-month'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label govuk-date-input__label" for="dob-month"> Month </label>
+                                <input
+                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                    id="dob-month"
+                                    name="dob-month"
+                                    type="text"
+                                    value="{{cache['dob-month']}}"
+                                    autocomplete="bday-month"
+                                    pattern="[0-9]*"
+                                    inputmode="numeric"
+                                />
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group {% if validation['dob-year'] %}govuk-form-group--error{% endif %}">
+                                <label class="govuk-label govuk-date-input__label" for="dob-year"> Year </label>
+                                <input
+                                    class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                    id="dob-year"
+                                    name="dob-year"
+                                    value="{{cache['dob-year']}}"
+                                    type="text"
+                                    autocomplete="bday-year"
+                                    pattern="[0-9]*"
+                                    inputmode="numeric"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group {% if validation['dob-month'] %}govuk-form-group--error{% endif %}">
-                            <label class="govuk-label govuk-date-input__label" for="dob-month"> Month </label>
-                            <input
-                                class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                id="dob-month"
-                                name="dob-month"
-                                type="text"
-                                 value="{{cache['dob-month']}}"
-                                autocomplete="bday-month"
-                                pattern="[0-9]*"
-                                inputmode="numeric"
-                            />
-                        </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group {% if validation['dob-year'] %}govuk-form-group--error{% endif %}">
-                            <label class="govuk-label govuk-date-input__label" for="dob-year"> Year </label>
-                            <input
-                                class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                id="dob-year"
-                                name="dob-year"
-                                 value="{{cache['dob-year']}}"
-                                type="text"
-                                autocomplete="bday-year"
-                                pattern="[0-9]*"
-                                inputmode="numeric"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-              </div>
-              <button style="margin-top: 0px;" class="govuk-button" type='submit' data-module="govuk-button">Continue</button>
-          </form>
-      </div>
-  </div>
+                </fieldset>
+            </div>
+            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

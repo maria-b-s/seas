@@ -1261,9 +1261,9 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
             }
         } else {
             var diff_ms = date - inputtedDate.getTime();
-            var age_dt = new Date(diff_ms); 
-            var age = Math.abs(age_dt.getUTCFullYear() - 1970)
-            if(age < 16) {
+            var age_dt = new Date(diff_ms);
+            var age = Math.abs(age_dt.getUTCFullYear() - 1970);
+            if (age < 16) {
                 dataValidation['ca-dob-day'] = 'You must be 16 years or older to use this service';
             }
         }
@@ -1395,9 +1395,9 @@ citizenRouter.post('/cert-address-manual', (req, res) => {
             'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
     }
 
-    if(!validCity){
+    if (!validCity) {
         dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
-    }   
+    }
 
     if (!validPostcode) {
         dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
@@ -1476,7 +1476,7 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
                     dataValidation['start-year'] = 'Year you started living at this address must be in the past';
                 } else if (inputtedDate.getMonth() > date.getMonth()) {
                     dataValidation['start-month'] = 'Month you started living at this address must be in the past';
-                } 
+                }
             }
         }
     }
@@ -1533,12 +1533,11 @@ citizenRouter.post('/living-location', (req, res) => {
     }
 
     if (!req.body['location']) {
-        if(req.query.address == 'current'){
+        if (req.query.address == 'current') {
             dataValidation['location'] = 'Select where you live';
         } else {
             dataValidation['location'] = 'Select where you lived';
         }
-       
     }
 
     if (Object.keys(dataValidation).length) {
@@ -1637,9 +1636,9 @@ citizenRouter.post('/uk-address-manual', (req, res) => {
             'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
     }
 
-    if(!validCity){
+    if (!validCity) {
         dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
-    }   
+    }
 
     if (!validPostcode) {
         dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
@@ -1883,11 +1882,11 @@ citizenRouter.post('/no-address', (req, res) => {
     const inputCache = loadPageData(req);
     const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['townOrCity']); //A1
 
-    if(!validCity){
+    if (!validCity) {
         dataValidation['townOrCity'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
     }
 
-    if(req.body['townOrCity'].length < 2 || req.body['townOrCity'].length > 50){
+    if (req.body['townOrCity'].length < 2 || req.body['townOrCity'].length > 50) {
         dataValidation['townOrCity'] = 'Town or city must be between 2 and 50 characters';
     }
 
@@ -2043,7 +2042,7 @@ citizenRouter.post('/lived-elsewhere', invalidateCache, (req, res) => {
             certAddress: req.session.data['cert-address'],
             currentAddress: req.session.data.current_addresses,
             previousAddresses: req.session.data.previous_addresses,
-            date: date
+            date: date,
         });
     } else {
         if (req.body['lived-elsewhere'] == 'Yes') {
@@ -2722,27 +2721,42 @@ dashboardRouter.post('/rb-dob-check', invalidateCache, (req, res, _next) => {
     const dataValidation = {};
 
     const user = req.session?.selectedRB;
-    const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    const date = new Date();
+    // const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
 
-    if (!req.body['dob-day'] || !req.body['dob-month'] || !req.body['dob-year']) {
-        dataValidation['dob-day'] = 'Enter date of birth';
-        dataValidation['dob-month'] = '';
-        dataValidation['dob-year'] = '';
-    } else if (user && user.userDob) {
+    if (user && user.userDob) {
         const dataDate = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0') + '/' + req.body['dob-year'];
 
-        if (!dateRegex.test(dataDate)) {
-            dataValidation['dob-day'] = 'Enter a valid date';
-            dataValidation['dob-month'] = '';
-            dataValidation['dob-year'] = '';
-        } else if (!moment(dataDate, 'DD/MM/YYYY').isValid()) {
-            dataValidation['dob-day'] = 'Enter a valid date of birth';
-            dataValidation['dob-month'] = '';
-            dataValidation['dob-year'] = '';
-        } else if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
-            dataValidation['dob-day'] = 'The value is not correct enter a different date of birth';
-            dataValidation['dob-month'] = '';
-            dataValidation['dob-year'] = '';
+        if (req.body['dob-day'] < 1 || req.body['dob-day'] > 31) {
+            dataValidation['dob-day'] = 'The day of date of birth must be between 1 and 31';
+        }
+
+        if (req.body['dob-month'] < 1 || req.body['dob-month'] > 12) {
+            dataValidation['dob-month'] = 'The month of date of birth must be between 1 and 12';
+        }
+
+        if (req.body['dob-year'] < 1899 || req.body['dob-year'] > 2200) {
+            dataValidation['dob-year'] = 'The year of date of birth must be a number between 1900 and less than or equal to 2200';
+        }
+
+        if (req.body['dob-year'].length != 4) {
+            dataValidation['dob-year'] = 'Year must include four numbers';
+        }
+
+        if (!req.body['dob-day']) {
+            dataValidation['dob-day'] = 'Date of birth must include a day';
+        }
+
+        if (!req.body['dob-month']) {
+            dataValidation['dob-month'] = 'Date of birth must include a month';
+        }
+
+        if (!req.body['dob-year']) {
+            dataValidation['dob-year'] = 'Date of birth must include a year';
+        } else {
+            if (!moment(user.userDob, 'DD/MM/YYYY').isSame(moment(dataDate, 'DD/MM/YYYY'))) {
+                dataValidation['dob'] = 'Date of birth does not match';
+            }
         }
     }
 
