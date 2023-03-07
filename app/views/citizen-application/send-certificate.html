@@ -32,7 +32,13 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="postcode-lookup"> UK postcode </label>
                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style="display: none">
-                            <span class="govuk-visually-hidden">Error:</span> Invalid postcode
+                            <span class="govuk-visually-hidden">Error:</span> UK postcode is not in the correct format. Please check and try again
+                        </p>
+                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-2" style="display: none">
+                            <span class="govuk-visually-hidden">Error:</span> Enter postcode
+                        </p>
+                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-3" style="display: none">
+                            <span class="govuk-visually-hidden">Error:</span> Unable to search postcode
                         </p>
                         {% if validation['postcode-lookup'] %}
                         <span id="ninonr-error" class="govuk-error-message">
