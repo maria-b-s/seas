@@ -33,7 +33,9 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
                     </p>
 
-                    <div class="govuk-form-group {% if validation['start-month'] or validation['start-year ']%}govuk-form-group--error{% endif %}">
+                    <div
+                        class="govuk-form-group"
+                    >
                         {% if query['address'] == 'previous'%}<label class="govuk-heading-s">Date from</label>{%endif%} {% if
                         validation['start-month'] %}
                         <span id="ninonr-error" class="govuk-error-message">
@@ -44,9 +46,14 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                             <span class="govuk-visually-hidden">Error:</span> {{ validation['start-year'] }}
                         </span>
                         {% endif %}
+                        {% if validation['from'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['from'] }}
+                        </span>
+                        {% endif %}
                         <div class="govuk-date-input__item">
                             <div
-                                class="govuk-form-group {% if validation['start-month'] or validation['start-year']%}govuk-form-group--error{% endif %}"
+                                class="govuk-form-group {% if validation['start-month'] or validation['start-year'] or validation['from']%}govuk-form-group--error{% endif %}"
                             >
                                 <label class="govuk-label govuk-date-input__label">Month</label>
                                 <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="start-month" type="number" {% if
@@ -72,8 +79,15 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                             <span class="govuk-visually-hidden">Error:</span> {{ validation['end-year'] }}
                         </span>
                         {% endif %}
+                        {% if validation['to'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['to'] }}
+                        </span>
+                        {% endif %}
                         <div class="govuk-date-input__item">
-                            <div class="govuk-form-group {% if validation['end-month'] or validation['end-year']%}govuk-form-group--error{% endif %}">
+                            <div
+                                class="govuk-form-group {% if validation['end-month'] or validation['end-year'] or validation['to']%}govuk-form-group--error{% endif %}"
+                            >
                                 <label class="govuk-label govuk-date-input__label">Month</label>
                                 <input class="govuk-input govuk-date-input__input govuk-input--width-3" name="end-month" type="text" {% if
                                 cache['end-month'] %} value="{{cache['end-month']}}" {% endif %}/>

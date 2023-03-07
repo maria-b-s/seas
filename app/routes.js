@@ -23,6 +23,7 @@ const moment = require('moment');
 const _ = require('lodash');
 const { renderString } = require('nunjucks');
 const { validateOrganisation } = require('./middleware/validateOrganisation');
+const e = require('express');
 
 const router = express.Router();
 const citizenRouter = express.Router();
@@ -1258,6 +1259,13 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
             } else if (inputtedDate.getDate() > date.getDate()) {
                 dataValidation['ca-dob-day'] = 'Day of birth must be in the past';
             }
+        } else {
+            var diff_ms = date - inputtedDate.getTime();
+            var age_dt = new Date(diff_ms); 
+            var age = Math.abs(age_dt.getUTCFullYear() - 1970)
+            if(age < 16) {
+                dataValidation['ca-dob-day'] = 'You must be 16 years or older to use this service';
+            }
         }
     }
 
@@ -1395,11 +1403,11 @@ citizenRouter.post('/cert-address-manual', (req, res) => {
         dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
     }
 
-    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+    if (req.body['lookup-addr'].length < 2 || req.body['lookup-addr'].length > 200) {
         dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
     }
 
-    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+    if (req.body['hidden-details-town'].length < 2 || req.body['hidden-details-town'].length > 50) {
         dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
     }
 
@@ -1441,25 +1449,35 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
     const date = new Date();
 
     if (!req.body['confirm-current-address']) {
-        dataValidation['confirm-current'] = 'Select yes if this is your current address';
+        dataValidation['confirm-current'] = 'Select if this is your current address';
     }
 
     if (req.body['confirm-current-address'] == 'Yes') {
         if (req.body['start-month'] < 1 || req.body['start-month'] > 12) {
-            dataValidation['start-month'] = 'The month must be between 1 and 12';
+            dataValidation['start-month'] = 'The month you started living at this address must be a number between 1 and 12';
         }
-        if (req.body['start-year'] < 1899 || req.body['start-year'] >= date.getFullYear()) {
-            dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+        if (req.body['start-year'] < 1899 || req.body['start-year'] > 2200) {
+            dataValidation['start-year'] = 'The year you started living at this address must be a number between 1900 and 2200';
         }
 
         if (req.body['start-year'].length != 4) {
-            dataValidation['start-year'] = 'Year must include four numbers';
+            dataValidation['start-year'] = 'Year you started living at this address must include four numbers';
         }
         if (!req.body['start-month']) {
-            dataValidation['start-month'] = 'Enter a month';
+            dataValidation['start-month'] = 'Enter month you started living at this address';
         }
         if (!req.body['start-year']) {
-            dataValidation['start-year'] = 'Enter a year';
+            dataValidation['start-year'] = 'Enter year you started living at this address';
+        } else {
+            const inputtedDate = new Date(req.body['start-year'], req.body['start-month'] - 1);
+
+            if (inputtedDate.toLocaleDateString() >= date.toLocaleDateString()) {
+                if (inputtedDate.getFullYear() > date.getFullYear()) {
+                    dataValidation['start-year'] = 'Year you started living at this address must be in the past';
+                } else if (inputtedDate.getMonth() > date.getMonth()) {
+                    dataValidation['start-month'] = 'Month you started living at this address must be in the past';
+                } 
+            }
         }
     }
 
@@ -1515,7 +1533,12 @@ citizenRouter.post('/living-location', (req, res) => {
     }
 
     if (!req.body['location']) {
-        dataValidation['location'] = 'Select an option';
+        if(req.query.address == 'current'){
+            dataValidation['location'] = 'Select where you live';
+        } else {
+            dataValidation['location'] = 'Select where you lived';
+        }
+       
     }
 
     if (Object.keys(dataValidation).length) {
@@ -1622,11 +1645,11 @@ citizenRouter.post('/uk-address-manual', (req, res) => {
         dataValidation['postcode-lookup'] = 'UK postcode is not in the correct format. Please check and try again';
     }
 
-    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+    if (req.body['lookup-addr'].length < 2 || req.body['lookup-addr'].length > 200) {
         dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
     }
 
-    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+    if (req.body['hidden-details-town'].length < 2 || req.body['hidden-details-town'].length > 50) {
         dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
     }
 
@@ -1697,38 +1720,55 @@ citizenRouter.post('/address-confirm', (req, res) => {
     const date = new Date();
 
     if (req.body['start-month'] < 1 || req.body['start-month'] > 12) {
-        dataValidation['start-month'] = 'The month must be between 1 and 12';
+        dataValidation['start-month'] = 'The month you started living at this address must be a number between 1 and 12';
     }
-    if (req.body['start-year'] < 1899 || req.body['start-year'] >= date.getFullYear()) {
-        dataValidation['start-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+    if (req.body['start-year'] < 1899 || req.body['start-year'] > 2200) {
+        dataValidation['start-year'] = 'The year you started living at this address must be a number between 1900 and 2200';
     }
 
     if (req.body['start-year'].length != 4) {
-        dataValidation['start-year'] = 'Year must include four numbers';
+        dataValidation['start-year'] = 'Year you started living at this address must include four numbers';
     }
     if (!req.body['start-month']) {
-        dataValidation['start-month'] = 'Enter a month';
+        dataValidation['start-month'] = 'Enter month you started living at this address';
     }
     if (!req.body['start-year']) {
-        dataValidation['start-year'] = 'Enter a year';
+        dataValidation['start-year'] = 'Enter year you started living at this address';
+    } else {
+        const inputtedStartDate = new Date(req.body['start-year'], req.body['start-month'] - 1);
+
+        if (inputtedStartDate.valueOf() >= date.valueOf()) {
+            dataValidation['from'] = 'Date you started living at this address must be in the past';
+        }
     }
 
     if (req.query.address == 'previous') {
         if (req.body['end-month'] < 1 || req.body['end-month'] > 12) {
-            dataValidation['end-month'] = 'The month must be between 1 and 12';
+            dataValidation['end-month'] = 'The month you stopped living at this address must be a number between 1 and 12';
         }
-        if (req.body['end-year'] < 1899 || req.body['end-year'] >= date.getFullYear()) {
-            dataValidation['end-year'] = 'The year of date must be a number between 1900 and less than or equal to ' + date.getFullYear();
+        if (req.body['end-year'] < 1899 || req.body['end-year'] > 2200) {
+            dataValidation['end-year'] = 'The year you stopped living at this address must be a number between 1900 and 2200';
         }
 
         if (req.body['end-year'].length != 4) {
-            dataValidation['end-year'] = 'Year must include four numbers';
+            dataValidation['end-year'] = 'Year you stopped living at this address must include four numbers';
         }
         if (!req.body['end-month']) {
-            dataValidation['end-month'] = 'Enter a month';
+            dataValidation['end-month'] = 'Enter month you stopped living at this address';
         }
         if (!req.body['end-year']) {
-            dataValidation['end-year'] = 'Enter a year';
+            dataValidation['end-year'] = 'Enter year you stopped living at this address';
+        } else {
+            const inputtedStartDate = new Date(req.body['start-year'], req.body['start-month'] - 1);
+            const inputtedEndDate = new Date(req.body['end-year'], req.body['end-month'] - 1);
+
+            if (inputtedEndDate.valueOf() >= date.valueOf()) {
+                dataValidation['to'] = 'Date you stopped living at this address must be in the past';
+            }
+
+            if (inputtedStartDate.valueOf() >= inputtedEndDate.valueOf()) {
+                dataValidation['to'] = 'Date you stopped living at this address must be after start date';
+            }
         }
     }
 
@@ -1841,6 +1881,15 @@ citizenRouter.post('/no-address', (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['townOrCity']); //A1
+
+    if(!validCity){
+        dataValidation['townOrCity'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if(req.body['townOrCity'].length < 2 || req.body['townOrCity'].length > 50){
+        dataValidation['townOrCity'] = 'Town or city must be between 2 and 50 characters';
+    }
 
     if (!req.body['townOrCity']) {
         dataValidation['townOrCity'] = 'Enter town or city';
@@ -1892,15 +1941,15 @@ citizenRouter.post('/outside-uk', (req, res) => {
         dataValidation['hidden-details-country'] = 'Country must only include letters a to z, hyphens, spaces and apostrophes';
     }
     //R4
-    if (req.body['lookup-addr'].length < 2 && req.body['lookup-addr'].length > 200) {
+    if (req.body['lookup-addr'].length < 2 || req.body['lookup-addr'].length > 200) {
         dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
     }
     //R4
-    if (req.body['hidden-details-town'].length < 2 && req.body['hidden-details-town'].length > 50) {
+    if (req.body['hidden-details-town'].length < 2 || req.body['hidden-details-town'].length > 50) {
         dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
     }
     //R4
-    if (req.body['hidden-details-country'].length < 2 && req.body['hidden-details-country'].length > 30) {
+    if (req.body['hidden-details-country'].length < 2 || req.body['hidden-details-country'].length > 30) {
         dataValidation['hidden-details-country'] = 'Address line 1 must be between 2 and 30 characters';
     }
     //R1
@@ -1976,9 +2025,15 @@ citizenRouter.post('/lived-elsewhere', invalidateCache, (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    let currentDate = new Date();
+    const nameOfMonth = currentDate.toLocaleString('default', {
+        month: 'long',
+    });
+    const year = currentDate.getFullYear() - 5;
+    const date = nameOfMonth + ' ' + year;
 
     if (!req.body['lived-elsewhere']) {
-        dataValidation['lived-elsewhere'] = 'Select an option';
+        dataValidation['lived-elsewhere'] = 'Select if you have lived anywhere else from ' + date + ' to now';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -1988,6 +2043,7 @@ citizenRouter.post('/lived-elsewhere', invalidateCache, (req, res) => {
             certAddress: req.session.data['cert-address'],
             currentAddress: req.session.data.current_addresses,
             previousAddresses: req.session.data.previous_addresses,
+            date: date
         });
     } else {
         if (req.body['lived-elsewhere'] == 'Yes') {
@@ -2014,7 +2070,7 @@ citizenRouter.post('/lived-elsewhere-confirm', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
     if (!req.body['lived-elsewhere-confirm']) {
-        dataValidation['lived-elsewhere-confirm'] = 'Select an option';
+        dataValidation['lived-elsewhere-confirm'] = 'Select what type of address you want to tell us about';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -2771,19 +2827,6 @@ dashboardRouter.post('/email-otp', invalidateCache, (req, res, _next) => {
     if (req.session?.selectedRB && req.session.selectedRB.hasSetPassword) {
         backButton = '/dashboard/rb-password-check';
     }
-
-    // if (!req.body['otp-code']) {
-    //     res.render('dashboard/email-otp', {
-    //         backButton: backButton,
-    //         cache: inputCache,
-    //         email: req.session?.selectedRB?.email || '',
-    //         validation: {dataValidation,
-    //     });
-    // } else if (req.session?.selectedRB && !req.session.selectedRB.hasSetPassword) {
-    //     res.redirect('/dashboard/rb-create-password');
-    // } else {
-    //     res.redirect('/dashboard/home');
-    // }
 
     if (req.body['otp-code'].length != 6) {
         dataValidation['otp-code'] = 'Security code must be 6 characters';
