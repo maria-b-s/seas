@@ -21,13 +21,10 @@ function validateNationalInsurance(req, res, _next) {
 
     if (state['has-national-insurance-number'] == 'yes') {
         if (!state['referred-nino-input']) {
-            console.log(1);
             dataValidation['referred-nino-input'] = 'Enter National Insurance number';
         } else if (state['referred-nino-input'].length != 9) {
-            console.log(2);
             dataValidation['referred-nino-input'] = 'National Insurance number must be 9 characters';
         } else if (!validNINO) {
-            console.log(3);
             dataValidation['referred-nino-input'] = 'National Insurance number must only include letters a to z and numbers';
         }
     }

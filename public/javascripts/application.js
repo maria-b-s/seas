@@ -374,7 +374,6 @@ $('.lookup').on('click', function () {
             return response.json();
         })
         .then(function (res) {
-            console.log(res)
             if (res.status !== 200) {
                 if (res.status == 400) {
                     err2.css('display', 'block');
