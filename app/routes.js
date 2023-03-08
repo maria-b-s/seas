@@ -1043,6 +1043,11 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     const validMiddleNames = /^[a-zA-Z'\- ]+$/.test(req.body['full-name-middle-names']);
     const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['full-name-last-name']);
 
+    const validStartMonth = /^[0-9]+$/.test(req.body['alias-from-MM']);
+    const validStartYear = /^[0-9]+$/.test(req.body['alias-from-YYYY']);
+    const validEndMonth = /^[0-9]+$/.test(req.body['alias-to-MM']);
+    const validEndYear = /^[0-9]+$/.test(req.body['alias-to-YYYY']);
+    
     const date = new Date();
 
     if (req.body['alias-from-MM'] < 1 || req.body['alias-from-MM'] > 12) {
@@ -1056,6 +1061,16 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     if (req.body['alias-from-YYYY'].length != 4) {
         dataValidation['alias-from-YYYY'] = 'Year you started using name must include four numbers';
     }
+
+
+    if(!validStartMonth){
+        dataValidation['alias-from-MM'] = 'Month you started using name must be a number';
+    }
+
+    if(!validStartYear){
+        dataValidation['alias-from-YYYY'] = 'Year you started using name must be a number';
+    }
+
 
     if (!req.body['alias-from-MM']) {
         dataValidation['alias-from-MM'] = 'Enter month you started using name';
@@ -1082,6 +1097,14 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
 
         if (req.body['alias-to-YYYY'].length != 4) {
             dataValidation['alias-to-YYYY'] = 'Year you stopped using name must include four numbers';
+        }
+
+        if(!validEndMonth){
+            dataValidation['alias-to-MM'] = 'Month you stopped using name must be a number';
+        }
+    
+        if(!validEndYear){
+            dataValidation['alias-to-YYYY'] = 'Year you stopped using name must be a number';
         }
 
         if (!req.body['alias-to-MM']) {
@@ -1142,7 +1165,6 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
     }
 
     if (Object.keys(dataValidation).length) {
-        console.log(dataValidation);
         res.render('citizen-application/previous-names-form', {
             cache: inputCache,
             validation: dataValidation,
