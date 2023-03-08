@@ -377,7 +377,7 @@ $('.lookup').on('click', function () {
             if (res.status !== 200) {
                 if (res.status == 400) {
                     err2.css('display', 'block');
-                } else if (res.status == 404){
+                } else if (res.status == 404) {
                     err.css('display', 'block');
                 } else {
                     err3.css('display', 'block');

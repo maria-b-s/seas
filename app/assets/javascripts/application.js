@@ -5,57 +5,57 @@ if (window.console && window.console.info) {
     window.console.info('GOV.UK Prototype Kit - do not use for production');
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
     window.GOVUKFrontend.initAll();
     window.MOJFrontend.initAll();
-    
-    // *** Radio buttons conditional rendering functionality *** // 
 
-  var optionConditionalWrapper = $('#options-conditional');
-  var optionConditionalWrapperAlt = $('#options-conditional-alt');
-  var radioOption = $('#radio-option-1');
-  var radioOptionTwo = $('#radio-option-0');
-  var conditionalAddAnother = $('#conditional-add-another');
+    // *** Radio buttons conditional rendering functionality *** //
 
-  var onRadioChange = function() {
-    $('.govuk-error-summary').remove();
-    $('.govuk-error-message').empty();
-    $('.govuk-form-group--error').removeClass('govuk-form-group--error');
-  };
+    var optionConditionalWrapper = $('#options-conditional');
+    var optionConditionalWrapperAlt = $('#options-conditional-alt');
+    var radioOption = $('#radio-option-1');
+    var radioOptionTwo = $('#radio-option-0');
+    var conditionalAddAnother = $('#conditional-add-another');
 
-  if (radioOption) {
-    if (radioOption.is(':checked')) {
-      optionConditionalWrapper.css({display: 'block'});
-      conditionalAddAnother.css({display: 'block'});
-    } else if (radioOptionTwo.is(':checked')) {
-      optionConditionalWrapper.css({display: 'none'});
-      optionConditionalWrapperAlt.css({display: 'block'});
-      conditionalAddAnother.css({display: 'none'});
+    var onRadioChange = function () {
+        $('.govuk-error-summary').remove();
+        $('.govuk-error-message').empty();
+        $('.govuk-form-group--error').removeClass('govuk-form-group--error');
+    };
+
+    if (radioOption) {
+        if (radioOption.is(':checked')) {
+            optionConditionalWrapper.css({ display: 'block' });
+            conditionalAddAnother.css({ display: 'block' });
+        } else if (radioOptionTwo.is(':checked')) {
+            optionConditionalWrapper.css({ display: 'none' });
+            optionConditionalWrapperAlt.css({ display: 'block' });
+            conditionalAddAnother.css({ display: 'none' });
+        }
+
+        radioOption.on('change', function () {
+            if (radioOption.is(':checked')) {
+                onRadioChange();
+                optionConditionalWrapper.css({ display: 'block' });
+                optionConditionalWrapperAlt.css({ display: 'none' });
+                conditionalAddAnother.css({ display: 'block' });
+            }
+        });
     }
 
-    radioOption.on('change', function() {
-      if (radioOption.is(':checked')) {
-        onRadioChange();
-        optionConditionalWrapper.css({display: 'block'});
-        optionConditionalWrapperAlt.css({display: 'none'});
-        conditionalAddAnother.css({display: 'block'});
-      }
+    radioOptionTwo.on('change', function () {
+        if (radioOptionTwo.is(':checked')) {
+            onRadioChange();
+            optionConditionalWrapper.css({ display: 'none' });
+            optionConditionalWrapperAlt.css({ display: 'block' });
+            conditionalAddAnother.css({ display: 'none' });
+        }
     });
-  }
 
-  radioOptionTwo.on('change', function() {
-    if (radioOptionTwo.is(':checked')) {
-      onRadioChange();
-      optionConditionalWrapper.css({display: 'none'});
-      optionConditionalWrapperAlt.css({display: 'block'});
-      conditionalAddAnother.css({display: 'none'});
-    }
-  });
-
-  // ***  Radio buttons conditional rendering functionality *** // 
+    // ***  Radio buttons conditional rendering functionality *** //
 });
 
-$('[name="changed-name"]').click(function(e) {
+$('[name="changed-name"]').click(function (e) {
     var radio = $('.add-another-name');
     if (e.currentTarget.value === 'yes') {
         return radio.show().attr('aria-hidden', 'false');
@@ -65,7 +65,7 @@ $('[name="changed-name"]').click(function(e) {
 
 var anotherNameRadio = $('.add-another-name');
 
-var orgSetup = function() {
+var orgSetup = function () {
     if ($('input[name="whos-check"]:checked').val() === 'another-org') return anotherNameRadio.show();
     return anotherNameRadio.hide();
 };
@@ -74,16 +74,19 @@ var orgSetup = function() {
 // $('[name="whos-check"]').on('click', orgSetup);
 // $(window).on('load', orgSetup);
 
-$('.delete-name').click(function(e) { // I had to refactor arrow functions to normal function declaration
+$('.delete-name').click(function (e) {
+    // I had to refactor arrow functions to normal function declaration
     // I don't understand why the previous developer has decided to use the fetch api in this case
-    // The business logic should happen inside the Node.js middleware 
-    fetch("/citizen-application/delete-name?index=" + String(parseInt(e.currentTarget.id, 10)), {
+    // The business logic should happen inside the Node.js middleware
+    fetch('/citizen-application/delete-name?index=' + String(parseInt(e.currentTarget.id, 10)), {
         method: 'post',
     })
-    .then(function(){
-        window.location.reload()
-    })
-    .catch(function (err) {console.log(err)});
+        .then(function () {
+            window.location.reload();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
 });
 
 var countryArray = [
@@ -287,25 +290,28 @@ var countryArray = [
 var countryDropdown = $('.country-dropdown');
 var countryInput = $('.country-input');
 
-var populateDropdown = function(list) {
+var populateDropdown = function (list) {
     countryDropdown.empty();
-    list.forEach(function(c) { countryDropdown.append('<h4 class="country-option">' + c + '</h4>') });
+    list.forEach(function (c) {
+        countryDropdown.append('<h4 class="country-option">' + c + '</h4>');
+    });
 };
 
-
-$(window).on('load', function() {
+$(window).on('load', function () {
     populateDropdown(countryArray);
 });
 
-countryInput.keyup(function(e) {
+countryInput.keyup(function (e) {
     countryDropdown.css('display', 'block');
     var value = e.currentTarget.value;
-    populateDropdown(countryArray.filter(function(country) {
-        return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
-    }));
+    populateDropdown(
+        countryArray.filter(function (country) {
+            return country.toUpperCase().substring(0, value.length) === value.toUpperCase().substring(0, value.length);
+        }),
+    );
 });
 
-$(document).on('click', '.country-option', function(e) {
+$(document).on('click', '.country-option', function (e) {
     $('.country-input').val(e.currentTarget.innerHTML);
     countryDropdown.css('display', 'none');
 });
@@ -313,55 +319,110 @@ $(document).on('click', '.country-option', function(e) {
 var radioOption = $('#radio-option-1');
 var radioOptionTwo = $('#radio-option-0');
 
-var onRadioChange = function() {
+var onRadioChange = function () {
     $('.govuk-error-summary').remove();
     $('.govuk-error-message').empty();
     $('.govuk-form-group--error').removeClass('govuk-form-group--error');
     $('.govuk-input--error').removeClass('govuk-input--error');
-  };
+};
 
-  if (radioOption) {
-    radioOption.on('change', function() {
-      if (radioOption.is(':checked')) {
-        onRadioChange();
-      }
-    });
-
-    radioOptionTwo.on('change', function() {
-        if (radioOptionTwo.is(':checked')) {
-          onRadioChange();
+if (radioOption) {
+    radioOption.on('change', function () {
+        if (radioOption.is(':checked')) {
+            onRadioChange();
         }
     });
-  }
 
+    radioOptionTwo.on('change', function () {
+        if (radioOptionTwo.is(':checked')) {
+            onRadioChange();
+        }
+    });
+}
 
-
-$(window).on('resize', function() {
+$(window).on('resize', function () {
     // landingSetup(); // Not sure why the previous developer was invoking an undeclared function here, I had to comment out
 });
 
-var getRandomArbitrary = function(min, max) {
+var getRandomArbitrary = function (min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
 // George C. notes
 // I have refactored the callbacks below because this code was erroring in IE11
-// I do not agree with this implementation and I would regard it as bad practice 
+// I do not agree with this implementation and I would regard it as bad practice
 // the fetch for addresses should not exist and this logic should have been handled in the NodeJs middleware
 // not in the browser based javascript files
-$('.lookup').on('click', function() {
+$('.lookup').on('click', function () {
     var postcode = $('#postcode-lookup');
     var err = $('.error-msg');
+    var err2 = $('.error-msg-2');
+    var err3 = $('.error-msg-3');
+    err.css('display', 'none');
+    err2.css('display', 'none');
+    err3.css('display', 'none');
     var select = $('.postcode-select');
-    var selectAddress = $("#selectAddress")
-    var addressManual = $("#address-manual")
+    var selectAddress = $('#selectAddress');
+    selectAddress.css('display', 'none');
+    var addressManual = $('#address-manual');
 
     if (!postcode) return;
     var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
     var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
-    fetch("https://api.postcodes.io/postcodes/" + postcode.val())
-        .then(function(response) { return response.json(); })
-        .then(function(res) {
+    fetch('https://api.postcodes.io/postcodes/' + postcode.val())
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (res) {
+            if (res.status !== 200) {
+                if (res.status == 400) {
+                    err2.css('display', 'block');
+                } else if (res.status == 404) {
+                    err.css('display', 'block');
+                } else {
+                    err3.css('display', 'block');
+                }
+
+                return postcode.addClass('govuk-input--error');
+            }
+            select.prop('disabled', false);
+            select.empty();
+            err.css('display', 'none');
+            err2.css('display', 'none');
+            err3.css('display', 'none');
+            selectAddress.css('display', 'block');
+            var street = firstStreetBit[getRandomArbitrary(0, 6)] + ' ' + secondStreetBit[getRandomArbitrary(0, 4)];
+
+            var container = [];
+
+            select.append('<option selected="true" disabled="disabled"">...11 addresses found</option>');
+            addressManual.html('If address not listed, enter it manually');
+
+            for (var i = 0; i <= 10; i++) {
+                container.push(getRandomArbitrary(3, 50) + ' ' + street);
+            }
+
+            container.forEach(function (el) {
+                select.append('<option value="' + el + '">' + el + '</option>');
+            });
+            $('.hidden-details-country').val(res.result.country);
+            $('.hidden-details-town').val(res.result.admin_district);
+            return postcode.removeClass('govuk-input--error');
+        });
+});
+
+$('.previous-lookup').on('click', function () {
+    var postcode = $('#previous-postcode-lookup');
+    var err = $('.error-msg');
+    var select = $('.previous-postcode-select');
+    if (!postcode) return;
+    var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
+    var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
+    fetch('https://api.postcodes.io/postcodes/' + postcode.val())
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (res) {
             if (res.status !== 200) {
                 err.css('display', 'block');
                 return postcode.addClass('govuk-input--error');
@@ -369,60 +430,26 @@ $('.lookup').on('click', function() {
             select.prop('disabled', false);
             select.empty();
             err.css('display', 'none');
-            selectAddress.css('display', 'block');
-            var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
-            
+            var street = firstStreetBit[getRandomArbitrary(0, 6)] + ' ' + secondStreetBit[getRandomArbitrary(0, 4)];
+
             var container = [];
 
-            select.append('<option selected="true" disabled="disabled"">...11 addresses found</option>')
-            addressManual.html("If address not listed, enter it manually");
-
             for (var i = 0; i <= 10; i++) {
-                container.push(getRandomArbitrary(3, 50) + " " + street);
+                container.push(getRandomArbitrary(3, 50) + ' ' + street);
             }
 
-            container.forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
-            $('.hidden-details-country').val(res.result.country);
-            $('.hidden-details-town').val(res.result.admin_district);
+            container.forEach(function (el) {
+                select.append('<option value="' + el + '">' + el + '</option>');
+            });
+            $('.hidden-details-city').val(res.result.admin_county);
+            $('.hidden-details-town').val(res.result.parish);
             return postcode.removeClass('govuk-input--error');
         });
 });
 
-$('.previous-lookup').on('click', function() {
-  var postcode = $('#previous-postcode-lookup');
-  var err = $('.error-msg');
-  var select = $('.previous-postcode-select');
-  if (!postcode) return;
-  var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
-  var secondStreetBit = ['Street', 'Close', 'Place', 'Road', 'Lane'];
-  fetch("https://api.postcodes.io/postcodes/" + postcode.val())
-      .then(function(response) { return response.json(); })
-      .then(function(res) {
-          if (res.status !== 200) {
-              err.css('display', 'block');
-              return postcode.addClass('govuk-input--error');
-          }
-          select.prop('disabled', false);
-          select.empty();
-          err.css('display', 'none');
-          var street = firstStreetBit[getRandomArbitrary(0, 6)] + " " + secondStreetBit[getRandomArbitrary(0, 4)];
-          
-          var container = [];
-
-          for (var i = 0; i <= 10; i++) {
-              container.push(getRandomArbitrary(3, 50) + " " + street);
-          }
-
-          container.forEach(function(el) { select.append('<option value="' + el + '">' + el + '</option>') });
-          $('.hidden-details-city').val(res.result.admin_county);
-          $('.hidden-details-town').val(res.result.parish);
-          return postcode.removeClass('govuk-input--error');
-      });
-});
-
 /* dbs-check-level */
-var changeContinueBtn = function(btnId, value, inputName) {
-    var btn = $("#" + btnId);
+var changeContinueBtn = function (btnId, value, inputName) {
+    var btn = $('#' + btnId);
     if ($('input[name="' + inputName + '"]:checked').val() === value) {
         btn.text('Continue');
     } else {
@@ -430,27 +457,26 @@ var changeContinueBtn = function(btnId, value, inputName) {
     }
 };
 
-
 // George C. notes
 // I have refactored the callbacks below because this code was erroring in IE11
-// I do not agree with this implementation and I would regard it as bad practice 
+// I do not agree with this implementation and I would regard it as bad practice
 // changeContinueBtn function should not exist and this logic should have been handled in the NodeJs middleware
 // not in the browser based javascript files
 
-$('[name="what-dbs-check"]').on('click', function(){
-    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check')
+$('[name="what-dbs-check"]').on('click', function () {
+    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check');
 });
 
-$(window).on('load', function() {
-    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check')
+$(window).on('load', function () {
+    changeContinueBtn('enhanced-barred-check-btn', 'Enhanced with barred list', 'what-dbs-check');
 });
 
 /* applicant-or-post-holder */
 
-$('[name="what-application-type"]').on('click', function(){
-    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type')
+$('[name="what-application-type"]').on('click', function () {
+    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type');
 });
 
-$(window).on('load', function() {
-    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type')
+$(window).on('load', function () {
+    changeContinueBtn('app-or-post-change-btn', 'Volunteer', 'what-application-type');
 });
