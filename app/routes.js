@@ -1728,6 +1728,10 @@ citizenRouter.post('/address-confirm', (req, res) => {
     let dataValidation = {};
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
+    const validStartMonth = /^[0-9]+$/.test(req.body['start-month']);
+    const validStartYear = /^[0-9]+$/.test(req.body['start-year']);
+    const validEndMonth = /^[0-9]+$/.test(req.body['end-month']);
+    const validEndYear = /^[0-9]+$/.test(req.body['end-year']);
     const date = new Date();
 
     if (req.body['start-month'] < 1 || req.body['start-month'] > 12) {
@@ -1740,6 +1744,15 @@ citizenRouter.post('/address-confirm', (req, res) => {
     if (req.body['start-year'].length != 4) {
         dataValidation['start-year'] = 'Year you started living at this address must include four numbers';
     }
+
+    if(!validStartMonth){
+        dataValidation['start-month'] = 'Month you started living at this address must be a number';
+    }
+
+    if(!validStartYear){
+        dataValidation['start-year'] = 'Year you started living at this address must be a number';
+    }
+
     if (!req.body['start-month']) {
         dataValidation['start-month'] = 'Enter month you started living at this address';
     }
@@ -1764,6 +1777,15 @@ citizenRouter.post('/address-confirm', (req, res) => {
         if (req.body['end-year'].length != 4) {
             dataValidation['end-year'] = 'Year you stopped living at this address must include four numbers';
         }
+
+        if(!validEndMonth){
+            dataValidation['end-month'] = 'Month you stopped living at this address must be a number';
+        }
+    
+        if(!validEndYear){
+            dataValidation['end-year'] = 'Year you stopped living at this address must be a number';
+        }
+
         if (!req.body['end-month']) {
             dataValidation['end-month'] = 'Enter month you stopped living at this address';
         }
@@ -1842,13 +1864,14 @@ citizenRouter.post('/bfpo', (req, res) => {
     const inputCache = loadPageData(req);
     let selectedBFPO = BFPO_ADDRESSES.filter(value => value.id == req.body['bfpo'])[0];
 
+    if (!selectedBFPO) {
+        dataValidation['bfpo'] = 'Enter a valid BFPO number';
+    }
+
     if (!req.body['bfpo']) {
         dataValidation['bfpo'] = 'Enter BFPO number';
     }
 
-    if (!selectedBFPO) {
-        dataValidation['bfpo'] = 'Enter a valid BFPO number';
-    }
 
     if (Object.keys(dataValidation).length) {
         res.render('citizen-application/bfpo', {
