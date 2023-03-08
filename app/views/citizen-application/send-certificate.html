@@ -40,6 +40,9 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg-3" style="display: none">
                             <span class="govuk-visually-hidden">Error:</span> Unable to search postcode
                         </p>
+                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg-4" style="display: none">
+                            <span class="govuk-visually-hidden">Error:</span> UK postcode must be between 5 and 8 characters
+                        </p>
                         {% if validation['postcode-lookup'] %}
                         <span id="ninonr-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span> {{ validation['postcode-lookup'] }}

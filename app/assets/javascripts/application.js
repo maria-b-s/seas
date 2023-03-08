@@ -358,13 +358,21 @@ $('.lookup').on('click', function () {
     var err = $('.error-msg');
     var err2 = $('.error-msg-2');
     var err3 = $('.error-msg-3');
+    var err4 = $('.error-msg-4');
     err.css('display', 'none');
     err2.css('display', 'none');
     err3.css('display', 'none');
+    err4.css('display', 'none');
     var select = $('.postcode-select');
     var selectAddress = $('#selectAddress');
     selectAddress.css('display', 'none');
     var addressManual = $('#address-manual');
+
+    if(postcode.val().length < 5 || postcode.val().length > 8){
+        console.log("heloo")
+        err4.css('display', 'block');
+        return;
+    }
 
     if (!postcode) return;
     var firstStreetBit = ['Church', 'Park', 'Windsor', 'Orchid', 'York', 'Springfield', 'Mill'];
@@ -390,6 +398,7 @@ $('.lookup').on('click', function () {
             err.css('display', 'none');
             err2.css('display', 'none');
             err3.css('display', 'none');
+            err4.css('display', 'none');
             selectAddress.css('display', 'block');
             var street = firstStreetBit[getRandomArbitrary(0, 6)] + ' ' + secondStreetBit[getRandomArbitrary(0, 4)];
 
