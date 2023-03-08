@@ -1233,6 +1233,9 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     const date = new Date();
+    const validDay = /^[0-9]+$/.test(req.body['ca-dob-dayh']);
+    const validMonth = /^[0-9]+$/.test(req.body['ca-dob-month']);
+    const validYear = /^[0-9]+$/.test(req.body['ca-dob-year']);
 
     if (req.body['ca-dob-day'] < 1 || req.body['ca-dob-day'] > 31) {
         dataValidation['ca-dob-day'] = 'The day of date of birth must be between 1 and 31';
@@ -1249,6 +1252,18 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     if (req.body['ca-dob-year'].length != 4) {
         dataValidation['ca-dob-year'] = 'Year must include four numbers';
     }
+
+    if(!validDay){
+        dataValidation['ca-dob-day'] = 'Day of birth must be a number';
+    }
+    if(!validMonth){
+        dataValidation['ca-dob-month'] = 'Month of birth must be a number';
+    }
+
+    if(!validYear){
+        dataValidation['ca-dob-year'] = 'Year of birth must be a number';
+    }
+
 
     if (!req.body['ca-dob-day']) {
         dataValidation['ca-dob-day'] = 'Date of birth must include a day';
