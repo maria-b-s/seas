@@ -36,7 +36,6 @@ function validateDriversLicence(req, res, _next) {
   }
 
   if (Object.keys(dataValidation).length) {
-    console.log(dataValidation)
     res.render('citizen-application/drivers-licence', { cache: inputCache,   validation: dataValidation });
   } else {
     req.session.data['drivers-licence-number'] = state['drivers-licence-number'];
