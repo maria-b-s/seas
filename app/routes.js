@@ -1,7 +1,7 @@
 const express = require('express');
 const RandExp = require('randexp');
 
-// middleware import
+// Middleware import
 const { validateSex } = require('./middleware/validateSex');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
@@ -167,7 +167,6 @@ registeredBodyRouter.get('/workforce-select', invalidateCache, (req, res) => {
 
 registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforceSelect);
 
-// ENHANCED WORKFORCE
 
 registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -177,7 +176,6 @@ registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, re
 
 registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
 
-// Adults
 registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
@@ -185,7 +183,6 @@ registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, 
 
 registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarred);
 
-// Children
 registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
@@ -193,7 +190,7 @@ registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req
 
 registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarred);
 
-// Working at home
+
 registeredBodyRouter.get('/enhanced/working-at-home-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
@@ -286,7 +283,6 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
 
     let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
 
-    //E1
     if (!validEmail) {
         dataValidation['applicant-email'] = 'Enter email address in the correct format';
     }
@@ -295,7 +291,6 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
         dataValidation['applicant-email-confirm'] = 'Enter email address in the correct format';
     }
 
-    //R3
     if (applicantEmail.length > 100) {
         dataValidation['applicant-email'] = 'Email address must be 100 characters or fewer';
     }
@@ -312,7 +307,7 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
         dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application';
     }
 
-    //R1
+
     if (!applicantEmail) {
         dataValidation['applicant-email'] = 'Enter email address';
     }
@@ -507,9 +502,8 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
     }
 });
 
-// Add your routes here - above the module.exports line
 
-/* region defs */
+// Mock Application Names
 const firstNames = [
     'Kieran',
     'Christopher',
@@ -576,10 +570,8 @@ const lastNames = [
     'Crassus',
     'Anderson',
 ];
-/* endregion */
 
 router.post('/dbs-check-answer', (req, res) => {
-    // Make a variable and give it the value from 'what-dbs-check'
     const whatDbsCheck = req.session.data['what-dbs-check'];
     if (!whatDbsCheck) {
         validation = {
@@ -589,8 +581,6 @@ router.post('/dbs-check-answer', (req, res) => {
         res.render('registered-body/dbs-check-level', { validation: validation });
     }
     // Check whether the variable matches a condition
-    // if (whatDbsCheck === 'Enhanced with barred list') return res.redirect('registered-body/enhanced/workforce-select');
-    //if (req.header('referer').includes('change=true')) return res.redirect('registered-body/check-answers');
     if (whatDbsCheck === 'Standard') return res.redirect('registered-body/workforce-select');
     if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/enhanced/workforce-select');
     return undefined;
@@ -600,7 +590,6 @@ router.post('/pay-now-answer', (req, res) => {
     const whatPayment = req.session.data['payment-now'];
 
     if (whatPayment === 'Pay-now') {
-        // Send user to next page
         res.redirect('registered-body/enter-card-details');
     } else {
         res.redirect('registered-body/application-sent');
@@ -782,18 +771,11 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
-// Start to declare proper routing
-
 citizenRouter.get('/current-full-name', invalidateCache, (req, res) => {
     res.render('citizen-application/current-full-name', { cache: req.session.data.fullName, validation: null });
 });
 
 citizenRouter.post('/current-full-name', invalidateCache, (req, res, next) => {
-    // if (req.body['full-name']) {
-    //     req.session.data.fullName = req.body['full-name'];
-    // }
-    // res.redirect('/citizen-application/previous-names-q');
-
     const inputCache = loadPageData(req);
     let dataValidation = {};
     let redirectPath = 'previous-names-q';
@@ -1255,7 +1237,7 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     const date = new Date();
-    const validDay = /^[0-9]+$/.test(req.body['ca-dob-dayh']);
+    const validDay = /^[0-9]+$/.test(req.body['ca-dob-day']);
     const validMonth = /^[0-9]+$/.test(req.body['ca-dob-month']);
     const validYear = /^[0-9]+$/.test(req.body['ca-dob-year']);
 
@@ -1611,7 +1593,6 @@ citizenRouter.post('/living-location', (req, res) => {
     }
 });
 
-// Test Route
 
 citizenRouter.get('/uk-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -1882,6 +1863,7 @@ citizenRouter.post('/address-confirm', (req, res) => {
     }
 });
 
+// BFPO - Mock Addresses
 const BFPO_ADDRESSES = [{ id: 2, lineOne: 'BFPO 1', postcode: 'BF1 3AA', townOrCity: 'Washington', country: 'USA' }];
 
 citizenRouter.get('/bfpo', invalidateCache, (req, res) => {
@@ -1998,44 +1980,43 @@ citizenRouter.post('/outside-uk', (req, res) => {
     const validCity = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-town']); //A1
     const validCountry = /^[a-zA-Z'\- ]+$/.test(req.body['hidden-details-country']); //A1
 
-    //A2
     if (!validAddressLine1) {
         dataValidation['lookup-addr'] =
             'Address line 1 must only include letters a to z, numbers, hyphens, spaces, apostrophes, ampersands, full stops and commas';
     }
-    //A1
+
     if (!validCity) {
         dataValidation['hidden-details-town'] = 'Town or city must only include letters a to z, hyphens, spaces and apostrophes';
     }
-    //A1
+ 
     if (!validCountry) {
         dataValidation['hidden-details-country'] = 'Country must only include letters a to z, hyphens, spaces and apostrophes';
     }
-    //R4
+
     if (req.body['lookup-addr'].length < 2 || req.body['lookup-addr'].length > 200) {
         dataValidation['lookup-addr'] = 'Address line 1 must be between 2 and 200 characters';
     }
-    //R4
+
     if (req.body['hidden-details-town'].length < 2 || req.body['hidden-details-town'].length > 50) {
         dataValidation['hidden-details-town'] = 'Town or city must be between 2 and 50 characters';
     }
-    //R4
+
     if (req.body['hidden-details-country'].length < 2 || req.body['hidden-details-country'].length > 30) {
         dataValidation['hidden-details-country'] = 'Address line 1 must be between 2 and 30 characters';
     }
-    //R1
+
     if (!req.body['lookup-addr']) {
         dataValidation['lookup-addr'] = 'Enter address line 1';
     }
-    //R1
+
     if (!req.body['hidden-details-town']) {
         dataValidation['hidden-details-town'] = 'Enter town or city';
     }
-    //R1
+
     if (!req.body['hidden-details-country']) {
         dataValidation['hidden-details-country'] = 'Enter country';
     }
-    //R1
+    
     if (!req.body['postcode-lookup']) {
         dataValidation['postcode-lookup'] = 'Enter postcode';
     }
@@ -2601,7 +2582,6 @@ dashboardRouter.post('/search-name', invalidateCache, (req, res, _next) => {
 dashboardRouter.post('/filter', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
-    // Resets filter falues
     req.session.data.filters = req.body;
     req.session.data.needsActionFilter = null;
     req.session.data.appStatusFilter = null;
