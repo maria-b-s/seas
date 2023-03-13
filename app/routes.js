@@ -1159,7 +1159,7 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         }
 
         const item = mapInput(inputCache);
-        console.log(item)
+    
         if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
             collection[Number(req.query.edit) - 1] = item;
         } else if (item['first_name'] !== 'Not entered') {
@@ -1281,13 +1281,17 @@ citizenRouter.post('/date-of-birth', invalidateCache, (req, res, next) => {
         dataValidation['ca-dob-year'] = 'Date of birth must include a year';
     } else {
         const inputtedDate = new Date(req.body['ca-dob-year'], req.body['ca-dob-month'] - 1, req.body['ca-dob-day']);
-
-        if (inputtedDate.toLocaleDateString() >= date.toLocaleDateString()) {
+        console.log(inputtedDate.valueOf())
+        console.log(date.valueOf())
+        if (inputtedDate.valueOf() >= date.valueOf()) {
             if (inputtedDate.getFullYear() > date.getFullYear()) {
+                console.log(1)
                 dataValidation['ca-dob-year'] = 'Year of birth must be in the past';
             } else if (inputtedDate.getMonth() > date.getMonth()) {
+                console.log(2)
                 dataValidation['ca-dob-month'] = 'Month of birth must be in the past';
             } else if (inputtedDate.getDate() > date.getDate()) {
+                console.log(3)
                 dataValidation['ca-dob-day'] = 'Day of birth must be in the past';
             }
         } else {
@@ -2637,7 +2641,6 @@ dashboardRouter.post('/rb-password-reset', invalidateCache, (req, res, _next) =>
         /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
             req.body['rb-reset-pass-email'],
         );
-    console.log(validEmail);
     const dataValidation = {};
 
     if (!user) {
