@@ -34,7 +34,7 @@ endset%} {% block beforeContent %}
                         {% if not data['prevNames'] or data['prevNames'].length === 0 %} None {% endif %} {% for item in data['prevNames'] %} {{[
                         item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' , item.last_name | capitalize] | join }} <br />
                         {% if item.used_to == "Not entered"%} {{ [item.used_from , ' - Present'] | join}} {% else %} {{ [item.used_from , ' - ',
-                        item.used_to] | join}} {% endif %} {% endfor %}
+                        item.used_to] | join}} {% endif %} <br /> {% endfor %}
                     </td>
                     <td class="govuk-table__cell">
                         <a href="/citizen-application/previous-names-q?change=true">

@@ -1010,7 +1010,7 @@ let mapInput = data => {
     }
 
     if (data['radio-group-alias-input'] === '1') {
-        resultObj.used_to = notEntered;
+        resultObj.used_to = 'Present';
     }
 
     return resultObj;
@@ -1159,7 +1159,7 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         }
 
         const item = mapInput(inputCache);
-
+        console.log(item)
         if (req.query.edit && Number.isInteger(Number(req.query.edit)) && collection[Number(req.query.edit) - 1]) {
             collection[Number(req.query.edit) - 1] = item;
         } else if (item['first_name'] !== 'Not entered') {
