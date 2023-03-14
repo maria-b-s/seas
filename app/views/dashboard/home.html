@@ -194,199 +194,6 @@ block header %}
             </form>
         </div>
 
-        {#
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-quarter" style="margin-right: -100px">
-                <h3 class="govuk-body-s">Sort By:</h3>
-            </div>
-            {% if needsActionFilter != true %}
-            <div class="govuk-grid-column-one-quarter" style="margin-right: -40px">
-                <p class="govuk-body-s">
-                    Action needed
-                    <a class="govuk-link--no-underline" href="home?sort=action-ascending"
-                        >&#9650;<span class="govuk-visually-hidden">Action needed ascending</span></a
-                    >
-
-                    <a class="govuk-link--no-underline" href="home?sort=action-descending"
-                        >&#9660;<span class="govuk-visually-hidden">Action needed descending</span></a
-                    >
-                </p>
-            </div>
-            {% endif %}
-            <div class="govuk-grid-column-one-quarter" style="margin-right: -55px">
-                <p class="govuk-body-s">
-                    Last name<a class="govuk-link--no-underline" href="home?sort=name-ascending"
-                        >&#9650;<span class="govuk-visually-hidden">name ascending</span></a
-                    ><a class="govuk-link--no-underline" href="home?sort=name-descending"
-                        >&#9660;<span class="govuk-visually-hidden">name descending</span></a
-                    >
-                </p>
-            </div>
-            <div class="govuk-grid-column-two-third">
-                <p class="govuk-body-s">
-                    Date application started<a class="govuk-link--no-underline" href="home?sort=date-ascending"
-                        >&#9650;<span class="govuk-visually-hidden">date ascending</span></a
-                    ><a class="govuk-link--no-underline" href="home?sort=date-descending"
-                        >&#9660;<span class="govuk-visually-hidden">date descending</span></a
-                    >
-                </p>
-            </div>
-        </div>
-        #} {#
-        <table class="govuk-table landing-table">
-            <tbody class="govuk-table__body">
-                {% if filteredApplications.length == 0%}
-                <p>No applications matching criteria.</p>
-                {% endif %} {% for app in filteredApplications %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
-                        <div class="govuk-grid-row">
-                            <div class="govuk-grid-column-two-thirds">
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half">
-                                        <p class="govuk-body-l">{{app['firstName']}} {{app['middleName']}} <strong>{{app['surname']}}</strong></p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="padding-top: 7px">
-                                        <p class="govuk-body govuk-!-font-size-14">
-                                            <a href="/registered-body/view-details?app={{app['ref']}}">View full application details</a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s govuk-!-font-weight-bold">Email</p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s">{{app['email']}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s govuk-!-font-weight-bold">Date application started</p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s">{{app['readableDate']}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s govuk-!-font-weight-bold">Organisation</p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s">{{app['organisation']}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s govuk-!-font-weight-bold">Check level</p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s">{{app['type']}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s govuk-!-font-weight-bold">Last worked on by</p>
-                                    </div>
-                                    <div class="govuk-grid-column-one-half" style="margin-bottom: -15px">
-                                        <p class="govuk-body-s">{{app['history'][0].person}}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="govuk-grid-column-one-third">
-                                <br />
-                                <div class="govuk-grid-row" style="padding-top: 30px">
-                                    <div class="govuk-grid-column-full">
-                                        {% if app['status'].id == '1' or app['status'].id == '2'%}
-                                        <strong
-                                            class="govuk-tag govuk-tag--yellow govuk-!-font-size-14"
-                                            style="width: 75%; text-align: center; float: right"
-                                            >{{app['status'].text}}</strong
-                                        >
-                                        {% elif app['status'].id == '5' or app['status'].id == '6'%}
-                                        <strong
-                                            class="govuk-tag govuk-tag--red govuk-!-font-size-14"
-                                            style="width: 75%; text-align: center; float: right"
-                                            >{{app['status'].text}}</strong
-                                        >
-                                        {% elif app['status'].id == '7'%}
-                                        <strong
-                                            class="govuk-tag govuk-tag--green govuk-!-font-size-14"
-                                            style="width: 75%; text-align: center; float: right"
-                                            >{{app['status'].text}}</strong
-                                        >
-                                        {% else %}
-                                        <strong
-                                            class="govuk-tag govuk-tag--blue govuk-!-font-size-14"
-                                            style="width: 75%; text-align: center; float: right"
-                                            >{{app['status'].text}}</strong
-                                        >
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <br />
-
-                                {% if app['status'].id == '1'%}
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="">Download applicant details PDF</a>
-                                    </div>
-                                </div>
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="/registered-body/id-checked?app={{app['ref']}}">Enter ID check results</a>
-                                    </div>
-                                </div>
-
-                                {% endif %} {% if app['status'].id == '2'%}
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="">Submit application</a>
-                                    </div>
-                                </div>
-
-                                {% endif %} {% if app['status'].id == '3'%}
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="/registered-body/resend-application?app={{app['ref']}}">Resend application</a>
-                                    </div>
-                                </div>
-
-                                {% endif %}{% if app['status'].id == '3' or app['status'].id == '1' or app['status'].id == '2'%}
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="/registered-body/confirm-cancel?app={{app['ref']}}">Cancel application</a>
-                                    </div>
-                                </div>
-
-                                {% endif %}
-
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                        <a href="/registered-body/application-history?app={{app['ref']}}">Application History</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-        #}
-
         <table class="govuk-table" data-module="moj-sortable-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -445,7 +252,7 @@ block header %}
                         {% if app['status'].id == '1'%}
                         <div class="govuk-grid-row">
                             <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                <a href="">Download applicant details PDF</a>
+                                <a href="#">Download applicant details PDF</a>
                             </div>
                         </div>
 
@@ -459,7 +266,7 @@ block header %}
 
                         <div class="govuk-grid-row">
                             <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                <a href="">Submit application</a>
+                                <a href="#">Submit application</a>
                             </div>
                         </div>
 
