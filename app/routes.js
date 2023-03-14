@@ -2514,9 +2514,9 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
         dataValidation['password'] = 'Enter password';
     } 
     
-    // else if (req.body.password !== req.session?.selectedRB?.password) {
-    //     dataValidation['password'] = 'Password is invalid';
-    // }
+    else if (req.body.password !== req.session?.selectedRB?.password) {
+        dataValidation['password'] = 'Password is invalid';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('dashboard/rb-password-check', { cache: inputCache, validation: dataValidation });
