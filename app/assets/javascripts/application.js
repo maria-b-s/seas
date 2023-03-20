@@ -6,8 +6,12 @@ if (window.console && window.console.info) {
 }
 
 $(document).ready(function () {
-    window.GOVUKFrontend.initAll();
-    window.MOJFrontend.initAll();
+    try {
+        window.GOVUKFrontend.initAll();
+        window.MOJFrontend.initAll();
+    } catch (error) {
+        console.log("Unable to get property \"initAll\".");
+    }
 
     // *** Radio buttons conditional rendering functionality *** //
 
