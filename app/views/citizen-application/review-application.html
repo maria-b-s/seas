@@ -141,14 +141,16 @@ endset%} {% block beforeContent %}
                         Current {%if data['current_addresses'].length > 1 %}addresses{%else%}address{%endif%}
                     </th>
                     <td class="govuk-table__cell">
-                        {% for address in data['current_addresses'] %} {{address['lineOne']}}<br />{{address['townOrCity']}}<br />{{address['country']}}<br />{{address['postcode']}}<br />
-                        From {{address['start-month']}}/{{address['start-year']}} to now
+                        {% for address in data['current_addresses'] %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
+                        endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
+                        %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
+                        From {{address['start-month']}} {{address['start-year']}} to now
                         <br />
                         <br />
                         {%endfor%}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="lived-elsewhere?change=true">
                             Change
                             <span class="govuk-visually-hidden">current address</span>
                         </a>
@@ -158,14 +160,16 @@ endset%} {% block beforeContent %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Previous addresses in last 5 years</th>
                     <td class="govuk-table__cell">
-                        {% for address in data['previous_addresses'] %} {{address['lineOne']}}<br />{{address['townOrCity']}}<br />{{address['country']}}<br />{{address['postcode']}}<br />
-                        From {{address['start-month']}}/{{address['start-year']}} to {{address['end-month']}}/{{address['end-year']}}
+                        {% for address in data['previous_addresses'] %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
+                        endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
+                        %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
+                        From {{address['start-month']}} {{address['start-year']}} to {{address['end-month']}} {{address['end-year']}}
                         <br />
                         <br />
                         {%endfor%}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="lived-elsewhere?change=true">
                             Change
                             <span class="govuk-visually-hidden">5 year address history</span>
                         </a>
@@ -178,7 +182,7 @@ endset%} {% block beforeContent %}
                         {{data['cert-address']['lineOne']}}<br />{{data['cert-address']['townOrCity']}}<br />{{data['cert-address']['country']}}<br />{{data['cert-address']['postcode']}}
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="#">
+                        <a href="lived-elsewhere">
                             Change
                             <span class="govuk-visually-hidden">certificate destination</span>
                         </a>

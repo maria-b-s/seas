@@ -64,9 +64,10 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">DBS certificate address</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if certAddress['lineOne'] %}{{certAddress['lineOne']}}<br />{% endif %} {% if certAddress['lineTwo'] %}{{certAddress['lineTwo']}}<br />{%
-                        endif %} {% if certAddress['townOrCity'] %}{{certAddress['townOrCity']}}<br />{% endif %} {% if certAddress['country']
-                        %}{{certAddress['country']}}<br />{% endif %} {% if certAddress['postcode'] %}{{certAddress['postcode']}}<br />{% endif %}
+                        {% if certAddress['lineOne'] %}{{certAddress['lineOne']}}<br />{% endif %} {% if certAddress['lineTwo']
+                        %}{{certAddress['lineTwo']}}<br />{% endif %} {% if certAddress['townOrCity'] %}{{certAddress['townOrCity']}}<br />{% endif %}
+                        {% if certAddress['country'] %}{{certAddress['country']}}<br />{% endif %} {% if certAddress['postcode']
+                        %}{{certAddress['postcode']}}<br />{% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="#"> Change<span class="govuk-visually-hidden"></span> </a>
@@ -75,10 +76,10 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Current {%if currentAddress.length > 1 %}addresses{%else%}address{%endif%}</dt>
                     <dd class="govuk-summary-list__value">
-                        {% for address in currentAddress %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
-                        endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
-                        %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
-                        From {{address['start-month']}} {{address['start-year']}} to now
+                        {% for address in currentAddress %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if
+                        address['lineTwo'] %}{{address['lineTwo']}}<br />{% endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{%
+                        endif %} {% if address['country'] %}{{address['country']}}<br />{% endif %} {% if address['postcode']
+                        %}{{address['postcode']}}<br />{% endif %} From {{address['start-month']}} {{address['start-year']}} to now
                         <br />
                         <br />
                         {%endfor%}
@@ -92,17 +93,18 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <dt class="govuk-summary-list__key">Previous {%if previousAddresses.length > 1 %}addresses{%else%}address{%endif%}</dt>
 
                     <dd class="govuk-summary-list__value">
-                        {% for address in previousAddresses %}{% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo'] %}{{address['lineTwo']}}<br />{%
-                        endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if address['country']
-                        %}{{address['country']}}<br />{% endif %} {% if address['postcode'] %}{{address['postcode']}}<br />{% endif %}
-                        From {{address['start-month']}} {{address['start-year']}} to {{address['end-month']}} {{address['end-year']}}
+                        {% for address in previousAddresses %}{% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if
+                        address['lineTwo'] %}{{address['lineTwo']}}<br />{% endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{%
+                        endif %} {% if address['country'] %}{{address['country']}}<br />{% endif %} {% if address['postcode']
+                        %}{{address['postcode']}}<br />{% endif %} From {{address['start-month']}} {{address['start-year']}} to
+                        {{address['end-month']}} {{address['end-year']}}
+                        <br />
+                        <a class="govuk-link" href="edit-address?edit={{ loop.index }}&address={{address['type']}}&type=previous">
+                            Change<span class="govuk-visually-hidden"></span>
+                        </a>
                         <br />
                         <br />
                         {%endfor%}
-                    </dd>
-
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#"> Change<span class="govuk-visually-hidden"></span> </a>
                     </dd>
                 </div>
                 {%endif%}
