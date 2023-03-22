@@ -2207,7 +2207,6 @@ citizenRouter.get('/lived-elsewhere', invalidateCache, (req, res) => {
         req.session.fromAddressesToReview = true;
     }
 
-    console.log(req.session.data.previous_addresses)
     res.render('citizen-application/lived-elsewhere', {
         cache: inputCache,
         validation: null,
