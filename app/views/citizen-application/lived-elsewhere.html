@@ -102,6 +102,9 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <a class="govuk-link" href="edit-address?edit={{ loop.index }}&address={{address['type']}}&type=previous">
                             Change<span class="govuk-visually-hidden"></span>
                         </a>
+                        <a class="govuk-link" href="lived-elsewhere?item={{ loop.index }}&type=previous">
+                            Remove<span class="govuk-visually-hidden"></span>
+                        </a>
                         <br />
                         <br />
                         {%endfor%}

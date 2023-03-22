@@ -2207,6 +2207,32 @@ citizenRouter.get('/lived-elsewhere', invalidateCache, (req, res) => {
         req.session.fromAddressesToReview = true;
     }
 
+    let previous_addresses = [];
+    let current_addresses = []
+
+    if (req.session.data.previous_addresses) {
+        previous_addresses = req.session.data.previous_addresses;
+    }
+    if (req.session.data['current_addresses']) {
+        current_addresses = req.session.data['current_addresses'];
+    }
+
+    if(req.query.type == 'previous'){
+        if (req.query.item && Number.isInteger(Number(req.query.item)) && previous_addresses[Number(req.query.item) - 1]) {
+            _.pullAt(previous_addresses, [Number(req.query.item) - 1]);
+        }
+    }
+
+    if(req.query.type == 'current'){
+        if (req.query.item && Number.isInteger(Number(req.query.item)) && current_addresses[Number(req.query.item) - 1]) {
+            _.pullAt(current_addresses, [Number(req.query.item) - 1]);
+        }
+    }
+   
+
+    req.session.data.previous_addresses = previous_addresses;
+    req.session.data['current_addresses'] = current_addresses;
+
     res.render('citizen-application/lived-elsewhere', {
         cache: inputCache,
         validation: null,
