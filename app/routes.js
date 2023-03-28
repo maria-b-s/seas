@@ -642,7 +642,7 @@ registeredBodyRouter.post('/idc-restrict', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-restrict', { cache: inputCache, validation: dataValidation });
     } else {
-        if(req.body['idc-org-check'] == 'Yes'){
+        if(req.body['idc-org-restrict'] == 'Yes'){
             res.redirect('idc-department-restrict')
         } else {
             res.redirect('idc-check-answers')
