@@ -499,6 +499,197 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
     }
 });
 
+// IDC
+// IDC Declaration
+registeredBodyRouter.get('/idc-declaration', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-declaration', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-name')
+    }
+});
+
+// IDC Name
+registeredBodyRouter.get('/idc-name', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-name', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
+    } else {
+        req.session.data['idc-full-name'] = req.body['idc-first-name'] + " " + req.body['idc-last-name']
+        res.redirect('idc-email')
+    }
+});
+
+// IDC Email
+registeredBodyRouter.get('/idc-email', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-email', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-mobile-number')
+    }
+});
+
+// IDC Mobile Number
+registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-mobile-number', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-org-check')
+    }
+});
+
+// IDC Organisation Checks
+registeredBodyRouter.get('/idc-org-check', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-org-check', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-org-check', { cache: inputCache, validation: dataValidation });
+    } else {
+        if(req.body['idc-org-check'] == 'Yes'){
+            res.redirect('idc-org-select')
+        } else {
+            res.redirect('idc-restrict')
+        }
+    }
+});
+
+// IDC Organisation Select
+registeredBodyRouter.get('/idc-org-select', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-org-select', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-restrict')
+    }
+});
+
+// IDC Organisation Restrict
+registeredBodyRouter.get('/idc-restrict', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-restrict', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-restrict', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-restrict', { cache: inputCache, validation: dataValidation });
+    } else {
+        if(req.body['idc-org-check'] == 'Yes'){
+            res.redirect('idc-department-restrict')
+        } else {
+            res.redirect('idc-check-answers')
+        }
+    }
+});
+
+// IDC Department Restrict
+registeredBodyRouter.get('/idc-department-restrict', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-department-restrict', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-department-restrict', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-department-restrict', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-check-answers')
+    }
+});
+
+// IDC Check Answers
+registeredBodyRouter.get('/idc-check-answers', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-check-answers', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('new-idc-added')
+    }
+});
+
 // Mock Application Names
 const firstNames = [
     'Kieran',

@@ -1,0 +1,85 @@
+{% extends "layout.html" %}{% import "../macros/error-summary/govukErrorSummary.njk" as  es %} {% block pageTitle %} IDC Name {% endblock %} {% set serviceName %} Add New ID Checker {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %}
+
+{% if validation | length %}
+
+        {% set errorList = [] %}
+
+        {% for key, value in validation %}
+            {% set errorList = (errorList.push({
+                "text": value,
+                "href": "#" + key
+            }), errorList) %}
+        {% endfor %}
+
+        {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
+
+    {% endif %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <form class="form" method="post">
+            <fieldset class="govuk-fieldset" aria-describedby="passport-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                       Name of Identity Checker
+                    </h1>
+                </legend>
+                <div class="govuk-form-group {% if validation['idc-first-name'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="first-name"> First name </label>
+                      {% if validation['idc-first-name'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-first-name'] }}
+                        </span>
+                    {% endif %}
+                    <input
+                        class="govuk-input govuk-input--width-10"
+                        id="idc-first-name"
+                        name="idc-first-name"
+                        value="{{ cache['idc-first-name'] }}"
+                        type="text"
+                        spellcheck="false"
+                        autocomplete="name"
+                    />
+                </div>
+                <div class="govuk-form-group {% if validation['idc-last-name'] %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="last-name"> Last name </label>
+                      {% if validation['idc-last-name'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-last-name'] }}
+                        </span>
+                    {% endif %}
+                    <input
+                        class="govuk-input govuk-input--width-10"
+                        id="idc-last-name"
+                        name="idc-last-name"
+                        value="{{ cache['idc-last-name'] }}"
+                        type="text"
+                        spellcheck="false"
+                        autocomplete="name"
+                    />
+                </div>
+            </fieldset>
+    
+             {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+          
+        </form>
+    </div>
+</div>
+
+{% endblock %}

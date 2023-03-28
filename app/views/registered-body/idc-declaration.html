@@ -1,0 +1,76 @@
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
+"errorList": errorList }) }} {% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
+                <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Declaration</h1>
+                    </legend>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox" value="" />
+                            <label class="govuk-label govuk-checkboxes__label" for="confirm">
+                                <p>
+                                    I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS
+                                    guidance.
+                                </p>
+                            </label>
+                            {% if validation['confirm'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['confirm'] }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" value="" />
+                            <label class="govuk-label govuk-checkboxes__label" for="declare">
+                                <p>
+                                    I declare that the information I have provided in support of the application is complete and true and understand
+                                    that knowingly to make a false statement for this purpose may be a criminal offence.
+                                </p>
+                            </label>
+                            {% if validation['declare'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['declare'] }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="certify" name="certify" type="checkbox" value="carcasses" />
+                            <label class="govuk-label govuk-checkboxes__label" for="certify">
+                                <p>
+                                    I certify that, where requested, an application for a DBS check is required for the purpose of asking an exempted
+                                    question under the Rehabilitation of Offenders Act 1974 (Exception) Order 1975; or for a prescribed purpose as
+                                    defined in the Police Act 1997 (Criminal Records) Regulations 2002.
+                                </p>
+                            </label>
+                            {% if validation['certify'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['certify'] }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button class="govuk-button" data-module="govuk-button">Agree and submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
