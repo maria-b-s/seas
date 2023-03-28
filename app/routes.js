@@ -626,7 +626,7 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     }
 });
 
-// IDC Organisation Restrict
+// IDC Restrict
 registeredBodyRouter.get('/idc-restrict', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
@@ -642,7 +642,7 @@ registeredBodyRouter.post('/idc-restrict', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-restrict', { cache: inputCache, validation: dataValidation });
     } else {
-        if(req.body['idc-org-restrict'] == 'Yes'){
+        if(req.body['idc-restrict'] == 'Yes'){
             res.redirect('idc-department-restrict')
         } else {
             res.redirect('idc-check-answers')

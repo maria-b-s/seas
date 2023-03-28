@@ -30,24 +30,24 @@ endset%} {% block beforeContent %}
 
     {% endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['idc-org-restrict'] %}govuk-form-group--error{% endif %}">
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-org-restrict-hint">
+            <div class="govuk-form-group {% if validation['idc-restrict'] %}govuk-form-group--error{% endif %}">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-restrict-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Do you want to restrict which ID Checks {{idcName}} performs?</h1>
                     </legend>
-                    {% if validation['idc-org-restrict'] %}
+                    {% if validation['idc-restrict'] %}
                         <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-org-restrict'] }}
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-restrict'] }}
                         </span>
                     {% endif %}
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="idc-org-restrict" name="idc-org-restrict" type="radio" {% if cache['idc-org-restrict'] === 'Yes' %}  checked="checked" {% endif %} value="Yes" />
-                            <label class="govuk-label govuk-radios__label" for="idc-org-restrict"> Yes </label>
+                            <input class="govuk-radios__input" id="idc-restrict" name="idc-restrict" type="radio" {% if cache['idc-restrict'] === 'Yes' %}  checked="checked" {% endif %} value="Yes" />
+                            <label class="govuk-label govuk-radios__label" for="idc-restrict"> Yes </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="idc-org-restrict-2" name="idc-org-restrict" {% if cache['idc-org-restrict'] === 'No' %} checked="checked" {% endif %}  type="radio" value="No" />
-                            <label class="govuk-label govuk-radios__label" for="idc-org-restrict-2"> No </label>
+                            <input class="govuk-radios__input" id="idc-restrict-2" name="idc-restrict" {% if cache['idc-restrict'] === 'No' %} checked="checked" {% endif %}  type="radio" value="No" />
+                            <label class="govuk-label govuk-radios__label" for="idc-restrict-2"> No </label>
                         </div>
                     </div>
 
