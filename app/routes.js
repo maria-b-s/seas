@@ -499,6 +499,197 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
     }
 });
 
+// IDC
+// IDC Declaration
+registeredBodyRouter.get('/idc-declaration', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-declaration', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-name')
+    }
+});
+
+// IDC Name
+registeredBodyRouter.get('/idc-name', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-name', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
+    } else {
+        req.session.data['idc-full-name'] = req.body['idc-first-name'] + " " + req.body['idc-last-name']
+        res.redirect('idc-email')
+    }
+});
+
+// IDC Email
+registeredBodyRouter.get('/idc-email', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-email', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-mobile-number')
+    }
+});
+
+// IDC Mobile Number
+registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-mobile-number', { cms, cache: inputCache, validation: null });
+});
+
+registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-org-check')
+    }
+});
+
+// IDC Organisation Checks
+registeredBodyRouter.get('/idc-org-check', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-org-check', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-org-check', { cache: inputCache, validation: dataValidation });
+    } else {
+        if(req.body['idc-org-check'] == 'Yes'){
+            res.redirect('idc-org-select')
+        } else {
+            res.redirect('idc-restrict')
+        }
+    }
+});
+
+// IDC Organisation Select
+registeredBodyRouter.get('/idc-org-select', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-org-select', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-restrict')
+    }
+});
+
+// IDC Organisation Restrict
+registeredBodyRouter.get('/idc-restrict', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-restrict', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-restrict', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-restrict', { cache: inputCache, validation: dataValidation });
+    } else {
+        if(req.body['idc-org-check'] == 'Yes'){
+            res.redirect('idc-department-restrict')
+        } else {
+            res.redirect('idc-check-answers')
+        }
+    }
+});
+
+// IDC Department Restrict
+registeredBodyRouter.get('/idc-department-restrict', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-department-restrict', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-department-restrict', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-department-restrict', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-check-answers')
+    }
+});
+
+// IDC Check Answers
+registeredBodyRouter.get('/idc-check-answers', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('registered-body/idc-check-answers', { cms, cache: inputCache, validation: null, idcName: req.session.data['idc-full-name'] });
+});
+
+registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+
+    if (Object.keys(dataValidation).length) {
+        res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('new-idc-added')
+    }
+});
+
 // Mock Application Names
 const firstNames = [
     'Kieran',
@@ -1369,9 +1560,25 @@ citizenRouter.post('/previous-address-lookup', invalidateCache, (req, res, next)
 });
 
 citizenRouter.get('/send-certificate', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+    let inputCache = loadPageData(req);
+    let parameterString = '';
+    if (req.query.edit && req.session) {
+        let state = req.session.data['cert-address'] || [];
+        if (state) {
+            const seedingObject = {
+                'lookup-addr': state.lineOne,
+                'lookup-addr-2': state.lineTwo,
+                'hidden-details-town': state.townOrCity,
+                'hidden-details-country': state.country,
+                'postcode-lookup': state.postcode,
+            };
 
-    res.render('citizen-application/send-certificate', { cache: inputCache, validation: null });
+            inputCache = seedingObject;
+            parameterString = 'edit';
+        }
+    }
+
+    res.render('citizen-application/send-certificate', { cache: inputCache, validation: null, parameter: parameterString });
 });
 
 citizenRouter.post('/send-certificate', (req, res) => {
@@ -1393,6 +1600,13 @@ citizenRouter.post('/send-certificate', (req, res) => {
             validation: dataValidation,
         });
     } else {
+        if (req.query.edit) {
+            req.session.data['cert-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['cert-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['cert-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['cert-address']['postcode'] = req.body['postcode-lookup'];
+            res.redirect('lived-elsewhere');
+        }
         req.session.cache[req.originalUrl.split('?')[0]] = {};
         req.session.data.temp_current = req.body;
         return res.redirect('confirm-current-address');
@@ -1400,7 +1614,21 @@ citizenRouter.post('/send-certificate', (req, res) => {
 });
 
 citizenRouter.get('/cert-address-manual', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+    let inputCache = loadPageData(req);
+    if (req.query.edit && req.session) {
+        let state = req.session.data['cert-address'] || [];
+        if (state) {
+            const seedingObject = {
+                'lookup-addr': state.lineOne,
+                'lookup-addr-2': state.lineTwo,
+                'hidden-details-town': state.townOrCity,
+                'hidden-details-country': state.country,
+                'postcode-lookup': state.postcode,
+            };
+
+            inputCache = seedingObject;
+        }
+    }
 
     res.render('citizen-application/cert-address-manual', { cache: inputCache, validation: null });
 });
@@ -1453,6 +1681,13 @@ citizenRouter.post('/cert-address-manual', (req, res) => {
             query: req.query,
         });
     } else {
+        if (req.query.edit) {
+            req.session.data['cert-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['cert-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['cert-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['cert-address']['postcode'] = req.body['postcode-lookup'];
+            res.redirect('lived-elsewhere');
+        }
         req.session.cache[req.originalUrl.split('?')[0]] = {};
         req.session.data.temp_current = req.body;
         return res.redirect('confirm-current-address');
@@ -2002,7 +2237,8 @@ citizenRouter.get('/bfpo', invalidateCache, (req, res) => {
 
                 inputCache = seedingObject;
             }
-        } else {
+        }
+        if (req.query.address == 'current') {
             let state = req.session.data['current_addresses'] || [];
             if (state && state.length > 0) {
                 const seedingItem = state[Number(req.query.edit) - 1];
@@ -2012,6 +2248,17 @@ citizenRouter.get('/bfpo', invalidateCache, (req, res) => {
                 };
 
                 inputCache = seedingObject;
+            }
+        } else {
+            let state = req.session.data['cert-address'] || [];
+            if (state) {
+                if (state.lineOne.includes('BFPO')) {
+                    const seedingObject = {
+                        id: state.lineOne.substring(5),
+                    };
+
+                    inputCache = seedingObject;
+                }
             }
         }
     }
@@ -2058,6 +2305,14 @@ citizenRouter.post('/bfpo', (req, res) => {
             req.session.data.current_address['type'] = 'bfpo';
             req.session.cache[req.originalUrl.split('?')[0]] = {};
             return res.redirect('address-confirm?location=bfpo' + parameterString);
+        }
+        if (req.query.address == 'certificate') {
+            req.session.data['cert-address']['lineOne'] = selectedBFPO['lineOne'];
+            req.session.data['cert-address']['townOrCity'] = selectedBFPO['townOrCity'];
+            req.session.data['cert-address']['country'] = selectedBFPO['country'];
+            req.session.data['cert-address']['postcode'] = selectedBFPO['postcode'];
+            req.session.data['cert-address']['type'] = 'bfpo';
+            res.redirect('lived-elsewhere');
         } else {
             req.session.data.temp_current = {};
             req.session.data.temp_current['lookup-addr'] = selectedBFPO['lineOne'];
@@ -2168,7 +2423,8 @@ citizenRouter.get('/outside-uk', invalidateCache, (req, res) => {
 
                 inputCache = seedingObject;
             }
-        } else {
+        }
+        if (req.query.address == 'current') {
             let state = req.session.data['current_addresses'] || [];
             if (state && state.length > 0) {
                 const seedingItem = state[Number(req.query.edit) - 1];
@@ -2179,6 +2435,19 @@ citizenRouter.get('/outside-uk', invalidateCache, (req, res) => {
                     'hidden-details-town': seedingItem.townOrCity,
                     'hidden-details-country': seedingItem.country,
                     'postcode-lookup': seedingItem.postcode,
+                };
+
+                inputCache = seedingObject;
+            }
+        } else {
+            let state = req.session.data['cert-address'] || [];
+            if (state) {
+                const seedingObject = {
+                    'lookup-addr': state.lineOne,
+                    'lookup-addr-2': state.lineTwo,
+                    'hidden-details-town': state.townOrCity,
+                    'hidden-details-country': state.country,
+                    'postcode-lookup': state.postcode,
                 };
 
                 inputCache = seedingObject;
@@ -2274,6 +2543,16 @@ citizenRouter.post('/outside-uk', (req, res) => {
             req.session.data.current_address['type'] = 'outside-uk';
             req.session.cache[req.originalUrl.split('?')[0]] = {};
             return res.redirect('address-confirm?location=outside-uk' + parameterString);
+        }
+        if (req.query.address == 'certificate') {
+            req.session.data.current_address = {};
+            req.session.data['cert-address']['lineOne'] = req.body['lookup-addr'];
+            req.session.data['cert-address']['lineTwo'] = req.body['lookup-addr-2'];
+            req.session.data['cert-address']['townOrCity'] = req.body['hidden-details-town'];
+            req.session.data['cert-address']['country'] = req.body['hidden-details-country'];
+            req.session.data['cert-address']['postcode'] = req.body['postcode-lookup'];
+            req.session.data['cert-address']['type'] = 'outside-uk';
+            res.redirect('lived-elsewhere')
         } else {
             req.session.data.temp_current = req.body;
             res.redirect('confirm-current-address');
@@ -2282,6 +2561,9 @@ citizenRouter.post('/outside-uk', (req, res) => {
 });
 
 citizenRouter.get('/edit-address', invalidateCache, (req, res) => {
+    if (req.query.type == 'certificate') {
+        res.redirect('send-certificate?edit=1&address=' + req.query.type);
+    }
     if (req.query.address == 'no-address') {
         res.redirect('no-address?edit=' + req.query.edit + '&address=' + req.query.type);
     }

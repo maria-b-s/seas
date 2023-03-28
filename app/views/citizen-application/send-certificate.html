@@ -40,7 +40,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg-3" style="display: none">
                             <span class="govuk-visually-hidden">Error:</span> Unable to search postcode
                         </p>
-                         <p id="cost-per-item-error-error" class="govuk-error-message error-msg-4" style="display: none">
+                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-4" style="display: none">
                             <span class="govuk-visually-hidden">Error:</span> UK postcode must be between 5 and 8 characters
                         </p>
                         {% if validation['postcode-lookup'] %}
@@ -70,14 +70,26 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     <br />
 
                     <p class="govuk-body">
+                        {% if 'edit' in parameter %}
+                        <a id="address-manual" href="cert-address-manual?edit=1&address=certificate" class="govuk-link"> Add address manually</a>
+                        {% else %}
                         <a id="address-manual" href="cert-address-manual" class="govuk-link"> Add address manually</a>
+                        {% endif %}
                     </p>
                     <h2 class="govuk-heading-m">Other address types</h2>
                     <p class="govuk-body">
+                        {% if 'edit' in parameter %}
+                        <a href="bfpo?edit=1&address=certificate" class="govuk-link"> Add a British Forces Post Office (BFPO) address</a>
+                        {% else %}
                         <a href="bfpo?address=cert" class="govuk-link"> Add a British Forces Post Office (BFPO) address</a>
+                        {% endif %}
                     </p>
                     <p class="govuk-body">
+                        {% if 'edit' in parameter %}
+                        <a href="outside-uk?edit=1&address=certificate" class="govuk-link"> Add a non-UK address </a>
+                        {% else %}
                         <a href="outside-uk?address=cert" class="govuk-link"> Add a non-UK address </a>
+                        {% endif %}
                     </p>
                 </fieldset>
             </div>

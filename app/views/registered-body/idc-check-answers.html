@@ -1,0 +1,76 @@
+{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Check your answers {% endblock %}
+{% set serviceName %} Add New ID Checker  {% endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
+(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
+"errorList": errorList }) }} {% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-l">Check your answers</h1>
+
+        <h2 class="govuk-heading-m">Applicant details</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{data['idc-full-name']}}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href=""> Change </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{data['idc-email']}}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href=""> Change </a>
+                </dd>
+            </div>
+        </dl>
+
+        <form class="form" method="post">
+            <div class="govuk-form-group {% if validation['idc-add-another'] %}govuk-form-group--error{% endif %}">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-add-another-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h2 class="govuk-heading-m">Do you want to add another IDC?</h2>
+                    </legend>
+                    {% if validation['idc-add-another'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-add-another'] }}
+                        </span>
+                    {% endif %}
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="idc-add-another" name="idc-add-another" type="radio" {% if cache['idc-add-another'] === 'Yes' %}  checked="checked" {% endif %} value="Yes" />
+                            <label class="govuk-label govuk-radios__label" for="idc-add-anothert"> Yes </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="idc-add-another-2" name="idc-add-another" {% if cache['idc-add-another'] === 'No' %} checked="checked" {% endif %}  type="radio" value="No" />
+                            <label class="govuk-label govuk-radios__label" for="idc-add-anothert-2"> No </label>
+                        </div>
+                    </div>
+
+                    <br />
+            
+                </fieldset>
+            </div>
+            {% if query['change'] === 'true' %}
+            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
