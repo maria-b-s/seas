@@ -29,6 +29,7 @@ const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
 const dashboardRouter = express.Router();
+const seasIdcRouter = express.Router();
 
 const cms = {
     generalContent: {
@@ -512,11 +513,10 @@ registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-name')
+        res.redirect('idc-name');
     }
 });
 
@@ -532,13 +532,11 @@ registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
     } else {
-        req.session.data['idc-full-name'] = req.body['idc-first-name'] + " " + req.body['idc-last-name']
-        res.redirect('idc-email')
+        req.session.data['idc-full-name'] = req.body['idc-first-name'] + ' ' + req.body['idc-last-name'];
+        res.redirect('idc-email');
     }
 });
 
@@ -554,11 +552,10 @@ registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-mobile-number')
+        res.redirect('idc-mobile-number');
     }
 });
 
@@ -574,11 +571,10 @@ registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-org-check')
+        res.redirect('idc-org-check');
     }
 });
 
@@ -594,14 +590,13 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-check', { cache: inputCache, validation: dataValidation });
     } else {
-        if(req.body['idc-org-check'] == 'Yes'){
-            res.redirect('idc-org-select')
+        if (req.body['idc-org-check'] == 'Yes') {
+            res.redirect('idc-org-select');
         } else {
-            res.redirect('idc-restrict')
+            res.redirect('idc-restrict');
         }
     }
 });
@@ -618,11 +613,10 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-restrict')
+        res.redirect('idc-restrict');
     }
 });
 
@@ -638,14 +632,13 @@ registeredBodyRouter.post('/idc-restrict', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-restrict', { cache: inputCache, validation: dataValidation });
     } else {
-        if(req.body['idc-restrict'] == 'Yes'){
-            res.redirect('idc-department-restrict')
+        if (req.body['idc-restrict'] == 'Yes') {
+            res.redirect('idc-department-restrict');
         } else {
-            res.redirect('idc-check-answers')
+            res.redirect('idc-check-answers');
         }
     }
 });
@@ -662,11 +655,10 @@ registeredBodyRouter.post('/idc-department-restrict', invalidateCache, (req, res
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-department-restrict', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-check-answers')
+        res.redirect('idc-check-answers');
     }
 });
 
@@ -682,11 +674,10 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('new-idc-added')
+        res.redirect('new-idc-added');
     }
 });
 
@@ -2552,7 +2543,7 @@ citizenRouter.post('/outside-uk', (req, res) => {
             req.session.data['cert-address']['country'] = req.body['hidden-details-country'];
             req.session.data['cert-address']['postcode'] = req.body['postcode-lookup'];
             req.session.data['cert-address']['type'] = 'outside-uk';
-            res.redirect('lived-elsewhere')
+            res.redirect('lived-elsewhere');
         } else {
             req.session.data.temp_current = req.body;
             res.redirect('confirm-current-address');
@@ -3527,8 +3518,176 @@ dashboardRouter.get('/clear-notifications', (req, res) => {
     res.redirect(req.get('referer'));
 });
 
+// SEAS for IDC
+
+// Start
+seasIdcRouter.get('/start', invalidateCache, (req, res) => {
+    res.render('seas-idc/start');
+});
+
+// Login
+seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/idc-login', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (Object.keys(dataValidation).length) {
+        res.render('seas-idc/idc-login', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('idc-otp-verify');
+    }
+});
+
+// Mobile OTP Verify
+seasIdcRouter.get('/idc-otp-verify', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/idc-otp-verify', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/idc-otp-verify', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (Object.keys(dataValidation).length) {
+        res.render('seas-idc/idc-otp-verify', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('dashboard');
+    }
+});
+
+// Create Password
+seasIdcRouter.get('/idc-create-password', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/idc-create-password', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/idc-create-password', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (Object.keys(dataValidation).length) {
+        res.render('seas-idc/idc-create-password', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('dashboard');
+    }
+});
+
+// Dashboard
+seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null });
+});
+
+// Application Details
+seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null });
+});
+
+// Accept IDV
+seasIdcRouter.get('/accept-idv', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/accept-idv', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/accept-idv', invalidateCache, (req, res) => {
+    res.redirect('idv-guidance');
+});
+
+// IDV Guidance
+seasIdcRouter.get('/idv-guidance', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/idv-guidance', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/idv-guidance', invalidateCache, (req, res) => {
+    res.redirect('dashboard');
+});
+
+// Confirming ID
+seasIdcRouter.get('/confirming-id', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/confirming-id', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/confirming-id', invalidateCache, (req, res) => {
+    res.redirect('id-verified');
+});
+
+// ID Verified
+seasIdcRouter.get('/id-verified', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/id-verified', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (Object.keys(dataValidation).length) {
+        res.render('seas-idc/id-verified', { cache: inputCache, validation: dataValidation });
+    } else {
+        if (req.body['id-verified'] == 'No') {
+            res.redirect('not-verified');
+        } else {
+            res.redirect('confirmation');
+        }
+    }
+});
+
+// Confirmation
+seasIdcRouter.get('/confirmation', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/confirmation', { cms, cache: inputCache, validation: null });
+});
+
+seasIdcRouter.post('/confirmation', invalidateCache, (req, res) => {
+    savePageData(req, req.body);
+    const inputCache = loadPageData(req);
+    let dataValidation = {};
+
+    if (Object.keys(dataValidation).length) {
+        res.render('seas-idc/confirmation', { cache: inputCache, validation: dataValidation });
+    } else {
+        res.redirect('verified-success');
+    }
+});
+
+// Verified Success
+seasIdcRouter.get('/verified-success', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null });
+});
+
+// Not Verified
+seasIdcRouter.get('/not-verified', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+
+    res.render('seas-idc/not-verified', { cms, cache: inputCache, validation: null });
+});
+
 router.use('/citizen-application', citizenRouter);
 router.use('/registered-body', registeredBodyRouter);
 router.use('/dashboard', dashboardRouter);
+router.use('/seas-idc', seasIdcRouter);
 
 module.exports = router;

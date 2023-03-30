@@ -1,0 +1,99 @@
+{% extends "layout.html" %} {% block pageTitle %} Verify applicant ID {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
+{% if selectedApplication[0].status.text != 'Cancelled'%}
+<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% endif %} {% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    {% if selectedApplication[0].status.text == 'Cancelled'%}
+    <div class="govuk-grid-column-two-thirds">
+        <div
+            class="govuk-notification-banner govuk-notification-banner--success"
+            role="alert"
+            aria-labelledby="govuk-notification-banner-title"
+            data-module="govuk-notification-banner"
+        >
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">Application cancelled</h3>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            {% if selectedApplication[0].status.text != 'Cancelled'%}
+            <h1 class="govuk-heading-l">What happens next when an Applicant's ID has not been possible to verify</h1>
+            {% else %}
+            <h1 class="govuk-heading-l">Application Details</h1>
+            {% endif %}
+        </div>
+        {% if selectedApplication[0].status.text != 'Cancelled'%}
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                Are you sure you want to cancel this application? <br />This action can not be undone.
+            </strong>
+        </div>
+        {% endif %}
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Applicant name</dt>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].name }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Status</dt>
+                <dd class="govuk-summary-list__value">{{selectedApplication[0].status['text']}}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Type</dt>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].type }}</dd>
+
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Modified date</dt>
+                <dd class="govuk-summary-list__value">{{ selectedApplication[0].date }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+        </dl>
+
+        {% if selectedApplication[0].status.text != 'Cancelled'%}
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action="confirm-cancel" method="post" novalidate>
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Cancel application</button>
+            </form>
+            <a></a>
+        </div>
+        {% else %}
+        <p class="govuk-body">
+            We've sent an email to the applicant. <br />
+            <br />
+
+            You have not been charged for this application. <br />
+            <br />
+
+            If the applicant still needs a DBS check, you must start a new application for them.
+        </p>
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <form action="/dashboard/home" method="post" novalidate>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Return to dashboard</button>
+            </form>
+            <a></a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
