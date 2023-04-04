@@ -1,6 +1,5 @@
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Add New ID Checker  {%
-endset%} {% block beforeContent %}
+{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {%
+set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -14,45 +13,35 @@ endset%} {% block beforeContent %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-    {% if validation | length %}
-
-        {% set errorList = [] %}
-
-                            {% for key, value in validation %}
-            {% set errorList = (errorList.push({
-                "text": value,
-                "href": "#" + key
-            }), errorList) %}
-        {% endfor %}
-
-        {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-    {% endif %}
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
         <form class="form" method="post">
             <div class="govuk-form-group {% if validation['idc-org-check'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-org-check-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Will {{idcName}} be conducting ID Checks for an organisation other than your own?</h1>
                     </legend>
+                    <div class="govuk-hint">If the ID Checker will be doing checks for organisations other than your own, select yes</div>
                     {% if validation['idc-org-check'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-org-check'] }}
-                        </span>
+                    <span id="ninonr-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-org-check'] }}
+                    </span>
                     {% endif %}
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="idc-org-check" name="idc-org-check" type="radio" {% if cache['idc-org-check'] === 'Yes' %}  checked="checked" {% endif %} value="Yes" />
+                            <input class="govuk-radios__input" id="idc-org-check" name="idc-org-check" type="radio" {% if cache['idc-org-check'] ===
+                            'Yes' %} checked="checked" {% endif %} value="Yes" />
                             <label class="govuk-label govuk-radios__label" for="idc-org-check"> Yes </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="idc-org-check-2" name="idc-org-check" {% if cache['idc-org-check'] === 'No' %} checked="checked" {% endif %}  type="radio" value="No" />
+                            <input class="govuk-radios__input" id="idc-org-check-2" name="idc-org-check" {% if cache['idc-org-check'] === 'No' %}
+                            checked="checked" {% endif %} type="radio" value="No" />
                             <label class="govuk-label govuk-radios__label" for="idc-org-check-2"> No </label>
                         </div>
                     </div>
 
                     <br />
-            
                 </fieldset>
             </div>
             {% if query['change'] === 'true' %}

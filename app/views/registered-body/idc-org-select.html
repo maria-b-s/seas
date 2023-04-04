@@ -28,20 +28,21 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     </span>
                     {% endif %}
 
-                    <label class="govuk-label" for="idc-org-select"> Client organisation name </label>
+                    <label class="govuk-label" for="idc-org-select"> Organisation name </label>
                     <select class="govuk-select" id="idc-org-select" name="idc-org-select">
                         <option value="" selected>Select organisation</option>
-                        <option value="">Org A</option>
-                        <option value="">Org B</option>
-                        <option value="">Org C</option>
-                        <option value="">Org D</option>
+                        <option value="Org A">Org A</option>
+                        <option value="Org B">Org B</option>
+                        <option value="Org C">Org C</option>
+                        <option value="Org D">Org D</option>
                     </select>
 
                     <br />
                     <br />
-                    <h2 class="govuk-heading-m">Organisation not found?</h2>
+                    <br />
+
                     <p class="govuk-body">
-                        <a href="" class="govuk-link"> Add new organisation</a>
+                        <a href="" class="govuk-link">If the organisation is not listed you can add it manually </a>
                     </p>
                     <br />
                 </fieldset>

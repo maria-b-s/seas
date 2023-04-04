@@ -501,6 +501,28 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
 });
 
 // IDC
+
+const idCheckers = [
+    {
+        name: 'Joe Bloggs',
+        email: 'joeb@gmail.com',
+        mobile: '07666 993355',
+        org: 'Penny Lane College of PE',
+        dept: 'Student Applications',
+        dateAdded: '28/03/2023',
+    },
+];
+
+registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+    if(req.session.data['id-checkers'] == undefined) {
+        req.session.data['id-checkers'] = idCheckers;
+    }
+
+    console.log(req.session.data['id-checkers'])
+    res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
+});
+
 // IDC Declaration
 registeredBodyRouter.get('/idc-declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -555,6 +577,7 @@ registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
     } else {
+        req.session.data['idc-email'] = req.body['idc-email'];
         res.redirect('idc-mobile-number');
     }
 });
@@ -574,6 +597,7 @@ registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
     } else {
+        req.session.data['idc-mobile-number'] = req.body['idc-mobile-number'];
         res.redirect('idc-org-check');
     }
 });
@@ -616,6 +640,7 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
     } else {
+        req.session.data['idc-org-select'] = req.body['idc-org-select'];
         res.redirect('idc-restrict');
     }
 });
@@ -677,6 +702,29 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
     } else {
+        const idCheckers = req.session.data['id-checkers'] || [];
+        // Date
+        let currentDate = new Date();
+        let date = currentDate.getDate();
+        let month = currentDate.getMonth() + 1;
+        if (date < 10) {
+            date = '0' + date;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+        const year = currentDate.getFullYear();
+        let newID = {
+            name: req.session.data['idc-full-name'],
+            email: req.session.data['idc-email'],
+            mobile: req.session.data['idc-mobile-number'],
+            org: req.session.data['idc-org-select'],
+            dept: 'N/A',
+            dateAdded: `${date}/${month}/${year}`,
+        };
+
+        idCheckers.push(newID);
+        req.session.data['id-checkers'] = idCheckers
         res.redirect('new-idc-added');
     }
 });
