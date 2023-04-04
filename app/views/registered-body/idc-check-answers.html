@@ -16,7 +16,7 @@
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <h1 class="govuk-heading-l">Check your answers</h1>
 
-        <h2 class="govuk-heading-m">Applicant details</h2>
+        <h2 class="govuk-heading-m">Identity Checker details</h2>
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
@@ -37,13 +37,31 @@
                     <a href=""> Change </a>
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Mobile number</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{data['idc-mobile-number']}}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href=""> Change </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">ID check organisation</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{data['idc-org-select']}}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href=""> Change </a>
+                </dd>
+            </div>
         </dl>
 
         <form class="form" method="post">
             <div class="govuk-form-group {% if validation['idc-add-another'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-add-another-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h2 class="govuk-heading-m">Do you want to add another IDC?</h2>
+                        <h2 class="govuk-heading-m">Do you want to add another Identity Checker?</h2>
                     </legend>
                     {% if validation['idc-add-another'] %}
                         <span id="ninonr-error" class="govuk-error-message">

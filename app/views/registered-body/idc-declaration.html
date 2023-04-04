@@ -20,14 +20,12 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Declaration</h1>
                     </legend>
+                    <p class="govuk-body">By adding a new Identity Checker you confirm that:</p>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox" value="" />
                             <label class="govuk-label govuk-checkboxes__label" for="confirm">
-                                <p>
-                                    I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS
-                                    guidance.
-                                </p>
+                                <p>The person you are adding is suitable to conduct such checks</p>
                             </label>
                             {% if validation['confirm'] %}
                             <span id="ninonr-error" class="govuk-error-message">
@@ -38,11 +36,9 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" value="" />
                             <label class="govuk-label govuk-checkboxes__label" for="declare">
-                                <p>
-                                    I declare that the information I have provided in support of the application is complete and true and understand
-                                    that knowingly to make a false statement for this purpose may be a criminal offence.
-                                </p>
-                            </label>
+                                <p>The person you are adding has had the appropriate training and guidance needed</p></label
+                            >
+
                             {% if validation['declare'] %}
                             <span id="ninonr-error" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span> {{ validation['declare'] }}
@@ -52,11 +48,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="certify" name="certify" type="checkbox" value="carcasses" />
                             <label class="govuk-label govuk-checkboxes__label" for="certify">
-                                <p>
-                                    I certify that, where requested, an application for a DBS check is required for the purpose of asking an exempted
-                                    question under the Rehabilitation of Offenders Act 1974 (Exception) Order 1975; or for a prescribed purpose as
-                                    defined in the Police Act 1997 (Criminal Records) Regulations 2002.
-                                </p>
+                                <p>The Registered Body remains responsible for conducting accurate identity checks</p>
                             </label>
                             {% if validation['certify'] %}
                             <span id="ninonr-error" class="govuk-error-message">
