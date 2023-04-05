@@ -255,7 +255,7 @@ endset%} {% block beforeContent %}
             </p>
 
             <div class="govuk-button-group">
-                <a href="accept-idv?app=" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
+                <a href="accept-idv?app={{app[0].id}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
                     >Start identity check</a
                 >
                 <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
