@@ -1,5 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} OTP Verify {% endblock %} {% set serviceName %} SEAS for IDC
-{%endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% block pageTitle %} OTP Verify {% endblock %} {% set serviceName %} SEAS for IDC {%endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,11 +12,15 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Check your mobile for OTP</h1>
+        <h1 class="govuk-heading-l">Check your mobile</h1>
+
+        <p class="govuk-body">Enter the 6 digit security code we sent to [[MOBILE NUMBER]]</p>
+
+        <div class="govuk-inset-text">This security code will expire in 10 minutes</div>
 
         <form class="form" method="post">
             <div class="govuk-form-group">
-                <label class="govuk-label" for="idc-opt-verify"> One time passcode </label>
+                <label class="govuk-label" for="idc-opt-verify">Enter security code </label>
                 <input
                     class="govuk-input govuk-input--width-10"
                     id="idc-opt-verify"
@@ -28,6 +31,11 @@
                     pattern="[0-9]*"
                     inputmode="numeric"
                 />
+            </div>
+
+            <div class="govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+                <p class="govuk-body govuk-!-margin-bottom-1">Didn't receive your security code, or the security code has expired?</p>
+                <p class="govuk-body"><a class="govuk-link" href="#"> Resend security code </a></p>
             </div>
 
             <button class="govuk-button" data-module="govuk-button">Continue</button>

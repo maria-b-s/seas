@@ -20,7 +20,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
             <div class="govuk-form-group {% if validation['idc-org-select'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="idc-org-check-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Which organisation will {{idcName}} be conducting the ID Checkers for?</h1>
+                        <h1 class="govuk-fieldset__heading">Which client organisation will {{idcName}} be doing ID checks for?</h1>
                     </legend>
                     {% if validation['idc-org-select'] %}
                     <span id="ninonr-error" class="govuk-error-message">
@@ -42,7 +42,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     <br />
 
                     <p class="govuk-body">
-                        <a href="" class="govuk-link">If the organisation is not listed you can add it manually </a>
+                        <a href="#" class="govuk-link">Add new client organisation</a>
                     </p>
                     <br />
                 </fieldset>
