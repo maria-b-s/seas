@@ -13,19 +13,20 @@
 {% endblock %} {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">IDV guidance and key information</h1>
-        <p>This service is for Registered Bodies, not individuals.</p>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">You are the Identity Checker for {{app[0].name}}</h1>
+        </div>
+        <br />
 
-        <p>If you're a countersignatory, you can use this service to:</p>
-        <ol class="govuk-list govuk-list--bullet">
-            <li>request a standard or enhanced DBS check for employees or volunteers</li>
-            <li>send an online application form to the applicant</li>
-            <li>download a copy of the applicant's answers to send to an ID checker</li>
-            <li>track the progress of all your applications</li>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <ol class="govuk-list govuk-list--number">
+            <li>You must now contact the applicant to arrange a meeting to verify their identity</li>
+            <li>You must provide the applicant with details of what documents they need to bring to the meeting</li>
+  
         </ol>
 
         <form class="form" action="" method="post">
-            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Continue to dashboard</button>
+            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Return to dashboard</button>
         </form>
     </div>
 </div>

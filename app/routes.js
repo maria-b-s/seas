@@ -3680,17 +3680,18 @@ seasIdcRouter.get('/accept-idv', invalidateCache, (req, res) => {
 });
 
 seasIdcRouter.post('/accept-idv', invalidateCache, (req, res) => {
-    res.redirect('idv-guidance');
+    req.session.data['accepted-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
+    res.redirect('idv-accepted?app='+ req.query.app);
 });
 
-// IDV Guidance
-seasIdcRouter.get('/idv-guidance', invalidateCache, (req, res) => {
+// IDV Accepted
+seasIdcRouter.get('/idv-accepted', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/idv-guidance', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/idv-accepted', { cms, cache: inputCache, validation: null, app:  req.session.data['accepted-app']});
 });
 
-seasIdcRouter.post('/idv-guidance', invalidateCache, (req, res) => {
+seasIdcRouter.post('/idv-accepted', invalidateCache, (req, res) => {
     res.redirect('dashboard');
 });
 
