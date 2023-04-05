@@ -515,11 +515,11 @@ const idCheckers = [
 
 registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    if(req.session.data['id-checkers'] == undefined) {
+    if (req.session.data['id-checkers'] == undefined) {
         req.session.data['id-checkers'] = idCheckers;
     }
 
-    console.log(req.session.data['id-checkers'])
+    console.log(req.session.data['id-checkers']);
     res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
 });
 
@@ -620,7 +620,7 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
         if (req.body['idc-org-check'] == 'Yes') {
             res.redirect('idc-org-select');
         } else {
-            res.redirect('idc-restrict');
+            res.redirect('idc-check-answers');
         }
     }
 });
@@ -641,7 +641,7 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
         res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-org-select'] = req.body['idc-org-select'];
-        res.redirect('idc-restrict');
+        res.redirect('idc-check-answers');
     }
 });
 
@@ -724,7 +724,7 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
         };
 
         idCheckers.push(newID);
-        req.session.data['id-checkers'] = idCheckers
+        req.session.data['id-checkers'] = idCheckers;
         res.redirect('new-idc-added');
     }
 });
@@ -3630,18 +3630,46 @@ seasIdcRouter.post('/idc-create-password', invalidateCache, (req, res) => {
     }
 });
 
+const idcApplications = [
+    {
+        id: 1,
+        name: 'Jane Rigby',
+        address: `9a White Lane
+        Liverpool
+        LN11 3EE
+        `,
+        dateSubmitted: '20/03/2023',
+        idChecker: 'Mary Berry',
+    },
+    {
+        id: 2,
+        name: 'Bob Moore',
+        address: `395 High Street
+        Wickham
+        BE4 0TR
+        
+        `,
+        dateSubmitted: '20/03/2023',
+        idChecker: 'Not assigned',
+    },
+];
+
 // Dashboard
 seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+    if(req.session.data['idc-applications'] == undefined){
+        req.session.data['idc-applications'] = idcApplications
+    }
 
-    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'] });
 });
 
 // Application Details
 seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+    const app = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
 
-    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app});
 });
 
 // Accept IDV
@@ -3666,15 +3694,15 @@ seasIdcRouter.post('/idv-guidance', invalidateCache, (req, res) => {
     res.redirect('dashboard');
 });
 
-// Confirming ID
-seasIdcRouter.get('/confirming-id', invalidateCache, (req, res) => {
+// Verifying ID
+seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/confirming-id', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/verifying-id', { cms, cache: inputCache, validation: null});
 });
 
-seasIdcRouter.post('/confirming-id', invalidateCache, (req, res) => {
-    res.redirect('id-verified');
+seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
+    res.redirect('id-verified?app='+ req.query.app);
 });
 
 // ID Verified
@@ -3695,27 +3723,32 @@ seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
         if (req.body['id-verified'] == 'No') {
             res.redirect('not-verified');
         } else {
-            res.redirect('confirmation');
+            res.redirect('declaration?app='+ req.query.app);
         }
     }
 });
 
 // Confirmation
-seasIdcRouter.get('/confirmation', invalidateCache, (req, res) => {
+seasIdcRouter.get('/declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/confirmation', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/declaration', { cms, cache: inputCache, validation: null });
 });
 
-seasIdcRouter.post('/confirmation', invalidateCache, (req, res) => {
+seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
     if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/confirmation', { cache: inputCache, validation: dataValidation });
+        res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('verified-success');
+        req.session.data['verified-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
+        console.log(req.session.data['verified-app'])
+        const newList = req.session.data['idc-applications'].filter(app => app.id != req.query.app);
+        console.log(newList)
+        req.session.data['idc-applications'] = newList
+        res.redirect('verified-success?app='+ req.query.app);
     }
 });
 
@@ -3723,7 +3756,7 @@ seasIdcRouter.post('/confirmation', invalidateCache, (req, res) => {
 seasIdcRouter.get('/verified-success', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null, app: req.session.data['verified-app']});
 });
 
 // Not Verified

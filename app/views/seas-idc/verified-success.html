@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Confirmation page example {% endblock %} {% set serviceName %} Request a standard or enhanced DBS
-check {% endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% block pageTitle %} Confirmation page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -14,10 +14,16 @@ check {% endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">You have succesfully verified [APPLICANT's NAME]</h1>
+            <h1 class="govuk-panel__title">You have successfully verified the identity of {{app[0].name}}</h1>
         </div>
         <br />
-        
+
+        <h2 class="govuk-heading-m">What happens next</h2>
+
+        <p class="govuk-body-m">The application will be reviewed by a countersignatory.</p>
+        <p class="govuk-body-m">You can view and track your applications in the dashboard.</p>
+         <br />
+         
         <a href="dashboard"><button class="govuk-button" data-module="govuk-button">Return to dashboard</button></a>
     </div>
 </div>

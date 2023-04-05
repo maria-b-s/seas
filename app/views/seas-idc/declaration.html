@@ -18,7 +18,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
             <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Confirmation</h1>
+                        <h1 class="govuk-fieldset__heading">Declaration</h1>
                     </legend>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
@@ -26,7 +26,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                             <label class="govuk-label govuk-checkboxes__label" for="confirm">
                                 <p>
                                     I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS
-                                    guidance.
+                                    guidance
                                 </p>
                             </label>
                             {% if validation['confirm'] %}

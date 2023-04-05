@@ -62,152 +62,23 @@ block header %}
 </div>
 <a class="govuk-back-link" href="/dashboard/home">Back</a>
 {% endblock %} {% block content %}
-<div class="govuk-grid-row">
-    <caption class="govuk-table__caption govuk-table__caption--m">
-        <div class="new-app">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <h1 class="govuk-heading-l">Manage ID Checkers</h1>
-                </div>
-                <div class="govuk-grid-column-one-half" style="padding-left: 30px">
-                    <a href="/registered-body/add-new-idc">
-                        <button class="govuk-button" data-module="govuk-button">Add new IDC</button>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </caption>
-
-    {#
-    <div class="govuk-grid-column-one-quarter" style="border-style: solid; border-width: medium">
-        <h2 class="govuk-heading-m">Filter</h2>
-        {% if needsActionFilter or appStatusFilter or orgFilter %}
-        <div>
-            <h2 class="govuk-heading-m">Selected filters</h2>
-            <a href="home" class="govuk-body-s govuk-!-font-size-14">Clear filters</a>
-            {% if needsActionFilter == 'Needs action' %}
-            <h3 class="govuk-heading-s govuk-!-font-size-14">Application action needed</h3>
-
-            <form action="delete-filter?delete=needs-action" method="post">
-                <button class="btn btn-link" type="submit">&#10006;</button>
-                <label class="govuk-body-s govuk-!-font-size-14">{{needsActionFilter}}</label>
-            </form>
-            <br />
-
-            {% endif %} {% if appStatusFilter.length > 0 %}
-            <h3 class="govuk-heading-s govuk-!-font-size-14">Status</h3>
-
-            {% for app in appStatusFilter %}
-            <form action="delete-filter?id={{app}}" method="post">
-                <button class="btn btn-link" type="submit">&#10006;</button>
-                <label class="govuk-body-s govuk-!-font-size-14">
-                    {% if app == 1 %} ID check required {% endif %} {% if app == 2 %} Ready to submit {% endif %} {% if app == 3 %} Sent to applicant
-                    {% endif %} {% if app == 4 %} Submitted to DBS {% endif %} {% if app == 5 %} Cancelled {% endif %} {% if app == 6 %} Rejected {%
-                    endif %} {% if app == 7 %} Cerificate issued {% endif %}
-                </label>
-            </form>
-            <br />
-            {% endfor %} {% endif %} {% if orgFilter.length > 0%}
-            <h3 class="govuk-heading-s govuk-!-font-size-14">Organisation</h3>
-
-            {% for app in orgFilter %}
-            <form action="delete-filter?org={{app}}" method="post">
-                <button class="btn btn-link" type="submit">&#10006;</button>
-                <label class="govuk-body-s govuk-!-font-size-14">{{app}}</label>
-            </form>
-
-            <br />
-            {% endfor %}
-
-            <br />
-            {% endif %}
-
-            <br />
-        </div>
-        {% endif %}
-        <form action="filter" method="post" novalidate>
-            <button type="submit" class="govuk-button" data-module="govuk-button">Apply filters</button>
-            <h3 class="govuk-heading-s govuk-!-font-size-14">Application action needed</h3>
-
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="needs-action" name="needs-action" type="checkbox" value="needs-action" {% if
-                    needsActionFilter == 'Needs action' %} checked {% endif %} />
-                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="needs-action">Needs action</label>
-                </div>
-            </div>
-
-            <br />
-
-            <h3 class="govuk-heading-s govuk-!-font-size-14">Status</h3>
-
-            {% for app in data['appStatus'] %}
-
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="app-status-{{app.id}}" name="app-status" type="checkbox" value="{{app.id}}" {% for id
-                    in appStatusFilter %} {% if app.id == id %} checked {%endif%} {% endfor %}/>
-                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="app-status">{{app.text}}</label>
-                </div>
-            </div>
-
-            <br />
-
-            {% endfor %}
-
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">More filters</span>
-                </summary>
-                <div class="govuk-details__text">
-                    <h3 class="govuk-heading-s govuk-!-font-size-14">Organisation the check is for</h3>
-
-                    {% for org in data['organisations'] %}
-
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="organisation-{{org}}" name="organisation" type="checkbox" value="{{org}}" {%
-                            for organisation in orgFilter %} {% if organisation == org %} checked {%endif%} {% endfor %} />
-                            <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="organisation">{{org}}</label>
-                        </div>
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <caption class="govuk-table__caption govuk-table__caption--m">
+            
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-half">
+                        <h1 class="govuk-heading-l">Manage ID Checkers</h1>
                     </div>
-
-                    <br />
-
-                    {% endfor %}
-                </div>
-            </details>
-        </form>
-    </div>
-    #} {#
-    <div class="govuk-grid-column-three-quarters">
-        #} {#
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h3 class="govuk-heading-m">Search</h3>
-            </div>
-            <form action="search-name" method="post" novalidate>
-                <div class="govuk-grid-column-three-quarters">
-                    <input class="govuk-input" id="search-name" name="search-name" type="text" value="{{search}}" />
-                </div>
-                <div class="govuk-grid-column-one-quarter">
-                    <button type="submit" class="govuk-button" data-module="govuk-button" style="width: 75%; text-align: center; float: right">
-                        Search
-                    </button>
-                </div>
-            </form>
-        </div>
-        #}
+                    <div class="govuk-grid-column-one-quarter" style="padding-left: 30px">
+                        <a href="/registered-body/add-new-idc">
+                            <button class="govuk-button" data-module="govuk-button">Add new Identity Checker</button>
+                        </a>
+                    </div>
+ 
+        </caption>
 
         <table class="govuk-table" data-module="moj-sortable-table">
-            {# <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header" aria-sort="none">Last name</th>
-                    <th scope="col" class="govuk-table__header" aria-sort="none">Date started</th>
-                    <th scope="col" class="govuk-table__header govuk-table__header--numeric" aria-sort="ascending">Action needed</th>
-                </tr>
-            </thead> #}
-
             <tbody class="govuk-table__body">
                 {% for checker in checkers %}
                 <tr class="govuk-table__row">
@@ -237,9 +108,6 @@ block header %}
                 {% endfor %}
             </tbody>
         </table>
-        {#
     </div>
-    #}
 </div>
-
 {% endblock %}
