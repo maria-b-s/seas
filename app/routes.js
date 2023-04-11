@@ -18,7 +18,7 @@ const { resendApplication } = require('./middleware/resendApplication');
 const { filterAppList } = require('./middleware/filterAppList');
 const { searchFilter } = require('./middleware/searchFilter');
 const { getMonth } = require('./middleware/getMonth');
-const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
+const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
 const moment = require('moment');
 const _ = require('lodash');
 const { renderString } = require('nunjucks');
@@ -535,6 +535,17 @@ registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if (req.body['training'] == '_unchecked') {
+        dataValidation['training'] = 'Tick the box to confirm you agree with the declaration';
+    }
+    if (req.body['suitable'] == '_unchecked') {
+        dataValidation['suitable'] = 'Tick the box to confirm you agree with the declaration';
+    }
+    if (req.body['accurate'] == '_unchecked') {
+        dataValidation['accurate'] = 'Tick the box to confirm you agree with the declaration';
+    }
+
+    console.log(inputCache);
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
     } else {
@@ -553,12 +564,42 @@ registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-first-name']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-last-name']);
+
+    let redirectPath = 'idc-email';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validFirstName) {
+        dataValidation['idc-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (!validLastName) {
+        dataValidation['idc-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (req.body['idc-first-name'].length > 50) {
+        dataValidation['idc-first-name'] = 'First name must be 50 characters or fewer';
+    }
+    if (req.body['idc-last-name'].length > 50) {
+        dataValidation['idc-last-name'] = 'Last name must be 50 characters or fewer';
+    }
+
+    if (!req.body['idc-first-name']) {
+        dataValidation['idc-first-name'] = 'Enter first name';
+    }
+
+    if (!req.body['idc-last-name']) {
+        dataValidation['idc-last-name'] = 'Enter last name';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-full-name'] = req.body['idc-first-name'] + ' ' + req.body['idc-last-name'];
-        res.redirect('idc-email');
+        res.redirect(redirectPath);
     }
 });
 
@@ -573,12 +614,53 @@ registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    let applicantEmail = req.body['idc-email'];
+    let applicantEmailConfirm = req.body['idc-email-confirm'];
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['idc-email'],
+        );
+    const validConfirmEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['idc-email-confirm'],
+        );
+
+    let redirectPath = 'idc-mobile-number';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validEmail) {
+        dataValidation['idc-email'] = 'Enter email address in the correct format';
+    }
+
+    if (!validConfirmEmail) {
+        dataValidation['idc-email-confirm'] = 'Enter email address in the correct format';
+    }
+
+    if (applicantEmail.length > 100) {
+        dataValidation['idc-email'] = 'Email address must be 100 characters or fewer';
+    }
+
+    if (applicantEmailConfirm.length > 100) {
+        dataValidation['idc-email-confirm'] = 'Email address must be 100 characters or fewer';
+    }
+
+    if (!applicantEmail) {
+        dataValidation['idc-email'] = 'Enter email address';
+    }
+
+    if (!applicantEmailConfirm) {
+        dataValidation['idc-email-confirm'] = 'Enter email address';
+    } else if (applicantEmail != applicantEmailConfirm) {
+        dataValidation['idc-email-confirm'] = 'Email address does not match';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-email'] = req.body['idc-email'];
-        res.redirect('idc-mobile-number');
+        res.redirect(redirectPath);
     }
 });
 
@@ -590,15 +672,30 @@ registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
 });
 
 registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
+    const state = trimDataValuesAndRemoveSpaces(req.body);
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const validPhone = /^(?:(0|\+44)\d{9,10})$/.test(state['idc-mobile-number']);
+
+    let redirectPath = 'idc-org-check';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validPhone) {
+        dataValidation['idc-mobile-number'] = 'Enter mobile number in the correct format';
+    }
+
+    if (!state['idc-mobile-number']) {
+        dataValidation['idc-mobile-number'] = 'Enter mobile number';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-mobile-number'] = req.body['idc-mobile-number'];
-        res.redirect('idc-org-check');
+        res.redirect(redirectPath);
     }
 });
 
@@ -613,6 +710,10 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+
+    if(!req.body['idc-org-check']){
+        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for a client organisation'
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-check', { cache: inputCache, validation: dataValidation });
@@ -636,6 +737,10 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+
+    if(req.body['idc-org-select'] == ''){
+        dataValidation['idc-org-select'] = 'Select organisation'
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
@@ -698,6 +803,10 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+
+    if(!req.body['idc-add-another']){
+        dataValidation['idc-add-another'] = 'Select if you want to add another Identity Checker'
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
@@ -3657,8 +3766,8 @@ const idcApplications = [
 // Dashboard
 seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    if(req.session.data['idc-applications'] == undefined){
-        req.session.data['idc-applications'] = idcApplications
+    if (req.session.data['idc-applications'] == undefined) {
+        req.session.data['idc-applications'] = idcApplications;
     }
 
     res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'] });
@@ -3669,7 +3778,7 @@ seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     const app = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
 
-    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app});
+    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app });
 });
 
 // Accept IDV
@@ -3681,14 +3790,14 @@ seasIdcRouter.get('/accept-idv', invalidateCache, (req, res) => {
 
 seasIdcRouter.post('/accept-idv', invalidateCache, (req, res) => {
     req.session.data['accepted-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-    res.redirect('idv-accepted?app='+ req.query.app);
+    res.redirect('idv-accepted?app=' + req.query.app);
 });
 
 // IDV Accepted
 seasIdcRouter.get('/idv-accepted', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/idv-accepted', { cms, cache: inputCache, validation: null, app:  req.session.data['accepted-app']});
+    res.render('seas-idc/idv-accepted', { cms, cache: inputCache, validation: null, app: req.session.data['accepted-app'] });
 });
 
 seasIdcRouter.post('/idv-accepted', invalidateCache, (req, res) => {
@@ -3699,11 +3808,11 @@ seasIdcRouter.post('/idv-accepted', invalidateCache, (req, res) => {
 seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/verifying-id', { cms, cache: inputCache, validation: null});
+    res.render('seas-idc/verifying-id', { cms, cache: inputCache, validation: null });
 });
 
 seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
-    res.redirect('id-verified?app='+ req.query.app);
+    res.redirect('id-verified?app=' + req.query.app);
 });
 
 // ID Verified
@@ -3724,7 +3833,7 @@ seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
         if (req.body['id-verified'] == 'No') {
             res.redirect('not-verified');
         } else {
-            res.redirect('declaration?app='+ req.query.app);
+            res.redirect('declaration?app=' + req.query.app);
         }
     }
 });
@@ -3745,11 +3854,11 @@ seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
         res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['verified-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-        console.log(req.session.data['verified-app'])
+        console.log(req.session.data['verified-app']);
         const newList = req.session.data['idc-applications'].filter(app => app.id != req.query.app);
-        console.log(newList)
-        req.session.data['idc-applications'] = newList
-        res.redirect('verified-success?app='+ req.query.app);
+        console.log(newList);
+        req.session.data['idc-applications'] = newList;
+        res.redirect('verified-success?app=' + req.query.app);
     }
 });
 
@@ -3757,7 +3866,7 @@ seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
 seasIdcRouter.get('/verified-success', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null, app: req.session.data['verified-app']});
+    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null, app: req.session.data['verified-app'] });
 });
 
 // Not Verified
