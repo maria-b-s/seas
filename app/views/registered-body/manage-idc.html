@@ -62,52 +62,44 @@ block header %}
 </div>
 <a class="govuk-back-link" href="/dashboard/home">Back</a>
 {% endblock %} {% block content %}
-<div class="govuk-width-container">
-    <div class="govuk-grid-row">
-        <caption class="govuk-table__caption govuk-table__caption--m">
-            
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-one-half">
-                        <h1 class="govuk-heading-l">Manage ID Checkers</h1>
-                    </div>
-                    <div class="govuk-grid-column-one-quarter" style="padding-left: 30px">
-                        <a href="/registered-body/add-new-idc">
-                            <button class="govuk-button" data-module="govuk-button">Add new Identity Checker</button>
-                        </a>
-                    </div>
- 
-        </caption>
 
-        <table class="govuk-table" data-module="moj-sortable-table">
-            <tbody class="govuk-table__body">
-                {% for checker in checkers %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-sort-value="{{app['surname']}}">
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Name</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Email</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Phone</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Associated Organisation</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Associated Department</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold">Date Added</p>
-                    </td>
+<table class="govuk-table landing-table" data-module="moj-sortable-table">
+    <caption class="govuk-table__caption govuk-table__caption--m">
+       <div class="new-app">
+            <h1 class="govuk-heading-l">Manage ID Checkers</h1>
 
-                    <td class="govuk-table__cell" data-sort-value="{{app['date']}}">
-                        <p class="govuk-body-s">{{checker.name}}</p>
-                        <p class="govuk-body-s">{{checker.email}}</p>
-                        <p class="govuk-body-s">{{checker.mobile}}</p>
-                        <p class="govuk-body-s">{{checker.org}}</p>
-                        <p class="govuk-body-s">{{checker.dept}}</p>
-                        <p class="govuk-body-s">{{checker.dateAdded}}</p>
-                    </td>
+            <a href="/registered-body/add-new-idc">
+                <button class="govuk-button" data-module="govuk-button">Add new ID Checker</button>
+            </a>
+             </div>
+    </caption>
+    <tbody class="govuk-table__body">
+        {% for checker in checkers %}
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell" data-sort-value="{{app['surname']}}">
+                <p class="govuk-body-m govuk-!-font-weight-bold">Name</p>
+                <p class="govuk-body-m govuk-!-font-weight-bold">Email</p>
+                <p class="govuk-body-m govuk-!-font-weight-bold">Phone</p>
+                <p class="govuk-body-m govuk-!-font-weight-bold">Associated Organisation</p>
+                <p class="govuk-body-m govuk-!-font-weight-bold">Associated Department</p>
+                <p class="govuk-body-m govuk-!-font-weight-bold">Date Added</p>
+            </td>
 
-                    <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="{{app['status'].id}}">
-                        <p class="govuk-body-s"><a href="#">View full details</a></p>
-                        <p class="govuk-body-s"><a href="#">Edit details</a></p>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+            <td class="govuk-table__cell" data-sort-value="{{app['date']}}">
+                <p class="govuk-body-m">{{checker.name}}</p>
+                <p class="govuk-body-m">{{checker.email}}</p>
+                <p class="govuk-body-m">{{checker.mobile}}</p>
+                <p class="govuk-body-m">{{checker.org}}</p>
+                <p class="govuk-body-m">{{checker.dept}}</p>
+                <p class="govuk-body-m">{{checker.dateAdded}}</p>
+            </td>
+
+            <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="{{app['status'].id}}">
+                <p class="govuk-body-l"><a href="#">Edit details</a></p>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

@@ -22,7 +22,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Will {{idcName}} be doing ID checks for a client organisation?</h1>
                     </legend>
-                    <div class="govuk-hint">If the ID Checker will be doing checks for organisations other than your own, select yes</div>
+                    <div class="govuk-hint">If the ID Checker will be doing checks for organisations other than your own, select yes.</div>
                     {% if validation['idc-org-check'] %}
                     <span id="ninonr-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-org-check'] }}
