@@ -65,13 +65,18 @@ block header %}
     <caption class="govuk-table__caption govuk-table__caption--m">
         <div class="new-app">
             <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <h1 class="govuk-heading-l">Applications ({{filteredApplications.length}})</h1>
+                <div class="govuk-grid-column-one-third" style="padding-left: 30px">
+                    <h1 class="govuk-heading-l">Applications</h1>
                 </div>
-                <div class="govuk-grid-column-one-half" style="padding-left: 30px">
+                <div class="govuk-grid-column-two-thirds" style="padding-left: 55px">
+                    <div class="govuk-button-group">
                     <a href="/registered-body/dbs-check-level">
                         <button class="govuk-button" data-module="govuk-button">New application</button>
                     </a>
+                      <a href="/registered-body/manage-idc">
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage ID Checkers</button>
+                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,16 +186,6 @@ block header %}
     <div class="govuk-grid-column-three-quarters">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-button-group">
-                    <a href="/registered-body/manage-idc">
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage ID Checkers</button>
-                    </a>
-
-                    <a href="">
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage Client Organisations</button>
-                    </a>
-                </div>
-
                 <h3 class="govuk-heading-m">Search</h3>
             </div>
             <form action="search-name" method="post" novalidate>

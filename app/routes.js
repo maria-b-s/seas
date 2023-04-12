@@ -522,30 +522,24 @@ registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
     res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
 });
 
-// IDC Declaration
-registeredBodyRouter.get('/idc-declaration', invalidateCache, (req, res) => {
+// IDC Start/Declaration
+registeredBodyRouter.get('/add-new-idc', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('registered-body/idc-declaration', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/add-new-idc', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
+registeredBodyRouter.post('/add-new-idc', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if (req.body['training'] == '_unchecked') {
-        dataValidation['training'] = 'Tick the box to confirm you agree with the declaration';
-    }
-    if (req.body['suitable'] == '_unchecked') {
-        dataValidation['suitable'] = 'Tick the box to confirm you agree with the declaration';
-    }
-    if (req.body['accurate'] == '_unchecked') {
-        dataValidation['accurate'] = 'Tick the box to confirm you agree with the declaration';
+    if (req.body['confirm'] == '_unchecked') {
+        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (Object.keys(dataValidation).length) {
-        res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
+        res.render('registered-body/add-new-idc', { cache: inputCache, validation: dataValidation });
     } else {
         res.redirect('idc-name');
     }
