@@ -70,7 +70,7 @@ $('[name="changed-name"]').click(function (e) {
 var anotherNameRadio = $('.add-another-name');
 
 var orgSetup = function () {
-    if ($('input[name="whos-check"]:checked').val() === 'another-org') return anotherNameRadio.show();
+    if ($('input[name="whos-check"]:checked').val() === "client-organisation") return anotherNameRadio.show();
     return anotherNameRadio.hide();
 };
 

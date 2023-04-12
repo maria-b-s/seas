@@ -20,12 +20,12 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
         <h1 class="govuk-heading-l">What is your email address?</h1>
 
         <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['email'] %}govuk-form-group--error{% endif %}">
+            <div class="govuk-form-group {% if validation['applicant-email'] %}govuk-form-group--error{% endif %}">
                 <label class="govuk-label" for="email"> Email address </label>
                 <div id="email-hint" class="govuk-hint">We’ll only use this to contact you about your DBS check</div>
-                {% if validation['email'] %}
+                {% if validation["applicant-email"] %}
                 <span id="ninonr-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> {{ validation['email'] }}
+                    <span class="govuk-visually-hidden">Error:</span> {{ validation['applicant-email'] }}
                 </span>
                 {% endif %}
                 <input
@@ -39,11 +39,11 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     value='{{data["email"]}}'
                 />
             </div>
-            <div class="govuk-form-group {% if validation['confirm-email'] %}govuk-form-group--error{% endif %}" >
+            <div class="govuk-form-group {% if validation['applicant-email-confirm'] %}govuk-form-group--error{% endif %}" >
                 <label class="govuk-label" for="confirm-email"> Confirm Email address </label>
-                {% if validation['confirm-email'] %}
+                {% if validation["applicant-email-confirm"] %}
                 <span id="ninonr-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> {{ validation['confirm-email'] }}
+                    <span class="govuk-visually-hidden">Error:</span> {{ validation["applicant-email-confirm"] }}
                 </span>
                 {% endif %}
                 <input

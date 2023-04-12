@@ -1,0 +1,107 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Client Organisation - Check
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Redirect Path
+---------------------------------------------------------------------------- -->
+<!-- Preserves the "change=true" query string property; if present. --> 
+{% set queryString = "" %}
+{% if query["change"] === "true" %}
+    {% set queryString = "?change=true" %}
+{% endif %}
+{% set redirectPath = "client-organisation-add" + queryString %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" novalidate>
+                <!-- Heading. -->
+                {% call govukFieldset({
+                    legend: {
+                        classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                        isPageHeading: true,
+                        text: "Check client organisation"
+                    }
+                }) %}
+
+                    <!-- Summary list. -->
+                    {{ govukSummaryList({
+                        classes: "govuk-!-margin-bottom-9",
+                        rows: [
+                            {
+                                key: {
+                                    text: "Client organisation name"
+                                },
+                                value: {
+                                    text: data["client-organisation"]
+                                },
+                                actions: {
+                                    items: [
+                                        {
+                                            href: redirectPath,
+                                            text: "Change",
+                                            visuallyHiddenText: "Change client organisation name."
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Add"
+                    }) }}
+                {% endcall %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

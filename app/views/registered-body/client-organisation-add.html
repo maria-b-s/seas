@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Organisation - Type
+    Client Organisation - Add
 {% endblock %}
 
 
@@ -20,18 +20,6 @@
 {% set serviceName %}
     Request a standard or enhanced DBS check
 {% endset %}
-
-
-
-<!-- ---------------------------------------------------------------------------
--- Redirect Path
----------------------------------------------------------------------------- -->
-<!-- Preserves the "change=true" query string property; if present. --> 
-{% set queryString = "" %}
-{% if query["change"] === "true" %}
-    {% set queryString = "?change=true" %}
-{% endif %}
-{% set redirectPath = "/registered-body/client-organisation-add" + queryString %}
 
 
 
@@ -76,66 +64,30 @@
                     titleText: "There's a problem with the information you have provided"
                 }) }}
             {% endif %}
-
-            <!-- Conditional / Select client organisation. -->
-            {% set conditionalSelectClientOrganisation %}
-                <!-- Select. -->
-                {{ govukSelect({
-                    classes: "govuk-!-width-two-thirds",
-                    id: "client-organisation",
-                    items: data["client-organisations"],
-                    label: {
-                        text: "Organisation name"
-                    },
-                    name: "client-organisation"
-                }) }}
-
-                <!-- Body. -->
-                <p class="govuk-body"><br>
-                    <a href={{ redirectPath }} rel="noopener noreferrer">
-                        If not shown, add a new organisation
-                    </a>
-                </p>
-            {% endset %}
-
+            
             <form method="post">
                 <!-- Heading. -->
                 {% call govukFieldset({
                     legend: {
                         classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                         isPageHeading: true,
-                        text: "What organisation is the check for?"
+                        text: "What is the name of the client organisation?"
                     }
                 }) %}
 
-                    <!-- Radio buttons. -->
-                    {{ govukRadios({
-                        items: [
-                            {
-                                checked: data["organisation-check"] === "my-organisation",
-                                text: "My organisation",
-                                value: "my-organisation"
-                            },
-                            {
-                                checked: data["organisation-check"] === "client-organisation",
-                                conditional: {
-                                    html: conditionalSelectClientOrganisation
-                                },
-                                text: "Client organisation",
-                                value: "client-organisation"
-                            }
-                        ],
-                        name: "organisation-check",
-                        value: data["organisation-check"]
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        classes: "govuk-!-width-two-thirds",
+                        id: "client-organisation",
+                        name: "client-organisation",
+                        label: {
+                            text: "Client organisation name"
+                        }
                     }) }}
 
                     <!-- Button. -->
-                    {% set buttonText = "Continue" %}
-                    {% if query["change"] === "true" %}
-                        {% set buttonText = "Check answers" %}
-                    {% endif %}
                     {{ govukButton({
-                        text: buttonText
+                        text: "Continue"
                     }) }}
                 {% endcall %}
             </form>
