@@ -23,7 +23,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     <p class="govuk-body">By adding a new Identity Checker you confirm that:</p>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="suitable" name="suitable" type="checkbox" {% if cache['suitable'] != '_unchecked'%} checked {% endif %} />
+                            <input class="govuk-checkboxes__input" id="suitable" name="suitable" type="checkbox" {% if cache['suitable'] == 'on'%} checked {% endif %} />
                             <label class="govuk-label govuk-checkboxes__label" for="suitable">
                                 <p>The person you are adding is suitable to conduct such checks</p>
                             </label>
@@ -34,7 +34,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                             {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="training" name="training" type="checkbox" {% if cache['training'] != '_unchecked'%} checked {% endif %}/>
+                            <input class="govuk-checkboxes__input" id="training" name="training" type="checkbox" {% if cache['training'] == 'on'%} checked {% endif %}/>
                             <label class="govuk-label govuk-checkboxes__label" for="training">
                                 <p>The person you are adding has had the appropriate training and guidance needed</p></label
                             >
@@ -46,7 +46,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                             {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="accurate" name="accurate" type="checkbox" {% if cache['accurate'] != '_unchecked'%} checked {% endif %} />
+                            <input class="govuk-checkboxes__input" id="accurate" name="accurate" type="checkbox" {% if cache['accurate'] == 'on'%} checked {% endif %} />
                             <label class="govuk-label govuk-checkboxes__label" for="accurate">
                                 <p>The Registered Body remains responsible for conducting accurate identity checks</p>
                             </label>

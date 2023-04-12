@@ -519,7 +519,6 @@ registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
         req.session.data['id-checkers'] = idCheckers;
     }
 
-    console.log(req.session.data['id-checkers']);
     res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
 });
 
@@ -545,7 +544,6 @@ registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
         dataValidation['accurate'] = 'Tick the box to confirm you agree with the declaration';
     }
 
-    console.log(inputCache);
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
     } else {
@@ -3854,9 +3852,9 @@ seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
         res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['verified-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-        console.log(req.session.data['verified-app']);
+
         const newList = req.session.data['idc-applications'].filter(app => app.id != req.query.app);
-        console.log(newList);
+
         req.session.data['idc-applications'] = newList;
         res.redirect('verified-success?app=' + req.query.app);
     }
