@@ -9,6 +9,7 @@ const { deselectClientOrganisation } = require("./middleware/utilsClientOrganisa
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
+const { persistQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
 const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
