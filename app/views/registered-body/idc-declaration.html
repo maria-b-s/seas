@@ -23,36 +23,36 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     <p class="govuk-body">By adding a new Identity Checker you confirm that:</p>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox" value="" />
-                            <label class="govuk-label govuk-checkboxes__label" for="confirm">
+                            <input class="govuk-checkboxes__input" id="suitable" name="suitable" type="checkbox" {% if cache['suitable'] == 'on'%} checked {% endif %} />
+                            <label class="govuk-label govuk-checkboxes__label" for="suitable">
                                 <p>The person you are adding is suitable to conduct such checks</p>
                             </label>
-                            {% if validation['confirm'] %}
+                            {% if validation['suitable'] %}
                             <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['confirm'] }}
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['suitable'] }}
                             </span>
                             {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" value="" />
-                            <label class="govuk-label govuk-checkboxes__label" for="declare">
+                            <input class="govuk-checkboxes__input" id="training" name="training" type="checkbox" {% if cache['training'] == 'on'%} checked {% endif %}/>
+                            <label class="govuk-label govuk-checkboxes__label" for="training">
                                 <p>The person you are adding has had the appropriate training and guidance needed</p></label
                             >
 
-                            {% if validation['declare'] %}
+                            {% if validation['training'] %}
                             <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['declare'] }}
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['training'] }}
                             </span>
                             {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="certify" name="certify" type="checkbox" value="carcasses" />
-                            <label class="govuk-label govuk-checkboxes__label" for="certify">
+                            <input class="govuk-checkboxes__input" id="accurate" name="accurate" type="checkbox" {% if cache['accurate'] == 'on'%} checked {% endif %} />
+                            <label class="govuk-label govuk-checkboxes__label" for="accurate">
                                 <p>The Registered Body remains responsible for conducting accurate identity checks</p>
                             </label>
-                            {% if validation['certify'] %}
+                            {% if validation['accurate'] %}
                             <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['certify'] }}
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['accurate'] }}
                             </span>
                             {% endif %}
                         </div>
@@ -60,7 +60,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                 </fieldset>
             </div>
 
-            <button class="govuk-button" data-module="govuk-button">Agree and submit</button>
+            <button class="govuk-button" data-module="govuk-button">Agree</button>
         </form>
     </div>
 </div>

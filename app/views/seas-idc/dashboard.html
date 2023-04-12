@@ -66,12 +66,13 @@ block header %}
         <div class="new-app">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <h1 class="govuk-heading-l">Applications requiring IDV</h1>
+                    <h1 class="govuk-heading-l">Applications for identity checking</h1>
                 </div>
             </div>
         </div>
     </caption>
 
+    {#
     <div class="govuk-grid-column-one-quarter" style="border-style: solid; border-width: medium">
         <h2 class="govuk-heading-m">Filter</h2>
         {% if needsActionFilter or appStatusFilter or orgFilter %}
@@ -172,8 +173,9 @@ block header %}
             </details>
         </form>
     </div>
-
+    #} {#
     <div class="govuk-grid-column-three-quarters">
+        #} {#
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h3 class="govuk-heading-m">Search</h3>
@@ -189,8 +191,10 @@ block header %}
                 </div>
             </form>
         </div>
+        #}
 
         <table class="govuk-table" data-module="moj-sortable-table">
+            {#
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header" aria-sort="none">Last name</th>
@@ -198,41 +202,66 @@ block header %}
                     <th scope="col" class="govuk-table__header govuk-table__header--numeric" aria-sort="ascending">Action needed</th>
                 </tr>
             </thead>
+            #}
 
             <tbody class="govuk-table__body">
+                {% for app in idcApplications %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-sort-value="{{app['surname']}}">
-                        <p class="govuk-body-m">{{app['firstName']}} {{app['middleName']}} <strong>{{app['surname']}}</strong></p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold" style="margin-bottom: 5px">Email</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold" style="margin-bottom: 5px">Date application started</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold" style="margin-bottom: 5px">Organisation</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold" style="margin-bottom: 5px">Check level</p>
-                        <p class="govuk-body-s govuk-!-font-weight-bold" style="margin-bottom: 5px">Last worked on by</p>
+                        <p class="govuk-body-s govuk-!-font-weight-bold">Name</p>
+                        <p class="govuk-body-s govuk-!-font-weight-bold">Address</p>
+                        <p class="govuk-body-s govuk-!-font-weight-bold">Date submitted</p>
+                        <p class="govuk-body-s govuk-!-font-weight-bold">Identity checker</p>
                     </td>
 
                     <td class="govuk-table__cell" data-sort-value="{{app['date']}}">
-                        <p class="govuk-body-m">
-                            <a href="/seas-idc/view-details?app=">View full application details</a>
-                        </p>
-
-                        <p class="govuk-body-s" style="margin-bottom: 5px">{{app['email']}}</p>
-                        <p class="govuk-body-s" style="margin-bottom: 5px">{{app['readableDate']}}</p>
-                        <p class="govuk-body-s" style="margin-bottom: 5px">{{app['organisation']}}</p>
-                        <p class="govuk-body-s" style="margin-bottom: 5px">{{app['type']}}</p>
-                        <p class="govuk-body-s" style="margin-bottom: 5px">{{app['history'][0].person}}</p>
+                        <p class="govuk-body-s">{{app.name}}</p>
+                        <p class="govuk-body-s">{{app.address}}</p>
+                        <p class="govuk-body-s">{{app.dateSubmitted}}</p>
+                        {% if app.idChecker != 'Not assigned'%}
+                        <strong class="govuk-tag govuk-tag--green"
+                            >{{app.idChecker}}</strong
+                        >
+                        {% else %}
+                        <strong class="govuk-tag govuk-tag--yellow"
+                            >Not assigned</strong
+                        >
+                        {% endif %}
                     </td>
 
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="{{app['status'].id}}">
                         <div class="govuk-grid-row">
                             <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                <a href="/seas-idc/application-history?app=">Application History</a>
+                                <a href="view-details?app={{app.id}}">View full details</a>
                             </div>
                         </div>
+                         {% if app.idChecker != 'Not assigned'%}
+                       <div class="govuk-grid-row">
+                            <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
+                                <a href="verifying-id?app={{app.id}}">Verify identity</a>
+                            </div>
+                        </div>
+                         <div class="govuk-grid-row">
+                            <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
+                                <a href="#">Reassign</a>
+                            </div>
+                        </div>
+                        {% else %}
+                       <div class="govuk-grid-row">
+                            <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
+                                <a href="accept-idv?app={{app.id}}">Start identity check</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
+        {#
     </div>
+    #}
 </div>
 
 {% endblock %}

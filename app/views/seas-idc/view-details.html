@@ -19,7 +19,7 @@ endset%} {% block beforeContent %}
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Applicant name</dt>
-                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
+                    <dd class="govuk-summary-list__value">{{ app[0].name}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -255,10 +255,10 @@ endset%} {% block beforeContent %}
             </p>
 
             <div class="govuk-button-group">
-                <a href="accept-idv?app=" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
-                    >Accept IDV</a
+                <a href="accept-idv?app={{app[0].id}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
+                    >Start identity check</a
                 >
-                <a href="confirming-id?app=" class="govuk-button govuk-button--secondary" data-module="govuk-button">Confirm IDV</a>
+                <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
             </div>
 
             {% endif %}

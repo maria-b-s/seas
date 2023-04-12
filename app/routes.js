@@ -9,8 +9,8 @@ const { cancelApplication } = require('./middleware/cancelApplication');
 const { deselectClientOrganisation } = require("./middleware/utilsClientOrganisation");
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
-const { invalidateCache, loadPageData, savePageData } = require('./middleware/utilsMiddleware');
-const { persistQueryStringFromRequestForPath } = require("./middleware/utilsMiddleware");
+const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
+const moment = require('moment');
 const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
@@ -29,7 +29,6 @@ const { validatePhone } = require('./middleware/validatePhone');
 const { validateSex } = require('./middleware/validateSex');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const e = require('express');
-const moment = require('moment');
 
 const router = express.Router();
 const citizenRouter = express.Router();
@@ -590,28 +589,31 @@ const idCheckers = [
 
 registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    if(req.session.data['id-checkers'] == undefined) {
+    if (req.session.data['id-checkers'] == undefined) {
         req.session.data['id-checkers'] = idCheckers;
     }
 
-    console.log(req.session.data['id-checkers'])
     res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
 });
 
-// IDC Declaration
-registeredBodyRouter.get('/idc-declaration', invalidateCache, (req, res) => {
+// IDC Start/Declaration
+registeredBodyRouter.get('/add-new-idc', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('registered-body/idc-declaration', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/add-new-idc', { cms, cache: inputCache, validation: null });
 });
 
-registeredBodyRouter.post('/idc-declaration', invalidateCache, (req, res) => {
+registeredBodyRouter.post('/add-new-idc', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if (req.body['confirm'] == '_unchecked') {
+        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
+    }
+
     if (Object.keys(dataValidation).length) {
-        res.render('registered-body/idc-declaration', { cache: inputCache, validation: dataValidation });
+        res.render('registered-body/add-new-idc', { cache: inputCache, validation: dataValidation });
     } else {
         res.redirect('idc-name');
     }
@@ -628,12 +630,42 @@ registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-first-name']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-last-name']);
+
+    let redirectPath = 'idc-email';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validFirstName) {
+        dataValidation['idc-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (!validLastName) {
+        dataValidation['idc-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (req.body['idc-first-name'].length > 50) {
+        dataValidation['idc-first-name'] = 'First name must be 50 characters or fewer';
+    }
+    if (req.body['idc-last-name'].length > 50) {
+        dataValidation['idc-last-name'] = 'Last name must be 50 characters or fewer';
+    }
+
+    if (!req.body['idc-first-name']) {
+        dataValidation['idc-first-name'] = 'Enter first name';
+    }
+
+    if (!req.body['idc-last-name']) {
+        dataValidation['idc-last-name'] = 'Enter last name';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-full-name'] = req.body['idc-first-name'] + ' ' + req.body['idc-last-name'];
-        res.redirect('idc-email');
+        res.redirect(redirectPath);
     }
 });
 
@@ -648,12 +680,53 @@ registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    let applicantEmail = req.body['idc-email'];
+    let applicantEmailConfirm = req.body['idc-email-confirm'];
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['idc-email'],
+        );
+    const validConfirmEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            req.body['idc-email-confirm'],
+        );
+
+    let redirectPath = 'idc-mobile-number';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validEmail) {
+        dataValidation['idc-email'] = 'Enter email address in the correct format';
+    }
+
+    if (!validConfirmEmail) {
+        dataValidation['idc-email-confirm'] = 'Enter email address in the correct format';
+    }
+
+    if (applicantEmail.length > 100) {
+        dataValidation['idc-email'] = 'Email address must be 100 characters or fewer';
+    }
+
+    if (applicantEmailConfirm.length > 100) {
+        dataValidation['idc-email-confirm'] = 'Email address must be 100 characters or fewer';
+    }
+
+    if (!applicantEmail) {
+        dataValidation['idc-email'] = 'Enter email address';
+    }
+
+    if (!applicantEmailConfirm) {
+        dataValidation['idc-email-confirm'] = 'Enter email address';
+    } else if (applicantEmail != applicantEmailConfirm) {
+        dataValidation['idc-email-confirm'] = 'Email address does not match';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-email'] = req.body['idc-email'];
-        res.redirect('idc-mobile-number');
+        res.redirect(redirectPath);
     }
 });
 
@@ -665,15 +738,30 @@ registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
 });
 
 registeredBodyRouter.post('/idc-mobile-number', invalidateCache, (req, res) => {
+    const state = trimDataValuesAndRemoveSpaces(req.body);
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const validPhone = /^(?:(0|\+44)\d{9,10})$/.test(state['idc-mobile-number']);
+
+    let redirectPath = 'idc-org-check';
+    if (req.query && req.query.change) {
+        redirectPath = 'idc-check-answers';
+    }
+
+    if (!validPhone) {
+        dataValidation['idc-mobile-number'] = 'Enter mobile number in the correct format';
+    }
+
+    if (!state['idc-mobile-number']) {
+        dataValidation['idc-mobile-number'] = 'Enter mobile number';
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-mobile-number', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-mobile-number'] = req.body['idc-mobile-number'];
-        res.redirect('idc-org-check');
+        res.redirect(redirectPath);
     }
 });
 
@@ -689,13 +777,17 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if(!req.body['idc-org-check']){
+        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for a client organisation'
+    }
+
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-check', { cache: inputCache, validation: dataValidation });
     } else {
         if (req.body['idc-org-check'] == 'Yes') {
             res.redirect('idc-org-select');
         } else {
-            res.redirect('idc-restrict');
+            res.redirect('idc-check-answers');
         }
     }
 });
@@ -712,11 +804,15 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if(req.body['idc-org-select'] == ''){
+        dataValidation['idc-org-select'] = 'Select organisation'
+    }
+
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-org-select', { cache: inputCache, validation: dataValidation });
     } else {
         req.session.data['idc-org-select'] = req.body['idc-org-select'];
-        res.redirect('idc-restrict');
+        res.redirect('idc-check-answers');
     }
 });
 
@@ -774,6 +870,10 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if(!req.body['idc-add-another']){
+        dataValidation['idc-add-another'] = 'Select if you want to add another Identity Checker'
+    }
+
     if (Object.keys(dataValidation).length) {
         res.render('registered-body/idc-check-answers', { cache: inputCache, validation: dataValidation });
     } else {
@@ -799,7 +899,7 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
         };
 
         idCheckers.push(newID);
-        req.session.data['id-checkers'] = idCheckers
+        req.session.data['id-checkers'] = idCheckers;
         res.redirect('new-idc-added');
     }
 });
@@ -3705,18 +3805,46 @@ seasIdcRouter.post('/idc-create-password', invalidateCache, (req, res) => {
     }
 });
 
+const idcApplications = [
+    {
+        id: 1,
+        name: 'Jane Rigby',
+        address: `9a White Lane
+        Liverpool
+        LN11 3EE
+        `,
+        dateSubmitted: '20/03/2023',
+        idChecker: 'Mary Berry',
+    },
+    {
+        id: 2,
+        name: 'Bob Moore',
+        address: `395 High Street
+        Wickham
+        BE4 0TR
+        
+        `,
+        dateSubmitted: '20/03/2023',
+        idChecker: 'Not assigned',
+    },
+];
+
 // Dashboard
 seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+    if (req.session.data['idc-applications'] == undefined) {
+        req.session.data['idc-applications'] = idcApplications;
+    }
 
-    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'] });
 });
 
 // Application Details
 seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+    const app = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
 
-    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app });
 });
 
 // Accept IDV
@@ -3727,29 +3855,30 @@ seasIdcRouter.get('/accept-idv', invalidateCache, (req, res) => {
 });
 
 seasIdcRouter.post('/accept-idv', invalidateCache, (req, res) => {
-    res.redirect('idv-guidance');
+    req.session.data['accepted-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
+    res.redirect('idv-accepted?app=' + req.query.app);
 });
 
-// IDV Guidance
-seasIdcRouter.get('/idv-guidance', invalidateCache, (req, res) => {
+// IDV Accepted
+seasIdcRouter.get('/idv-accepted', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/idv-guidance', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/idv-accepted', { cms, cache: inputCache, validation: null, app: req.session.data['accepted-app'] });
 });
 
-seasIdcRouter.post('/idv-guidance', invalidateCache, (req, res) => {
+seasIdcRouter.post('/idv-accepted', invalidateCache, (req, res) => {
     res.redirect('dashboard');
 });
 
-// Confirming ID
-seasIdcRouter.get('/confirming-id', invalidateCache, (req, res) => {
+// Verifying ID
+seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/confirming-id', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/verifying-id', { cms, cache: inputCache, validation: null });
 });
 
-seasIdcRouter.post('/confirming-id', invalidateCache, (req, res) => {
-    res.redirect('id-verified');
+seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
+    res.redirect('id-verified?app=' + req.query.app);
 });
 
 // ID Verified
@@ -3770,27 +3899,32 @@ seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
         if (req.body['id-verified'] == 'No') {
             res.redirect('not-verified');
         } else {
-            res.redirect('confirmation');
+            res.redirect('declaration?app=' + req.query.app);
         }
     }
 });
 
 // Confirmation
-seasIdcRouter.get('/confirmation', invalidateCache, (req, res) => {
+seasIdcRouter.get('/declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/confirmation', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/declaration', { cms, cache: inputCache, validation: null });
 });
 
-seasIdcRouter.post('/confirmation', invalidateCache, (req, res) => {
+seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
     if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/confirmation', { cache: inputCache, validation: dataValidation });
+        res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('verified-success');
+        req.session.data['verified-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
+
+        const newList = req.session.data['idc-applications'].filter(app => app.id != req.query.app);
+
+        req.session.data['idc-applications'] = newList;
+        res.redirect('verified-success?app=' + req.query.app);
     }
 });
 
@@ -3798,7 +3932,7 @@ seasIdcRouter.post('/confirmation', invalidateCache, (req, res) => {
 seasIdcRouter.get('/verified-success', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
 
-    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null });
+    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null, app: req.session.data['verified-app'] });
 });
 
 // Not Verified
