@@ -2,7 +2,6 @@ const express = require('express');
 const RandExp = require('randexp');
 
 // Middleware import
-const _ = require('lodash');
 const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require("./middleware/addClientOrganisation");
 const { cancelApplication } = require('./middleware/cancelApplication');
@@ -10,7 +9,6 @@ const { deselectClientOrganisation } = require("./middleware/utilsClientOrganisa
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
-const moment = require('moment');
 const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
@@ -28,8 +26,10 @@ const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateSex } = require('./middleware/validateSex');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
-const e = require('express');
 
+const _ = require('lodash');
+const moment = require('moment');
+const e = require('express');
 const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
