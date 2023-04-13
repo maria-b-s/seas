@@ -3853,7 +3853,9 @@ seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
         req.session.data['idc-applications'] = idcApplications;
     }
 
-    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'] });
+
+
+    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'], idChecker: req.session.selectedIDC.name });
 });
 
 // Application Details
@@ -3882,6 +3884,10 @@ seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
 });
 
 seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
+    if(req.session.selectedIDC && req.session.data['idc-applications']){
+        objIndex = req.session.data['idc-applications'].findIndex((obj => obj.id == req.query.app));
+        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name
+    }
     res.redirect('id-verified?app=' + req.query.app);
 });
 

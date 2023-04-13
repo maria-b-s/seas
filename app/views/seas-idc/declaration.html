@@ -49,21 +49,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                             </span>
                             {% endif %}
                         </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="certify" name="certify" type="checkbox" value="carcasses" />
-                            <label class="govuk-label govuk-checkboxes__label" for="certify">
-                                <p>
-                                    I certify that, where requested, an application for a DBS check is required for the purpose of asking an exempted
-                                    question under the Rehabilitation of Offenders Act 1974 (Exception) Order 1975; or for a prescribed purpose as
-                                    defined in the Police Act 1997 (Criminal Records) Regulations 2002.
-                                </p>
-                            </label>
-                            {% if validation['certify'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['certify'] }}
-                            </span>
-                            {% endif %}
-                        </div>
+        
                     </div>
                 </fieldset>
             </div>

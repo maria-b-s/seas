@@ -85,8 +85,9 @@ block header %}
                 <strong class="govuk-tag govuk-tag--green">{{app.idChecker}}</strong>
                 {% else %}
                 <strong class="govuk-tag govuk-tag--yellow">Not assigned</strong>
+                {% endif %} {% if app.idChecker != idChecker%}
+                <a href="assign-idv?id={{app.id}}" style="padding-left: 10px">Assign to me</a>
                 {% endif %}
-                 <a href="assign-idv?id={{app.id}}" style='padding-left: 10px'>Assign to me</a>
             </td>
 
             <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="{{app['status'].id}}">
@@ -95,13 +96,12 @@ block header %}
                         <a href="view-details?app={{app.id}}">View full details</a>
                     </div>
                 </div>
-                
+
                 <div class="govuk-grid-row">
                     <div class="govuk-body-m" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
                         <a href="verifying-id?app={{app.id}}">Verify ID</a>
                     </div>
                 </div>
-         
             </td>
         </tr>
         {% endfor %}
