@@ -22,7 +22,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                     </legend>
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox" value="" />
+                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox"{% if cache['confirm'] == 'on'%} checked {% endif %}  />
                             <label class="govuk-label govuk-checkboxes__label" for="confirm">
                                 <p>
                                     I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS
@@ -36,7 +36,7 @@ set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
                             {% endif %}
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" value="" />
+                            <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" {% if cache['declare'] == 'on'%} checked {% endif %} />
                             <label class="govuk-label govuk-checkboxes__label" for="declare">
                                 <p>
                                     I declare that the information I have provided in support of the application is complete and true and understand

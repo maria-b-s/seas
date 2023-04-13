@@ -3766,14 +3766,33 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
     let dataValidation = {};
     const idcEmail = req.body['idc-login-email'].trim();
     const idcPassword = req.body['idc-login-password'].trim();
+    const validEmail =
+        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
+            idcEmail,
+        );
+
+    if (!validEmail) {
+        dataValidation['idc-login-email'] = 'Enter email address in the correct format';
+    }
+
+    if (!idcEmail) {
+        dataValidation['idc-login-email'] = 'Enter email address';
+    }
+
+    if (!idcPassword) {
+        dataValidation['idc-login-password'] = 'Enter password';
+    }
 
     if (req.session?.data['id-checkers']) {
-        selectedUser = req.session?.data['id-checkers'].find(el => idcEmail === el.email && idcPassword === el.password);
+        selectedUser = req.session?.data['id-checkers'].find(el => idcEmail === el.email);
         if (!selectedUser) {
-            dataValidation['idc-login-email'] = 'Unable to find your details, please check your number and try again';
-            dataValidation['idc-login-password'] = 'Unable to find your details, please check your number and try again';
+            dataValidation['idc-login-email'] = 'Unable to find your details, please check your email and try again';
         } else {
-            req.session.selectedIDC = selectedUser;
+            if (selectedUser.password != idcPassword) {
+                dataValidation['idc-login-password'] = 'Password is incorrect';
+            } else {
+                req.session.selectedIDC = selectedUser;
+            }
         }
     }
 
@@ -3787,8 +3806,8 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
 // Mobile OTP Verify
 seasIdcRouter.get('/idc-otp-verify', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-
-    res.render('seas-idc/idc-otp-verify', { cms, cache: inputCache, validation: null });
+    let mobile = '***** ***' + req.session.selectedIDC.mobile.trim().substring(9)
+    res.render('seas-idc/idc-otp-verify', { cms, cache: inputCache, validation: null, mobile: mobile });
 });
 
 seasIdcRouter.post('/idc-otp-verify', invalidateCache, (req, res) => {
@@ -3796,8 +3815,22 @@ seasIdcRouter.post('/idc-otp-verify', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    const numbersOnly = /^[0-9]+$/.test(req.body['idc-otp-verify']);
+
+    if (req.body['idc-otp-verify'].length != 6) {
+        dataValidation['idc-otp-verify'] = 'Security code must be 6 characters';
+    }
+    if (!numbersOnly) {
+        dataValidation['idc-otp-verify'] = 'Security code must be a number';
+    }
+
+    if (!req.body['idc-otp-verify']) {
+        dataValidation['idc-otp-verify'] = 'Enter security code';
+    }
+
     if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/idc-otp-verify', { cache: inputCache, validation: dataValidation });
+        let mobile = '***** ***' + req.session.selectedIDC.mobile.trim().substring(9)
+        res.render('seas-idc/idc-otp-verify', { cache: inputCache, validation: dataValidation, mobile: mobile });
     } else {
         res.redirect('dashboard');
     }
@@ -3903,6 +3936,10 @@ seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
+    if(!req.body['id-verified']){
+        dataValidation['id-verified'] = "Select if the applicant’s ID has been successfully verified"
+    }
+
     if (Object.keys(dataValidation).length) {
         res.render('seas-idc/id-verified', { cache: inputCache, validation: dataValidation });
     } else {
@@ -3925,6 +3962,14 @@ seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+
+    if(req.body['confirm'] == "_unchecked"){
+        dataValidation['confirm'] = "Tick the box to confirm you agree with the declaration"
+    }
+
+    if(req.body['declare'] == "_unchecked"){
+        dataValidation['declare'] = "Tick the box to confirm you agree with the declaration"
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
