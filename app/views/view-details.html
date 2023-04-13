@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block pageTitle %} Verify applicant ID {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
+{% extends "layout.html" %} {% block pageTitle %} Application Details {% endblock %} {% set serviceName %} SEAS for IDC {%
 endset%} {% block beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -19,7 +19,7 @@ endset%} {% block beforeContent %}
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Applicant name</dt>
-                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
+                    <dd class="govuk-summary-list__value">{{ app[0].name}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -132,7 +132,7 @@ endset%} {% block beforeContent %}
 
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Applicant details for ID check</h1>
+                <h1 class="govuk-heading-l">Applicant details for ID Check</h1>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -255,10 +255,10 @@ endset%} {% block beforeContent %}
             </p>
 
             <div class="govuk-button-group">
-                <a href="id-checked?app={{query}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
-                    >Continue to verify application</a
+                <a href="accept-idv?app={{app[0].id}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
+                    >Start identity check</a
                 >
-                <a href="confirm-cancel?app={{query}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel application</a>
+                <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
             </div>
 
             {% endif %}
