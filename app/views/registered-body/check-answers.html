@@ -92,10 +92,10 @@
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Company or organisation</dt>
                 <dd class="govuk-summary-list__value">
-                    {% if data['organisation-check'] === 'another-org' %}
-                    <p>{{ data['organisation-name'] }}</p>
+                    {% if data["organisation-check"] === "my-organisation" %}
+                        <p>My organisation</p>
                     {% else %}
-                    <p>My organisation</p>
+                        <p>{{ data["client-organisation"] }}</p>
                     {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">

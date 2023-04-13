@@ -55,14 +55,14 @@ function resendApplication(req, res) {
         let selectedApplication = req.session.data['applications'].filter(value => value.ref == ref);
 
         if (req.body['new-email'] == 'No') {
-            selectedApplication[0]['email'] = req.body['new-email-address'];
+            selectedApplication[0]["applicant-email"] = req.body['new-email-address'];
         }
 
         selectedApplication[0]['history'].unshift({
             action: 'Resent application',
             date: `${date}/${month}/${year}`,
             time: strTime,
-            person: req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == req.session.data['registered-body-nr'])[0]['email'],
+            person: req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == req.session.data['registered-body-nr'])[0]["applicant-email"],
         });
 
         req.session.data.selectedApplication = selectedApplication;

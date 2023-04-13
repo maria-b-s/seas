@@ -2,29 +2,35 @@ const express = require('express');
 const RandExp = require('randexp');
 
 // Middleware import
-const { validateSex } = require('./middleware/validateSex');
-const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
-const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
-const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
-const { validateDriversLicence } = require('./middleware/validateDriversLicence');
-const { validatePassport } = require('./middleware/validatePassport');
-const { validatePhone } = require('./middleware/validatePhone');
-const { validateBarred } = require('./middleware/validateBarred');
-const { validateEmail } = require('./middleware/validateEmail');
-const { cancelApplication } = require('./middleware/cancelApplication');
 const { addApplication } = require('./middleware/addApplication');
-const { sendApplication } = require('./middleware/sendApplication');
-const { resendApplication } = require('./middleware/resendApplication');
+const { addClientOrganisation } = require("./middleware/addClientOrganisation");
+const { cancelApplication } = require('./middleware/cancelApplication');
+const { deselectClientOrganisation } = require("./middleware/utilsClientOrganisation");
 const { filterAppList } = require('./middleware/filterAppList');
-const { searchFilter } = require('./middleware/searchFilter');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
-const moment = require('moment');
-const _ = require('lodash');
+const { persistQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
 const { renderString } = require('nunjucks');
-const { validateOrganisation } = require('./middleware/validateOrganisation');
-const e = require('express');
+const { resendApplication } = require('./middleware/resendApplication');
+const { searchFilter } = require('./middleware/searchFilter');
+const { sendApplication } = require('./middleware/sendApplication');
+const { setPredefinedClientOrganisations } = require("./middleware/utilsClientOrganisation");
+const { selectClientOrganisation } = require("./middleware/utilsClientOrganisation");
+const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
+const { validateBarred } = require('./middleware/validateBarred');
+const { validateClientOrganisation } = require("./middleware/validateClientOrganisation");
+const { validateDriversLicence } = require('./middleware/validateDriversLicence');
+const { validateEmail } = require('./middleware/validateEmail');
+const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
+const { validateOrganisationChecked } = require('./middleware/validateOrganisationChecked');
+const { validatePassport } = require('./middleware/validatePassport');
+const { validatePhone } = require('./middleware/validatePhone');
+const { validateSex } = require('./middleware/validateSex');
+const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 
+const _ = require('lodash');
+const moment = require('moment');
+const e = require('express');
 const router = express.Router();
 const citizenRouter = express.Router();
 const registeredBodyRouter = express.Router();
@@ -69,10 +75,87 @@ registeredBodyRouter.post('/position', (req, res) => {
     }
 });
 
-registeredBodyRouter.get('/organisation-name', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+// -----------------------------------------------------------------------------
+// Organisation name
+// -----------------------------------------------------------------------------
+router.get("*", invalidateCache, (request, response, next) => {
+    /* Ensures predefined client organisations are available for selection when
+     * choosing a client organisation within /organisation-name. */
+     setPredefinedClientOrganisations(request);
 
-    res.render('registered-body/organisation-name', { cms, cache: inputCache, validation: null });
+    // Response.
+    return next();
+});
+registeredBodyRouter.get("/organisation-name", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+    
+    /* Ensures any client organisation previously chosen is selected within the
+     * Select component. */
+    selectClientOrganisation(request);
+
+    // Response.
+    response.render("registered-body/organisation-name", { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/organisation-name', invalidateCache, validateOrganisationChecked);
+
+// -----------------------------------------------------------------------------
+// Client organisation / Add
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/client-organisation-add", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    /* Ensures any client organisation previously chosen is deselected within
+     * the Select component in /organisation-name. */
+     deselectClientOrganisation(request);
+
+    // Response.
+    response.render("registered-body/client-organisation-add", { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post("/client-organisation-add", invalidateCache, validateClientOrganisation);
+
+// -----------------------------------------------------------------------------
+// Client organisation / Check
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/client-organisation-check", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render("registered-body/client-organisation-check", { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post("/client-organisation-check", invalidateCache, addClientOrganisation);
+
+// -----------------------------------------------------------------------------
+// Client organisation / Confirmation
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/client-organisation-confirmation", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render("registered-body/client-organisation-confirmation", { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post("/client-organisation-confirmation", invalidateCache, (request, response) => {
+    // Constants.
+    const data = request.session.data;
+
+    // Properties.
+    let redirectPath = "organisation-name";
+
+    /* Ensures the added client organisation is selected within the Select
+     * component in /organisation-name. */
+     selectClientOrganisation(request);
+     data["organisation-check"] = "client-organisation";
+
+    // Cache session.
+    savePageData(request, request.body);
+    
+    /* Response. Preserving query string properties from the received HTTP
+     * request; if present. */
+    redirectPath = persistQueryStringFromRequestForPath(request, redirectPath);
+    response.redirect(redirectPath);
 });
 
 registeredBodyRouter.get('/existing-post-holder', invalidateCache, (req, res) => {
@@ -148,8 +231,6 @@ registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, (req, re
         );
     }
 });
-
-registeredBodyRouter.post('/organisation-name', invalidateCache, validateOrganisation);
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
@@ -280,8 +361,6 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
             req.body['applicant-email-confirm'],
         );
 
-    let enteredEmail = req.session.data['applications'].filter(value => value.email == applicantEmail);
-
     if (!validEmail) {
         dataValidation['applicant-email'] = 'Enter email address in the correct format';
     }
@@ -298,12 +377,8 @@ registeredBodyRouter.post('/applicant-email', (req, res) => {
         dataValidation['applicant-email-confirm'] = 'Email address must be 100 characters or fewer';
     }
 
-    if (applicantEmail == req.session.selectedRB.email) {
+    if (applicantEmail == req.session.selectedRB?.email) {
         dataValidation['applicant-email'] = 'Cannot enter own email address';
-    }
-
-    if (enteredEmail.length > 0) {
-        dataValidation['applicant-email-confirm'] = 'This email address is already in use on another application';
     }
 
     if (!applicantEmail) {

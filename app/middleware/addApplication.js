@@ -47,8 +47,8 @@ function addApplication(req, res) {
         app['barred-children'] = null;
     }
 
-    if (app['organisation-check'] == 'my-org') {
-        app['organisation-name'] = null;
+    if (app["organisation-check"] == "my-organisation") {
+        app["client-organisation"] = null;
     }
 
     if (app['what-application-type'] == 'Volunteer') {
@@ -67,8 +67,8 @@ function addApplication(req, res) {
         }
     }
 
-    if (app['organisation-check'] == 'another-org') {
-        org = app['organisation-name'];
+    if (app["organisation-check"] == "client-organisation") {
+        org = app["client-organisation"];
     } else {
         org = req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == app['registered-body-nr'])[0]['organisation'];
     }
@@ -111,7 +111,7 @@ function addApplication(req, res) {
                 action: 'Sent to applicant',
                 date: `${date}/${month}/${year}`,
                 time: strTime,
-                person: req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == app['registered-body-nr'])[0]['email'],
+                person: req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == app['registered-body-nr'])[0]["applicant-email"],
             },
         ],
     };
