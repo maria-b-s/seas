@@ -3,9 +3,9 @@ const RandExp = require('randexp');
 
 // Middleware import
 const { addApplication } = require('./middleware/addApplication');
-const { addClientOrganisation } = require("./middleware/addClientOrganisation");
+const { addClientOrganisation } = require('./middleware/addClientOrganisation');
 const { cancelApplication } = require('./middleware/cancelApplication');
-const { deselectClientOrganisation } = require("./middleware/utilsClientOrganisation");
+const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
@@ -14,11 +14,11 @@ const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
-const { setPredefinedClientOrganisations } = require("./middleware/utilsClientOrganisation");
-const { selectClientOrganisation } = require("./middleware/utilsClientOrganisation");
+const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
+const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateBarred } = require('./middleware/validateBarred');
-const { validateClientOrganisation } = require("./middleware/validateClientOrganisation");
+const { validateClientOrganisation } = require('./middleware/validateClientOrganisation');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validateEmail } = require('./middleware/validateEmail');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
@@ -78,80 +78,80 @@ registeredBodyRouter.post('/position', (req, res) => {
 // -----------------------------------------------------------------------------
 // Organisation name
 // -----------------------------------------------------------------------------
-router.get("*", invalidateCache, (request, response, next) => {
+router.get('*', invalidateCache, (request, response, next) => {
     /* Ensures predefined client organisations are available for selection when
      * choosing a client organisation within /organisation-name. */
-     setPredefinedClientOrganisations(request);
+    setPredefinedClientOrganisations(request);
 
     // Response.
     return next();
 });
-registeredBodyRouter.get("/organisation-name", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/organisation-name', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
-    
+
     /* Ensures any client organisation previously chosen is selected within the
      * Select component. */
     selectClientOrganisation(request);
 
     // Response.
-    response.render("registered-body/organisation-name", { cache: inputCache, validation: null });
+    response.render('registered-body/organisation-name', { cache: inputCache, validation: null });
 });
 registeredBodyRouter.post('/organisation-name', invalidateCache, validateOrganisationChecked);
 
 // -----------------------------------------------------------------------------
 // Client organisation / Add
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/client-organisation-add", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/client-organisation-add', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     /* Ensures any client organisation previously chosen is deselected within
      * the Select component in /organisation-name. */
-     deselectClientOrganisation(request);
+    deselectClientOrganisation(request);
 
     // Response.
-    response.render("registered-body/client-organisation-add", { cache: inputCache, validation: null });
+    response.render('registered-body/client-organisation-add', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/client-organisation-add", invalidateCache, validateClientOrganisation);
+registeredBodyRouter.post('/client-organisation-add', invalidateCache, validateClientOrganisation);
 
 // -----------------------------------------------------------------------------
 // Client organisation / Check
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/client-organisation-check", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/client-organisation-check', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/client-organisation-check", { cache: inputCache, validation: null });
+    response.render('registered-body/client-organisation-check', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/client-organisation-check", invalidateCache, addClientOrganisation);
+registeredBodyRouter.post('/client-organisation-check', invalidateCache, addClientOrganisation);
 
 // -----------------------------------------------------------------------------
 // Client organisation / Confirmation
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/client-organisation-confirmation", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/client-organisation-confirmation', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/client-organisation-confirmation", { cache: inputCache, validation: null });
+    response.render('registered-body/client-organisation-confirmation', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/client-organisation-confirmation", invalidateCache, (request, response) => {
+registeredBodyRouter.post('/client-organisation-confirmation', invalidateCache, (request, response) => {
     // Constants.
     const data = request.session.data;
 
     // Properties.
-    let redirectPath = "organisation-name";
+    let redirectPath = 'organisation-name';
 
     /* Ensures the added client organisation is selected within the Select
      * component in /organisation-name. */
-     selectClientOrganisation(request);
-     data["organisation-check"] = "client-organisation";
+    selectClientOrganisation(request);
+    data['organisation-check'] = 'client-organisation';
 
     // Cache session.
     savePageData(request, request.body);
-    
+
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */
     redirectPath = persistQueryStringFromRequestForPath(request, redirectPath);
@@ -581,6 +581,7 @@ const idCheckers = [
     {
         name: 'Joe Bloggs',
         email: 'joeb@gmail.com',
+        password: 'pass1234',
         mobile: '07666 993355',
         org: 'Penny Lane College of PE',
         dept: 'Student Applications',
@@ -778,8 +779,8 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(!req.body['idc-org-check']){
-        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for a client organisation'
+    if (!req.body['idc-org-check']) {
+        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for a client organisation';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -805,8 +806,8 @@ registeredBodyRouter.post('/idc-org-select', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(req.body['idc-org-select'] == ''){
-        dataValidation['idc-org-select'] = 'Select organisation'
+    if (req.body['idc-org-select'] == '') {
+        dataValidation['idc-org-select'] = 'Select organisation';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -871,8 +872,8 @@ registeredBodyRouter.post('/idc-check-answers', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(!req.body['idc-add-another']){
-        dataValidation['idc-add-another'] = 'Select if you want to add another Identity Checker'
+    if (!req.body['idc-add-another']) {
+        dataValidation['idc-add-another'] = 'Select if you want to add another Identity Checker';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -3752,6 +3753,9 @@ seasIdcRouter.get('/start', invalidateCache, (req, res) => {
 // Login
 seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
+    if (req.session.data['id-checkers'] == undefined) {
+        req.session.data['id-checkers'] = idCheckers;
+    }
 
     res.render('seas-idc/idc-login', { cms, cache: inputCache, validation: null });
 });
@@ -3760,6 +3764,18 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
     let dataValidation = {};
+    const idcEmail = req.body['idc-login-email'].trim();
+    const idcPassword = req.body['idc-login-password'].trim();
+
+    if (req.session?.data['id-checkers']) {
+        selectedUser = req.session?.data['id-checkers'].find(el => idcEmail === el.email && idcPassword === el.password);
+        if (!selectedUser) {
+            dataValidation['idc-login-email'] = 'Unable to find your details, please check your number and try again';
+            dataValidation['idc-login-password'] = 'Unable to find your details, please check your number and try again';
+        } else {
+            req.session.selectedIDC = selectedUser;
+        }
+    }
 
     if (Object.keys(dataValidation).length) {
         res.render('seas-idc/idc-login', { cache: inputCache, validation: dataValidation });
@@ -3848,27 +3864,14 @@ seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
     res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app });
 });
 
-// Accept IDV
-seasIdcRouter.get('/accept-idv', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+// Assign IDV
+seasIdcRouter.get('/assign-idv', invalidateCache, (req, res) => {
+    if(req.session.selectedIDC && req.session.data['idc-applications']){
+        objIndex = req.session.data['idc-applications'].findIndex((obj => obj.id == req.query.id));
+        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name
+    }
 
-    res.render('seas-idc/accept-idv', { cms, cache: inputCache, validation: null });
-});
-
-seasIdcRouter.post('/accept-idv', invalidateCache, (req, res) => {
-    req.session.data['accepted-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-    res.redirect('idv-accepted?app=' + req.query.app);
-});
-
-// IDV Accepted
-seasIdcRouter.get('/idv-accepted', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/idv-accepted', { cms, cache: inputCache, validation: null, app: req.session.data['accepted-app'] });
-});
-
-seasIdcRouter.post('/idv-accepted', invalidateCache, (req, res) => {
-    res.redirect('dashboard');
+    res.redirect('dashboard')
 });
 
 // Verifying ID

@@ -1,71 +1,61 @@
-{% import "../macros/error-summary/govukErrorSummary.njk" as  es %}
-{% extends "layout.html" %}
-{% block pageTitle %} Login Page {% endblock %}
-{% set serviceName %} SEAS for IDC {%endset%}
+{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block pageTitle %} Login Page {% endblock %} {% set
+serviceName %} SEAS for IDC {%endset%} {% block beforeContent %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
+        <span class="govuk-phase-banner__text">
+            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+    </p>
+</div>
 
-{% block beforeContent %}
-  <div class="govuk-phase-banner">
-      <p class="govuk-phase-banner__content">
-          <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-          <span class="govuk-phase-banner__text">
-              This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-          </span>
-      </p>
-  </div>
-  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %}
-{% block content %}
-  <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %}
+{% endblock %} {% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
+        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
+        endif %}
+        <form class="form" action="" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Sign in</h1>
+                    </legend>
+                    <div class="govuk-form-group {% if validation['idc-login-email'] %}govuk-form-group--error{% endif %}">
+                        <label class="govuk-label" for="idc-login-email"> Email address </label>
+                        {% if validation['idc-login-email'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-login-emailr'] }}
+                        </span>
+                        {% endif %}
+                        <input
+                            class="govuk-input govuk-input--width-20"
+                            id="idc-login-email"
+                            name="idc-login-email"
+                            value="{{cache['idc-login-email']}}"
+                            type="text"
+                        />
+                    </div>
+                    <div class="govuk-form-group {% if validation['idc-login-password']%}govuk-form-group--error{% endif %}">
+                        <label class="govuk-label" for="idc-login-password"> Password </label>
+                        {% if validation['idc-login-password'] %}
+                        <span id="ninonr-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-login-password'] }}
+                        </span>
+                        {% endif %}
+                        <input
+                            class="govuk-input govuk-input--width-20"
+                            id="idc-login-password"
+                            name="idc-login-password"
+                            value="{{cache['idc-login-password']}}"
+                            type="password"
+                        />
+                    </div>
+                </fieldset>
+            </div>
 
-          {% set errorList = [] %}
-
-            {% for key, value in validation %}
-                {% set errorList = (errorList.push({
-                    "text": value,
-                    "href": "#" + key
-                }), errorList) %}
-            {% endfor %}
-
-          {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
-
-        {% endif %}
-          <form class="form" action="" method="post">
-              <div class="govuk-form-group">
-                  <fieldset class="govuk-fieldset">
-                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                          <h1 class="govuk-fieldset__heading">Sign in </h1>
-                      </legend>
-                      <div class="govuk-form-group  {% if validation['idc-login-email'] %}govuk-form-group--error{% endif %}">
-                          <label class="govuk-label" for="idc-login-email"> Email address </label>
-                            {% if validation['idc-login-email'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{  validation['idc-login-emailr'] }}
-                                </span>
-                            {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="idc-login-email" name="idc-login-email" value="{{cache['idc-login-email']}}" type="text" />
-                      </div>
-                      <div class="govuk-form-group  {% if validation['idc-login-password']%}govuk-form-group--error{% endif %}">
-                          <label class="govuk-label" for="idc-login-password"> Password  </label>
-                            {% if validation['idc-login-password'] %}
-                                <span id="ninonr-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-login-password'] }}
-                                </span>
-                            {% endif %}
-                          <input class="govuk-input govuk-input--width-10" id="idc-login-password" name="idc-login-password" value="{{cache['idc-login-password']}}" type="password" />
-                      </div>
-
-                  </fieldset>
-                </div>
-
-              <button style="margin-top: 0px;" class="govuk-button" type='submit' data-module="govuk-button">Continue</button>
-              
-
-
-
-              
-          </form>
-      </div>
-  </div>
+            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

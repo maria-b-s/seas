@@ -13,8 +13,15 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div class="govuk-width-container">
+            
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <h1 class="govuk-heading-l">Application details</h1>
+                 <div class="govuk-button-group">
+                <a href="accept-idv?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button" style="padding-right: 10px"
+                    >Assign to me</a
+                >
+                <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
+            </div>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -93,46 +100,10 @@ endset%} {% block beforeContent %}
                 {% endif %}
             </dl>
         </div>
-        
-        <div class="govuk-width-container">
-            <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">ID check details</h1>
-            </div>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">ID verified by</dt>
-                    <dd class="govuk-summary-list__value">Not completed yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Evidence checked by</dt>
-                    <dd class="govuk-summary-list__value">Not completed yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-            </dl>
-        </div>
 
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Certificate details</h1>
-            </div>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Certificate issue date</dt>
-                    <dd class="govuk-summary-list__value">Not issued yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Result status</dt>
-                    <dd class="govuk-summary-list__value">Not available yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-            </dl>
-        </div>
-
-        <div class="govuk-width-container">
-            <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Applicant details for ID Check</h1>
+                <h1 class="govuk-heading-l">Applicant details for ID check</h1>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -242,26 +213,13 @@ endset%} {% block beforeContent %}
                 </div> #}
             </dl>
 
-            <p id="download-pdf-hint" class="govuk-body">
-                If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
-            </p>
-            <p class="govuk-body govuk-!-font-weight-bold">
-                <a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a>
-            </p>
-            {% if selectedApplication[0].status['text'] != "Cancelled" %}
-
-            <p id="download-pdf-hint" class="govuk-body">
-                If any of the applicant's details are incorrect, you must cancel the application. You can then start a new application for them.
-            </p>
-
             <div class="govuk-button-group">
-                <a href="accept-idv?app={{app[0].id}}" class="govuk-button" data-module="govuk-button" style="padding-right: 10px"
-                    >Start identity check</a
+                <a href="accept-idv?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button" style="padding-right: 10px"
+                    >Assign to me</a
                 >
                 <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
             </div>
 
-            {% endif %}
         </div>
     </div>
 </div>
