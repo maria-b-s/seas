@@ -14,20 +14,25 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">Check your mobile</h1>
 
-        <p class="govuk-body">Enter the 6 digit security code we sent to [[MOBILE NUMBER]]</p>
+        <p class="govuk-body">Enter the 6 digit security code we sent to {{mobile}}</p>
 
         <div class="govuk-inset-text">This security code will expire in 10 minutes</div>
 
         <form class="form" method="post">
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="idc-opt-verify">Enter security code </label>
+            <div class="govuk-form-group {% if validation['idc-otp-verify'] %}govuk-form-group--error{% endif %}">
+                <label class="govuk-label" for="idc-otp-verify">Enter security code </label>
+                {% if validation['idc-otp-verify'] %}
+                      <span id="nino-error" class="govuk-error-message">
+                          <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-otp-verify'] }}
+                      </span>
+                  {% endif %}
                 <input
                     class="govuk-input govuk-input--width-10"
-                    id="idc-opt-verify"
-                    name="idc-opt-verify"
+                    id="idc-otp-verify"
+                    name="idc-otp-verify"
                     type="text"
                     spellcheck="false"
-                    aria-describedby="idc-opt-verify-hint"
+                    aria-describedby="idc-otp-verify-hint"
                     pattern="[0-9]*"
                     inputmode="numeric"
                 />

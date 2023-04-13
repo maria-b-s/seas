@@ -16,12 +16,17 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form class="form" method="post">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group {% if validation['id-verified'] %}govuk-form-group--error{% endif %}">
                 <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Has the applicant's ID been successfully verified?</h1>
                     </legend>
                     <div class="govuk-hint">If it is not possible to verify the applicant’s identification, select No.</div>
+                    {% if validation['id-verified'] %}
+                    <span id="nino-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> {{ validation['id-verified'] }}
+                    </span>
+                    {% endif %}
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="id-verified" name="id-verified" type="radio" value="Yes"
@@ -35,25 +40,6 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                             <label class="govuk-label govuk-radios__label" for="id-verified-2"> No </label>
                         </div>
                     </div>
-                    {# <div class="govuk-radios__conditional" id="conditional-contact">
-                        <div class="govuk-form-group {% if validation['name-of-verifier'] %}govuk-form-group--error{% endif %}">
-                            <label class="govuk-label" for="name-of-verifier"> Name of evidence checker </label>
-                            {% if validation['name-of-verifier'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['name-of-verifier'] }}
-                            </span>
-                            {% endif %}
-                            <input
-                                class="govuk-input govuk-!-width-one-half"
-                                id="name-of-verifier"
-                                name="name-of-verifier"
-                                type="text"
-                                spellcheck="false"
-                                autocomplete="name"
-                                value="{{ data['name-of-verifier'] }}"
-                            />
-                        </div>
-                    </div> #}
                 </fieldset>
             </div>
 
