@@ -587,6 +587,33 @@ const idCheckers = [
         dept: 'Student Applications',
         dateAdded: '28/03/2023',
     },
+    {
+        name: 'David Smith',
+        email: 'ds@gmail.com',
+        password: 'pass1234',
+        mobile: '07613 385143',
+        org: 'Penny Lane College of PE',
+        dept: 'Student Applications',
+        dateAdded: '14/03/2022',
+    },
+    {
+        name: 'Lisa Walker',
+        email: 'lisaw@gmail.com',
+        password: 'pass1234',
+        mobile: '07837 298457',
+        org: 'Penny Lane College of PE',
+        dept: 'Student Applications',
+        dateAdded: '19/02/2023',
+    },
+    {
+        name: 'Paul Knowles',
+        email: 'paulk@gmail.com',
+        password: 'pass1234',
+        mobile: '07159 984654',
+        org: 'Penny Lane College of PE',
+        dept: 'Student Applications',
+        dateAdded: '30/03/2023',
+    },
 ];
 
 registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
@@ -3750,6 +3777,16 @@ seasIdcRouter.get('/start', invalidateCache, (req, res) => {
     res.render('seas-idc/start');
 });
 
+// Auto-Login
+seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
+    const inputCache = loadPageData(req);
+    if (req.session.data['id-checkers'] == undefined) {
+        req.session.data['id-checkers'] = idCheckers;
+    }
+
+    req.session.selectedIDC = req.session.data['id-checkers'][0];
+    res.redirect('dashboard')
+});
 // Login
 seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);

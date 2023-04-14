@@ -35,32 +35,45 @@
         </a>
         <br />
         <br />
-        <h2 class="govuk-heading-m">SEAS for IDC</h2>
+        <h2 class="govuk-heading-m">IDC Logs into SEAS to Accept/Verify ID</h2>
+        {#
         <p class="govuk-body">
             <a href="seas-idc/start" class="govuk-link"> Start </a>
         </p>
+        #}
         <p class="govuk-body">
-            <a href="seas-idc/idc-login" class="govuk-link"> Login </a>
+            <a href="seas-idc/idc-login" class="govuk-link"> Login page</a>
         </p>
+        <p class="govuk-body">
+            <a href="seas-idc/auto-login" class="govuk-link"> IDC Dashboard without login</a>
+        </p>
+        {#
         <p class="govuk-body">
             <a href="seas-idc/idc-otp-verify" class="govuk-link"> OTP Verify </a>
         </p>
-         <p class="govuk-body">
+        <p class="govuk-body">
             <a href="seas-idc/idc-create-password" class="govuk-link"> Create Password </a>
         </p>
         <p class="govuk-body">
             <a href="seas-idc/dashboard" class="govuk-link"> Dashboard </a>
         </p>
-    
-        <h2 class="govuk-heading-m">Registered body</h2>
+        #}
+        <h2 class="govuk-heading-m">CSig Initiates the applications</h2>
         <p class="govuk-body">
             <a href="registered-body/start" class="govuk-link"> Start page </a>
         </p>
+
+        <h2 class="govuk-heading-m">CSig creates user account for the IDC</h2>
+        <p class="govuk-body">
+            <a href="registered-body/manage-idc" class="govuk-link"> Manage IDC Dashboard </a>
+        </p>
+
+        {#
         <p class="govuk-body">
             <a href="dashboard/rb-login" class="govuk-link">Login page</a>
         </p>
         <p class="govuk-body">
-           <a href="dashboard/email-otp" class="govuk-link"> OTP Email </a>
+            <a href="dashboard/email-otp" class="govuk-link"> OTP Email </a>
         </p>
         <p class="govuk-body">
             <a href="dashboard/opt-verify" class="govuk-link">OTP verify</a>
@@ -71,33 +84,25 @@
         <p class="govuk-body">
             <a href="dashboard/home" class="govuk-link">Landing page 2.0</a>
         </p>
-        {# <p class="govuk-body">
-            <a href="/registered-body/enter-details" class="govuk-link">
-                Enter registered body and countersignatory numbers
-            </a>
-        </p> #}
+        #} {#
+        <p class="govuk-body">
+            <a href="/registered-body/enter-details" class="govuk-link"> Enter registered body and countersignatory numbers </a>
+        </p>
+        #} {#
         <p class="govuk-body">
             <a href="registered-body/dbs-check-level" class="govuk-link"> DBS check level </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/enhanced/barred-list-children" class="govuk-link">
-                Enhanced: barred list (children)
-            </a>
+            <a href="registered-body/enhanced/barred-list-children" class="govuk-link"> Enhanced: barred list (children) </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/enhanced/barred-list-adults" class="govuk-link">
-                Enhanced: barred list (adults)
-            </a>
+            <a href="registered-body/enhanced/barred-list-adults" class="govuk-link"> Enhanced: barred list (adults) </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/enhanced/working-at-home-address" class="govuk-link">
-                Enhanced: working at home address
-            </a>
+            <a href="registered-body/enhanced/working-at-home-address" class="govuk-link"> Enhanced: working at home address </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/enhanced/workforce-select" class="govuk-link">
-                Enhanced: Workforce
-            </a>
+            <a href="registered-body/enhanced/workforce-select" class="govuk-link"> Enhanced: Workforce </a>
         </p>
         <p class="govuk-body">
             <a href="registered-body/position" class="govuk-link"> Job or role </a>
@@ -106,9 +111,7 @@
             <a href="registered-body/organisation-name" class="govuk-link"> Employer or organisation </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/applicant-or-post-holder" class="govuk-link">
-                New applicant or post holder
-            </a>
+            <a href="registered-body/applicant-or-post-holder" class="govuk-link"> New applicant or post holder </a>
         </p>
         <p class="govuk-body">
             <a href="registered-body/volunteer-declaration" class="govuk-link"> Free-of-charge volunteer </a>
@@ -123,21 +126,22 @@
             <a href="registered-body/check-answers" class="govuk-link"> Check answers </a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/application-sent-to-citizen" class="govuk-link">
-                Application form sent to citizen
-            </a>
+            <a href="registered-body/application-sent-to-citizen" class="govuk-link"> Application form sent to citizen </a>
         </p>
 
         <h2 class="govuk-heading-m">Citizen application</h2>
         <p class="govuk-body">
             <a href="citizen-application/start-application" class="govuk-link"> Start application </a>
         </p>
-        {# <p class="govuk-body">
+        #} {#
+        <p class="govuk-body">
             <a href="citizen-application/login" class="govuk-link"> Login </a>
-        </p> #}
-        {# <p class="govuk-body">
+        </p>
+        #} {#
+        <p class="govuk-body">
             <a href="citizen-application/login-old" class="govuk-link"> Login back in </a>
-        </p> #}
+        </p>
+        #} {#
         <p class="govuk-body">
             <a href="citizen-application/current-full-name" class="govuk-link"> Current full name </a>
         </p>
@@ -162,24 +166,13 @@
         <p class="govuk-body">
             <a href="citizen-application/place-of-birth" class="govuk-link"> Place of birth </a>
         </p>
-        {# <p class="govuk-body">
-            <a href="citizen-application/address-lookup" class="govuk-link"> Current address lookup </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/address-details" class="govuk-link"> Current address details </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/previous-address" class="govuk-link"> Previous addresses </a>
-        </p> #}
         <p class="govuk-body">
             <a href="citizen-application/send-certificate" class="govuk-link"> Address to send certificate </a>
         </p>
-           <p class="govuk-body">
+        <p class="govuk-body">
             <a href="citizen-application/lived-elsewhere" class="govuk-link"> Lived elsewhere </a>
         </p>
-        {# <p class="govuk-body">
-            <a href="citizen-application/email-address" class="govuk-link"> Email address </a>
-        </p> #}
+
         <p class="govuk-body">
             <a href="citizen-application/telephone-number" class="govuk-link"> Telephone number </a>
         </p>
@@ -195,7 +188,7 @@
         <p class="govuk-body">
             <a href="citizen-application/confirmation" class="govuk-link"> Application sent to registered body </a>
         </p>
-
+        #} {#
         <h2 class="govuk-heading-m">Registered body</h2>
 
         <p class="govuk-body">
@@ -210,7 +203,7 @@
         <p class="govuk-body">
             <a href="registered-body/application-sent" class="govuk-link"> Application sent </a>
         </p>
-
+        #}
     </div>
 </div>
 
