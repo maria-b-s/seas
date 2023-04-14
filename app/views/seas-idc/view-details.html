@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block pageTitle %} Application Details {% endblock %} {% set serviceName %} SEAS for IDC {%
-endset%} {% block beforeContent %}
+{% extends "layout.html" %} {% block pageTitle %} Application Details {% endblock %} {% set serviceName %} SEAS for IDC {% endset%} {% block
+beforeContent %}
 <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
@@ -13,15 +13,20 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
         <div class="govuk-width-container">
-            
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <h1 class="govuk-heading-l">Application details</h1>
-                 <div class="govuk-button-group">
-                <a href="assign-idv?id={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button" style="padding-right: 10px"
-                    >Assign to me</a
-                >
-                <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
-            </div>
+                <div class="govuk-button-group">
+                    <a
+                        href="assign-idv?id={{app[0].id}}"
+                        class="govuk-button govuk-button--secondary"
+                        data-module="govuk-button"
+                        style="padding-right: 10px"
+                        >Assign to me</a
+                    >
+                    <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+                        >Verify identity</a
+                    >
+                </div>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -31,70 +36,72 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Email address</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].email}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].email}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Reference number</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].ref}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].ref}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Date application started</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].date}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].date}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
+                {#
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Status</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0].status['text']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
+                #}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Organisation</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].organisation}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].organisation}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Job/Role</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].position}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].position}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Type of applicant</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].appType}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].appType}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Volunteer</dt>
-                    <dd class="govuk-summary-list__value">{% if selectedApplication[0].appType == "Volunteer"%} Yes {% else %} No {% endif %}</dd>
+                    <dd class="govuk-summary-list__value">{% if app[0].appType == "Volunteer"%} Yes {% else %} No {% endif %}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Check level</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].type}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].type}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Workforce</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].workforce}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].workforce}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                {% if selectedApplication[0]['barredAdult'] %}
+                {% if app[0]['barredAdult'] %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Adult Barred list</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredAdult']}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0]['barredAdult']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                {% endif %} {% if selectedApplication[0]['barredChildren'] %}
+                {% endif %} {% if app[0]['barredChildren'] %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Children Barred list</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredChildren']}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0]['barredChildren']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                {% endif %} {% if selectedApplication[0].children_or_adults %}
+                {% endif %} {% if app[0].children_or_adults %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Working with children or adults at home</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0]['children_or_adults']}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0]['children_or_adults']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 {% endif %}
@@ -108,15 +115,14 @@ endset%} {% block beforeContent %}
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Current name(s)</dt>
-                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].name}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0]['firstName']}} {{app[0]['middleName']}} {{app[0]['surname']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Previous names</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if not selectedApplication[0].prevNames or selectedApplication[0].prevNames.length === 0 %} None {% endif %} {% for item in
-                        selectedApplication[0].prevNames %} {{[ item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' ,
-                        item.last_name | capitalize] | join }} <br />
+                        {% if not app[0].prevNames or app[0].prevNames.length === 0 %} None {% endif %} {% for item in app[0].prevNames %} {{[
+                        item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' , item.last_name | capitalize] | join }} <br />
                         {% if item.used_to == "Not entered"%} {{ [item.used_from , ' - Present'] | join}} {% else %} {{ [item.used_from , ' - ',
                         item.used_to] | join}} {% endif %}
                         <br />
@@ -127,72 +133,67 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Date of birth</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].dob}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].dob}}</dd>
 
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Sex</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].sex}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].sex}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">National Insurance number</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].nino}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].nino}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Driving licence</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].licence}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].licence}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Passport number</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].passport}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].passport}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Nationality</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].nationality}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].nationality}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Country of issue</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].passportCountry}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].passportCountry}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Place of birth</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].addressTown}}, {{selectedApplication[0].addressCountry}}</dd>
+                    <dd class="govuk-summary-list__value">{{app[0].addressTown}}, {{app[0].addressCountry}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Current address</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if not selectedApplication[0].address or selectedApplication[0].address.length === 0 %} None {% else %}
-                        {{selectedApplication[0].address[0].lineOne }} <br />
-                        {{selectedApplication[0].address[0].lineTwo}} <br />
-                        {{selectedApplication[0].address[0].townOrCity }} <br />{% if selectedApplication[0].address[0].postcode == '' %} {% else %}
-                        {% if selectedApplication[0].address[0].postcode.length == 7 %} {{selectedApplication[0].address[0].postcode.slice(0, 4) |
-                        upper}} {{selectedApplication[0].address[0].postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{selectedApplication[0].address[0].postcode.slice(0, 3) | upper}}
-                        {{selectedApplication[0].address[0].postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {{selectedApplication[0].address[0].country }} <br />
-                        {% endif %}
+                        {% if not app[0].address or app[0].address.length === 0 %} None {% else %} {% for item in app[0].address %} {% if item.lineOne
+                        !== '' %} {{item.lineOne}} <br />
+                        {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
+                        {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
+                        {% endif %} {% if app[0].address[0].postcode == '' %} {% else %} {% endif %} {{app[0].address[0].postcode }}<br />{{app[0].address[0].country
+                        }} <br />
+                        {% endfor %} {% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Previous addresses in last 5 years</dt>
                     <dd class="govuk-summary-list__value">
-                        {% if selectedApplication[0].changedAddress == 'no' or selectedApplication[0].previous_addresses.length === 0 %} None {% else
-                        %} {% for item in selectedApplication[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
+                        {% if app[0].changedAddress == 'no' or app[0].previous_addresses.length === 0 %} None {% else %} {% for item in
+                        app[0].previous_addresses %} {% if item.lineOne !== '' %} {{item.lineOne}} <br />
                         {% endif %} {% if item.lineTwo !== '' %} {{item.lineTwo}} <br />
                         {% endif %} {% if item.townOrCity !== '' %} {{item.townOrCity}} <br />
-                        {% endif %} {% if item.postcode !== '' %} {% if item.postcode.length == 7 %} {{item.postcode.slice(0, 4) | upper}}
-                        {{item.postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{item.postcode.slice(0, 3) | upper}} {{item.postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {% if item.country !== '' %} {{item.country}} {% endif %}
+                        {% endif %} {% if item.postcode !== '' %} {{app[0].address[0].postcode }}<br />
+                        {% endif %} {% if item.country !== '' %} {{item.country}} {% endif %}
                         <br />
                         {{ [item.startYear , ' - ',item.endYear] | join}}
                         <br />
@@ -203,23 +204,28 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Telephone number</dt>
-                    <dd class="govuk-summary-list__value">{{ selectedApplication[0].phoneNumber}}</dd>
+                    <dd class="govuk-summary-list__value">{{ app[0].phoneNumber}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                {# <div class="govuk-summary-list__row">
+                {#
+                <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Previous convictions</dt>
                     <dd class="govuk-summary-list__value">{{ selectedApplication[0].previousConvictions | capitalize}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
-                </div> #}
+                </div>
+                #}
             </dl>
 
             <div class="govuk-button-group">
-                <a href="accept-idv?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button" style="padding-right: 10px"
+                <a
+                    href="accept-idv?app={{app[0].id}}"
+                    class="govuk-button govuk-button--secondary"
+                    data-module="govuk-button"
+                    style="padding-right: 10px"
                     >Assign to me</a
                 >
                 <a href="verifying-id?app={{app[0].id}}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Verify identity</a>
             </div>
-
         </div>
     </div>
 </div>

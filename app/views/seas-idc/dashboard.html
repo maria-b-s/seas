@@ -79,12 +79,15 @@ block header %}
 
             <td class="govuk-table__cell" data-sort-value="{{app['date']}}">
                 <p class="govuk-body-m">{{app.name}}</p>
-                <p class="govuk-body-m">{{app.address}}</p>
+                <p class="govuk-body-m">{{app.address[0].lineOne}},
+                    {{app.address[0].lineTwo}}, {{app.address[0].townOrCity}}, {{app.address[0].postcode}}
+
+                </p>
                 <p class="govuk-body-m">{{app.dateSubmitted}}</p>
-                {% if app.idChecker != 'Not assigned'%}
+                {% if app.idChecker != 'Unassigned'%}
                 <strong class="govuk-tag govuk-tag--green">{{app.idChecker}}</strong>
                 {% else %}
-                <strong class="govuk-tag govuk-tag--yellow">Not assigned</strong>
+                <strong class="govuk-tag govuk-tag--yellow">Unassigned</strong>
                 {% endif %} {% if app.idChecker != idChecker%}
                 <a href="assign-idv?id={{app.id}}" style="padding-left: 10px">Assign to me</a>
                 {% endif %}
