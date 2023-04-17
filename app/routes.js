@@ -6,6 +6,7 @@ const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require('./middleware/addClientOrganisation');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { clearDeactivatedIdCheckerPassword } = require('./middleware/utilsDeactivatedIdChecker');
+const { clearSelectedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
@@ -3799,6 +3800,9 @@ seasIdcRouter.get("/start", invalidateCache, (request, response) => {
 
     // Clears any password associated to the predefined deactivated ID Checker.
     clearDeactivatedIdCheckerPassword(request);
+    /* Clears any current ID Checker currently selected to ensure the activate
+     * account flow can be followed through. */
+    clearSelectedIdChecker(request);
 
     // Response.
     response.render("seas-idc/start", { cache: inputCache, validation: null });

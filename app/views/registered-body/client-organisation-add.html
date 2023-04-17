@@ -86,15 +86,22 @@
             }) %}
 
                 <form method="post">
-                    <!-- Text input. -->
-                    {{ govukInput({
-                        classes: "govuk-!-width-two-thirds",
+                    <!-- Character count. -->
+                    {{ govukCharacterCount({
+                        attributes: {
+                            style: "overflow: hidden;
+                                    resize: none;
+                                    white-space: nowrap;"
+                        },
+                        classes: "govuk-input govuk-!-width-two-thirds",
                         errorMessage: errorComponentClientOrganisation,
                         id: "client-organisation",
                         label: {
                             text: "Client organisation name"
                         },
-                        name: "client-organisation"
+                        maxlength: 60,
+                        name: "client-organisation",
+                        rows: 1
                     }) }}
 
                     <!-- Button. -->

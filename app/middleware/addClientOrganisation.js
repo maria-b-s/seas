@@ -17,6 +17,9 @@ const addClientOrganisation = (request, response) => {
     let clientOrganisation = data["client-organisation"];
     let redirectPath = "client-organisation-confirmation";
 
+    // Cache session.
+    savePageData(request, data);
+
     // Adds the client organisation.
     if (clientOrganisation) {
         // Prevents duplicate client organisations from being added.
@@ -32,9 +35,6 @@ const addClientOrganisation = (request, response) => {
             data["client-organisations"].sort((x, y) => x.text.toLowerCase().localeCompare(y.text.toLowerCase()));
         }
     }
-    
-    // Cache session.
-    savePageData(request, data);
 
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */

@@ -20,13 +20,13 @@ const validateOrganisationChecked = (request, response) => {
     let dataValidation = {};
     let redirectPath = "applicant-or-post-holder";
 
+    // Cache session.
+    savePageData(request, data);
+
     // Validates that a radio button is checked for the type of organisation.
     if (!organisationChecked) {
         dataValidation["organisation-check"] = "Select which organisation the check is for";
     }
-
-    // Cache session.
-    savePageData(request, data);
 
     // Response.
     if (Object.keys(dataValidation).length) {

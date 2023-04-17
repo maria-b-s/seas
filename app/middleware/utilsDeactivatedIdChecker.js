@@ -45,6 +45,12 @@ const clearDeactivatedIdCheckerPassword = (request) => {
     data["deactivated-id-checker-password-confirm"] = "";
 };
 
+const clearSelectedIdChecker = (request) => {
+    /* Clears any current ID Checker currently selected to ensure the activate
+     * account flow can be followed through. */
+    request.session.selectedIDC = undefined;
+};
+
 const setPredefinedDeactivatedIdChecker = (request) => {
     // Constants.
     const data = request.session.data;
@@ -67,4 +73,5 @@ const setPredefinedDeactivatedIdChecker = (request) => {
 // -----------------------------------------------------------------------------
 exports.activateAndSelectDeactivatedIdChecker = activateAndSelectDeactivatedIdChecker;
 exports.clearDeactivatedIdCheckerPassword = clearDeactivatedIdCheckerPassword;
+exports.clearSelectedIdChecker = clearSelectedIdChecker;
 exports.setPredefinedDeactivatedIdChecker = setPredefinedDeactivatedIdChecker;
