@@ -318,7 +318,7 @@ registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
     const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['last-name']);
 
     if (req.query && req.query.change) {
-        redirectPath = 'review-application';
+        redirectPath = 'check-answers';
     }
 
     if (!validFirstName) {
