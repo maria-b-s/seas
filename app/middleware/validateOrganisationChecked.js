@@ -22,7 +22,7 @@ const validateOrganisationChecked = (request, response) => {
 
     // Validates that a radio button is checked for the type of organisation.
     if (!organisationChecked) {
-        dataValidation["client-organisation"] = "Select which organisation the check is for";
+        dataValidation["organisation-check"] = "Select which organisation the check is for";
     }
 
     // Cache session.

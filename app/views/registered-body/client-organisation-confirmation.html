@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Client Organisation - Confirmation
+    Client organisation successfully added
 {% endblock %}
 
 
@@ -34,12 +34,6 @@
             text: "Alpha"
         }
     }) }}
-
-    <!-- Back link. -->
-    {{ govukBackLink({
-        href: "javascript:window.history.back()",
-        text: "Back"
-    }) }}
 {% endblock %}
 
 
@@ -50,18 +44,18 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <!-- Panel. -->
+            {{ govukPanel({
+                classes: "govuk-!-margin-bottom-6",
+                titleText: "Client organisation successfully added"
+            }) }}
+
+            <!-- Body. -->
+            <p class="govuk-body">
+                You can now continue with the application.
+            </p>
+
             <form method="post">
-                <!-- Panel. -->
-                {{ govukPanel({
-                    classes: "govuk-!-margin-bottom-6",
-                    titleText: "Client organisation successfully added"
-                }) }}
-
-                <!-- Body. -->
-                <p class="govuk-body">
-                    You can now continue with the application.
-                </p>
-
                 <!-- Button. -->
                 {{ govukButton({
                     text: "Continue application"

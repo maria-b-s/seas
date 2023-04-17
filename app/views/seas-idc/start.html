@@ -1,52 +1,81 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
 {% extends "layout.html" %}
 
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-  Start page
+    Verify ID for a standard or enhanced DBS check
 {% endblock %}
 
-{% block header %}
-  <!-- Blank header with no service name for the start page -->
-  {{ govukHeader() }}
-{% endblock %}
 
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
 {% block beforeContent %}
-<div class="govuk-phase-banner">
-  <p class="govuk-phase-banner__content">
-    <strong class="govuk-tag govuk-phase-banner__content__tag">
-      alpha
-    </strong>
-    <span class="govuk-phase-banner__text">
-      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-    </span>
-  </p>
-</div>
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
 {% endblock %}
 
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">
-        SEAS for ID Checkers
-      </h1>
-      <p>This service is for Registered Bodies, not individuals.</p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Heading. -->
+            <h1 class="govuk-heading-l">
+                Verify ID for a standard or enhanced DBS check
+            </h1>
 
-      <p>If you're a countersignatory, you can use this service to:</p>
-      <ol class="govuk-list govuk-list--bullet">
-        <li>request a standard or enhanced DBS check for employees or volunteers</li>
-        <li>send an online application form to the applicant</li>
-        <li>download a copy of the applicant's answers to send to an ID checker</li>
-        <li>track the progress of all your applications</li>
-      </ol>
+            <!-- Body. -->
+            <p class="govuk-body">
+                If you're an ID Checker, you can use this service to:
+            </p>
 
-     
+            <!-- List bullet. -->
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    create your ID Checker account
+                </li>
+                <li>
+                    view and track DBS applications that need ID verification
+                </li>
+                <li>
+                    record the outcome of the ID verification
+                </li>
+                <li>
+                    submit the ID check to a countersignatory for review
+                </li>
+            </ul>
 
-      <a href="idc-otp-verify" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8"  data-module="govuk-button">
-        Start
-        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
-        </svg>
-      </a>
-
+            <form method="post">
+                <!-- Button. -->
+                {{ govukButton({
+                    isStartButton: true,
+                    text: "Start now"
+                }) }}
+            </form>
+        </div>
     </div>
-  </div>
 {% endblock %}

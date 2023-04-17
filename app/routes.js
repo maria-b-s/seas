@@ -5,6 +5,7 @@ const RandExp = require('randexp');
 const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require('./middleware/addClientOrganisation');
 const { cancelApplication } = require('./middleware/cancelApplication');
+const { clearDeactivatedIdCheckerPassword } = require('./middleware/utilsDeactivatedIdChecker');
 const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
@@ -15,12 +16,15 @@ const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
 const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
+const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateBarred } = require('./middleware/validateBarred');
 const { validateClientOrganisation } = require('./middleware/validateClientOrganisation');
+const { validateDeactivatedIdCheckerPassword } = require('./middleware/validateDeactivatedIdCheckerPassword');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validateEmail } = require('./middleware/validateEmail');
+const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateOrganisationChecked } = require('./middleware/validateOrganisationChecked');
 const { validatePassport } = require('./middleware/validatePassport');
@@ -76,16 +80,24 @@ registeredBodyRouter.post('/position', (req, res) => {
 });
 
 // -----------------------------------------------------------------------------
-// Organisation name
+// Predefined details
 // -----------------------------------------------------------------------------
 router.get('*', invalidateCache, (request, response, next) => {
     /* Ensures predefined client organisations are available for selection when
      * choosing a client organisation within /organisation-name. */
-    setPredefinedClientOrganisations(request);
+     setPredefinedClientOrganisations(request);
+
+    /* Ensures a predefined deactivated ID Checker details are available; these
+     * details would have identified via a unique email URL. */
+    setPredefinedDeactivatedIdChecker(request);
 
     // Response.
     return next();
 });
+
+// -----------------------------------------------------------------------------
+// Organisation name
+// -----------------------------------------------------------------------------
 registeredBodyRouter.get('/organisation-name', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
@@ -306,7 +318,7 @@ registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
     const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['last-name']);
 
     if (req.query && req.query.change) {
-        redirectPath = 'review-application';
+        redirectPath = 'check-answers';
     }
 
     if (!validFirstName) {
@@ -577,7 +589,7 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
 
 // IDC
 
-const idCheckers = [
+let idCheckers = [
     {
         name: 'Joe Bloggs',
         email: 'joeb@gmail.com',
@@ -3772,9 +3784,34 @@ dashboardRouter.get('/clear-notifications', (req, res) => {
 
 // SEAS for IDC
 
+// -----------------------------------------------------------------------------
 // Start
-seasIdcRouter.get('/start', invalidateCache, (req, res) => {
-    res.render('seas-idc/start');
+// -----------------------------------------------------------------------------
+seasIdcRouter.get("/start", invalidateCache, (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const inputCache = loadPageData(request);
+
+    // Populates known ID checkers.
+    if (!data["id-checkers"]) {
+        data["id-checkers"] = idCheckers;
+    }
+
+    // Clears any password associated to the predefined deactivated ID Checker.
+    clearDeactivatedIdCheckerPassword(request);
+
+    // Response.
+    response.render("seas-idc/start", { cache: inputCache, validation: null });
+});
+seasIdcRouter.post("/start", invalidateCache, (request, response) => {
+    // Properties.
+    let redirectPath = "security-code-check";
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
 });
 
 // Auto-Login
@@ -3796,7 +3833,6 @@ seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
 
     res.render('seas-idc/idc-login', { cms, cache: inputCache, validation: null });
 });
-
 seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
     savePageData(req, req.body);
     const inputCache = loadPageData(req);
@@ -3836,61 +3872,33 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
     if (Object.keys(dataValidation).length) {
         res.render('seas-idc/idc-login', { cache: inputCache, validation: dataValidation });
     } else {
-        res.redirect('idc-otp-verify');
+        res.redirect('security-code-check');
     }
 });
 
-// Mobile OTP Verify
-seasIdcRouter.get('/idc-otp-verify', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    let mobile = '***** ***' + req.session.selectedIDC.mobile.trim().substring(9)
-    res.render('seas-idc/idc-otp-verify', { cms, cache: inputCache, validation: null, mobile: mobile });
+// -----------------------------------------------------------------------------
+// Check your mobile
+// -----------------------------------------------------------------------------
+seasIdcRouter.get("/security-code-check", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render("seas-idc/security-code-check", { cache: inputCache, validation: null });
 });
+seasIdcRouter.post("/security-code-check", invalidateCache, validateIdCheckerSecurityCode);
 
-seasIdcRouter.post('/idc-otp-verify', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
+// -----------------------------------------------------------------------------
+// Create a password
+// -----------------------------------------------------------------------------
+seasIdcRouter.get("/create-password", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    const numbersOnly = /^[0-9]+$/.test(req.body['idc-otp-verify']);
-
-    if (req.body['idc-otp-verify'].length != 6) {
-        dataValidation['idc-otp-verify'] = 'Security code must be 6 characters';
-    }
-    if (!numbersOnly) {
-        dataValidation['idc-otp-verify'] = 'Security code must be a number';
-    }
-
-    if (!req.body['idc-otp-verify']) {
-        dataValidation['idc-otp-verify'] = 'Enter security code';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        let mobile = '***** ***' + req.session.selectedIDC.mobile.trim().substring(9)
-        res.render('seas-idc/idc-otp-verify', { cache: inputCache, validation: dataValidation, mobile: mobile });
-    } else {
-        res.redirect('dashboard');
-    }
+    // Response.
+    response.render('seas-idc/create-password', { cache: inputCache, validation: null });
 });
-
-// Create Password
-seasIdcRouter.get('/idc-create-password', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/idc-create-password', { cms, cache: inputCache, validation: null });
-});
-
-seasIdcRouter.post('/idc-create-password', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-
-    if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/idc-create-password', { cache: inputCache, validation: dataValidation });
-    } else {
-        res.redirect('dashboard');
-    }
-});
+seasIdcRouter.post("/create-password", invalidateCache, validateDeactivatedIdCheckerPassword);
 
 const idcApplications = [
     {
