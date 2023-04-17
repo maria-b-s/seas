@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Client Organisation - Check
+    Check client organisation
 {% endblock %}
 
 
@@ -46,12 +46,6 @@
             text: "Alpha"
         }
     }) }}
-
-    <!-- Back link. -->
-    {{ govukBackLink({
-        href: "javascript:window.history.back()",
-        text: "Back"
-    }) }}
 {% endblock %}
 
 
@@ -62,46 +56,46 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" novalidate>
-                <!-- Heading. -->
-                {% call govukFieldset({
-                    legend: {
-                        classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
-                        isPageHeading: true,
-                        text: "Check client organisation"
-                    }
-                }) %}
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Check client organisation"
+                }
+            }) %}
 
-                    <!-- Summary list. -->
-                    {{ govukSummaryList({
-                        classes: "govuk-!-margin-bottom-9",
-                        rows: [
-                            {
-                                key: {
-                                    text: "Client organisation name"
-                                },
-                                value: {
-                                    text: data["client-organisation"]
-                                },
-                                actions: {
-                                    items: [
-                                        {
-                                            href: redirectPath,
-                                            text: "Change",
-                                            visuallyHiddenText: "Change client organisation name."
-                                        }
-                                    ]
-                                }
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: [
+                        {
+                            key: {
+                                text: "Client organisation name"
+                            },
+                            value: {
+                                text: data["client-organisation"]
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: redirectPath,
+                                        text: "Change",
+                                        visuallyHiddenText: "Change client organisation name."
+                                    }
+                                ]
                             }
-                        ]
-                    }) }}
-
+                        }
+                    ]
+                }) }}
+                
+                <form method="post">
                     <!-- Button. -->
                     {{ govukButton({
                         text: "Add"
                     }) }}
-                {% endcall %}
-            </form>
+                </form>
+            {% endcall %}
         </div>
     </div>
 {% endblock %}

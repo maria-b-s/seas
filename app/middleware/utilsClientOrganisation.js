@@ -37,7 +37,7 @@ const deselectClientOrganisation = (request) => {
      * /organisation-name. */ 
     data["client-organisation"] = "";
     selectClientOrganisation(request);
-}
+};
 
 const selectClientOrganisation = (request) => {
     // Constants.

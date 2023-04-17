@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    What organisation is the check for?
+    Check your mobile
 {% endblock %}
 
 
@@ -18,20 +18,15 @@
 -- Service name
 ---------------------------------------------------------------------------- -->
 {% set serviceName %}
-    Request a standard or enhanced DBS check
+    Verify ID for a standard or enhanced DBS check
 {% endset %}
 
 
 
 <!-- ---------------------------------------------------------------------------
--- Redirect Path
+-- Render Path
 ---------------------------------------------------------------------------- -->
-<!-- Preserves the "change=true" query string property; if present. --> 
-{% set queryString = "" %}
-{% if query["change"] === "true" %}
-    {% set queryString = "?change=true" %}
-{% endif %}
-{% set redirectPath = "/registered-body/client-organisation-add" + queryString %}
+{% set renderPath = "/seas-idc/security-code-check" %}
 
 
 
@@ -76,78 +71,62 @@
                     titleText: "There's a problem with the information you have provided"
                 }) }}
             {% endif %}
-            
+
             <!-- Errors / Components. -->
-            {% set errorComponentOrganisationCheck = "" %}
+            {% set errorComponentIdCheckerSecurityCode = "" %}
             {% if validation | length %}
-                <!-- Organisation check. -->
-                {% if validation["organisation-check"] %}
-                    {% set errorComponentOrganisationCheck = {
-                        text: validation["organisation-check"]
+                <!-- Enter security code. -->
+                {% if validation["id-checker-security-code"] %}
+                    {% set errorComponentIdCheckerSecurityCode = {
+                        text: validation["id-checker-security-code"]
                     } %}
                 {% endif %}
             {% endif %}
-
-            <!-- Conditional / Select client organisation. -->
-            {% set conditionalSelectClientOrganisation %}
-                <!-- Select. -->
-                {{ govukSelect({
-                    classes: "govuk-!-width-two-thirds",
-                    id: "client-organisation",
-                    items: data["client-organisations"],
-                    label: {
-                        text: "Organisation name"
-                    },
-                    name: "client-organisation"
-                }) }}
-
-                <!-- Body. -->
-                <p class="govuk-body"><br>
-                    <a href={{ redirectPath }} rel="noopener noreferrer">
-                        If not shown, add a new organisation
-                    </a>
-                </p>
-            {% endset %}
-
+            
             <!-- Heading. -->
             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "What organisation is the check for?"
+                    text: "Check your mobile"
                 }
             }) %}
 
+                <!-- Body. -->
+                <p class="govuk-body">
+                    Enter the 6 digit security code we sent to ***** ***{{ data["deactivated-id-checker-mobile"].trim().substring(9) }}
+                </p>
+
+                <!-- Inset text. -->
+                {{ govukInsetText({
+                    text: "This security code will expire in 10 minutes"
+                }) }}
+
                 <form method="post">
-                    <!-- Radio buttons. -->
-                    {{ govukRadios({
-                        errorMessage: errorComponentOrganisationCheck,
-                        items: [
-                            {
-                                checked: data["organisation-check"] === "my-organisation",
-                                text: "My organisation",
-                                value: "my-organisation"
-                            },
-                            {
-                                checked: data["organisation-check"] === "client-organisation",
-                                conditional: {
-                                    html: conditionalSelectClientOrganisation
-                                },
-                                text: "Client organisation",
-                                value: "client-organisation"
-                            }
-                        ],
-                        name: "organisation-check",
-                        value: data["organisation-check"]
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        classes: "govuk-!-width-one-quarter",
+                        errorMessage: errorComponentIdCheckerSecurityCode,
+                        id: "id-checker-security-code",
+                        inputmode: "numeric",
+                        label: {
+                            text: "Enter security code"
+                        },
+                        name: "id-checker-security-code",
+                        spellcheck: false
                     }) }}
 
+                    <!-- Body. -->
+                    <p class="govuk-body">
+                        Didn't receive your security code, or the security code has expired?<br>
+                        <a class="govuk-link" href={{ renderPath }} rel="noopener noreferrer">
+                            Resend security code
+                        </a>
+                    </p>
+
                     <!-- Button. -->
-                    {% set buttonText = "Continue" %}
-                    {% if query["change"] === "true" %}
-                        {% set buttonText = "Check answers" %}
-                    {% endif %}
                     {{ govukButton({
-                        text: buttonText
+                        text: "Continue"
                     }) }}
                 </form>
             {% endcall %}
