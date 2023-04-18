@@ -16,6 +16,7 @@ const validateDeactivatedIdCheckerPassword = (request, response) => {
     const deactivatedIdCheckerPassword = data["deactivated-id-checker-password"];
     const deactivatedIdCheckerPasswordConfirm = data["deactivated-id-checker-password-confirm"];
     const inputCache = loadPageData(request);
+    const inputCharactersMinimum = 8;
     const regExpPassword = /^.{8,}$/;
     const renderPath = "seas-idc/create-password";
 
@@ -23,25 +24,30 @@ const validateDeactivatedIdCheckerPassword = (request, response) => {
     let dataValidation = {};
     let redirectPath = "dashboard";
 
+    // Cache session.
+    savePageData(request, data);
+
     /* Validates that a password was submitted by the deactivated identity
      * checker and that it (i) has been confirmed to reduce human error, and
      * (ii) has the minimum number of required characters. */
-    if (!deactivatedIdCheckerPassword) {
-        dataValidation["deactivated-id-checker-password"] = "Enter a password";
+    if (!deactivatedIdCheckerPassword || !deactivatedIdCheckerPasswordConfirm) {
+        dataValidation["deactivated-id-checker-password"] = "Enter password";
+        dataValidation["deactivated-id-checker-password-confirm"] = "Enter confirm password";
     } else {
         const validDeactivatedIdCheckerPassword = regExpPassword.test(deactivatedIdCheckerPassword);
-        if (!validDeactivatedIdCheckerPassword) {
-            dataValidation["deactivated-id-checker-password"] = "Password is too short, enter 8 or more characters";
-        } else if (!deactivatedIdCheckerPasswordConfirm) {
-            dataValidation["deactivated-id-checker-password"] = "Enter a password";
-            dataValidation["deactivated-id-checker-password-confirm"] = "Repeat password to confirm";
-        } else if (deactivatedIdCheckerPassword !== deactivatedIdCheckerPasswordConfirm) {
+        const validDeactivatedIdCheckerPasswordConfirm = regExpPassword.test(deactivatedIdCheckerPasswordConfirm);
+        if (deactivatedIdCheckerPassword !== deactivatedIdCheckerPasswordConfirm) {
             dataValidation["deactivated-id-checker-password"] = "Password and confirm password do not match";
+            dataValidation["deactivated-id-checker-password-confirm"] = " ";
+        } else if (!validDeactivatedIdCheckerPassword && !validDeactivatedIdCheckerPasswordConfirm) {
+            dataValidation["deactivated-id-checker-password"] = `Password must be ${ inputCharactersMinimum } characters or more`;
+            dataValidation["deactivated-id-checker-password-confirm"] = `Confirm password must be ${ inputCharactersMinimum } characters or more`;
+        } else if (!validDeactivatedIdCheckerPassword) {
+            dataValidation["deactivated-id-checker-password"] = `Password must be ${ inputCharactersMinimum } characters or more`;
+        } else if (!validDeactivatedIdCheckerPasswordConfirm) {
+            dataValidation["deactivated-id-checker-password-confirm"] = `Confirm password must be ${ inputCharactersMinimum } characters or more`;
         }
     }
-
-    // Cache session.
-    savePageData(request, data);
 
     // Response. 
     if (Object.keys(dataValidation).length) {

@@ -23,24 +23,26 @@ const validateIdCheckerSecurityCode = (request, response) => {
     let dataValidation = {};
     let redirectPath = "";
 
+    // Cache session.
+    savePageData(request, data);
+
     /* Validates that a 6 digit security code was submitted by the identity
      * checker and that it matches the security code sent to their mobile
      * number. */
     if (!idCheckerSecurityCode) {
-        dataValidation["id-checker-security-code"] = "Enter a security code";
+        dataValidation["id-checker-security-code"] = "Enter security code";
     } else {
         const validSecurityCode = regExpSecurityCode.test(idCheckerSecurityCode);
         if (!validSecurityCode) {
-            dataValidation["id-checker-security-code"] = "Security code must only include digits";
-        } else if (idCheckerSecurityCode.toString().length !== idCheckerSecurityCodeSent.length) {
-            dataValidation["id-checker-security-code"] = `Security code must be ${idCheckerSecurityCodeSent.length} digits`;
+            dataValidation["id-checker-security-code"] = "Security code must be a number";
+        } else if (idCheckerSecurityCode.toString().length < idCheckerSecurityCodeSent.length) {
+            dataValidation["id-checker-security-code"] = `Security code must be ${idCheckerSecurityCodeSent.length} characters or more`;
+        } else if (idCheckerSecurityCode.toString().length > idCheckerSecurityCodeSent.length) {
+            dataValidation["id-checker-security-code"] = `Security code must be ${idCheckerSecurityCodeSent.length} characters or fewer`;
         } else if (idCheckerSecurityCode !== idCheckerSecurityCodeSent) {
             dataValidation["id-checker-security-code"] = "Security code does not match the one we sent to your mobile";
         }
     }
-
-    // Cache session.
-    savePageData(request, data);
 
     /* Response. This is dependent on either the ID Checker (i) activating their
      * account or (ii) logging into SEAS. If the ID Checker is activating their

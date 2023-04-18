@@ -15,27 +15,28 @@ const validateClientOrganisation = (request, response) => {
     const data = request.session.data;
     const clientOrganisation = data["client-organisation"];
     const inputCache = loadPageData(request);
-    const regExpClientOrganisation = /^\w[\w.\-'#&\s]*$/;
+    const inputCharactersMaximum = 60;
+    const regExpOrganisationName = /^[a-zA-Z0-9- '&.,@]+$/;
     const renderPath = "registered-body/client-organisation-add";
 
     // Properties.
     let dataValidation = {};
     let redirectPath = "client-organisation-check";
 
-    // Validates if a client organisation is genuine.
-    if (!clientOrganisation) {
-        dataValidation["client-organisation"] = "Enter a client organisation name";
-    } else {
-        const validClientOrganisation = regExpClientOrganisation.test(clientOrganisation);
-        if (!validClientOrganisation) {
-            dataValidation["client-organisation"] = "Client organisation name must only include letters from A to Z, numbers, spaces, and special characters ' # & - . _";
-        } else if (clientOrganisation.length > 60) {
-            dataValidation["client-organisation"] = "Client organisation name must be 60 characters or fewer";
-        }
-    }
-
     // Cache session.
     savePageData(request, data);
+
+    // Validates if a client organisation is genuine.
+    if (!clientOrganisation) {
+        dataValidation["client-organisation"] = "Enter client organisation name";
+    } else {
+        const validOrganisationName = regExpOrganisationName.test(clientOrganisation);
+        if (!validOrganisationName) {
+            dataValidation["client-organisation"] = "Client organisation must only include letters a to z, numbers, ampersands, at signs, full stops, commas, hyphens, space characters, apostrophes";
+        } else if (clientOrganisation.length > inputCharactersMaximum) {
+            dataValidation["client-organisation"] = `Client organisation name must be ${ inputCharactersMaximum } characters or fewer`;
+        }
+    }
 
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */
