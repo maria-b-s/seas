@@ -86,7 +86,7 @@ registeredBodyRouter.post('/position', (req, res) => {
 router.get('*', invalidateCache, (request, response, next) => {
     /* Ensures predefined client organisations are available for selection when
      * choosing a client organisation within /organisation-name. */
-     setPredefinedClientOrganisations(request);
+    setPredefinedClientOrganisations(request);
 
     /* Ensures a predefined deactivated ID Checker details are available; these
      * details would have identified via a unique email URL. */
@@ -99,14 +99,14 @@ router.get('*', invalidateCache, (request, response, next) => {
 // -----------------------------------------------------------------------------
 // DBS check level
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/dbs-check-level", (request, response) => {
+registeredBodyRouter.get('/dbs-check-level', (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/dbs-check-level", { cache: inputCache, validation: null });
+    response.render('registered-body/dbs-check-level', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/dbs-check-level", (request, response) => {
+registeredBodyRouter.post('/dbs-check-level', (request, response) => {
     // Constants.
     const data = request.session.data;
     const inputCache = loadPageData(request);
@@ -123,7 +123,7 @@ registeredBodyRouter.post("/dbs-check-level", (request, response) => {
 
     // Validates that the type of DBS check required has been selected.
     if (!whatDbsCheck) {
-        dataValidation["what-dbs-check"] = "Select which DBS check you are requesting";
+        dataValidation['what-dbs-check'] = 'Select which DBS check you are requesting';
     }
 
     /* Response. Preserving query string properties from the received HTTP
@@ -131,7 +131,7 @@ registeredBodyRouter.post("/dbs-check-level", (request, response) => {
     if (Object.keys(dataValidation).length) {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        if (whatDbsCheck === "Standard") {
+        if (whatDbsCheck === 'Standard') {
             if (request.query && request.query.change) {
                 /* Removes any irrelevant selections made for the adult barred
                  * list check; child barred list check; and applicant working
@@ -141,8 +141,8 @@ registeredBodyRouter.post("/dbs-check-level", (request, response) => {
                 data["children-or-adults"] = undefined;
                 redirectPath = redirectPathCheckAnswers;
             }
-        } else if (whatDbsCheck === "Enhanced") {
-            redirectPath = "enhanced/" + redirectPath;
+        } else if (whatDbsCheck === 'Enhanced') {
+            redirectPath = 'enhanced/' + redirectPath;
             if (request.query && request.query.change) {
                 /* Removes any previously selected workforce that the applicant
                  * will be working in. */ 
@@ -323,60 +323,60 @@ registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforc
 // -----------------------------------------------------------------------------
 // Enhanced / Workforce select
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/enhanced/workforce-select", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/enhanced/workforce-select", { cms, cache: inputCache, validation: null });
+    response.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/enhanced/workforce-select", invalidateCache, validateWorkforceSelect);
+registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
 
 // -----------------------------------------------------------------------------
 // Enhanced / Barred / Adults
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/enhanced/barred-list-adults", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/enhanced/barred-list-adults", { cms, cache: inputCache, validation: null });
+    response.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/enhanced/barred-list-adults", invalidateCache, validateBarredListAdults);
+registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarredListAdults);
 
 // -----------------------------------------------------------------------------
 // Enhanced / Barred / Children
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("/enhanced/barred-list-children", invalidateCache, (request, response) => {
+registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/enhanced/barred-list-children", { cms, cache: inputCache, validation: null });
+    response.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/enhanced/barred-list-children", invalidateCache, validateBarredListChildren);
+registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarredListChildren);
 
 // -----------------------------------------------------------------------------
 // Enhanced / Barred / Working at home address
 // -----------------------------------------------------------------------------
-registeredBodyRouter.get("enhanced/working-at-home-address", invalidateCache, (request, response) => {
+registeredBodyRouter.get('enhanced/working-at-home-address', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("registered-body/enhanced/working-at-home-address", { cms, cache: inputCache, validation: null });
+    response.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
 });
-registeredBodyRouter.post("/enhanced/working-at-home-address", (request, response) => {
+registeredBodyRouter.post('/enhanced/working-at-home-address', (request, response) => {
     // Constants.
     const data = request.session.data;
-    const childrenOrAdults = data["children-or-adults"];
+    const childrenOrAdults = data['children-or-adults'];
     const inputCache = loadPageData(request);
     const redirectPathCheckAnswers = "/registered-body/check-answers";
     const renderPath = "registered-body/enhanced/working-at-home-address";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "/registered-body/position";
+    let redirectPath = '/registered-body/position';
 
     // Cache session.
     savePageData(request, request.body);
@@ -385,7 +385,7 @@ registeredBodyRouter.post("/enhanced/working-at-home-address", (request, respons
      * involves working with adults or children at the applicant's home
      * address. */
     if (!childrenOrAdults) {
-        dataValidation["children-or-adults"] = "Select if the position involves working with children or adults at the applicant’s home address";
+        dataValidation['children-or-adults'] = 'Select if the position involves working with children or adults at the applicant’s home address';
     }
 
     /* Response. Preserving query string properties from the received HTTP
@@ -393,7 +393,7 @@ registeredBodyRouter.post("/enhanced/working-at-home-address", (request, respons
     if (Object.keys(dataValidation).length) {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        request.session.data["children-or-adults"] = childrenOrAdults;
+        request.session.data['children-or-adults'] = childrenOrAdults;
         if (request.query && request.query.change) {
             redirectPath = redirectPathCheckAnswers;
         }
@@ -729,6 +729,12 @@ registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
     if (req.session.data['id-checkers'] == undefined) {
         req.session.data['id-checkers'] = idCheckers;
     }
+
+    req.session.data['id-checkers'].sort(function (a, b) {
+        var aa = a.dateAdded.split('/').reverse().join(),
+            bb = b.dateAdded.split('/').reverse().join();
+        return aa > bb ? -1 : aa < bb ? 1 : 0;
+    });
 
     res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
 });
@@ -3868,14 +3874,14 @@ dashboardRouter.get('/clear-notifications', (req, res) => {
 // -----------------------------------------------------------------------------
 // Start
 // -----------------------------------------------------------------------------
-seasIdcRouter.get("/start", invalidateCache, (request, response) => {
+seasIdcRouter.get('/start', invalidateCache, (request, response) => {
     // Constants.
     const data = request.session.data;
     const inputCache = loadPageData(request);
 
     // Populates known ID checkers.
-    if (!data["id-checkers"]) {
-        data["id-checkers"] = idCheckers;
+    if (!data['id-checkers']) {
+        data['id-checkers'] = idCheckers;
     }
 
     // Clears any password associated to the predefined deactivated ID Checker.
@@ -3885,11 +3891,11 @@ seasIdcRouter.get("/start", invalidateCache, (request, response) => {
     clearSelectedIdChecker(request);
 
     // Response.
-    response.render("seas-idc/start", { cache: inputCache, validation: null });
+    response.render('seas-idc/start', { cache: inputCache, validation: null });
 });
-seasIdcRouter.post("/start", invalidateCache, (request, response) => {
+seasIdcRouter.post('/start', invalidateCache, (request, response) => {
     // Properties.
-    let redirectPath = "security-code-check";
+    let redirectPath = 'security-code-check';
 
     // Cache session.
     savePageData(request, request.body);
@@ -3906,7 +3912,7 @@ seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
     }
 
     req.session.selectedIDC = req.session.data['id-checkers'][0];
-    res.redirect('dashboard')
+    res.redirect('dashboard');
 });
 // Login
 seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
@@ -3963,26 +3969,26 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
 // -----------------------------------------------------------------------------
 // Check your mobile
 // -----------------------------------------------------------------------------
-seasIdcRouter.get("/security-code-check", invalidateCache, (request, response) => {
+seasIdcRouter.get('/security-code-check', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render("seas-idc/security-code-check", { cache: inputCache, validation: null });
+    response.render('seas-idc/security-code-check', { cache: inputCache, validation: null });
 });
-seasIdcRouter.post("/security-code-check", invalidateCache, validateIdCheckerSecurityCode);
+seasIdcRouter.post('/security-code-check', invalidateCache, validateIdCheckerSecurityCode);
 
 // -----------------------------------------------------------------------------
 // Create a password
 // -----------------------------------------------------------------------------
-seasIdcRouter.get("/create-password", invalidateCache, (request, response) => {
+seasIdcRouter.get('/create-password', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
     response.render('seas-idc/create-password', { cache: inputCache, validation: null });
 });
-seasIdcRouter.post("/create-password", invalidateCache, validateDeactivatedIdCheckerPassword);
+seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdCheckerPassword);
 
 const idcApplications = [
     {
@@ -4108,9 +4114,13 @@ seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
         req.session.data['idc-applications'] = idcApplications;
     }
 
-
-
-    res.render('seas-idc/dashboard', { cms, cache: inputCache, validation: null, idcApplications: req.session.data['idc-applications'], idChecker: req.session.selectedIDC.name });
+    res.render('seas-idc/dashboard', {
+        cms,
+        cache: inputCache,
+        validation: null,
+        idcApplications: req.session.data['idc-applications'],
+        idChecker: req.session.selectedIDC.name,
+    });
 });
 
 // Application Details
@@ -4123,12 +4133,12 @@ seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
 
 // Assign IDV
 seasIdcRouter.get('/assign-idv', invalidateCache, (req, res) => {
-    if(req.session.selectedIDC && req.session.data['idc-applications']){
-        objIndex = req.session.data['idc-applications'].findIndex((obj => obj.id == req.query.id));
-        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name
+    if (req.session.selectedIDC && req.session.data['idc-applications']) {
+        objIndex = req.session.data['idc-applications'].findIndex(obj => obj.id == req.query.id);
+        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name;
     }
 
-    res.redirect('dashboard')
+    res.redirect('dashboard');
 });
 
 // Verifying ID
@@ -4139,9 +4149,9 @@ seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
 });
 
 seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
-    if(req.session.selectedIDC && req.session.data['idc-applications']){
-        objIndex = req.session.data['idc-applications'].findIndex((obj => obj.id == req.query.app));
-        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name
+    if (req.session.selectedIDC && req.session.data['idc-applications']) {
+        objIndex = req.session.data['idc-applications'].findIndex(obj => obj.id == req.query.app);
+        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name;
     }
     res.redirect('id-verified?app=' + req.query.app);
 });
@@ -4158,8 +4168,8 @@ seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(!req.body['id-verified']){
-        dataValidation['id-verified'] = "Select if the applicant’s ID has been successfully verified"
+    if (!req.body['id-verified']) {
+        dataValidation['id-verified'] = 'Select if the applicant’s ID has been successfully verified';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -4185,12 +4195,12 @@ seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
     let dataValidation = {};
 
-    if(req.body['confirm'] == "_unchecked"){
-        dataValidation['confirm'] = "Tick the box to confirm you agree with the declaration"
+    if (req.body['confirm'] == '_unchecked') {
+        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
     }
 
-    if(req.body['declare'] == "_unchecked"){
-        dataValidation['declare'] = "Tick the box to confirm you agree with the declaration"
+    if (req.body['declare'] == '_unchecked') {
+        dataValidation['declare'] = 'Tick the box to confirm you agree with the declaration';
     }
 
     if (Object.keys(dataValidation).length) {
