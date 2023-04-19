@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports
 // -----------------------------------------------------------------------------
-const { persistQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { loadPageData } = require('./utilsMiddleware');
+const { persistChangeQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { savePageData } = require('./utilsMiddleware');
 
 
@@ -44,7 +44,7 @@ const validateClientOrganisation = (request, response) => {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["client-organisation"] = request.body["client-organisation"];
-        redirectPath = persistQueryStringFromRequestForPath(request, redirectPath);
+        redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
         response.redirect(redirectPath);
     }
 };
