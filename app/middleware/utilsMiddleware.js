@@ -17,17 +17,19 @@ function loadPageData(req) {
     return null;
 }
 
-/* Persists query string properties from a received HTTP request for a given 
- * path. */
-const persistQueryStringFromRequestForPath = (request, path) => {
+/* Persists the query string property of "change=true" from a received HTTP
+ * request for a given path. */
+const persistChangeQueryStringFromRequestForPath = (request, path) => {
     // Constants.
+    const changeQueryString = "?change=true";
     const queryStringIndex = request.originalUrl.indexOf("?");
     const rawQueryString = (queryStringIndex >= 0) ? request.originalUrl.slice(queryStringIndex): "";
 
-    /* Remove any existing query string properties from the given path and
-     * persist those from the received HTTP request. */
-    path = path.split("?")[0] + rawQueryString;
-
+    /* Persist any existing query string property of "change=true" for the
+     * received HTTP request. */
+    if (rawQueryString.includes(changeQueryString)) {
+        path = path.split("?")[0] + changeQueryString;
+    }
     return path;
 };
 
@@ -65,6 +67,6 @@ function trimDataValuesAndRemoveSpaces(data) {
 
 exports.invalidateCache = invalidateCache;
 exports.loadPageData = loadPageData;
-exports.persistQueryStringFromRequestForPath = persistQueryStringFromRequestForPath;
+exports.persistChangeQueryStringFromRequestForPath = persistChangeQueryStringFromRequestForPath;
 exports.savePageData = savePageData;
 exports.trimDataValuesAndRemoveSpaces = trimDataValuesAndRemoveSpaces;

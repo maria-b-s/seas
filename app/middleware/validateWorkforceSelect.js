@@ -1,39 +1,79 @@
-const { savePageData, loadPageData } = require('./utilsMiddleware');
+// -----------------------------------------------------------------------------
+// Imports
+// -----------------------------------------------------------------------------
+const { loadPageData } = require('./utilsMiddleware');
+const { persistChangeQueryStringFromRequestForPath } = require('./utilsMiddleware');
+const { savePageData } = require('./utilsMiddleware');
 
-const cms = {
-  generalContent: {
-      continue: "Continue",
-  }
+
+
+// -----------------------------------------------------------------------------
+// Functions
+// -----------------------------------------------------------------------------
+const validateWorkforceSelect = (request, response) => {
+    // Constants.
+    const cms = {
+        generalContent: {
+            continue: "Continue"
+        }
+    };
+    const data = request.session.data;
+    const inputCache = loadPageData(request);
+    const redirectPathStandard = "/registered-body/position";
+    const renderPath = "registered-body/workforce-select";
+    const workforceSelected = data["radio-group-workforce-select"];
+
+    // Properties.
+    let dataValidation = {};
+    let redirectPathBarredListAdults = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-adults");
+    let redirectPathBarredListChildren = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-children");
+
+    // Removes any previously selected that the applicant will be working in.
+    data["selected"] = undefined;
+
+    // Cache session.
+    savePageData(request, data);
+
+    /* Validates that the workforce the applicant will be working in has been
+     * selected. */
+    if (!workforceSelected) {
+        dataValidation["radio-group-workforce-select"] = "Select which workforce the applicant will be working in";
+    }
+
+    /* Response. Preserving query string properties from the received HTTP
+     * request; if present. */
+    if (Object.keys(dataValidation).length) {
+        response.render(renderPath,  { cms, cache: inputCache, validation: dataValidation });
+    } else {
+        request.session.data["workforce-selected"] = workforceSelected;
+        if (request._parsedOriginalUrl.path === "/registered-body/workforce-select") {
+            // Standard.
+            response.redirect(redirectPathStandard); 
+        } else {
+            // Enhanced.
+            if (workforceSelected === "Adult") {
+                // Enhanced / Adult.
+                response.redirect(redirectPathBarredListAdults);
+            } else if (workforceSelected === "Child") {
+                // Enhanced / Child.
+                response.redirect(redirectPathBarredListChildren);
+            } else {
+                /* Enhanced / Adult and Child; or
+                 * Enhanced / Other. */
+                if (request.query && request.query.change) {
+                    redirectPathBarredListAdults += `&selected=${ workforceSelected }`;
+                } else {
+                    redirectPathBarredListAdults += `?selected=${ workforceSelected }`;
+                }
+                response.redirect(redirectPathBarredListAdults);
+            }
+        }
+    }
 };
 
-function validateWorkforceSelect(req, res){
-  savePageData(req, req.body);
-  const inputCache = loadPageData(req);
-  let validation = null;
 
-  if (!req.body['radio-group-workforce-select']) {
 
-    validation = {
-      'radio-group-workforce-select': 'Select which workforce the applicant will be working in'
-    }
-
-    res.render('registered-body/enhanced/workforce-select',  { cms, cache: inputCache, validation: validation });
-  } else {
-    req.session.data['workforce-selected'] = req.body['radio-group-workforce-select'];
-    // Standard Route
-    if(req._parsedOriginalUrl.path == '/registered-body/workforce-select'){
-      res.redirect('/registered-body/position');
-    } 
-    // Enhanced Route
-    else {
-      if(req.session.data['workforce-selected'] == 'Adult'){
-        res.redirect('/registered-body/enhanced/barred-list-adults');
-      } else {
-        res.redirect(`/registered-body/enhanced/barred-list-children?selected=${req.session.data['workforce-selected']}`);
-      } 
-    }
-  }
-
-}
-
+// -----------------------------------------------------------------------------
+// Exports
+// -----------------------------------------------------------------------------
 exports.validateWorkforceSelect = validateWorkforceSelect;

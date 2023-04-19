@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports
 // -----------------------------------------------------------------------------
-const { persistQueryStringFromRequestForPath } = require('./utilsMiddleware');
+const { persistChangeQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { savePageData } = require('./utilsMiddleware');
 
 
@@ -38,7 +38,7 @@ const addClientOrganisation = (request, response) => {
 
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */
-    redirectPath = persistQueryStringFromRequestForPath(request, redirectPath);
+    redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
     response.redirect(redirectPath);
 };
 

@@ -11,7 +11,7 @@ const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisa
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
-const { persistQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
+const { persistChangeQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
 const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
@@ -20,7 +20,8 @@ const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOr
 const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
-const { validateBarred } = require('./middleware/validateBarred');
+const { validateBarredListAdults } = require('./middleware/validateBarredListAdults');
+const { validateBarredListChildren } = require('./middleware/validateBarredListChildren');
 const { validateClientOrganisation } = require('./middleware/validateClientOrganisation');
 const { validateDeactivatedIdCheckerPassword } = require('./middleware/validateDeactivatedIdCheckerPassword');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
@@ -97,6 +98,54 @@ router.get('*', invalidateCache, (request, response, next) => {
 });
 
 // -----------------------------------------------------------------------------
+// DBS check level
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/dbs-check-level", (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render("registered-body/dbs-check-level", { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post("/dbs-check-level", (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const inputCache = loadPageData(request);
+    const renderPath = "registered-body/dbs-check-level";
+    const whatDbsCheck = data["what-dbs-check"];
+
+    // Properties.
+    let dataValidation = {};
+    let redirectPath = "workforce-select";
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Validates that the type of DBS check required has been selected.
+    if (!whatDbsCheck) {
+        dataValidation["what-dbs-check"] = "Select which DBS check you are requesting";
+    }
+
+    /* Response. Preserving query string properties from the received HTTP
+     * request; if present. */
+    if (Object.keys(dataValidation).length) {
+        response.render(renderPath, { cache: inputCache, validation: dataValidation });
+    } else {
+        if (whatDbsCheck === "Standard") {
+            if (request.query && request.query.change) {
+                redirectPath = "check-answers";
+            }
+        } else if (whatDbsCheck === "Enhanced") {
+            redirectPath = "enhanced/" + redirectPath;
+            if (request.query && request.query.change) {
+                redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
+            };
+        }
+        response.redirect(redirectPath);
+    }
+});
+
+// -----------------------------------------------------------------------------
 // Organisation name
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/organisation-name', invalidateCache, (request, response) => {
@@ -157,17 +206,17 @@ registeredBodyRouter.post('/client-organisation-confirmation', invalidateCache, 
     // Properties.
     let redirectPath = 'organisation-name';
 
+    // Cache session.
+    savePageData(request, request.body);
+
     /* Ensures the added client organisation is selected within the Select
      * component in /organisation-name. */
     selectClientOrganisation(request);
     data['organisation-check'] = 'client-organisation';
 
-    // Cache session.
-    savePageData(request, request.body);
-
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */
-    redirectPath = persistQueryStringFromRequestForPath(request, redirectPath);
+    redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
     response.redirect(redirectPath);
 });
 
@@ -262,47 +311,83 @@ registeredBodyRouter.get('/workforce-select', invalidateCache, (req, res) => {
 
 registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforceSelect);
 
-registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+// -----------------------------------------------------------------------------
+// Enhanced / Workforce select
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/enhanced/workforce-select", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    res.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render("registered-body/enhanced/workforce-select", { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post("/enhanced/workforce-select", invalidateCache, validateWorkforceSelect);
 
-registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
+// -----------------------------------------------------------------------------
+// Enhanced / Barred / Adults
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/enhanced/barred-list-adults", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    res.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render("registered-body/enhanced/barred-list-adults", { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post("/enhanced/barred-list-adults", invalidateCache, validateBarredListAdults);
 
-registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarred);
+// -----------------------------------------------------------------------------
+// Enhanced / Barred / Children
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("/enhanced/barred-list-children", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    res.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render("registered-body/enhanced/barred-list-children", { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post("/enhanced/barred-list-children", invalidateCache, validateBarredListChildren);
 
-registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarred);
+// -----------------------------------------------------------------------------
+// Enhanced / Barred / Working at home address
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get("enhanced/working-at-home-address", invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-registeredBodyRouter.get('/enhanced/working-at-home-address', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render("registered-body/enhanced/working-at-home-address", { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post("/enhanced/working-at-home-address", (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const childrenOrAdults = data["children-or-adults"];
+    const inputCache = loadPageData(request);
+    const renderPath = "registered-body/enhanced/working-at-home-address";
 
-registeredBodyRouter.post('/enhanced/working-at-home-address', (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let validation = null;
+    // Properties.
+    let dataValidation = {};
+    let redirectPath = "/registered-body/position";
 
-    if (!req.body['children-or-adults']) {
-        validation = {
-            'children-or-adults': 'Select if the position involves working with children or adults at the applicant’s home address',
-        };
+    // Cache session.
+    savePageData(request, request.body);
 
-        res.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: validation });
+    /* Validates if a selection has been made whether or not the position
+     * involves working with adults or children at the applicant's home
+     * address. */
+    if (!childrenOrAdults) {
+        dataValidation["children-or-adults"] = "Select if the position involves working with children or adults at the applicant’s home address";
+    }
+
+    /* Response. Preserving query string properties from the received HTTP
+     * request; if present. */
+    if (Object.keys(dataValidation).length) {
+        response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        req.session.data['children-or-adults'] = req.body['children-or-adults'];
-        res.redirect('/registered-body/position');
+        request.session.data["children-or-adults"] = childrenOrAdults;
+        if (request.query && request.query.change) {
+            redirectPath = "/registered-body/check-answers";
+        }
+        response.redirect(redirectPath);
     }
 });
 
@@ -1013,21 +1098,6 @@ const lastNames = [
     'Crassus',
     'Anderson',
 ];
-
-router.post('/dbs-check-answer', (req, res) => {
-    const whatDbsCheck = req.session.data['what-dbs-check'];
-    if (!whatDbsCheck) {
-        validation = {
-            'what-dbs-check': 'Select which DBS check you are requesting',
-        };
-
-        res.render('registered-body/dbs-check-level', { validation: validation });
-    }
-    // Check whether the variable matches a condition
-    if (whatDbsCheck === 'Standard') return res.redirect('registered-body/workforce-select');
-    if (whatDbsCheck === 'Enhanced') return res.redirect('registered-body/enhanced/workforce-select');
-    return undefined;
-});
 
 router.post('/pay-now-answer', (req, res) => {
     const whatPayment = req.session.data['payment-now'];
