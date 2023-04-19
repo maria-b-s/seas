@@ -19,12 +19,15 @@ const validateBarredListChildren = (request, response) => {
     };
     const data = request.session.data;
     const barredChildren = data["barred-children"];
+    const childrenOrAdults = data["children-or-adults"];
     const inputCache = loadPageData(request);
+    const redirectPathCheckAnswers = "/registered-body/check-answers";
+    const redirectPathWorkingAtHomeAddress = persistChangeQueryStringFromRequestForPath(request, "working-at-home-address");
     const renderPath = "registered-body/enhanced/barred-list-children";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "working-at-home-address";
+    let redirectPath = redirectPathWorkingAtHomeAddress;
 
     // Cache session.
     savePageData(request, data);
@@ -41,10 +44,14 @@ const validateBarredListChildren = (request, response) => {
         response.render(renderPath, { cms, cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["barred-children"] = request.body["barred-children"];
-        redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
+        if (childrenOrAdults && (request.query && request.query.change)) {
+            /* If the position involves working with adults or children at the
+             * applicant's home address has already been captured. */
+            redirectPath = redirectPathCheckAnswers;
+        }
         response.redirect(redirectPath);
     }
-}
+};
 
 
 

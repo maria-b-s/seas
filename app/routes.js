@@ -12,7 +12,6 @@ const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
 const { persistChangeQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
-const { renderString } = require('nunjucks');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
@@ -111,12 +110,13 @@ registeredBodyRouter.post("/dbs-check-level", (request, response) => {
     // Constants.
     const data = request.session.data;
     const inputCache = loadPageData(request);
+    const redirectPathCheckAnswers = "/registered-body/check-answers";
     const renderPath = "registered-body/dbs-check-level";
     const whatDbsCheck = data["what-dbs-check"];
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "workforce-select";
+    let redirectPath = persistChangeQueryStringFromRequestForPath(request, "workforce-select");
 
     // Cache session.
     savePageData(request, request.body);
@@ -133,12 +133,21 @@ registeredBodyRouter.post("/dbs-check-level", (request, response) => {
     } else {
         if (whatDbsCheck === "Standard") {
             if (request.query && request.query.change) {
-                redirectPath = "check-answers";
+                /* Removes any irrelevant selections made for the adult barred
+                 * list check; child barred list check; and applicant working
+                 * with adults or children in their home address. */
+                data["barred-adults"] = undefined;
+                data["barred-children"] = undefined;
+                data["children-or-adults"] = undefined;
+                redirectPath = redirectPathCheckAnswers;
             }
         } else if (whatDbsCheck === "Enhanced") {
             redirectPath = "enhanced/" + redirectPath;
             if (request.query && request.query.change) {
-                redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
+                /* Removes any previously selected workforce that the applicant
+                 * will be working in. */ 
+                data["radio-group-workforce-select"] = undefined;
+                data["workforce-selected"] = undefined;
             };
         }
         response.redirect(redirectPath);
@@ -362,6 +371,7 @@ registeredBodyRouter.post("/enhanced/working-at-home-address", (request, respons
     const data = request.session.data;
     const childrenOrAdults = data["children-or-adults"];
     const inputCache = loadPageData(request);
+    const redirectPathCheckAnswers = "/registered-body/check-answers";
     const renderPath = "registered-body/enhanced/working-at-home-address";
 
     // Properties.
@@ -385,7 +395,7 @@ registeredBodyRouter.post("/enhanced/working-at-home-address", (request, respons
     } else {
         request.session.data["children-or-adults"] = childrenOrAdults;
         if (request.query && request.query.change) {
-            redirectPath = "/registered-body/check-answers";
+            redirectPath = redirectPathCheckAnswers;
         }
         response.redirect(redirectPath);
     }
