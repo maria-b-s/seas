@@ -30,31 +30,27 @@ endset%} {% block beforeContent %}
 
         {% endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['what-application-type'] %}govuk-form-group--error{% endif %}">
+            <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">What kind of applicant is the check for?</h1>
                     </legend>
-                      {% if validation['what-application-type'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['what-application-type'] }}
-                        </span>
-                    {% endif %}
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios {% if validation['what-application-type'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['what-application-type'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['what-application-type'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="what-application-type" name="what-application-type" type="radio" value="New
-                            employee" {{ checked("what-application-type", "New applicant") }}>
+                            <input class="govuk-radios__input" id="what-application-type" name="what-application-type" type="radio" value="New employee" {{ checked("what-application-type", "New employee") }}>
                             <label class="govuk-label govuk-radios__label" for="what-application-type">New employee</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="what-application-type-2" name="what-application-type" type="radio" value="Current
-                            employee" {{ checked("what-application-type", "Existing post holder") }}>
+                            <input class="govuk-radios__input" id="what-application-type-2" name="what-application-type" type="radio" value="Current employee" {{ checked("what-application-type", "Current employee") }}>
                             <label class="govuk-label govuk-radios__label" for="what-application-type-2">Current employee</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="what-application-type-3" name="what-application-type" type="radio"
-                            value="Volunteer" {{ checked("what-application-type", "Volunteer") }}>
+                            <input class="govuk-radios__input" id="what-application-type-3" name="what-application-type" type="radio" value="Volunteer" {{ checked("what-application-type", "Volunteer") }}>
                             <label class="govuk-label govuk-radios__label" for="what-application-type-3"> Free-of-charge volunteer </label>
                         </div>
                     </div>

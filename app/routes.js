@@ -1,84 +1,65 @@
-const express = require('express');
+// -----------------------------------------------------------------------------
+// Imports
+// -----------------------------------------------------------------------------
+const _ = require('lodash');
 const RandExp = require('randexp');
-
-// Middleware import
+const express = require('express');
+const router = express.Router();
+const citizenRouter = express.Router();
+const registeredBodyRouter = express.Router();
+const dashboardRouter = express.Router();
+const seasIdcRouter = express.Router();
 const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require('./middleware/addClientOrganisation');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { clearDeactivatedIdCheckerPassword } = require('./middleware/utilsDeactivatedIdChecker');
 const { clearSelectedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
+const { confirmClientOrganisation } = require('./middleware/confirmClientOrganisation');
 const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
-const { persistChangeQueryStringFromRequestForPath } = require('./middleware/utilsMiddleware');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
 const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
 const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
+const { validateApplicantEmailAddress } = require('./middleware/validateApplicantEmailAddress');
+const { validateApplicantOrPostHolder } = require('./middleware/validateApplicantOrPostHolder');
+const { validateApplicantName } = require('./middleware/validateApplicantName');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateBarredListAdults } = require('./middleware/validateBarredListAdults');
 const { validateBarredListChildren } = require('./middleware/validateBarredListChildren');
 const { validateClientOrganisation } = require('./middleware/validateClientOrganisation');
+const { validateDbsCheckLevel } = require('./middleware/validateDbsCheckLevel');
 const { validateDeactivatedIdCheckerPassword } = require('./middleware/validateDeactivatedIdCheckerPassword');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validateEmail } = require('./middleware/validateEmail');
+const { validateExistingPostHolder } = require('./middleware/validateExistingPostHolder');
+const { validateFreeOfChargeVolunteerDeclaration } = require('./middleware/validateFreeOfChargeVolunteerDeclaration');
 const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateOrganisationChecked } = require('./middleware/validateOrganisationChecked');
+const { validatePositionName } = require('./middleware/validatePositionName');
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateSex } = require('./middleware/validateSex');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
+const { validateWorkingAtHomeAddress } = require('./middleware/validateWorkingAtHomeAddress');
 
-const _ = require('lodash');
-const moment = require('moment');
-const e = require('express');
-const router = express.Router();
-const citizenRouter = express.Router();
-const registeredBodyRouter = express.Router();
-const dashboardRouter = express.Router();
-const seasIdcRouter = express.Router();
 
+
+// -----------------------------------------------------------------------------
+// Constants
+// -----------------------------------------------------------------------------
 const cms = {
     generalContent: {
         continue: 'Continue',
     },
 };
 
-registeredBodyRouter.get('/position', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
 
-    res.render('registered-body/position', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/position', (req, res) => {
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    const validRole = /^[a-zA-Z'\- ]+$/.test(req.body['position-name']);
-
-    if (!validRole) {
-        dataValidation['position-name'] = 'Job or role must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-    if (req.body['position-name'].length > 60) {
-        dataValidation['position-name'] = 'Job or role must be 60 characters or fewer';
-    }
-    if (!req.body['position-name']) {
-        dataValidation['position-name'] = 'Enter job or role';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/position', { cache: inputCache, validation: dataValidation });
-    } else {
-        if (req.query.change == 'true') {
-            res.redirect('check-answers');
-        } else {
-            res.redirect('organisation-name');
-        }
-    }
-});
 
 // -----------------------------------------------------------------------------
 // Predefined details
@@ -96,8 +77,10 @@ router.get('*', invalidateCache, (request, response, next) => {
     return next();
 });
 
+
+
 // -----------------------------------------------------------------------------
-// DBS check level
+// DBS check details / Check level
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/dbs-check-level', (request, response) => {
     // Constants.
@@ -106,56 +89,84 @@ registeredBodyRouter.get('/dbs-check-level', (request, response) => {
     // Response.
     response.render('registered-body/dbs-check-level', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post('/dbs-check-level', (request, response) => {
-    // Constants.
-    const data = request.session.data;
-    const inputCache = loadPageData(request);
-    const redirectPathCheckAnswers = "/registered-body/check-answers";
-    const renderPath = "registered-body/dbs-check-level";
-    const whatDbsCheck = data["what-dbs-check"];
-
-    // Properties.
-    let dataValidation = {};
-    let redirectPath = persistChangeQueryStringFromRequestForPath(request, "workforce-select");
-
-    // Cache session.
-    savePageData(request, request.body);
-
-    // Validates that the type of DBS check required has been selected.
-    if (!whatDbsCheck) {
-        dataValidation['what-dbs-check'] = 'Select which DBS check you are requesting';
-    }
-
-    /* Response. Preserving query string properties from the received HTTP
-     * request; if present. */
-    if (Object.keys(dataValidation).length) {
-        response.render(renderPath, { cache: inputCache, validation: dataValidation });
-    } else {
-        if (whatDbsCheck === 'Standard') {
-            if (request.query && request.query.change) {
-                /* Removes any irrelevant selections made for the adult barred
-                 * list check; child barred list check; and applicant working
-                 * with adults or children in their home address. */
-                data["barred-adults"] = undefined;
-                data["barred-children"] = undefined;
-                data["children-or-adults"] = undefined;
-                redirectPath = redirectPathCheckAnswers;
-            }
-        } else if (whatDbsCheck === 'Enhanced') {
-            redirectPath = 'enhanced/' + redirectPath;
-            if (request.query && request.query.change) {
-                /* Removes any previously selected workforce that the applicant
-                 * will be working in. */ 
-                data["radio-group-workforce-select"] = undefined;
-                data["workforce-selected"] = undefined;
-            };
-        }
-        response.redirect(redirectPath);
-    }
-});
+registeredBodyRouter.post('/dbs-check-level', invalidateCache, validateDbsCheckLevel);
 
 // -----------------------------------------------------------------------------
-// Organisation name
+// DBS check details / Workforce
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/workforce-select', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/workforce-select', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforceSelect);
+
+// -----------------------------------------------------------------------------
+// DBS check details / Enhanced / Workforce
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
+
+// -----------------------------------------------------------------------------
+// DBS check details / Enhanced / Adult barred list check
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarredListAdults);
+
+// -----------------------------------------------------------------------------
+// DBS check details / Enhanced / Child barred list check
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarredListChildren);
+
+// -----------------------------------------------------------------------------
+// DBS check details / Enhanced / Applicant working at their home address
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('enhanced/working-at-home-address', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/enhanced/working-at-home-address', invalidateCache, validateWorkingAtHomeAddress);
+
+
+
+// -----------------------------------------------------------------------------
+// Role details / Role or job title
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/position', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/position', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/position', invalidateCache, validatePositionName);
+
+// -----------------------------------------------------------------------------
+// Role details / Company or organisation
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/organisation-name', invalidateCache, (request, response) => {
     // Constants.
@@ -171,7 +182,7 @@ registeredBodyRouter.get('/organisation-name', invalidateCache, (request, respon
 registeredBodyRouter.post('/organisation-name', invalidateCache, validateOrganisationChecked);
 
 // -----------------------------------------------------------------------------
-// Client organisation / Add
+// Role details / Company or organisation / Client organisation / Add
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/client-organisation-add', invalidateCache, (request, response) => {
     // Constants.
@@ -187,7 +198,7 @@ registeredBodyRouter.get('/client-organisation-add', invalidateCache, (request, 
 registeredBodyRouter.post('/client-organisation-add', invalidateCache, validateClientOrganisation);
 
 // -----------------------------------------------------------------------------
-// Client organisation / Check
+// Role details / Company or organisation / Client organisation / Check answers
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/client-organisation-check', invalidateCache, (request, response) => {
     // Constants.
@@ -199,7 +210,7 @@ registeredBodyRouter.get('/client-organisation-check', invalidateCache, (request
 registeredBodyRouter.post('/client-organisation-check', invalidateCache, addClientOrganisation);
 
 // -----------------------------------------------------------------------------
-// Client organisation / Confirmation
+// Role details / Company or organisation / Client organisation / Confirmation
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/client-organisation-confirmation', invalidateCache, (request, response) => {
     // Constants.
@@ -208,100 +219,68 @@ registeredBodyRouter.get('/client-organisation-confirmation', invalidateCache, (
     // Response.
     response.render('registered-body/client-organisation-confirmation', { cache: inputCache, validation: null });
 });
-registeredBodyRouter.post('/client-organisation-confirmation', invalidateCache, (request, response) => {
+registeredBodyRouter.post('/client-organisation-confirmation', invalidateCache, confirmClientOrganisation);
+
+// -----------------------------------------------------------------------------
+// Role details / Type of applicant
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/applicant-or-post-holder', invalidateCache, (request, response) => {
     // Constants.
-    const data = request.session.data;
+    const inputCache = loadPageData(request);
 
-    // Properties.
-    let redirectPath = 'organisation-name';
-
-    // Cache session.
-    savePageData(request, request.body);
-
-    /* Ensures the added client organisation is selected within the Select
-     * component in /organisation-name. */
-    selectClientOrganisation(request);
-    data['organisation-check'] = 'client-organisation';
-
-    /* Response. Preserving query string properties from the received HTTP
-     * request; if present. */
-    redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
-    response.redirect(redirectPath);
+    // Response.
+    response.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, validateApplicantOrPostHolder);
 
-registeredBodyRouter.get('/existing-post-holder', invalidateCache, (req, res) => {
+// -----------------------------------------------------------------------------
+// Role details / Applicant being rechecked
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/existing-post-holder', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/existing-post-holder', invalidateCache, validateExistingPostHolder);
+
+// -----------------------------------------------------------------------------
+// Role details / Free-of-charge volunteer declaration
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/volunteer-declaration', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/volunteer-declaration', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/volunteer-declaration', invalidateCache, validateFreeOfChargeVolunteerDeclaration);
+
+
+
+// -----------------------------------------------------------------------------
+// Applicant details / Name
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/applicant-name', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/applicant-name', { cms, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/applicant-name', invalidateCache, validateApplicantName);
+
+// -----------------------------------------------------------------------------
+// Applicant details / Email address
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-
-    res.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: null });
+    res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/applicant-email', invalidateCache, validateApplicantEmailAddress);
 
-registeredBodyRouter.post('/existing-post-holder', (req, res) => {
-    const inputCache = loadPageData(req);
-    let validation = {};
 
-    if (!req.body['rechecked']) {
-        validation['rechecked'] = 'Select if this application is for a recheck';
-        res.render('registered-body/existing-post-holder', { cms, cache: inputCache, validation: validation });
-    } else {
-        if (req.query.change == 'true') {
-            res.redirect('check-answers');
-        } else {
-            res.redirect('applicant-name');
-        }
-    }
-});
-
-registeredBodyRouter.get('/volunteer-declaration', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('registered-body/volunteer-declaration', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/volunteer-declaration', (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-
-    if (req.body['foc_declare'] == '_unchecked') {
-        dataValidation['foc_declare'] = 'Tick the box to confirm you agree with the declaration';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/volunteer-declaration', { cache: inputCache, validation: dataValidation });
-    } else {
-        if (req.query.change == 'true') {
-            res.redirect('check-answers');
-        } else {
-            res.redirect('applicant-name');
-        }
-    }
-});
-
-registeredBodyRouter.get('/applicant-or-post-holder', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/applicant-or-post-holder', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    let validation = {};
-    if (!req.body['what-application-type']) {
-        validation['what-application-type'] = 'Select what kind of applicant the check is for';
-        res.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: validation });
-    } else {
-        const applicationType = req.body['what-application-type'];
-        res.redirect(
-            `${
-                applicationType === 'Volunteer'
-                    ? `volunteer-declaration`
-                    : applicationType === 'New employee'
-                    ? 'applicant-name'
-                    : 'existing-post-holder'
-            }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
-        );
-    }
-});
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
@@ -310,200 +289,6 @@ registeredBodyRouter.post('/select-flow', (req, res) => {
             applicationType === 'Volunteer' ? `volunteer-declaration` : applicationType === 'New employee' ? 'applicant-name' : 'existing-post-holder'
         }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
     );
-});
-
-registeredBodyRouter.get('/workforce-select', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('registered-body/workforce-select', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/workforce-select', invalidateCache, validateWorkforceSelect);
-
-// -----------------------------------------------------------------------------
-// Enhanced / Workforce select
-// -----------------------------------------------------------------------------
-registeredBodyRouter.get('/enhanced/workforce-select', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('registered-body/enhanced/workforce-select', { cms, cache: inputCache, validation: null });
-});
-registeredBodyRouter.post('/enhanced/workforce-select', invalidateCache, validateWorkforceSelect);
-
-// -----------------------------------------------------------------------------
-// Enhanced / Barred / Adults
-// -----------------------------------------------------------------------------
-registeredBodyRouter.get('/enhanced/barred-list-adults', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('registered-body/enhanced/barred-list-adults', { cms, cache: inputCache, validation: null });
-});
-registeredBodyRouter.post('/enhanced/barred-list-adults', invalidateCache, validateBarredListAdults);
-
-// -----------------------------------------------------------------------------
-// Enhanced / Barred / Children
-// -----------------------------------------------------------------------------
-registeredBodyRouter.get('/enhanced/barred-list-children', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('registered-body/enhanced/barred-list-children', { cms, cache: inputCache, validation: null });
-});
-registeredBodyRouter.post('/enhanced/barred-list-children', invalidateCache, validateBarredListChildren);
-
-// -----------------------------------------------------------------------------
-// Enhanced / Barred / Working at home address
-// -----------------------------------------------------------------------------
-registeredBodyRouter.get('enhanced/working-at-home-address', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('registered-body/enhanced/working-at-home-address', { cms, cache: inputCache, validation: null });
-});
-registeredBodyRouter.post('/enhanced/working-at-home-address', (request, response) => {
-    // Constants.
-    const data = request.session.data;
-    const childrenOrAdults = data['children-or-adults'];
-    const inputCache = loadPageData(request);
-    const redirectPathCheckAnswers = "/registered-body/check-answers";
-    const renderPath = "registered-body/enhanced/working-at-home-address";
-
-    // Properties.
-    let dataValidation = {};
-    let redirectPath = '/registered-body/position';
-
-    // Cache session.
-    savePageData(request, request.body);
-
-    /* Validates if a selection has been made whether or not the position
-     * involves working with adults or children at the applicant's home
-     * address. */
-    if (!childrenOrAdults) {
-        dataValidation['children-or-adults'] = 'Select if the position involves working with children or adults at the applicant’s home address';
-    }
-
-    /* Response. Preserving query string properties from the received HTTP
-     * request; if present. */
-    if (Object.keys(dataValidation).length) {
-        response.render(renderPath, { cache: inputCache, validation: dataValidation });
-    } else {
-        request.session.data['children-or-adults'] = childrenOrAdults;
-        if (request.query && request.query.change) {
-            redirectPath = redirectPathCheckAnswers;
-        }
-        response.redirect(redirectPath);
-    }
-});
-
-registeredBodyRouter.get('/applicant-name', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    res.render('registered-body/applicant-name', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/applicant-name', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    let redirectPath = 'applicant-email';
-    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['first-name']);
-    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['last-name']);
-
-    if (req.query && req.query.change) {
-        redirectPath = 'check-answers';
-    }
-
-    if (!validFirstName) {
-        dataValidation['first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (!validLastName) {
-        dataValidation['last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (req.body['first-name'].length > 50) {
-        dataValidation['first-name'] = 'First name must be 50 characters or fewer';
-    }
-    if (req.body['last-name'].length > 50) {
-        dataValidation['last-name'] = 'Last name must be 50 characters or fewer';
-    }
-
-    if (!req.body['first-name']) {
-        dataValidation['first-name'] = 'Enter first name';
-    }
-
-    if (!req.body['last-name']) {
-        dataValidation['last-name'] = 'Enter last name';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/applicant-name', { cache: inputCache, validation: dataValidation });
-    } else {
-        req.session.data['first-name'] = req.body['first-name'];
-        req.session.data['last-name'] = req.body['last-name'];
-        res.redirect(redirectPath);
-    }
-});
-
-registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/applicant-email', (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    let applicantEmail = req.body['applicant-email'];
-    let applicantEmailConfirm = req.body['applicant-email-confirm'];
-    const validEmail =
-        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
-            req.body['applicant-email'],
-        );
-    const validConfirmEmail =
-        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
-            req.body['applicant-email-confirm'],
-        );
-
-    if (!validEmail) {
-        dataValidation['applicant-email'] = 'Enter email address in the correct format';
-    }
-
-    if (!validConfirmEmail) {
-        dataValidation['applicant-email-confirm'] = 'Enter email address in the correct format';
-    }
-
-    if (applicantEmail.length > 100) {
-        dataValidation['applicant-email'] = 'Email address must be 100 characters or fewer';
-    }
-
-    if (applicantEmailConfirm.length > 100) {
-        dataValidation['applicant-email-confirm'] = 'Email address must be 100 characters or fewer';
-    }
-
-    if (applicantEmail == req.session.selectedRB?.email) {
-        dataValidation['applicant-email'] = 'Cannot enter own email address';
-    }
-
-    if (!applicantEmail) {
-        dataValidation['applicant-email'] = 'Enter email address';
-    }
-
-    if (!applicantEmailConfirm) {
-        dataValidation['applicant-email-confirm'] = 'Enter email address';
-    } else if (applicantEmail != applicantEmailConfirm) {
-        dataValidation['applicant-email-confirm'] = 'Email address does not match';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/applicant-email', { cache: inputCache, validation: dataValidation });
-    } else {
-        res.redirect('check-answers');
-    }
 });
 
 registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {

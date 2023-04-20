@@ -22,7 +22,12 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                         <span class="govuk-caption-l">Registered body</span>
                         <h1 class="govuk-fieldset__heading">Which DBS check are you requesting?</h1>
                     </legend>
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios {% if validation['what-dbs-check'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['what-dbs-check'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['what-dbs-check'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
                             <input class='govuk-radios__input' id='what-dbs-check' name='what-dbs-check' type='radio' value='Standard' alt="Standard" {{
                             checked("what-dbs-check", "Standard") }}>

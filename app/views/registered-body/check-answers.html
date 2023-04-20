@@ -19,8 +19,7 @@
         <!-- DBS check details. -->
         <h2 class="govuk-heading-m">DBS check details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            
-            <!-- Check level. -->
+            <!-- DBS check details / Check level. -->
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Check level</dt>
                 <dd class="govuk-summary-list__value">
@@ -31,7 +30,7 @@
                 </dd>
             </div>
 
-            <!-- Workforce -->
+            <!-- DBS check details / Workforce. -->
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Workforce</dt>
                 <dd class="govuk-summary-list__value">
@@ -47,7 +46,7 @@
             </div>
 
             {% if data["what-dbs-check"] === "Enhanced" %}
-                <!-- Adult barred list check. -->
+                <!-- DBS check details / Enhanced / Adult barred list check. -->
                 {% if data["barred-adults"] %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Adult barred list check</dt>
@@ -55,12 +54,12 @@
                             <p>{{ data['barred-adults'] }}</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="#"> Change </a>
+                            <a href="enhanced/barred-list-adults?change=true"> Change </a>
                         </dd>
                     </div>
                 {% endif %}
                 
-                <!-- Child barred list check. -->
+                <!-- DBS check details / Enhanced / Child barred list check. -->
                 {% if data["barred-children"] %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Child barred list check</dt>
@@ -68,13 +67,13 @@
                             <p>{{ data['barred-children'] }}</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="#"> Change </a>
+                            <a href="enhanced/barred-list-children?change=true"> Change </a>
                         </dd>
                     </div>
                 {% endif %}
 
-                <!-- Applicant working with children or adults at their home
-                  -- address. -->
+                <!-- DBS check details / Enhanced / Applicant working at their
+                  -- home address. -->
                 {% if data["children-or-adults"] %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Applicant working with children or adults at their home address</dt>
@@ -82,15 +81,17 @@
                             <p>{{ data['children-or-adults'] }}</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="#"> Change </a>
+                            <a href="enhanced/working-at-home-address?change=true"> Change </a>
                         </dd>
                     </div>
                  {% endif %}
             {% endif %}
         </dl>
 
+        <!-- Role details. -->
         <h2 class="govuk-heading-m">Role details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <!-- Role details / Role or job title. -->
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Role or job title</dt>
                 <dd class="govuk-summary-list__value">
@@ -101,6 +102,7 @@
                 </dd>
             </div>
 
+            <!-- Role details / Company or organisation. -->
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Company or organisation</dt>
                 <dd class="govuk-summary-list__value">
@@ -115,6 +117,7 @@
                 </dd>
             </div>
 
+            <!-- Role details / Type of applicant. -->
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Type of applicant</dt>
                 <dd class="govuk-summary-list__value">
@@ -125,6 +128,7 @@
                 </dd>
             </div>
 
+            <!-- Role details / Applicant being rechecked. -->
             {% if data['what-application-type'] != 'Volunteer' %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Applicant being rechecked</dt>
@@ -132,7 +136,7 @@
                     <p>{{ data['rechecked'] }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a href="applicant-or-post-holder?change=true"> Change </a>
+                    <a href="existing-post-holder?change=true"> Change </a>
                 </dd>
             </div>
             {% endif %}
