@@ -18,18 +18,19 @@ const validateWorkforceSelect = (request, response) => {
         }
     };
     const data = request.session.data;
+    const barredAdults = data["barred-adults"];
+    const barredChildren = data["barred-children"];
     const inputCache = loadPageData(request);
-    const redirectPathStandard = "/registered-body/position";
+    const redirectPathBarredListAdults = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-adults");
+    const redirectPathBarredListChildren = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-children");
+    const redirectPathCheckAnswers = "/registered-body/check-answers";
+    const redirectPathStandard = persistChangeQueryStringFromRequestForPath(request, "/registered-body/position");
     const renderPath = "registered-body/workforce-select";
     const workforceSelected = data["radio-group-workforce-select"];
 
     // Properties.
     let dataValidation = {};
-    let redirectPathBarredListAdults = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-adults");
-    let redirectPathBarredListChildren = persistChangeQueryStringFromRequestForPath(request, "/registered-body/enhanced/barred-list-children");
-
-    // Removes any previously selected that the applicant will be working in.
-    data["selected"] = undefined;
+    let redirectPath = redirectPathBarredListAdults;
 
     // Cache session.
     savePageData(request, data);
@@ -46,28 +47,65 @@ const validateWorkforceSelect = (request, response) => {
         response.render(renderPath,  { cms, cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["workforce-selected"] = workforceSelected;
-        if (request._parsedOriginalUrl.path === "/registered-body/workforce-select") {
-            // Standard.
-            response.redirect(redirectPathStandard); 
-        } else {
-            // Enhanced.
-            if (workforceSelected === "Adult") {
-                // Enhanced / Adult.
-                response.redirect(redirectPathBarredListAdults);
-            } else if (workforceSelected === "Child") {
-                // Enhanced / Child.
-                response.redirect(redirectPathBarredListChildren);
+        if (request._parsedOriginalUrl.path.includes("/registered-body/workforce-select")) {
+            // Previously selected standard for DBS check level.
+            if (request.query && request.query.change) {
+                redirectPath = redirectPathCheckAnswers;
             } else {
-                /* Enhanced / Adult and Child; or
-                 * Enhanced / Other. */
-                if (request.query && request.query.change) {
-                    redirectPathBarredListAdults += `&selected=${ workforceSelected }`;
-                } else {
-                    redirectPathBarredListAdults += `?selected=${ workforceSelected }`;
-                }
-                response.redirect(redirectPathBarredListAdults);
+                redirectPath = redirectPathStandard;
+            }
+        } else {
+            // Previously selected enhanced for DBS check level.
+            switch (workforceSelected) {
+                case "Adult":
+                    // Applicant working in the adult workforce.
+
+                    /* Removes any irrelevant selection made for the child
+                     * barred list check. */
+                    data["barred-children"] = undefined;
+                    /* The entitlement to know if the applicant is barred from
+                     * working with adults is only captured when not known. */ 
+                    if (barredAdults && (request.query && request.query.change)) {
+                        redirectPath = redirectPathCheckAnswers;
+                    } else {
+                        data["barred-adults"] = undefined;
+                    }
+                    break;
+                case "Child":
+                    // Applicant working in the child workforce.
+
+                    /* Removes any irrelevant selection made for the adult
+                     * barred list check. */
+                    data["barred-adults"] = undefined;
+                    /* The entitlement to know if the applicant is barred from
+                     * working with children is only captured when not known. */ 
+                    if (barredChildren && (request.query && request.query.change)) {
+                        redirectPath = redirectPathCheckAnswers;
+                    } else {
+                        data["barred-children"] = undefined;
+                        redirectPath = redirectPathBarredListChildren;
+                    }
+                    break;
+                case "Adult and Child":
+                case "Other":
+                    // Applicant working in the adult and child/other workforce.
+
+                    /* The entitlement to know if the applicant is barred from
+                     * working with adults and/or children is only captured when
+                     * not known. */
+                    if (request.query && request.query.change) {
+                        if (barredAdults && barredChildren) {
+                            redirectPath = redirectPathCheckAnswers;
+                        } else if (barredAdults && !barredChildren) {
+                            redirectPath = redirectPathBarredListChildren;
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
+        response.redirect(redirectPath);
     }
 };
 
