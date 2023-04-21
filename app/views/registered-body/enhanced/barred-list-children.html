@@ -35,10 +35,14 @@ endset%} {% block beforeContent %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">Are you entitled to know if the applicant is barred from working with children?</h1>
                     </legend>
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline {% if validation['barred-children'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['barred-children'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['barred-children'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="barred-children-yes" name="barred-children" type="radio" value="Yes" {{
                             checked("barred-children", "Yes") }}/>

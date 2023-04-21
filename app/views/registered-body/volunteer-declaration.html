@@ -17,13 +17,17 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
         "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem', "errorList": errorList }) }} {%
         endif %}
         <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['foc_declare'] %}govuk-form-group--error{% endif %}">
+            <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">Free-of-charge volunteer declaration</h1>
                     </legend>
-
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes {% if validation['foc_declare'] %}govuk-form-group--error{% endif %}" data-module="govuk-checkboxes">
+                        {% if validation['foc_declare'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['foc_declare'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="foc_declare" name="foc_declare" type="checkbox" />
                             <label class="govuk-label govuk-checkboxes__label govuk-warning-text__text" for="waste">

@@ -39,10 +39,10 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     You can enter up to 60 characters
                 </div>
             </div>
-            {% if query['change'] === 'true' %}
-            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% if query["change"] === "true" %}
+                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}
         </form>
     </div>

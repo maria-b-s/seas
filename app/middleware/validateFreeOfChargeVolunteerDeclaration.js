@@ -9,39 +9,33 @@ const { savePageData } = require('./utilsMiddleware');
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
-const validateOrganisationChecked = (request, response) => {
+const validateFreeOfChargeVolunteerDeclaration = (request, response) => {
     // Constants.
     const data = request.session.data;
-    const organisationChecked = data["organisation-check"];
+    const focDeclare = data["foc_declare"];
     const inputCache = loadPageData(request);
-    const redirectPathApplicantOrPostHolder = "applicant-or-post-holder";
+    const redirectPathApplicantName = "applicant-name";
     const redirectPathCheckAnswers = "/registered-body/check-answers";
-    const renderPath = "registered-body/organisation-name";
+    const renderPath = "registered-body/volunteer-declaration";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = redirectPathApplicantOrPostHolder;
+    let redirectPath = redirectPathApplicantName;
 
     // Cache session.
     savePageData(request, data);
 
-    // Validates that a radio button is checked for the type of organisation.
-    if (!organisationChecked) {
-        dataValidation["organisation-check"] = "Select which organisation the check is for";
+    /* Validates that the checkbox is checked for declaring that the post meets
+     * the DBS definition of free-of-charge volunteer application. */
+    if (!focDeclare) {
+        dataValidation["foc_declare"] = "Tick the box to confirm you agree with the declaration";
     }
 
     // Response.
     if (Object.keys(dataValidation).length) {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        request.session.data["organisation-check"] = request.body["organisation-check"];
-        if (organisationChecked === "my-organisation") {
-            /* Removes the previously selected client organisation; it is no
-             * longer relevant. */ 
-            data["client-organisation"] = undefined;
-        }
-        /* Responds with "Check your answers" if the type of organisation was
-         * requested to be changed from a previous submission. */
+        request.session.data["foc_declare"] = request.body["foc_declare"];
         if (request.query && request.query.change) {
             redirectPath = redirectPathCheckAnswers;
         }
@@ -54,4 +48,4 @@ const validateOrganisationChecked = (request, response) => {
 // -----------------------------------------------------------------------------
 // Exports
 // -----------------------------------------------------------------------------
-exports.validateOrganisationChecked = validateOrganisationChecked;
+exports.validateFreeOfChargeVolunteerDeclaration = validateFreeOfChargeVolunteerDeclaration;

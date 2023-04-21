@@ -29,29 +29,28 @@ endset%} {% block beforeContent %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form class="form" method="post">
-            <div class="govuk-form-group  {% if validation['rechecked'] %}govuk-form-group--error{% endif %}">
+            <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">Is this application for a recheck?</h1>
                     </legend>
                     <div id="changed-name-hint" class="govuk-hint">
-                    A recheck can be done if the applicant already has a DBS check. 
+                        A recheck can be done if the applicant already has a DBS check. 
                     </div>
-                       {% if validation['rechecked'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['rechecked'] }}
-                        </span>
-                    {% endif %}
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline {% if validation['rechecked'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['rechecked'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['rechecked'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="changed-name" name="rechecked" type="radio" value="Yes">
+                            <input class="govuk-radios__input" id="changed-name" name="rechecked" type="radio" value="Yes" {{ checked("rechecked", "Yes") }}>
                             <label class="govuk-label govuk-radios__label" for="changed-name">
                                 Yes
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="changed-name-2" name="rechecked" type="radio" value="No">
+                            <input class="govuk-radios__input" id="changed-name-2" name="rechecked" type="radio" value="No" {{ checked("rechecked", "No") }}>
                             <label class="govuk-label govuk-radios__label" for="changed-name-2">
                                 No
                             </label>
@@ -59,8 +58,7 @@ endset%} {% block beforeContent %}
                     </div>
                 </fieldset>
             </div>
-
-            {% if query['change'] === 'true' %}
+            {% if query["change"] === "true" %}
                 <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
                 <button class="govuk-button" data-module="govuk-button">Continue</button>

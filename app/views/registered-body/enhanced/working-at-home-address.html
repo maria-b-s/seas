@@ -35,12 +35,16 @@
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">
                             Does the position involve working with children or adults at the applicant's home address?
                         </h1>
                     </legend>
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline {% if validation['children-or-adults'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['children-or-adults'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['children-or-adults'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="children-or-adults-yes" name="children-or-adults" type="radio" value="Yes" {{ checked("children-or-adults", "Yes") }} />
                             <label class="govuk-label govuk-radios__label" for="children-or-adults-yes"> Yes </label>
@@ -52,8 +56,8 @@
                     </div>
                 </fieldset>
             </div>
-            {% if query['change'] === 'true' %}
-            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% if query["change"] === "true" %}
+                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
             {% else %}
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
             {% endif %}

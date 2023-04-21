@@ -77,8 +77,11 @@ endset%} {% block beforeContent %}
                     autocomplete="off"
                 />
             </div>
-
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% if query["change"] === "true" %}
+                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
+            {% else %}
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+            {% endif %}
         </form>
     </div>
 </div>

@@ -36,10 +36,14 @@
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-
                         <h1 class="govuk-fieldset__heading">Are you entitled to know if the applicant is barred from working with adults?</h1>
                     </legend>
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--inline {% if validation['barred-adults'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
+                        {% if validation['barred-adults'] %}
+                            <span id="ninonr-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> {{ validation['barred-adults'] }}
+                            </span>
+                        {% endif %}
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="barred-adults-yes" name="barred-adults" type="radio" value="Yes" {{
                             checked("barred-adults", "Yes") }}/>
@@ -53,7 +57,6 @@
                     </div>
                 </fieldset>
             </div>
-
             <button class="govuk-button" data-module="govuk-button">Continue</button>
         </form>
     </div>
