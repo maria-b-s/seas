@@ -22,7 +22,7 @@ const validateClientOrganisation = (request, response) => {
 
     // Properties.
     let dataValidation = {};
-    const redirectPath = redirectPathClientOrganisationCheck;
+    let redirectPath = redirectPathClientOrganisationCheck;
 
     // Cache session.
     savePageData(request, data);
