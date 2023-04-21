@@ -16,12 +16,13 @@ const validateClientOrganisation = (request, response) => {
     const clientOrganisation = data["client-organisation"];
     const inputCache = loadPageData(request);
     const inputCharactersMaximum = 60;
+    const redirectPathClientOrganisationCheck = persistChangeQueryStringFromRequestForPath(request, "client-organisation-check");
     const regExpOrganisationName = /^[a-zA-Z0-9- '&.,@]+$/;
     const renderPath = "registered-body/client-organisation-add";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "client-organisation-check";
+    const redirectPath = redirectPathClientOrganisationCheck;
 
     // Cache session.
     savePageData(request, data);
@@ -44,7 +45,6 @@ const validateClientOrganisation = (request, response) => {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["client-organisation"] = request.body["client-organisation"];
-        redirectPath = persistChangeQueryStringFromRequestForPath(request, redirectPath);
         response.redirect(redirectPath);
     }
 };

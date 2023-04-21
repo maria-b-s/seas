@@ -16,12 +16,14 @@ const validatePositionName = (request, response) => {
     const inputCache = loadPageData(request);
     const inputCharactersMaximum = 60;
     const positionName = data["position-name"];
+    const redirectPathCheckAnswers = "check-answers";
+    const redirectPathOrganisationName = persistChangeQueryStringFromRequestForPath(request, "organisation-name");
     const regExpPositionName = /^[a-zA-Z'\- ]+$/;
     const renderPath = "registered-body/position";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = persistChangeQueryStringFromRequestForPath(request, "organisation-name");
+    let redirectPath = redirectPathOrganisationName;
 
     // Cache session.
     savePageData(request, data);
@@ -45,7 +47,7 @@ const validatePositionName = (request, response) => {
     } else {
         request.session.data["position-name"] = request.body["position-name"];
         if (request.query && request.query.change) {
-            redirectPath = "check-answers";
+            redirectPath = redirectPathCheckAnswers;
         }
         response.redirect(redirectPath);
     }

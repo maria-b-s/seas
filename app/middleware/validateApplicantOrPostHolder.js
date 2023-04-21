@@ -13,6 +13,7 @@ const { savePageData } = require('./utilsMiddleware');
 const validateApplicantOrPostHolder = (request, response) => {
     // Constants.
     const data = request.session.data;
+    const historicWhatApplicationType = data["historic_what-application-type"];
     const inputCache = loadPageData(request);
     const rechecked = data["rechecked"];
     const redirectPathCheckAnswers = "/registered-body/check-answers";
@@ -28,8 +29,8 @@ const validateApplicantOrPostHolder = (request, response) => {
     // Cache session.
     savePageData(request, data);
 
-    /* Validates that a radio button is checked for the kind of applicant is the
-     * check for. */
+    /* Validates that a radio button is checked for the kind of applicant the
+     * check is for. */
     if (!whatApplicationType) {
         dataValidation["what-application-type"] = "Select what kind of applicant the check is for";
     }
@@ -66,6 +67,13 @@ const validateApplicantOrPostHolder = (request, response) => {
                 break;
             default:
                 break;
+        }
+        if (request.query && request.query.change) {
+            /* Verifies whether or not the registered body made a change to
+             * the kind of applicant the check is for. */ 
+            if (historicWhatApplicationType && (historicWhatApplicationType === whatApplicationType)) {
+                redirectPath = redirectPathCheckAnswers;
+            }
         }
         response.redirect(redirectPath);
     }

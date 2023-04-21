@@ -16,12 +16,14 @@ const validateApplicantName = (request, response) => {
     const inputCache = loadPageData(request);
     const inputCharactersMaximum = 50;
     const lastName = data["last-name"];
-    const redirectPath = "applicant-email";
+    const redirectPathCheckAnswers = "check-answers";
+    const redirectPathApplicantEmail = "applicant-email";
     const regExpName = /^[a-zA-Z'\- ]+$/;
     const renderPath = "registered-body/applicant-name";
 
     // Properties.
     let dataValidation = {};
+    let redirectPath = redirectPathApplicantEmail;
 
     // Cache session.
     savePageData(request, data);
@@ -55,6 +57,9 @@ const validateApplicantName = (request, response) => {
     } else {
         request.session.data["first-name"] = request.body["first-name"];
         request.session.data["last-name"] = request.body["last-name"];
+        if (request.query && request.query.change) {
+            redirectPath = redirectPathCheckAnswers;
+        }
         response.redirect(redirectPath);
     }
 };

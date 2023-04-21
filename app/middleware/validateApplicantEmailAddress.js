@@ -16,7 +16,7 @@ const validateApplicantEmailAddress = (request, response) => {
     const applicantEmailConfirm = data["applicant-email-confirm"];
     const inputCache = loadPageData(request);
     const inputCharactersMaximum = 100;
-    const redirectPath = "check-answers";
+    const redirectPathCheckAnswers = "check-answers";
     const regExpEmailAddress = /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/;
     const renderPath = "registered-body/applicant-email";
 
@@ -61,7 +61,7 @@ const validateApplicantEmailAddress = (request, response) => {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["applicant-email"] = request.body["applicant-email"];
-        response.redirect(redirectPath);
+        response.redirect(redirectPathCheckAnswers);
     }
 };
 

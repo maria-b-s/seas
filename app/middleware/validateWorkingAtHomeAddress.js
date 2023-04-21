@@ -15,11 +15,12 @@ const validateWorkingAtHomeAddress = (request, response) => {
     const childrenOrAdults = data["children-or-adults"];
     const inputCache = loadPageData(request);
     const redirectPathCheckAnswers = "/registered-body/check-answers";
+    const redirectPathPosition = "/registered-body/position";
     const renderPath = "registered-body/enhanced/working-at-home-address";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "/registered-body/position";
+    let redirectPath = redirectPathPosition;
 
     // Cache session.
     savePageData(request, request.body);

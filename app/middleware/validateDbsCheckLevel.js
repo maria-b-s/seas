@@ -13,14 +13,16 @@ const { savePageData } = require("./utilsMiddleware");
 const validateDbsCheckLevel = (request, response) => {
     // Constants.
     const data = request.session.data;
+    const historicWhatDbsCheck = data["historic_what-dbs-check"];
     const inputCache = loadPageData(request);
     const redirectPathCheckAnswers = "/registered-body/check-answers";
+    const redirectPathWorkforceSelect = persistChangeQueryStringFromRequestForPath(request, "workforce-select");
     const renderPath = "registered-body/dbs-check-level";
     const whatDbsCheck = data["what-dbs-check"];
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = persistChangeQueryStringFromRequestForPath(request, "workforce-select");
+    let redirectPath = redirectPathWorkforceSelect;
 
     // Cache session.
     savePageData(request, request.body);
@@ -35,8 +37,12 @@ const validateDbsCheckLevel = (request, response) => {
     if (Object.keys(dataValidation).length) {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        if (whatDbsCheck === "Standard") {
-            if (request.query && request.query.change) {
+        if (request.query && request.query.change) {
+            /* Verifies whether or not the registered body made a change to the
+             * type of DBS check requested. */ 
+            if (historicWhatDbsCheck && (historicWhatDbsCheck === whatDbsCheck)) {
+                redirectPath = redirectPathCheckAnswers;
+            } else if (whatDbsCheck === "Standard") {
                 /* Removes any irrelevant selections made for the adult barred
                  * list check; child barred list check; and applicant working
                  * with adults or children in their home address. */
@@ -44,15 +50,15 @@ const validateDbsCheckLevel = (request, response) => {
                 data["barred-children"] = undefined;
                 data["children-or-adults"] = undefined;
                 redirectPath = redirectPathCheckAnswers;
-            }
-        } else if (whatDbsCheck === "Enhanced") {
-            redirectPath = "enhanced/" + redirectPath;
-            if (request.query && request.query.change) {
+            } else if (whatDbsCheck === "Enhanced") {
                 /* Removes any previously selected workforce that the applicant
                  * will be working in. */ 
                 data["radio-group-workforce-select"] = undefined;
                 data["workforce-selected"] = undefined;
-            };
+            }
+        }
+        if (whatDbsCheck === "Enhanced") {
+            redirectPath = "enhanced/" + redirectPath;
         }
         response.redirect(redirectPath);
     }

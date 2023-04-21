@@ -14,12 +14,13 @@ const validateOrganisationChecked = (request, response) => {
     const data = request.session.data;
     const organisationChecked = data["organisation-check"];
     const inputCache = loadPageData(request);
+    const redirectPathApplicantOrPostHolder = "applicant-or-post-holder";
     const redirectPathCheckAnswers = "/registered-body/check-answers";
     const renderPath = "registered-body/organisation-name";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "applicant-or-post-holder";
+    let redirectPath = redirectPathApplicantOrPostHolder;
 
     // Cache session.
     savePageData(request, data);

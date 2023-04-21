@@ -15,10 +15,12 @@ const validateExistingPostHolder = (request, response) => {
     const inputCache = loadPageData(request);
     const rechecked = data["rechecked"];
     const redirectPathCheckAnswers = "/registered-body/check-answers";
+    const redirectPathApplicantName = "/registered-body/applicant-name";
     const renderPath = "registered-body/existing-post-holder";
 
     // Properties.
     let dataValidation = {};
+    let redirectPath = redirectPathApplicantName;
 
     // Cache session.
     savePageData(request, request.body);

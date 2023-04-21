@@ -84,7 +84,14 @@ router.get('*', invalidateCache, (request, response, next) => {
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/dbs-check-level', (request, response) => {
     // Constants.
+    const data = request.session.data;
     const inputCache = loadPageData(request);
+
+    /* Persists the current selection made for the type of DBS check requested
+     * so that if the registered body requests to change this in /check-answers
+     * but does not follow through, we can redirect them back to /check-answers
+     * opposed to /workforce-select or /enhanced/workforce-select. */
+    data["historic_what-dbs-check"] = data["what-dbs-check"];
 
     // Response.
     response.render('registered-body/dbs-check-level', { cache: inputCache, validation: null });
@@ -226,7 +233,14 @@ registeredBodyRouter.post('/client-organisation-confirmation', invalidateCache, 
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/applicant-or-post-holder', invalidateCache, (request, response) => {
     // Constants.
+    const data = request.session.data;
     const inputCache = loadPageData(request);
+
+    /* Persists the current selection made for the kind of applicant the check
+     * is for so that if the registered body requests to change this in
+     * /check-answers but does not follow through, we can redirect them back to
+     * /check-answers opposed to /volunteer-declaration. */
+     data["historic_what-application-type"] = data["what-application-type"];
 
     // Response.
     response.render('registered-body/applicant-or-post-holder', { cms, cache: inputCache, validation: null });

@@ -17,12 +17,13 @@ const validateDeactivatedIdCheckerPassword = (request, response) => {
     const deactivatedIdCheckerPasswordConfirm = data["deactivated-id-checker-password-confirm"];
     const inputCache = loadPageData(request);
     const inputCharactersMinimum = 8;
+    const redirectPathDashboard = "dashboard";
     const regExpPassword = /^.{8,}$/;
     const renderPath = "seas-idc/create-password";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = "dashboard";
+    let redirectPath = redirectPathDashboard;
 
     // Cache session.
     savePageData(request, data);

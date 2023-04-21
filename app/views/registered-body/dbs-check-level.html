@@ -49,11 +49,7 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     </div>
                 </fieldset>
             </div>
-            {% if query['change'] === 'true' %}
-            <button class="govuk-button" id="enhanced-barred-check-btn" data-module="govuk-button">Check Answers</button>
-            {% else %}
             <button class="govuk-button" data-module="govuk-button">Continue</button>
-            {% endif %}
         </form>
     </div>
     <div class="govuk-grid-column-one-third">
