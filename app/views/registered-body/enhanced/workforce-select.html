@@ -1,91 +1,137 @@
-{% import "../../macros/form-elements.njk" as fe %}
-{% import "../../macros/question-info.njk" as ql %}
-{% import "../../macros/error-summary/govukErrorSummary.njk" as  es %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
 {% extends "layout.html" %}
 
-{% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
 
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Which workforce will the applicant be working in?
 {% endblock %}
 
- {% block content %}
 
-  {% if validation|length %}
 
-    {% set errorList = [] %}
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
 
-    {% for key, value in validation %}
-      {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
-    {% endfor %}
 
-    {{ es.govukErrorSummary({
-      "titleText": 'There is a problem',
-      "errorList": errorList 
-      }) 
-    }}
-  {% endif %}
 
-  <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
 
-  <h1 class="govuk-heading-l page-heading govuk-!-margin-bottom-4"> Which workforce will the applicant be working in? </h1>
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
 
-  <form action="" method="post" class="form">
-    <div class="govuk-form-group {% if validation['radio-group-workforce-select'] %} govuk-form-group--error {% endif %}">
-      {{ fe.radio_buttons(
-        questionText=false,
-        helpText='Selecting the wrong workforce type will delay the application.',
-        h1Text=false,
-        value=data['radio-group-workforce-select'],
-        error=true,
-        errorMessages=[validation['radio-group-workforce-select']],
-        horizontal=false,
-        items=[
-          {group: 'workforce-select', answerOption: 'Adult', value: 'Adult',  label: "Adult", dataTarget: 'save-and-continue' },
-          {group: 'workforce-select', answerOption: 'Child', value: 'Child', label: 'Child', dataTarget: 'save-and-continue' },
-          {group: 'workforce-select', answerOption: 'Adult and Child', value: 'Adult and Child', label: 'Adult and Child', dataTarget: 'save-and-continue' },
-          {group: 'workforce-select', answerOption: 'Other', value: 'Other', label: 'Other', dataTarget: 'save-and-continue' }
-        ],
-        disabledOnSelection=false
-      ) }}
 
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentWorkforceSelected = "" %}
+            {% if validation | length %}
+                <!-- Workforce selected. -->
+                {% if validation["workforce-selected"] %}
+                    {% set errorComponentWorkforceSelected = {
+                        text: validation["workforce-selected"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Which workforce will the applicant be working in?"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        errorMessage: errorComponentWorkforceSelected,
+                        hint: {
+                            text: "Selecting the wrong workforce type will delay the application."
+                        },
+                        items: [
+                            {
+                                checked: data["workforce-selected"] === "Adult",
+                                text: "Adult",
+                                value: "Adult"
+                            },
+                            {
+                                checked: data["workforce-selected"] === "Child",
+                                text: "Child",
+                                value: "Child"
+                            },
+                            {
+                                checked: data["workforce-selected"] === "Adult and Child",
+                                text: "Adult and Child",
+                                value: "Adult and Child"
+                            },
+                            {
+                                checked: data["workforce-selected"] === "Other",
+                                text: "Other",
+                                value: "Other"
+                            }
+                        ],
+                        name: "workforce-selected",
+                        value: data["workforce-selected"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items">
+                <h2 class="govuk-heading-m">
+                    Related content
+                </h2>
+                <a href="https://www.gov.uk/government/publications/dbs-workforce-guidance" rel="noopener noreferrer" target="_blank">How to identify the type of workforce that an applicant will be working in</a>
+            </aside>
+        </div>
     </div>
-
-
-    {{ fe.save_button(cms=cms, 'govuk-!-margin-top-4') }}
-    
-  </form>
-  </div>
-
-
-    <div class="govuk-grid-column-one-third">
-
-      <aside class="app-related-items" role="complementary">
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Related content
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-!-font-size-16">
-            <li>
-              <a href="https://www.gov.uk/government/publications/dbs-workforce-guidance">            	
-                  How to identify the type of workforce that an applicant will be working in
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-    </div>
-
-</div>
-
-
 {% endblock %}

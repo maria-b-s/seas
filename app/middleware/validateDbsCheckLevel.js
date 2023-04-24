@@ -53,11 +53,10 @@ const validateDbsCheckLevel = (request, response) => {
             } else if (whatDbsCheck === "Enhanced") {
                 /* Removes any previously selected workforce that the applicant
                  * will be working in. */ 
-                data["radio-group-workforce-select"] = undefined;
                 data["workforce-selected"] = undefined;
             }
         }
-        if (whatDbsCheck === "Enhanced") {
+        if ((whatDbsCheck === "Enhanced") && (redirectPath !== redirectPathCheckAnswers)) {
             redirectPath = "enhanced/" + redirectPath;
         }
         response.redirect(redirectPath);

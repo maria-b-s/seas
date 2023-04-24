@@ -12,11 +12,6 @@ const { savePageData } = require('./utilsMiddleware');
 // -----------------------------------------------------------------------------
 const validateWorkforceSelect = (request, response) => {
     // Constants.
-    const cms = {
-        generalContent: {
-            continue: "Continue"
-        }
-    };
     const data = request.session.data;
     const barredAdults = data["barred-adults"];
     const barredChildren = data["barred-children"];
@@ -26,7 +21,7 @@ const validateWorkforceSelect = (request, response) => {
     const redirectPathCheckAnswers = "/registered-body/check-answers";
     const redirectPathStandard = persistChangeQueryStringFromRequestForPath(request, "/registered-body/position");
     const renderPath = "registered-body/workforce-select";
-    const workforceSelected = data["radio-group-workforce-select"];
+    const workforceSelected = data["workforce-selected"];
 
     // Properties.
     let dataValidation = {};
@@ -38,15 +33,14 @@ const validateWorkforceSelect = (request, response) => {
     /* Validates that the workforce the applicant will be working in has been
      * selected. */
     if (!workforceSelected) {
-        dataValidation["radio-group-workforce-select"] = "Select which workforce the applicant will be working in";
+        dataValidation["workforce-selected"] = "Select which workforce the applicant will be working in";
     }
 
     /* Response. Preserving query string properties from the received HTTP
      * request; if present. */
     if (Object.keys(dataValidation).length) {
-        response.render(renderPath,  { cms, cache: inputCache, validation: dataValidation });
+        response.render(renderPath,  { cache: inputCache, validation: dataValidation });
     } else {
-        request.session.data["workforce-selected"] = workforceSelected;
         if (request._parsedOriginalUrl.path.includes("/registered-body/workforce-select")) {
             // Previously selected standard for DBS check level.
             if (request.query && request.query.change) {
