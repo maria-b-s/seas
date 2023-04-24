@@ -1,69 +1,131 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
-(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
-"errorList": errorList }) }} {% endif %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" method="post">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <span class="govuk-caption-l">Registered body</span>
-                        <h1 class="govuk-fieldset__heading">Which DBS check are you requesting?</h1>
-                    </legend>
-                    <div class="govuk-radios {% if validation['what-dbs-check'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
-                        {% if validation['what-dbs-check'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['what-dbs-check'] }}
-                            </span>
-                        {% endif %}
-                        <div class="govuk-radios__item">
-                            <input class='govuk-radios__input' id='what-dbs-check' name='what-dbs-check' type='radio' value='Standard' alt="Standard" {{
-                            checked("what-dbs-check", "Standard") }}>
-                            <label class="govuk-label govuk-radios__label" for="what-dbs-check"> Standard </label>
-                            <div id="sign-in-item-hint-01" class="govuk-hint govuk-radios__hint">
-                                A standard check shows convictions or cautions from the Police National Computer (PNC). It will not show certain old
-                                or minor offences. See <a href="https://www.gov.uk/government/publications/dbs-filtering-guidance/dbs-filtering-guide">DBS Filtering Guide</a> for more information.
-                            </div>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class='govuk-radios__input' id='what-dbs-check-2' name='what-dbs-check' type='radio' value='Enhanced' alt="Enhanced"{{
-                            checked("what-dbs-check", "Enhanced") }}>
-                            <label class="govuk-label govuk-radios__label" for="what-dbs-check-2"> Enhanced </label>
-                            <div id="sign-in-item-hint-02" class="govuk-hint govuk-radios__hint">
-                                An enhanced check shows the same information as a standard check. It also includes any information held by local
-                                police that is relevant to the role.
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
-        </form>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <aside class="app-related-items" role="complementary">
-            <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
-            <nav role="navigation" aria-labelledby="subsection-title">
-                <ul class="govuk-list govuk-!-font-size-16">
-                    <li>
-                        <a href="https://www.gov.uk/find-out-dbs-check"> Find out which DBS check is right for your employee </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
 
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Which DBS check are you requesting?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentWhatDbsCheck = "" %}
+            {% if validation | length %}
+                <!-- What DBS check. -->
+                {% if validation["what-dbs-check"] %}
+                    {% set errorComponentWhatDbsCheck = {
+                        text: validation["what-dbs-check"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            <span class="govuk-caption-l">Registered body</span>
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Which DBS check are you requesting?"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        errorMessage: errorComponentWhatDbsCheck,
+                        items: [
+                            {
+                                checked: data["what-dbs-check"] === "Standard",
+                                hint: {
+                                    html: 'A standard check shows convictions or cautions from the Police National Computer (PNC). It will not show certain old or minor offences. See <a href="https://www.gov.uk/government/publications/dbs-filtering-guidance/dbs-filtering-guide" rel="noopener noreferrer" target="_blank">DBS Filtering Guide</a> for more information.'
+                                },
+                                text: "Standard",
+                                value: "Standard"
+                            },
+                            {
+                                checked: data["what-dbs-check"] === "Enhanced",
+                                hint: {
+                                    text: "An enhanced check shows the same information as a standard check. It also includes any information held by local police that is relevant to the role."
+                                },
+                                text: "Enhanced",
+                                value: "Enhanced"
+                            }
+                        ],
+                        name: "what-dbs-check",
+                        value: data["what-dbs-check"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items">
+                <h2 class="govuk-heading-m">
+                    Related content
+                </h2>
+                <a href="https://www.gov.uk/find-out-dbs-check" rel="noopener noreferrer" target="_blank">Find out which DBS check is right for your employee</a>
+            </aside>
+        </div>
+    </div>
 {% endblock %}

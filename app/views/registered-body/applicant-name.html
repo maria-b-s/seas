@@ -1,84 +1,143 @@
-{% extends "layout.html" %}{% import "../macros/error-summary/govukErrorSummary.njk" as  es %} {% block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a standard or enhanced DBS check {%
-endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-{% if validation | length %}
 
-        {% set errorList = [] %}
 
-        {% for key, value in validation %}
-            {% set errorList = (errorList.push({
-                "text": value,
-                "href": "#" + key
-            }), errorList) %}
-        {% endfor %}
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    What is the {% if data["what-application-type"] === "Volunteer" %} volunteer's {% else %} applicant's {% endif %} name?
+{% endblock %}
 
-        {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }}
 
-    {% endif %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
 
-        <form class="form" method="post">
-            <fieldset class="govuk-fieldset" aria-describedby="passport-hint">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        What is the {% if data['what-application-type'] == 'Volunteer' %} volunteer's {% else %} applicant's {% endif %} name?
-                    </h1>
-                </legend>
-                <div id="passport-hint" class="govuk-hint">We'll only use this to address emails to the applicant.</div>
-                <div class="govuk-form-group {% if validation['first-name'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="first-name"> First name </label>
-                      {% if validation['first-name'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['first-name'] }}
-                        </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-input--width-10"
-                        id="first-name"
-                        name="first-name"
-                        value="{{ data['first-name'] }}"
-                        type="text"
-                        spellcheck="false"
-                        autocomplete="name"
-                    />
-                </div>
-                <div class="govuk-form-group {% if validation['last-name'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="last-name"> Last name </label>
-                      {% if validation['last-name'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['last-name'] }}
-                        </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-input--width-10"
-                        id="last-name"
-                        name="last-name"
-                        value="{{ data['last-name'] }}"
-                        type="text"
-                        spellcheck="false"
-                        autocomplete="name"
-                    />
-                </div>
-            </fieldset>
-            {% if query["change"] === "true" %}
-                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
-            {% else %}
-                <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
             {% endif %}
-        </form>
-    </div>
-</div>
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentFirstName = "" %}
+            {% set errorComponentLastName = "" %}
+            {% if validation | length %}
+                <!-- First name. -->
+                {% if validation["first-name"] %}
+                    {% set errorComponentFirstName = {
+                        text: validation["first-name"]
+                    } %}
+                {% endif %}
+                <!-- Last name. -->
+                {% if validation["last-name"] %}
+                    {% set errorComponentLastName = {
+                        text: validation["last-name"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% set heading = "What is the applicant's name?" %}
+            {% if data["what-application-type"] === "Volunteer" %}
+                {% set heading = "What is the volunteer's name?" %}
+            {% endif %}
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: heading
+                }
+            }) %}
 
+                <!-- Hint. -->
+                <p class="govuk-hint">We'll only use this to address emails to the applicant.</p>
+
+                <form method="post">
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "name",
+                        classes: "govuk-input govuk-!-width-one-third",
+                        errorMessage: errorComponentFirstName,
+                        id: "first-name",
+                        label: {
+                            text: "First name"
+                        },
+                        name: "first-name",
+                        spellcheck: false,
+                        value: data["first-name"]
+                    }) }}
+
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "name",
+                        classes: "govuk-input govuk-!-width-one-third",
+                        errorMessage: errorComponentLastName,
+                        id: "last-name",
+                        label: {
+                            text: "Last name"
+                        },
+                        name: "last-name",
+                        spellcheck: false,
+                        value: data["last-name"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
 {% endblock %}
