@@ -91,3 +91,9 @@ $govuk-assets-path: '/govuk/assets/';
         }
     }
 }
+
+/* Removes overlapping triangle from the details disclosure element for
+ * Internet Explorer 11 compatibility. */
+.no-details details > summary::before {
+    content: "" !important;
+}
