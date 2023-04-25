@@ -1,14 +1,21 @@
 // -----------------------------------------------------------------------------
-// Imports
+// Modules
 // -----------------------------------------------------------------------------
 const _ = require('lodash');
 const RandExp = require('randexp');
 const express = require('express');
 const router = express.Router();
 const citizenRouter = express.Router();
-const registeredBodyRouter = express.Router();
 const dashboardRouter = express.Router();
+const prototypeAdminRouter = express.Router();
+const registeredBodyRouter = express.Router();
 const seasIdcRouter = express.Router();
+
+
+
+// -----------------------------------------------------------------------------
+// Imports
+// -----------------------------------------------------------------------------
 const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require('./middleware/addClientOrganisation');
 const { cancelApplication } = require('./middleware/cancelApplication');
@@ -17,6 +24,7 @@ const { clearSelectedIdChecker } = require('./middleware/utilsDeactivatedIdCheck
 const { confirmClientOrganisation } = require('./middleware/confirmClientOrganisation');
 const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
+const { getEncryptedPassword } = require("./middleware/utilsMiddleware");
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
 const { resendApplication } = require('./middleware/resendApplication');
@@ -75,6 +83,57 @@ router.get('*', invalidateCache, (request, response, next) => {
 
     // Response.
     return next();
+});
+
+
+
+// -----------------------------------------------------------------------------
+// Prototype admin / Authenticate
+// -----------------------------------------------------------------------------
+prototypeAdminRouter.get('/authenticate', (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render("prototype-admin/authenticate", { cache: inputCache, validation: null });
+});
+prototypeAdminRouter.post('/authenticate', (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const inputCache = loadPageData(request);
+    const password = process.env.PASSWORD;
+    const passwordSubmitted = data["password"];
+    const redirectPathIndex = "/";
+    const renderPath = "prototype-admin/authenticate";
+
+    // Properties.
+    let dataValidation = {};
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    /* Validates that a password was submitted and is correct for accessing the
+     * prototype. */
+    if (!passwordSubmitted) {
+        dataValidation["password"] = "Enter password";
+    } else if (password !== passwordSubmitted) {
+        dataValidation["password"] = "Enter a valid password";
+    }
+
+    // Response.
+    if (Object.keys(dataValidation).length) {
+        response.render(renderPath, { cache: inputCache, validation: dataValidation });
+    } else {
+        /* Generates the authentication cookie for the session; it expires after
+         * 30 days. */
+        response.cookie("authentication", getEncryptedPassword(), {
+            httpOnly: true,
+            maxAge: (1000 * 60 * 60 * 24 * 30),
+            sameSite: "none",
+            secure: true
+        });
+        response.redirect(redirectPathIndex);
+    }
 });
 
 
@@ -4029,8 +4088,9 @@ seasIdcRouter.get('/not-verified', invalidateCache, (req, res) => {
 });
 
 router.use('/citizen-application', citizenRouter);
-router.use('/registered-body', registeredBodyRouter);
 router.use('/dashboard', dashboardRouter);
+router.use('/prototype-admin', prototypeAdminRouter);
+router.use('/registered-body', registeredBodyRouter);
 router.use('/seas-idc', seasIdcRouter);
 
 module.exports = router;

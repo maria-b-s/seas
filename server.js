@@ -6,6 +6,7 @@ const moment = require('moment');
 
 // NPM dependencies
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const express = require('express');
 const nunjucks = require('nunjucks');
@@ -16,7 +17,10 @@ const sessionInMemory = require('express-session');
 dotenv.config();
 
 // Local dependencies
-const middleware = [require('./lib/middleware/authentication/authentication.js'), require('./lib/middleware/extensions/extensions.js')];
+const middleware = [
+    require('./lib/middleware/authentication/authentication.js')(),
+    require('./lib/middleware/extensions/extensions.js')
+];
 const config = require('./app/config.js');
 const documentationRoutes = require('./docs/documentation_routes.js');
 const packageJson = require('./package.json');
@@ -70,6 +74,54 @@ if (isSecure) {
     app.set('trust proxy', 1); // needed for secure cookies on heroku
 }
 
+// Add variables that are available in all views
+app.locals.asset_path = '/public/';
+app.locals.useAutoStoreData = useAutoStoreData === 'true';
+app.locals.useCookieSessionStore = useCookieSessionStore === 'true';
+app.locals.promoMode = promoMode;
+app.locals.releaseVersion = `v${releaseVersion}`;
+app.locals.serviceName = config.serviceName;
+// extensionConfig sets up variables used to add the scripts and stylesheets to each page.
+app.locals.extensionConfig = extensions.getAppConfig();
+
+// Middleware for authentication cookie.
+app.use(cookieParser());
+
+// Session uses service name to avoid clashes with other prototypes
+const sessionName = `govuk-prototype-kit-${Buffer.from(config.serviceName, 'utf8').toString('hex')}`;
+const sessionOptions = {
+    secret: sessionName,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 4, // 4 hours
+        secure: isSecure,
+    },
+};
+
+// Support session data in cookie or memory
+if (useCookieSessionStore === 'true') {
+    app.use(
+        sessionInCookie(
+            Object.assign(sessionOptions, {
+                cookieName: sessionName,
+                proxy: true,
+                requestKey: 'session',
+            }),
+        ),
+    );
+} else {
+    app.use(
+        sessionInMemory(
+            Object.assign(sessionOptions, {
+                name: sessionName,
+                resave: false,
+                saveUninitialized: false,
+            }),
+        ),
+    );
+}
+
+/* Loads authentication middleware prior to any other middleware to prevent
+ * unauthorized access. */
 middleware.forEach(func => app.use(func));
 
 // Set up App
@@ -184,49 +236,6 @@ if (useV6) {
     app.use('/public/v6/', express.static(path.join(__dirname, '/node_modules/govuk_template_jinja/assets')));
     app.use('/public/v6/', express.static(path.join(__dirname, '/node_modules/govuk_frontend_toolkit')));
     app.use('/public/v6/javascripts/govuk/', express.static(path.join(__dirname, '/node_modules/govuk_frontend_toolkit/javascripts/govuk/')));
-}
-
-// Add variables that are available in all views
-app.locals.asset_path = '/public/';
-app.locals.useAutoStoreData = useAutoStoreData === 'true';
-app.locals.useCookieSessionStore = useCookieSessionStore === 'true';
-app.locals.promoMode = promoMode;
-app.locals.releaseVersion = `v${releaseVersion}`;
-app.locals.serviceName = config.serviceName;
-// extensionConfig sets up variables used to add the scripts and stylesheets to each page.
-app.locals.extensionConfig = extensions.getAppConfig();
-
-// Session uses service name to avoid clashes with other prototypes
-const sessionName = `govuk-prototype-kit-${Buffer.from(config.serviceName, 'utf8').toString('hex')}`;
-const sessionOptions = {
-    secret: sessionName,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 4, // 4 hours
-        secure: isSecure,
-    },
-};
-
-// Support session data in cookie or memory
-if (useCookieSessionStore === 'true') {
-    app.use(
-        sessionInCookie(
-            Object.assign(sessionOptions, {
-                cookieName: sessionName,
-                proxy: true,
-                requestKey: 'session',
-            }),
-        ),
-    );
-} else {
-    app.use(
-        sessionInMemory(
-            Object.assign(sessionOptions, {
-                name: sessionName,
-                resave: false,
-                saveUninitialized: false,
-            }),
-        ),
-    );
 }
 
 // Automatically store all data users enter

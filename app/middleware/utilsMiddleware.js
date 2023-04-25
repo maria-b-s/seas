@@ -1,5 +1,35 @@
+// -----------------------------------------------------------------------------
+// Modules
+// -----------------------------------------------------------------------------
+const crypto = require("crypto");
+
+
+
+// -----------------------------------------------------------------------------
+// Constants
+// -----------------------------------------------------------------------------
 const SANITIZE_NL_RETURN_TABS_REGEX = new RegExp(/\n|\r|\t/, 'g');
 const SANITIZE_SPACES_REGEX = new RegExp(/\s\s+/, 'g');
+
+
+
+// -----------------------------------------------------------------------------
+// Functions
+// -----------------------------------------------------------------------------
+const getEncryptedPassword = () => {
+    // Constants.
+    const hash = crypto.createHash("sha256");
+
+    // Properties.
+    let password = process.env.PASSWORD;
+
+    // Encrypts the password for use in authentication cookie.
+    if (password) {
+        hash.update(password);
+        password = hash.digest("hex");
+    }
+    return password;
+};
 
 function invalidateCache(req,res,next) {
     res.header('Cache-Control', 'no-cache, no-store, must-revalidate,  proxy-revalidate');
@@ -17,8 +47,6 @@ function loadPageData(req) {
     return null;
 }
 
-/* Persists the query string property of "change=true" from a received HTTP
- * request for a given path. */
 const persistChangeQueryStringFromRequestForPath = (request, path) => {
     // Constants.
     const changeQueryString = "?change=true";
@@ -65,6 +93,12 @@ function trimDataValuesAndRemoveSpaces(data) {
     return data;
 }
 
+
+
+// -----------------------------------------------------------------------------
+// Exports
+// -----------------------------------------------------------------------------
+exports.getEncryptedPassword = getEncryptedPassword;
 exports.invalidateCache = invalidateCache;
 exports.loadPageData = loadPageData;
 exports.persistChangeQueryStringFromRequestForPath = persistChangeQueryStringFromRequestForPath;
