@@ -22,7 +22,9 @@
         "body-parser": "^1.14.1",
         "browser-sync": "^2.11.1",
         "client-sessions": "^0.8.0",
+        "cookie-parser": "^1.4.6",
         "cross-spawn": "^7.0.2",
+        "crypto": "^1.0.1",
         "del": "^6.0.0",
         "dotenv": "^10.0.0",
         "eslint-config-airbnb": "^19.0.4",
@@ -53,6 +55,7 @@
         "require-dir": "^1.0.0",
         "sync-request": "^6.0.0",
         "universal-analytics": "^0.4.16",
+        "url": "^0.11.0",
         "uuid": "^8.3.2"
     },
     "devDependencies": {

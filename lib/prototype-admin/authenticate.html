@@ -1,0 +1,107 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Enter password to access prototype
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+
+            <!-- Errors / Components. -->
+            {% set errorComponentPassword = "" %}
+            {% if validation | length %}
+                <!-- Password. -->
+                {% if validation["password"] %}
+                    {% set errorComponentPassword = {
+                        text: validation["password"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Enter password to access prototype"
+                }
+            }) %}
+
+                <!-- Hint. -->
+                <p class="govuk-hint">This is not a real service.<br>You should only continue if you have been invited to test this prototype.</p>
+
+                <form method="post">
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        classes: "govuk-!-width-two-thirds",
+                        errorMessage: errorComponentPassword,
+                        id: "password",
+                        label: {
+                            text: "Password"
+                        },
+                        name: "password",
+                        spellcheck: false,
+                        type: "password"
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}
