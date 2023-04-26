@@ -1,51 +1,117 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %} {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
-(errorList.push({ "text": value, "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem",
-"errorList": errorList }) }} {% endif %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" method="post">
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="60">
-                <div class="govuk-form-group {% if validation['position-name'] %}govuk-form-group--error{% endif %}">
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="position-name"> What job or role is the DBS check for? </label>
-                    </h1>
-                    {% if validation['position-name'] %}
-                    <span id="ninonr-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['position-name'] }}
-                    </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-js-character-count"
-                        id="position-name"
-                        name="position-name"
-                        value="{{ data['position-name'] }}"
-                        type="text"
-                        aria-describedby="position-name-info"
-                    />
-                </div>
-                <div id="position-name-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                    You can enter up to 60 characters
-                </div>
-            </div>
-            {% if query["change"] === "true" %}
-                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
-            {% else %}
-                <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    What job or role is the DBS check for?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
             {% endif %}
-        </form>
-    </div>
-</div>
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentPositionName = "" %}
+            {% if validation | length %}
+                <!-- Position name. -->
+                {% if validation["position-name"] %}
+                    {% set errorComponentPositionName = {
+                        text: validation["position-name"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "What job or role is the DBS check for?"
+                }
+            }) %}
 
+                <form method="post">
+                    <!-- Character count. -->
+                    {{ govukCharacterCount({
+                        attributes: {
+                            style: "overflow: hidden;
+                                    resize: none;
+                                    white-space: nowrap;"
+                        },
+                        classes: "govuk-input govuk-!-width-full",
+                        errorMessage: errorComponentPositionName,
+                        id: "position-name",
+                        maxlength: 60,
+                        name: "position-name",
+                        rows: 1,
+                        value: data["position-name"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
 {% endblock %}

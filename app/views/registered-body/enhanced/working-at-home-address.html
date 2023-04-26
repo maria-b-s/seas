@@ -1,68 +1,121 @@
-{% import "../../macros/error-summary/govukErrorSummary.njk" as  es %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
 {% extends "layout.html" %}
-{% block pageTitle %} Question page {% endblock %} 
-{% set serviceName %} Request a standard or enhanced DBS check {% endset %} 
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Does the position involve working with children or adults at the applicant's home address?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
 {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
 
- {% if validation|length %}
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
 
-    {% set errorList = [] %}
 
-    {% for key, value in validation %}
-      {% set errorList = (errorList.push({"text": value, "href": "#" + key}), errorList) %}
-    {% endfor %}
 
-    {{ es.govukErrorSummary({
-      "titleText": 'There is a problem',
-      "errorList": errorList 
-      }) 
-    }}
-  {% endif %}
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" method="post">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            Does the position involve working with children or adults at the applicant's home address?
-                        </h1>
-                    </legend>
-                    <div class="govuk-radios govuk-radios--inline {% if validation['children-or-adults'] %}govuk-form-group--error{% endif %}" data-module="govuk-radios">
-                        {% if validation['children-or-adults'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['children-or-adults'] }}
-                            </span>
-                        {% endif %}
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="children-or-adults-yes" name="children-or-adults" type="radio" value="Yes" {{ checked("children-or-adults", "Yes") }} />
-                            <label class="govuk-label govuk-radios__label" for="children-or-adults-yes"> Yes </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="children-or-adults-no" name="children-or-adults" type="radio" value="No" {{ checked("children-or-adults", "No") }}/>
-                            <label class="govuk-label govuk-radios__label" for="children-or-adults-no"> No </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            {% if query["change"] === "true" %}
-                <button class="govuk-button" data-module="govuk-button">Check Answers</button>
-            {% else %}
-                <button class="govuk-button" data-module="govuk-button">Continue</button>
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
             {% endif %}
-        </form>
-    </div>
-</div>
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentChildrenOrAdults = "" %}
+            {% if validation | length %}
+                <!-- Children or adults. -->
+                {% if validation["children-or-adults"] %}
+                    {% set errorComponentChildrenOrAdults = {
+                        text: validation["children-or-adults"]
+                    } %}
+                {% endif %}
+            {% endif %}
 
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Does the position involve working with children or adults at the applicant's home address?"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentChildrenOrAdults,
+                        items: [
+                            {
+                                checked: data["children-or-adults"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["children-or-adults"] === "No",
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "children-or-adults",
+                        value: data["children-or-adults"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
 {% endblock %}
