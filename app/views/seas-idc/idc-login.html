@@ -1,61 +1,126 @@
-{% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% extends "layout.html" %} {% block pageTitle %} Login Page {% endblock %} {% set
-serviceName %} SEAS for IDC {%endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-{% endblock %} {% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
-        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
-        endif %}
-        <form class="form" action="" method="post">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Sign in</h1>
-                    </legend>
-                    <div class="govuk-form-group {% if validation['idc-login-email'] %}govuk-form-group--error{% endif %}">
-                        <label class="govuk-label" for="idc-login-email"> Email address </label>
-                        {% if validation['idc-login-email'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-login-emailr'] }}
-                        </span>
-                        {% endif %}
-                        <input
-                            class="govuk-input govuk-input--width-20"
-                            id="idc-login-email"
-                            name="idc-login-email"
-                            value="{{cache['idc-login-email']}}"
-                            type="text"
-                        />
-                    </div>
-                    <div class="govuk-form-group {% if validation['idc-login-password']%}govuk-form-group--error{% endif %}">
-                        <label class="govuk-label" for="idc-login-password"> Password </label>
-                        {% if validation['idc-login-password'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['idc-login-password'] }}
-                        </span>
-                        {% endif %}
-                        <input
-                            class="govuk-input govuk-input--width-20"
-                            id="idc-login-password"
-                            name="idc-login-password"
-                            value="{{cache['idc-login-password']}}"
-                            type="password"
-                        />
-                    </div>
-                </fieldset>
-            </div>
 
-            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Continue</button>
-        </form>
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Sign in
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Verify ID for a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdcLoginEmail = "" %}
+            {% set errorComponentIdcLoginPassword = "" %}
+            {% if validation | length %}
+                <!-- IDC login email. -->
+                {% if validation["idc-login-email"] %}
+                    {% set errorComponentIdcLoginEmail = {
+                        text: validation["idc-login-email"]
+                    } %}
+                {% endif %}
+                <!-- IDC login password. -->
+                {% if validation["idc-login-password"] %}
+                    {% set errorComponentIdcLoginPassword = {
+                        text: validation["idc-login-password"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Sign in"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "email",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdcLoginEmail,
+                        id: "idc-login-email",
+                        inputmode: "email",
+                        label: {
+                            text: "Email address"
+                        },
+                        name: "idc-login-email",
+                        spellcheck: false,
+                        value: data["idc-login-email"]
+                    }) }}
+
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdcLoginPassword,
+                        id: "idc-login-password",
+                        label: {
+                            text: "Password"
+                        },
+                        name: "idc-login-password",
+                        spellcheck: false,
+                        type: "password"
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
     </div>
-</div>
 {% endblock %}

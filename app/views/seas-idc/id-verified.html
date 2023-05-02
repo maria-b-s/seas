@@ -1,67 +1,128 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
-(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
-"errorList": errorList }) }} {% endif %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['id-verified'] %}govuk-form-group--error{% endif %}">
-                <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Has the applicant's ID been successfully verified?</h1>
-                    </legend>
-                    <div class="govuk-hint">If it is not possible to verify the applicant’s identification, select No.</div>
-                    {% if validation['id-verified'] %}
-                    <span id="nino-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['id-verified'] }}
-                    </span>
-                    {% endif %}
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="id-verified" name="id-verified" type="radio" value="Yes"
-                            data-aria-controls="conditional-contact" {{ checked("id-verified", "Yes") }} />
-                            <label class="govuk-label govuk-radios__label" for="id-verified"> Yes </label>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="id-verified-2" name="id-verified" type="radio" value="No"
-                            data-aria-controls="conditional-contact-2" {{ checked("id-verified", "No") }} />
-                            <label class="govuk-label govuk-radios__label" for="id-verified-2"> No </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
 
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
-        </form>
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Has the applicant's ID been successfully verified?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Verify ID for a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdVerified = "" %}
+            {% if validation | length %}
+                <!-- ID Verified. -->
+                {% if validation["id-verified"] %}
+                    {% set errorComponentIdVerified = {
+                        text: validation["id-verified"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Has the applicant's ID been successfully verified?"
+                }
+            }) %}
+
+                <!-- Hint. -->
+                <p class="govuk-hint">If it is not possible to verify the applicant’s identification, select No.</p>
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentIdVerified,
+                        items: [
+                            {
+                                checked: data["id-verified"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["id-verified"] === "No",
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "id-verified",
+                        value: data["id-verified"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items">
+                <h2 class="govuk-heading-m">
+                    Related content
+                </h2>
+                <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">Find out how to correctly verify an applicant's ID</a>
+            </aside>
+        </div>
     </div>
-    <div class="govuk-grid-column-one-third">
-        <aside class="app-related-items" role="complementary">
-            <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
-            <nav role="navigation" aria-labelledby="subsection-title">
-                <ul class="govuk-list govuk-!-font-size-16">
-                    <li>
-                        <a
-                            href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021"
-                        >
-                            Find out how to correctly verify an applicant's ID
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
-
 {% endblock %}

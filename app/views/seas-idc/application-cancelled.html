@@ -34,12 +34,6 @@
             text: "Alpha"
         }
     }) }}
-
-    <!-- Back link. -->
-    {{ govukBackLink({
-        href: "javascript:window.history.back()",
-        text: "Back"
-    }) }}
 {% endblock %}
 
 
@@ -59,10 +53,10 @@
                 }
             }) %}
 
-                <!-- Warning text. -->
-                {{ govukWarningText({
-                    html: "Are you sure you want to cancel this application?<br />This action can not be undone.",
-                    iconFallbackText: "Warning"
+                <!-- Notification banner. -->
+                {{ govukNotificationBanner({
+                    text: "Application cancelled",
+                    type: "success"
                 }) }}
 
                 <!-- Summary list. -->
@@ -103,11 +97,17 @@
                     ]
                 }) }}
 
+                <p class="govuk-body">
+                    We've sent an email to the applicant.<br/>
+                    You have not been charged for this application.<br/>
+                    <br/>
+                    If the applicant still needs a DBS check, you must start a new application for them.
+                </p>
+
                 <form method="post">
                     <!-- Button. -->
                     {{ govukButton({
-                        classes: "govuk-button--warning",
-                        text: "Cancel application"
+                        text: "Return to dashboard"
                     }) }}
                 </form>
             {% endcall %}

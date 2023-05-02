@@ -32,6 +32,7 @@ const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
 const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
 const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
+const { setPredefinedIdcApplications } = require('./middleware/utilsSeasIdc');
 const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { validateApplicantEmailAddress } = require('./middleware/validateApplicantEmailAddress');
 const { validateApplicantOrPostHolder } = require('./middleware/validateApplicantOrPostHolder');
@@ -47,12 +48,15 @@ const { validateEmail } = require('./middleware/validateEmail');
 const { validateExistingPostHolder } = require('./middleware/validateExistingPostHolder');
 const { validateFreeOfChargeVolunteerDeclaration } = require('./middleware/validateFreeOfChargeVolunteerDeclaration');
 const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
+const { validateIdVerified } = require('./middleware/validateIdVerified');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateOrganisationChecked } = require('./middleware/validateOrganisationChecked');
 const { validatePositionName } = require('./middleware/validatePositionName');
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
+const { validateSeasIdcDeclaration } = require('./middleware/validateSeasIdcDeclaration');
 const { validateSex } = require('./middleware/validateSex');
+const { validateVerifyingId } = require('./middleware/validateVerifyingId');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { validateWorkingAtHomeAddress } = require('./middleware/validateWorkingAtHomeAddress');
 
@@ -3762,6 +3766,157 @@ seasIdcRouter.post('/start', invalidateCache, (request, response) => {
     response.redirect(redirectPath);
 });
 
+// -----------------------------------------------------------------------------
+// Check your mobile
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/security-code-check', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/security-code-check', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/security-code-check', invalidateCache, validateIdCheckerSecurityCode);
+
+// -----------------------------------------------------------------------------
+// Create a password
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/create-password', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/create-password', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdCheckerPassword);
+
+// -----------------------------------------------------------------------------
+// Dashboard
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
+    // Constants.
+    const idChecker = request.session.selectedIDC.name;
+    const inputCache = loadPageData(request);
+    
+    // Ensures predefined IDC applications are available for selection.
+    setPredefinedIdcApplications(request);
+
+    // Response.
+    response.render('seas-idc/dashboard', { cache: inputCache, idcApplications: request.session.data['idc-applications'], idChecker: idChecker, validation: null });
+});
+
+// -----------------------------------------------------------------------------
+// View details
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/view-details', invalidateCache, (request, response) => {
+    // Constants.
+    const app = request.session.data['idc-applications'].filter(app => app.id == request.query.app);
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/view-details', { cache: inputCache, validation: null, app: app });
+});
+
+// -----------------------------------------------------------------------------
+// Verifying ID
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/verifying-id', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/verifying-id', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/verifying-id', invalidateCache, validateVerifyingId);
+
+// -----------------------------------------------------------------------------
+// ID verified
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/id-verified', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/id-verified', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/id-verified', invalidateCache, validateIdVerified);
+
+// -----------------------------------------------------------------------------
+// Declaration
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/declaration', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/declaration', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/declaration', invalidateCache, validateSeasIdcDeclaration);
+
+// -----------------------------------------------------------------------------
+// Verified success
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/verified-success', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+    const verifiedApp = request.session.data['verified-app'];
+
+    // Response.
+    response.render('seas-idc/verified-success', { cache: inputCache, validation: null, verifiedApp: verifiedApp });
+});
+seasIdcRouter.post('/verified-success', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = 'dashboard';
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Not verified
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/not-verified', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/not-verified', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/not-verified', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = 'application-cancelled';
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Application cancelled
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/application-cancelled', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/application-cancelled', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/application-cancelled', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = 'dashboard';
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
 // Auto-Login
 seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -3772,6 +3927,7 @@ seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
     req.session.selectedIDC = req.session.data['id-checkers'][0];
     res.redirect('dashboard');
 });
+
 // Login
 seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -3824,171 +3980,6 @@ seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
     }
 });
 
-// -----------------------------------------------------------------------------
-// Check your mobile
-// -----------------------------------------------------------------------------
-seasIdcRouter.get('/security-code-check', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('seas-idc/security-code-check', { cache: inputCache, validation: null });
-});
-seasIdcRouter.post('/security-code-check', invalidateCache, validateIdCheckerSecurityCode);
-
-// -----------------------------------------------------------------------------
-// Create a password
-// -----------------------------------------------------------------------------
-seasIdcRouter.get('/create-password', invalidateCache, (request, response) => {
-    // Constants.
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('seas-idc/create-password', { cache: inputCache, validation: null });
-});
-seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdCheckerPassword);
-
-const idcApplications = [
-    {
-        id: 0,
-        name: 'Bob Moore',
-        firstName: 'Bob',
-        middleName: 'Henry',
-        surname: 'Moore',
-        prevNames: [],
-        dob: '23/08/2000',
-        sex: 'Male',
-        nino: 'TY 43567 T',
-        licence: 'MOORB 45231 ERTY',
-        passport: 'TY985643KJ',
-        passportCountry: 'United Kingdom',
-        nationality: 'British',
-        addressTown: 'Westminster',
-        addressCountry: 'United Kingdom',
-        email: 'bobmoore@email.com',
-        ref: 126659,
-        date: '14/04/2023',
-        organisation: 'Cavendish Taxis',
-        position: 'Driver',
-        appType: 'New employee',
-        type: 'Standard',
-        workforce: 'Adult and child',
-        children_or_adults: 'No',
-        address: [
-            {
-                lineOne: '15 Wells Lane',
-                lineTwo: 'Habberley',
-                townOrCity: 'Kidderminster',
-                postcode: 'KD3 7DF',
-                country: 'United Kingdom',
-            },
-        ],
-        changedAddress: 'yes',
-        previous_addresses: [],
-        phoneNumber: '06958 345643',
-        dateSubmitted: '14/04/2023',
-        idChecker: 'Unassigned',
-    },
-    {
-        id: 1,
-        name: 'Jane Rigby',
-        firstName: 'Jane',
-        middleName: 'Mary',
-        surname: 'Rigby',
-        prevNames: [
-            {
-                first_name: 'Julie',
-                middle_names: 'Mary',
-                last_name: 'Rigby',
-                used_from: '06/1997',
-                used_to: '01/2011',
-            },
-            {
-                first_name: 'Helen',
-                middle_names: 'Mary',
-                last_name: 'Jones',
-                used_from: '04/1989',
-                used_to: '06/1997',
-            },
-        ],
-        dob: '02/05/1990',
-        sex: 'Female',
-        nino: 'RE 456789 K',
-        licence: 'Not supplied',
-        passport: 'TY567890LP',
-        passportCountry: 'United Kingdom',
-        nationality: 'British',
-        addressTown: 'Stamford',
-        addressCountry: 'United Kingdom',
-        email: 'jrigby@email.co.uk',
-        ref: 12345,
-        date: '20/03/23',
-        organisation: 'Hever Health Care',
-        position: 'Nurse',
-        appType: 'New employee',
-        type: 'Enhanced',
-        workforce: 'Adult and child',
-        children_or_adults: 'Yes',
-        address: [
-            {
-                lineOne: '23 High Street',
-                lineTwo: 'Billington',
-                townOrCity: 'Sussex',
-                postcode: 'SU32 3ER',
-                country: 'United Kingdom',
-            },
-        ],
-        changedAddress: 'yes',
-        previous_addresses: [
-            {
-                lineOne: '3a Wellington Avenue',
-                lineTwo: 'Billington',
-                townOrCity: 'Sussex',
-                postcode: 'SU33 5RT',
-                country: 'United Kingdom',
-                startYear: '2020',
-                endYear: '2022',
-            },
-            {
-                lineOne: '76 Minory Close',
-                lineTwo: '',
-                townOrCity: 'Birminham',
-                postcode: 'BH1 5GB',
-                country: 'United Kingdom',
-                startYear: '2010',
-                endYear: '2020',
-            },
-        ],
-        phoneNumber: '07699 334565',
-        dateSubmitted: '20/03/2023',
-        idChecker: 'Mary Berry',
-    },
-];
-
-// Dashboard
-seasIdcRouter.get('/dashboard', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    if (req.session.data['idc-applications'] == undefined) {
-        req.session.data['idc-applications'] = idcApplications;
-    }
-
-    res.render('seas-idc/dashboard', {
-        cms,
-        cache: inputCache,
-        validation: null,
-        idcApplications: req.session.data['idc-applications'],
-        idChecker: req.session.selectedIDC.name,
-    });
-});
-
-// Application Details
-seasIdcRouter.get('/view-details', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    const app = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-
-    res.render('seas-idc/view-details', { cms, cache: inputCache, validation: null, app: app });
-});
-
 // Assign IDV
 seasIdcRouter.get('/assign-idv', invalidateCache, (req, res) => {
     if (req.session.selectedIDC && req.session.data['idc-applications']) {
@@ -3997,94 +3988,6 @@ seasIdcRouter.get('/assign-idv', invalidateCache, (req, res) => {
     }
 
     res.redirect('dashboard');
-});
-
-// Verifying ID
-seasIdcRouter.get('/verifying-id', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/verifying-id', { cms, cache: inputCache, validation: null });
-});
-
-seasIdcRouter.post('/verifying-id', invalidateCache, (req, res) => {
-    if (req.session.selectedIDC && req.session.data['idc-applications']) {
-        objIndex = req.session.data['idc-applications'].findIndex(obj => obj.id == req.query.app);
-        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name;
-    }
-    res.redirect('id-verified?app=' + req.query.app);
-});
-
-// ID Verified
-seasIdcRouter.get('/id-verified', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/id-verified', { cms, cache: inputCache, validation: null });
-});
-
-seasIdcRouter.post('/id-verified', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-
-    if (!req.body['id-verified']) {
-        dataValidation['id-verified'] = 'Select if the applicant’s ID has been successfully verified';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/id-verified', { cache: inputCache, validation: dataValidation });
-    } else {
-        if (req.body['id-verified'] == 'No') {
-            res.redirect('not-verified');
-        } else {
-            res.redirect('declaration?app=' + req.query.app);
-        }
-    }
-});
-
-// Confirmation
-seasIdcRouter.get('/declaration', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/declaration', { cms, cache: inputCache, validation: null });
-});
-
-seasIdcRouter.post('/declaration', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-
-    if (req.body['confirm'] == '_unchecked') {
-        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
-    }
-
-    if (req.body['declare'] == '_unchecked') {
-        dataValidation['declare'] = 'Tick the box to confirm you agree with the declaration';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/declaration', { cache: inputCache, validation: dataValidation });
-    } else {
-        req.session.data['verified-app'] = req.session.data['idc-applications'].filter(app => app.id == req.query.app);
-
-        const newList = req.session.data['idc-applications'].filter(app => app.id != req.query.app);
-
-        req.session.data['idc-applications'] = newList;
-        res.redirect('verified-success?app=' + req.query.app);
-    }
-});
-
-// Verified Success
-seasIdcRouter.get('/verified-success', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/verified-success', { cms, cache: inputCache, validation: null, app: req.session.data['verified-app'] });
-});
-
-// Not Verified
-seasIdcRouter.get('/not-verified', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('seas-idc/not-verified', { cms, cache: inputCache, validation: null });
 });
 
 router.use('/citizen-application', citizenRouter);
