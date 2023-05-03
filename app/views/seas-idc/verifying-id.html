@@ -1,47 +1,87 @@
-{% extends "layout.html" %} {% block pageTitle %} Verify ID {% endblock %} {% block header %}
-<!-- Blank header with no service name for the start page -->
-{{ govukHeader() }} {% endblock %} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Verifying ID for a standard or enhanced DBS check</h1>
-        <div class="govuk-hint">If you continue, this application will be assigned to you.</div>
-        <br />
-        <h2 class="govuk-heading-m">As an ID Checker you must:</h2>
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-        <ol class="govuk-list govuk-list--bullet">
-            <li>
-                follow the three route ID checking process as set out in
-                <a
-                    href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021"
-                    >DBS guidance</a
-                >
-            </li>
-            <li>check and verify the information provided by the applicant</li>
-            <li>
-                establish the true identity of the applicant through the examination of a range of documents as set out in
-                <a
-                    href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021"
-                    >DBS guidance</a
-                >
-            </li>
-            <li>make sure the applicant provides details of all names they have been known by</li>
-            <li>make sure the applicant provides details of all addresses they have lived in the last five years</li>
-        </ol>
 
-        <br />
-        <form class="form" action="" method="post">
-            <button style="margin-top: 0px" class="govuk-button" type="submit" data-module="govuk-button">Accept and continue</button>
-        </form>
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Verify ID for a standard or enhanced DBS check
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Verify ID for a standard or enhanced DBS check"
+                }
+            }) %}
+
+                <!-- Hint. -->
+                <p class="govuk-hint">If you continue, this application will be assigned to you.</p>
+
+                <!-- Heading. -->
+                <h2 class="govuk-heading-m">
+                    As an ID Checker you must:
+                </h2>
+
+                <!-- List bullets. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>follow the three route ID checking process as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a></li>
+                    <li>check and verify the information provided by the applicant</li>
+                    <li>establish the true identity of the applicant through the examination of a range of documents as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a></li>
+                    <li>make sure the applicant provides details of all names they have been known by</li>
+                    <li>make sure the applicant provides details of all addresses they have lived in the last five years</li>
+                </ul>
+
+                <form method="post">
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Accept and continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
     </div>
-</div>
 {% endblock %}

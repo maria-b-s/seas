@@ -1,62 +1,126 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Add New ID Checker {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %} {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList =
-(errorList.push({"text": value, "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": 'There is a problem',
-"errorList": errorList }) }} {% endif %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form class="form" method="post">
-            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
-                <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Declaration</h1>
-                    </legend>
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox"{% if cache['confirm'] == 'on'%} checked {% endif %}  />
-                            <label class="govuk-label govuk-checkboxes__label" for="confirm">
-                                <p>
-                                    I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS
-                                    guidance
-                                </p>
-                            </label>
-                            {% if validation['confirm'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['confirm'] }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="declare" name="declare" type="checkbox" {% if cache['declare'] == 'on'%} checked {% endif %} />
-                            <label class="govuk-label govuk-checkboxes__label" for="declare">
-                                <p>
-                                    I declare that the information I have provided in support of the application is complete and true and understand
-                                    that knowingly to make a false statement for this purpose may be a criminal offence.
-                                </p>
-                            </label>
-                            {% if validation['declare'] %}
-                            <span id="ninonr-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> {{ validation['declare'] }}
-                            </span>
-                            {% endif %}
-                        </div>
-        
-                    </div>
-                </fieldset>
-            </div>
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-            <button class="govuk-button" data-module="govuk-button">Agree and submit</button>
-        </form>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Declaration
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Verify ID for a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentConfirm = "" %}
+            {% set errorComponentDeclare = "" %}
+            {% if validation | length %}
+                <!-- Confirm. -->
+                {% if validation["confirm"] %}
+                    {% set errorComponentConfirm = {
+                        text: validation["confirm"]
+                    } %}
+                {% endif %}
+                <!-- Declare. -->
+                {% if validation["declare"] %}
+                    {% set errorComponentDeclare = {
+                        text: validation["declare"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Declaration"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Checkboxes. -->
+                    {{ govukCheckboxes({
+                        errorMessage: errorComponentConfirm,
+                        items: [
+                            {
+                                text: "I confirm that the requisite documentation and information has been supplied and checked in accordance with DBS guidance."
+                            }
+                        ],
+                        name: "confirm"
+                    }) }}
+
+                    <!-- Checkboxes. -->
+                    {{ govukCheckboxes({
+                        errorMessage: errorComponentDeclare,
+                        items: [
+                            {
+                                text: "I declare that the information I have provided in support of the application is complete and true and understand that knowingly to make a false statement for this purpose may be a criminal offence."
+                            }
+                        ],
+                        name: "declare"
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Agree and submit"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
     </div>
-</div>
-
 {% endblock %}

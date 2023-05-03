@@ -77,7 +77,6 @@
             {% endif %}
 
             <!-- Heading. -->
-            <span class="govuk-caption-l">Registered body</span>
             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
@@ -94,7 +93,7 @@
                             {
                                 checked: data["what-dbs-check"] === "Standard",
                                 hint: {
-                                    html: 'A standard check shows convictions or cautions from the Police National Computer (PNC). It will not show certain old or minor offences. See <a href="https://www.gov.uk/government/publications/dbs-filtering-guidance/dbs-filtering-guide" rel="noopener noreferrer" target="_blank">DBS Filtering Guide</a> for more information.'
+                                    html: 'A standard check shows convictions or cautions from the Police National Computer (PNC). It will not show certain old or minor offences. See <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-filtering-guidance/dbs-filtering-guide" rel="noopener noreferrer" target="_blank">DBS Filtering Guide</a> for more information.'
                                 },
                                 text: "Standard",
                                 value: "Standard"
@@ -124,7 +123,7 @@
                 <h2 class="govuk-heading-m">
                     Related content
                 </h2>
-                <a href="https://www.gov.uk/find-out-dbs-check" rel="noopener noreferrer" target="_blank">Find out which DBS check is right for your employee</a>
+                <a class="govuk-link" href="https://www.gov.uk/find-out-dbs-check" rel="noopener noreferrer" target="_blank">Find out which DBS check is right for your employee</a>
             </aside>
         </div>
     </div>

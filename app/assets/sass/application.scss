@@ -97,3 +97,8 @@ $govuk-assets-path: '/govuk/assets/';
 .no-details details > summary::before {
     content: "" !important;
 }
+
+// Ensurres center alignment of warning icon for the warning text component.
+.govuk-warning-text__icon {
+    top: 33.3%;
+}
