@@ -45,7 +45,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <!-- Panel. -->
-            {% set titleText = "You have successfully verified the ID of " + verifiedApp[0]["name"] %}
+            {% set titleText = "You have successfully verified " + verifiedApp[0]["name"] %}
             {{ govukPanel({
                 classes: "govuk-!-margin-bottom-6",
                 titleText: titleText
@@ -55,7 +55,7 @@
             <h2 class="govuk-heading-m">What happens next</h2>
 
             <!-- Body. -->
-            <p class="govuk-body-m">The application will be reviewed by a countersignatory.</p>
+            <p class="govuk-body-m">The application has now been submitted for review by a countersignatory.</p>
 
             <form method="post">
                 <!-- Button. -->

@@ -60,19 +60,19 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentIdcLoginEmail = "" %}
-            {% set errorComponentIdcLoginPassword = "" %}
+            {% set errorComponentIdcEmail = "" %}
+            {% set errorComponentIdcPassword = "" %}
             {% if validation | length %}
-                <!-- IDC login email. -->
-                {% if validation["idc-login-email"] %}
-                    {% set errorComponentIdcLoginEmail = {
-                        text: validation["idc-login-email"]
+                <!-- IDC email. -->
+                {% if validation["idc-email"] %}
+                    {% set errorComponentIdcEmail = {
+                        text: validation["idc-email"]
                     } %}
                 {% endif %}
-                <!-- IDC login password. -->
-                {% if validation["idc-login-password"] %}
-                    {% set errorComponentIdcLoginPassword = {
-                        text: validation["idc-login-password"]
+                <!-- IDC password. -->
+                {% if validation["idc-password"] %}
+                    {% set errorComponentIdcPassword = {
+                        text: validation["idc-password"]
                     } %}
                 {% endif %}
             {% endif %}
@@ -91,26 +91,26 @@
                     {{ govukInput({
                         autocomplete: "email",
                         classes: "govuk-input govuk-!-width-two-thirds",
-                        errorMessage: errorComponentIdcLoginEmail,
-                        id: "idc-login-email",
+                        errorMessage: errorComponentIdcEmail,
+                        id: "idc-email",
                         inputmode: "email",
                         label: {
                             text: "Email address"
                         },
-                        name: "idc-login-email",
+                        name: "idc-email",
                         spellcheck: false,
-                        value: data["idc-login-email"]
+                        value: data["idc-email"]
                     }) }}
 
                     <!-- Text input. -->
                     {{ govukInput({
                         classes: "govuk-input govuk-!-width-two-thirds",
-                        errorMessage: errorComponentIdcLoginPassword,
-                        id: "idc-login-password",
+                        errorMessage: errorComponentIdcPassword,
+                        id: "idc-password",
                         label: {
                             text: "Password"
                         },
-                        name: "idc-login-password",
+                        name: "idc-password",
                         spellcheck: false,
                         type: "password"
                     }) }}

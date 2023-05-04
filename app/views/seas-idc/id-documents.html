@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Declaration
+    ID documents
 {% endblock %}
 
 
@@ -66,12 +66,12 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentDeclare = "" %}
+            {% set errorComponentIdDocuments = "" %}
             {% if validation | length %}
-                <!-- Declare. -->
-                {% if validation["declare"] %}
-                    {% set errorComponentDeclare = {
-                        text: validation["declare"]
+                <!-- ID documents. -->
+                {% if validation["id-documents"] %}
+                    {% set errorComponentIdDocuments = {
+                        text: validation["id-documents"]
                     } %}
                 {% endif %}
             {% endif %}
@@ -81,28 +81,46 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Declaration"
+                    text: "ID documents"
                 }
             }) %}
 
-                <!-- Hint. -->
-                <p class="govuk-hint">You can now submit your ID check for review by a countersignatory.</p>
+                <!-- Body. -->
+                <p class="govuk-body">I have seen documents as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS Guidance</a> to verify:</p>
 
                 <form method="post">
                     <!-- Checkboxes. -->
                     {{ govukCheckboxes({
-                        errorMessage: errorComponentDeclare,
+                        errorMessage: errorComponentIdDocuments,
                         items: [
                             {
-                                html: 'I have established the true identity of the applicant, by examining a range of documents as set out in the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS Guidance</a>.'
+                                hint: {
+                                    text: "Including applicant's title, surname and forenames"
+                                },
+                                text: "Applicant's name"
+                            },
+                            {
+                                text: "Date of birth"
+                            },
+                            {
+                                text: "National Insurance number"
+                            },
+                            {
+                                text: "Driving licence number"
+                            },
+                            {
+                                text: "Passport number"
+                            },
+                            {
+                                text: "Current address"
                             }
                         ],
-                        name: "declare"
+                        name: "id-documents"
                     }) }}
 
                     <!-- Button. -->
                     {{ govukButton({
-                        text: "Agree and submit"
+                        text: "Continue"
                     }) }}
                 </form>
             {% endcall %}

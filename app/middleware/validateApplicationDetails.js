@@ -9,19 +9,20 @@ const { savePageData } = require("./utilsMiddleware");
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
-const validateIdVerified = (request, response) => {
+const validateApplicationDetails = (request, response) => {
     // Constants.
-    const application = request.query.application;
+    const applicationId = request.query.application;
     const data = request.session.data;
+    const application = data["idc-applications"].filter(application => application["id"] == applicationId);
     const idVerified = data["id-verified"];
     const inputCache = loadPageData(request);
-    const redirectPathDeclaration = "declaration";
-    const redirectPathNotVerified = "not-verified";
-    const renderPath = "seas-idc/id-verified";
+    const redirectPathIdDocuments = "id-documents";
+    const redirectPathNotVerified = "#";
+    const renderPath = "seas-idc/application-details";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = `${redirectPathDeclaration}?application=${application}`;
+    let redirectPath = `${redirectPathIdDocuments}?application=${applicationId}`;
 
     // Cache session.
     savePageData(request, request.body);
@@ -34,7 +35,7 @@ const validateIdVerified = (request, response) => {
 
     // Response.
     if (Object.keys(dataValidation).length) {
-        response.render(renderPath, { cache: inputCache, validation: dataValidation });
+        response.render(renderPath, { application: application, cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["id-verified"] = idVerified;
         if (idVerified === "No") {
@@ -49,4 +50,4 @@ const validateIdVerified = (request, response) => {
 // -----------------------------------------------------------------------------
 // Exports
 // -----------------------------------------------------------------------------
-exports.validateIdVerified = validateIdVerified;
+exports.validateApplicationDetails = validateApplicationDetails;

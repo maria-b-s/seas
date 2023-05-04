@@ -9,36 +9,34 @@ const { savePageData } = require('./utilsMiddleware');
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
-const validateSeasIdcDeclaration = (request, response) => {
+const validateIdDocuments = (request, response) => {
     // Constants.
     const applicationId = request.query.application;
     const data = request.session.data;
     const application = data["idc-applications"].filter(application => application["id"] == applicationId);
-    const declare = data["declare"];
+    const idDocuments = data["id-documents"];
     const inputCache = loadPageData(request);
-    const redirectPathVerifiedSuccess = "verified-success";
-    const renderPath = "seas-idc/declaration";
+    const redirectPathDeclaration = "declaration";
+    const renderPath = "seas-idc/id-documents";
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = redirectPathVerifiedSuccess;
+    let redirectPath = `${redirectPathDeclaration}?application=${applicationId}`;
 
     // Cache session.
     savePageData(request, data);
 
-    /* Validates that the checkbox is checked for declaring that the application
-     * is complete and true. */
-    if (!declare) {
-        dataValidation["declare"] = "Tick the box to confirm you agree with the declaration";
+    /* Validates that a checkbox has been checked for declaring that at least
+     * one of the documents set out in DBS Guidance has been seen. */
+    if (!idDocuments) {
+        dataValidation["id-documents"] = "Tick a box to confirm you have seen at least one document set out in DBS Guidance";
     }
 
     // Response.
     if (Object.keys(dataValidation).length) {
-        response.render(renderPath, { cache: inputCache, validation: dataValidation });
+        response.render(renderPath, { application: application, cache: inputCache, validation: dataValidation });
     } else {
-        request.session.data["verified-app"] = application;
-        const filteredIdcApplications = data["idc-applications"].filter(application => application["id"] != applicationId);
-        request.session.data["idc-applications"] = filteredIdcApplications;
+        request.session.data["id-documents"] = request.body["id-documents"];
         response.redirect(redirectPath);
     }
 };
@@ -48,4 +46,4 @@ const validateSeasIdcDeclaration = (request, response) => {
 // -----------------------------------------------------------------------------
 // Exports
 // -----------------------------------------------------------------------------
-exports.validateSeasIdcDeclaration = validateSeasIdcDeclaration;
+exports.validateIdDocuments = validateIdDocuments;
