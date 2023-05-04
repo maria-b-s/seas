@@ -92,13 +92,19 @@ $govuk-assets-path: '/govuk/assets/';
     }
 }
 
-/* Removes overlapping triangle from the details disclosure element for
- * Internet Explorer 11 compatibility. */
-.no-details details > summary::before {
-    content: "" !important;
+/* Provides space between tag and "Assign to me" URL when viewing applications
+ * in the identity checker dashboard. */
+.govuk-tag {
+    margin-right: 20px !important;
 }
 
-// Ensurres center alignment of warning icon for the warning text component.
+// Ensures center alignment of warning icon for the warning text component.
 .govuk-warning-text__icon {
     top: 33.3%;
+}
+
+/* Removes overlapping triangle from the details disclosure element for
+ * Internet Explorer 11 compatibility. */
+ .no-details details > summary::before {
+    content: "" !important;
 }

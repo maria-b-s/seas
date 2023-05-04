@@ -37,6 +37,7 @@ const { selectClientOrganisation } = require('./middleware/utilsClientOrganisati
 const { validateApplicantEmailAddress } = require('./middleware/validateApplicantEmailAddress');
 const { validateApplicantOrPostHolder } = require('./middleware/validateApplicantOrPostHolder');
 const { validateApplicantName } = require('./middleware/validateApplicantName');
+const { validateApplicationDetails } = require('./middleware/validateApplicationDetails');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
 const { validateBarredListAdults } = require('./middleware/validateBarredListAdults');
 const { validateBarredListChildren } = require('./middleware/validateBarredListChildren');
@@ -48,6 +49,7 @@ const { validateEmail } = require('./middleware/validateEmail');
 const { validateExistingPostHolder } = require('./middleware/validateExistingPostHolder');
 const { validateFreeOfChargeVolunteerDeclaration } = require('./middleware/validateFreeOfChargeVolunteerDeclaration');
 const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
+const { validateIdDocuments } = require('./middleware/validateIdDocuments');
 const { validateIdVerified } = require('./middleware/validateIdVerified');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
 const { validateOrganisationChecked } = require('./middleware/validateOrganisationChecked');
@@ -56,6 +58,7 @@ const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateSeasIdcDeclaration } = require('./middleware/validateSeasIdcDeclaration');
 const { validateSex } = require('./middleware/validateSex');
+const { validateSignIn } = require('./middleware/validateSignIn');
 const { validateVerifyingId } = require('./middleware/validateVerifyingId');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
 const { validateWorkingAtHomeAddress } = require('./middleware/validateWorkingAtHomeAddress');
@@ -3767,6 +3770,18 @@ seasIdcRouter.post('/start', invalidateCache, (request, response) => {
 });
 
 // -----------------------------------------------------------------------------
+// Sign in
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/sign-in', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    if (request.session.data['id-checkers'] == undefined) {
+        request.session.data['id-checkers'] = idCheckers;
+    }
+    response.render('seas-idc/sign-in', { cms, cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/sign-in', invalidateCache, validateSignIn);
+
+// -----------------------------------------------------------------------------
 // Check your mobile
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/security-code-check', invalidateCache, (request, response) => {
@@ -3802,19 +3817,7 @@ seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
     setPredefinedIdcApplications(request);
 
     // Response.
-    response.render('seas-idc/dashboard', { cache: inputCache, idcApplications: request.session.data['idc-applications'], idChecker: idChecker, validation: null });
-});
-
-// -----------------------------------------------------------------------------
-// View details
-// -----------------------------------------------------------------------------
-seasIdcRouter.get('/view-details', invalidateCache, (request, response) => {
-    // Constants.
-    const app = request.session.data['idc-applications'].filter(app => app.id == request.query.app);
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('seas-idc/view-details', { cache: inputCache, validation: null, app: app });
+    response.render('seas-idc/dashboard', { cache: inputCache, applications: request.session.data['idc-applications'], idCheckerCurrent: idChecker, validation: null });
 });
 
 // -----------------------------------------------------------------------------
@@ -3830,16 +3833,30 @@ seasIdcRouter.get('/verifying-id', invalidateCache, (request, response) => {
 seasIdcRouter.post('/verifying-id', invalidateCache, validateVerifyingId);
 
 // -----------------------------------------------------------------------------
-// ID verified
+// Application details
 // -----------------------------------------------------------------------------
-seasIdcRouter.get('/id-verified', invalidateCache, (request, response) => {
+seasIdcRouter.get('/application-details', invalidateCache, (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const application = data['idc-applications'].filter(application => application["id"] == request.query.application);
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/application-details', { application: application, cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/application-details', invalidateCache, validateApplicationDetails);
+
+// -----------------------------------------------------------------------------
+// ID documents
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/id-documents', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render('seas-idc/id-verified', { cache: inputCache, validation: null });
+    response.render('seas-idc/id-documents', { cache: inputCache, validation: null });
 });
-seasIdcRouter.post('/id-verified', invalidateCache, validateIdVerified);
+seasIdcRouter.post('/id-documents', invalidateCache, validateIdDocuments);
 
 // -----------------------------------------------------------------------------
 // Declaration
@@ -3917,6 +3934,18 @@ seasIdcRouter.post('/application-cancelled', invalidateCache, (request, response
     response.redirect(redirectPath);
 });
 
+// -----------------------------------------------------------------------------
+// ID verified
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/id-verified', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/id-verified', { cache: inputCache, validation: null });
+});
+seasIdcRouter.post('/id-verified', invalidateCache, validateIdVerified);
+
 // Auto-Login
 seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -3926,58 +3955,6 @@ seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
 
     req.session.selectedIDC = req.session.data['id-checkers'][0];
     res.redirect('dashboard');
-});
-
-// Login
-seasIdcRouter.get('/idc-login', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    if (req.session.data['id-checkers'] == undefined) {
-        req.session.data['id-checkers'] = idCheckers;
-    }
-
-    res.render('seas-idc/idc-login', { cms, cache: inputCache, validation: null });
-});
-seasIdcRouter.post('/idc-login', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    const idcEmail = req.body['idc-login-email'].trim();
-    const idcPassword = req.body['idc-login-password'].trim();
-    const validEmail =
-        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
-            idcEmail,
-        );
-
-    if (!validEmail) {
-        dataValidation['idc-login-email'] = 'Enter email address in the correct format';
-    }
-
-    if (!idcEmail) {
-        dataValidation['idc-login-email'] = 'Enter email address';
-    }
-
-    if (!idcPassword) {
-        dataValidation['idc-login-password'] = 'Enter password';
-    }
-
-    if (req.session?.data['id-checkers']) {
-        selectedUser = req.session?.data['id-checkers'].find(el => idcEmail === el.email);
-        if (!selectedUser) {
-            dataValidation['idc-login-email'] = 'Unable to find your details, please check your email and try again';
-        } else {
-            if (selectedUser.password != idcPassword) {
-                dataValidation['idc-login-password'] = 'Password is incorrect';
-            } else {
-                req.session.selectedIDC = selectedUser;
-            }
-        }
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('seas-idc/idc-login', { cache: inputCache, validation: dataValidation });
-    } else {
-        res.redirect('security-code-check');
-    }
 });
 
 // Assign IDV

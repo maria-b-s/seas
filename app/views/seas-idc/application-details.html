@@ -1,0 +1,422 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Application details
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Verify ID for a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdVerified = "" %}
+            {% if validation | length %}
+                <!-- ID Verified. -->
+                {% if validation["id-verified"] %}
+                    {% set errorComponentIdVerified = {
+                        text: validation["id-verified"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            <h1 class="govuk-heading-l">Application details</h1>
+
+            <!-- Organisation. -->
+            {% set dbsCheckDetailsOrganisation = application[0]["organisation"] %}
+            <!-- Job/Role. -->
+            {% set dbsCheckDetailsJobRole = application[0]["position"] %}
+            <!-- Type of applicant. -->
+            {% set dbsCheckDetailsTypeOfApplicant = application[0]["appType"] %}
+            <!-- Volunteer. -->
+            {% set dbsCheckDetailsVolunteer = "No" %}
+            {% if application[0]["type"] === "Volunteer" %}
+                {% set dbsCheckDetailsVolunteer = "Yes" %}
+            {% endif %}
+            <!-- Check level. -->
+            {% set dbsCheckDetailsCheckLevel = application[0]["type"] %}
+            <!-- Workforce. -->
+            {% set dbsCheckDetailsWorkforce = application[0]["workforce"] %}
+            <!-- Working with children or adults at home. -->
+            {% set dbsCheckDetailsChildrenOrAdults = application[0]["children_or_adults"] %}
+
+            <!-- DBS check details. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--m govuk-!-margin-bottom-6",
+                    isPageHeading: false,
+                    text: "DBS Check details"
+                }
+            }) %}
+
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: [
+                        {
+                            key: {
+                                text: "Organisation"
+                            },
+                            value: {
+                                text: dbsCheckDetailsOrganisation
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Job/Role"
+                            },
+                            value: {
+                                text: dbsCheckDetailsJobRole
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Type of applicant"
+                            },
+                            value: {
+                                text: dbsCheckDetailsTypeOfApplicant
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Volunteer"
+                            },
+                            value: {
+                                text: dbsCheckDetailsVolunteer
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Check level"
+                            },
+                            value: {
+                                text: dbsCheckDetailsCheckLevel
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Workforce"
+                            },
+                            value: {
+                                text: dbsCheckDetailsWorkforce
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Working with children or adults at home"
+                            },
+                            value: {
+                                text: dbsCheckDetailsChildrenOrAdults
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+            <!-- Current names. -->
+            {% set applicantsDetailsCurrentName = application[0]["firstName"] + " " + application[0]["middleName"] + " " + application[0]["surname"] %}
+            <!-- Previous names. -->
+            {% set applicantsDetailsPreviousNames = "None" %}
+            {% if application[0]["prevNames"].length !== 0 %}
+                {% set applicantsDetailsPreviousNames = "" %}
+                {% for previousName in application[0]["prevNames"] %}
+                    {% set formattedPreviousName = previousName["first_name"] + " " + previousName["middle_names"] + " " + previousName["last_name"] + "<br/>" %}
+                    {% set formattedPreviousNameUsage = previousName["used_from"] + "–" + previousName["used_to"] + "<br/><br/>" %}
+                    {% set applicantsDetailsPreviousNames = applicantsDetailsPreviousNames + formattedPreviousName + formattedPreviousNameUsage %}
+                {% endfor %}
+                {% set applicantsDetailsPreviousNames = applicantsDetailsPreviousNames.substring(0, (applicantsDetailsPreviousNames.length - ("<br/>").length)) %}
+            {% endif %}
+            <!-- Date of birth. -->
+            {% set applicantsDetailsDateOfBirth = application[0]["dob"] %}
+            <!-- Sex. -->
+            {% set applicantsDetailsSex = application[0]["sex"] %}
+            <!-- NI number. -->
+            {% set applicantsDetailsNationalInsuranceNumber = application[0]["nino"] %}
+            <!-- Driving licence number. -->
+            {% set applicantsDetailsDrivingLicenceNumber = application[0]["licence"] %}
+            <!-- Passport number. -->
+            {% set applicantsDetailsPassportNumber = application[0]["passport"] %}
+            <!-- Nationality. -->
+            {% set applicantsDetailsNationality = application[0]["nationality"] %}
+            <!-- Country of issue. -->
+            {% set applicantsDetailsCountryOfIssue = application[0]["passportCountry"] %}
+            <!-- Place of birth. -->
+            {% set applicantsDetailsPlaceOfBirth = application[0]["addressTown"]  %}
+            <!-- Current address. -->
+            {% set applicantsDetailsCurrentAddressLineOne = application[0]["address"][0]["lineOne"] + "<br/>" %}
+            {% set applicantsDetailsCurrentAddressLineTwo = "" %}
+            {% if application[0]["address"][0]["lineTwo"] %}
+                {% set applicantsDetailsCurrentAddressLineTwo = application[0]["address"][0]["lineTwo"] + "<br/>" %}
+            {% endif %}
+            {% set applicantsDetailsCurrentAddressTownOrCity = application[0]["address"][0]["townOrCity"] + "<br/>" %}
+            {% set applicantsDetailsCurrentAddressPostcode = application[0]["address"][0]["postcode"] + "<br/>" %}
+            {% set applicantsDetailsCurrentAddressCountry = application[0]["address"][0]["country"] + "<br/>" %}
+            {% set applicantsDetailsCurrentAddress = applicantsDetailsCurrentAddressLineOne +
+                                                     applicantsDetailsCurrentAddressLineTwo +
+                                                     applicantsDetailsCurrentAddressTownOrCity +
+                                                     applicantsDetailsCurrentAddressPostcode +
+                                                     applicantsDetailsCurrentAddressCountry %}
+            <!-- Previous addresses. -->
+            {% set applicantsDetailsPreviousAddresses = "None" %}
+            {% if application[0]["previous_addresses"].length !== 0 %}
+                {% set applicantsDetailsPreviousAddresses = "" %}
+                {% for previousAddress in application[0]["previous_addresses"] %}
+                    {% set previousAddressLineOne = previousAddress["lineOne"] + "<br/>" %}
+                    {% set previousAddressLineTwo = "" %}
+                    {% if previousAddress["lineTwo"] %}
+                        {% set previousAddressLineTwo = previousAddress["lineTwo"] + "<br/>" %}
+                    {% endif %}
+                    {% set previousAddressTownOrCity = previousAddress["townOrCity"] + "<br/>" %}
+                    {% set previousAddressPostcode = previousAddress["postcode"] + "<br/>" %}
+                    {% set previousAddressCountry = previousAddress["country"] + "<br/>" %}
+                    {% set previousAddressUsage = previousAddress["startYear"] + "–" + previousAddress["endYear"] + "<br/><br/>" %}
+                    {% set applicantsDetailsPreviousAddresses = applicantsDetailsPreviousAddresses +
+                                                                previousAddressLineOne +
+                                                                previousAddressLineTwo +
+                                                                previousAddressTownOrCity +
+                                                                previousAddressPostcode +
+                                                                previousAddressCountry +
+                                                                previousAddressUsage %}
+                {% endfor %}
+                {% set applicantsDetailsPreviousAddresses = applicantsDetailsPreviousAddresses.substring(0, (applicantsDetailsPreviousAddresses.length - ("<br/>").length)) %}
+            {% endif %}
+            <!-- Telephone. -->
+            {% set applicantsDetailsTelephone = application[0]["phoneNumber"] %}
+
+            <!-- Applicant's details. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--m govuk-!-margin-bottom-6",
+                    isPageHeading: false,
+                    text: "Applicant's details"
+                }
+            }) %}
+
+                <!-- Summary list. -->
+                {% set application = application %}
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: [
+                        {
+                            key: {
+                                text: "Current names"
+                            },
+                            value: {
+                                text: applicantsDetailsCurrentName
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Previous names"
+                            },
+                            value: {
+                                html: applicantsDetailsPreviousNames
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth"
+                            },
+                            value: {
+                                text: applicantsDetailsDateOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Sex"
+                            },
+                            value: {
+                                text: applicantsDetailsSex
+                            }
+                        },
+                        {
+                            key: {
+                                text: "National Insurance number"
+                            },
+                            value: {
+                                text: applicantsDetailsNationalInsuranceNumber
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Driving licence number"
+                            },
+                            value: {
+                                text: applicantsDetailsDrivingLicenceNumber
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Passport number"
+                            },
+                            value: {
+                                text: applicantsDetailsPassportNumber
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Nationality"
+                            },
+                            value: {
+                                text: applicantsDetailsNationality
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Country of issue"
+                            },
+                            value: {
+                                text: applicantsDetailsCountryOfIssue
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Place of birth"
+                            },
+                            value: {
+                                text: applicantsDetailsPlaceOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Current address"
+                            },
+                            value: {
+                                html: applicantsDetailsCurrentAddress
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Previous addresses in last 5 years"
+                            },
+                            value: {
+                                html: applicantsDetailsPreviousAddresses
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Telephone"
+                            },
+                            value: {
+                                text: applicantsDetailsTelephone
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+             <!-- Heading. -->
+             {% call govukFieldset({
+                attributes: {
+                    "style": "margin-top: 30px"
+                },
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Have you verified the applicant's ID?"
+                }
+            }) %}
+
+                <!-- Body. -->
+                <p class="govuk-body">Select no if:<br/></p>
+
+                <!-- List bullet. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        the DBS check details are incorrect
+                    </li>
+                    <li>
+                        the applicant details are incorrect
+                    </li>
+                    <li>
+                        you can not verify the ID as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS Guidance</a>
+                    </li>
+                </ul>
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentIdVerified,
+                        items: [
+                            {
+                                checked: data["id-verified"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["id-verified"] === "No",
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "id-verified",
+                        value: data["id-verified"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}
