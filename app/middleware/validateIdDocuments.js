@@ -27,9 +27,9 @@ const validateIdDocuments = (request, response) => {
     savePageData(request, data);
 
     /* Validates that a checkbox has been checked for declaring that at least
-     * one of the documents set out in DBS Guidance has been seen. */
+     * one of the documents set out in DBS guidance has been seen. */
     if (!idDocuments) {
-        dataValidation["id-documents"] = "Tick a box to confirm you have seen at least one document set out in DBS Guidance";
+        dataValidation["id-documents"] = "Tick a box to confirm you have seen at least one document set out in DBS guidance";
     }
 
     // Response.

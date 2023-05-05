@@ -42,121 +42,128 @@
 -- Block / Content
 ---------------------------------------------------------------------------- -->
 {% block content %}
-        <!-- Heading. -->
-        <h1 class="govuk-heading-l">Applications</h1>
+    <!-- Heading. -->
+    <h1 class="govuk-heading-l">Applications</h1>
 
-        <!-- Hint. -->
-        <p class="govuk-hint govuk-!-margin-bottom-6">These applications are ready for ID checking. You must assign the application to yourself before verifying the ID.</p>
+    <!-- Hint. -->
+    <p class="govuk-hint govuk-!-margin-bottom-6">These applications are ready for ID checking. You must assign the application to yourself before verifying the ID.</p>
 
-        <!-- Search. -->
-        <h2 class="govuk-heading-m">Search</h2>
-        <div class="govuk-grid-row">
-            <form method="post">
-                <div class="govuk-grid-column-three-quarters">
-                    <!-- Input. -->
-                    {{ govukInput({
-                        id: "search-application-name",
-                        name: "search-application-name",
-                        value: data["search-application-name"]
-                    }) }}
-                </div>
-                <div class="govuk-grid-column-one-quarter">
-                    <!-- Button -->
-                    {{ govukButton({
-                        attributes: {
-                            "style": "float: right;
-                                      width: 100%"
-                        },
-                        text: "Search"
-                    }) }}
-                </div>
-            </form>
-        </div>
+    <!-- Search. -->
+    <!-- Heading. -->
+    <h2 class="govuk-heading-m">Search</h2>
 
-        <!-- Table rows / applications. -->
-        {% set tableRows = [] %}
-        {% for application in applications %}
-            <!-- Name. -->
-            {% set applicationFirstName = application["firstName"] %}
-            {% set applicationName = application["name"] %}
-            {% set applicationSurname = application["surname"] %}
-            <!-- Address. -->
-            {% set applicationAddress = application["address"][0]["lineOne"] + ", " +
-                                        application["address"][0]["lineTwo"] + ", " +
-                                        application["address"][0]["townOrCity"] + ", " +
-                                        application["address"][0]["postcode"] %}
-            <!-- Date submitted. -->
-            {% set applicationDateSubmitted = application["dateSubmitted"] %}
-            <!-- Identity checker. -->
-            {% set applicationIdChecker = '<strong class="govuk-!-font-size-14 govuk-tag govuk-tag--yellow">Unassigned</strong>' %}
-            {% if application["idChecker"] !== "Unassigned" %}
-                {% set applicationIdChecker = '<strong class="govuk-!-font-size-14 govuk-tag govuk-tag--green">' + application["idChecker"] + '</strong>' %}
-            {% endif %}
-            <!-- View full details. -->
-            {% set applicationViewVerifyingId = "" %}
-            {% if idCheckerCurrent === application["idChecker"] %}
-                {% set applicationViewVerifyingId = '<a class="govuk-link" href="verifying-id?application=' + application["id"] + '" rel="noopener noreferrer" style="text-align: right;">Full details and verify ID</a>' %}
-            {% endif %}
-            <!-- Assign to identity checker. -->
-            {% set applicationAssignToIdentityChecker = "" %}
-            {% if idCheckerCurrent !== application["idChecker"] %}
-                {% set applicationAssignToIdentityChecker = '<a class="govuk-link" href="assign-idv?id=' + application["id"] + '" rel="noopener noreferrer">Assign to me</a>' %}
-            {% endif %}
-
-            <!-- Table cell / application. -->
-            {% set tableCell =
-                [
-                    {
-                        attributes: {
-                            "data-sort-value": application["surname"],
-                            "style": "width: 20.0%"
-                        },
-                        html: '<p class="govuk-body-m govuk-!-margin-bottom-6">' + applicationFirstName + ' <span class="govuk-!-font-weight-bold">' + applicationSurname + '</p>
-                               <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Address</p>
-                               <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date submitted</p>
-                               <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Identity checker</p>'
+    <div class="govuk-grid-row">
+        <form method="post">
+            <div class="govuk-grid-column-three-quarters">
+                <!-- Input. -->
+                {{ govukInput({
+                    id: "search-application-name",
+                    label: {
+                        text: "Applicant name"
                     },
-                    {
-                        html: '<p class="govuk-body-s govuk-!-margin-bottom-6" style="visibility: hidden">' + applicationName + '</p>' +
-                              '<p class="govuk-body-s  govuk-!-margin-bottom-1">' + applicationAddress + '</p>' +
-                              '<p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationDateSubmitted + '</p>' +
-                              '<p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationIdChecker + applicationAssignToIdentityChecker + '</p>'
-                    },
-                    {
-                        attributes: {
-                            "style": "text-align: right;
-                                      width: 30.0%"
-                        },
-                        html: applicationViewVerifyingId
-                    }
-                ]
-            %}
-            {% set tableRows = (tableRows.push(tableCell), tableRows) %}
-        {% endfor %}
-
-        <!-- Table. -->
-        {{ govukTable({
-            attributes: {
-                "data-module": "moj-sortable-table"
-            },
-            firstCellIsHeader: false,
-            head: [
-                {
+                    name: "search-application-name",
+                    value: data["search-application-name"]
+                }) }}
+            </div>
+            <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
+                <!-- Button -->
+                {{ govukButton({
                     attributes: {
-                        "aria-sort": "none"
+                        "style": "float: right;
+                                  width: 100%"
                     },
-                    text: "Name"
-                },
-                {
-                    attributes: {
-                        "aria-sort": "none"
-                    },
-                    text: "Date"
-                },
-                {
-                }
-            ],
-            rows: tableRows
-        }) }}
+                    classes: "govuk-button--secondary",
+                    text: "Search"
+                }) }}
+            </div>
+        </form>
     </div>
+
+    <!-- Table rows / applications. -->
+    {% set tableRows = [] %}
+    {% for application in data["idc-applications"] %}
+        <!-- Name. -->
+        {% set applicationFirstName = application["firstName"] %}
+        {% set applicationSurname = application["surname"] %}
+        <!-- Address. -->
+        {% set applicationAddress = application["address"][0]["lineOne"] + ", " +
+                                    application["address"][0]["lineTwo"] + ", " +
+                                    application["address"][0]["townOrCity"] + ", " +
+                                    application["address"][0]["postcode"] %}
+        <!-- Date submitted. -->
+        {% set applicationDateSubmitted = application["dateSubmitted"] %}
+        <!-- Identity checker. -->
+        {% set applicationIdChecker = '<strong class="govuk-!-font-size-14 govuk-tag govuk-tag--yellow">Unassigned</strong>' %}
+        {% if application["idChecker"] !== "Unassigned" %}
+            {% set applicationIdChecker = '<strong class="govuk-!-font-size-14 govuk-tag govuk-tag--green">' + application["idChecker"] + '</strong>' %}
+        {% endif %}
+        <!-- View full details. -->
+        {% set applicationViewVerifyingId = "" %}
+        {% if idCheckerCurrent === application["idChecker"] %}
+            {% set applicationViewVerifyingId = '<a class="govuk-link" href="verifying-id?application=' + application["id"] + '" rel="noopener noreferrer" style="text-align: right;">Full details and verify ID</a>' %}
+        {% endif %}
+        <!-- Assign to identity checker. -->
+        {% set applicationAssignToIdentityChecker = "" %}
+        {% if idCheckerCurrent !== application["idChecker"] %}
+            {% set applicationAssignToIdentityChecker = '<a class="govuk-link" href="assign-idv?id=' + application["id"] + '" rel="noopener noreferrer">Assign to me</a>' %}
+        {% endif %}
+
+        <!-- Table cell / application. -->
+        {% set tableCell =
+            [
+                {
+                    attributes: {
+                        "data-sort-value": applicationSurname,
+                        "style": "width: 34.5%"
+                    },
+                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6">' + applicationFirstName + ' <span class="govuk-!-font-weight-bold">' + applicationSurname + '</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Address</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date submitted</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Identity checker</p>'
+                },
+                {
+                    attributes: {
+                        "data-sort-value": applicationDateSubmitted
+                    },
+                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6" style="visibility: hidden">' + applicationSurname + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationAddress + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationDateSubmitted + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationIdChecker + applicationAssignToIdentityChecker + '</p>'
+                },
+                {
+                    attributes: {
+                        "style": "text-align: right;
+                                    width: 25.0%"
+                    },
+                    html: applicationViewVerifyingId
+                }
+            ]
+        %}
+        {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+    {% endfor %}
+
+    <!-- Table. -->
+    {{ govukTable({
+        attributes: {
+            "data-module": "moj-sortable-table"
+        },
+        firstCellIsHeader: false,
+        head: [
+            {
+                attributes: {
+                    "aria-sort": "none"
+                },
+                text: "Name"
+            },
+            {
+                attributes: {
+                    "aria-sort": "none"
+                },
+                text: "Date"
+            },
+            {
+            }
+        ],
+        rows: tableRows
+    }) }}
 {% endblock %}

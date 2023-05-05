@@ -1,0 +1,202 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Manage ID Checkers
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-bottom-6">
+        <div class="govuk-grid-column-three-quarters">
+            <!-- Heading. -->
+            <h1 class="govuk-heading-l">Manage ID Checkers</h1>
+        </div>
+
+        <div class="govuk-grid-column-one-quarter">
+            <!-- Button -->
+            {{ govukButton({
+                attributes: {
+                    "style": "float: right;
+                              width: 100%"
+                },
+                href: "/registered-body/id-checkers-add",
+                text: "Add new ID Checker"
+            }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <!-- Filter. -->
+            <!-- Heading. -->
+            <h2 class="govuk-heading-m">Filter</h2>
+
+            <!-- Select. -->
+            {% set clientOrganisations = [{ disabled: true, selected: true, value: "" }] %}
+            {% for idChecker in data["id-checkers"] %}
+                {% set clientOrganisation = { selected: false, text: idChecker["org"], value: idChecker["org"] } %}
+                {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
+            {% endfor %}
+            {{ govukSelect({
+                attributes: {
+                    "style": "width: 100.0%"
+                },
+                classes: "govuk-!-font-size-16",
+                id: "filter-client-organisation",
+                label: {
+                    text: "Client organisation"
+                },
+                name: "filter-client-organisation",
+                items: clientOrganisations
+            }) }}
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Search. -->
+            <!-- Heading. -->
+            <h2 class="govuk-heading-m">Search</h2>
+            
+            <div class="govuk-grid-row">
+                <form method="post">
+                    <div class="govuk-grid-column-three-quarters">
+                        <!-- Input. -->
+                        {{ govukInput({
+                            id: "search-id-checker-name",
+                            label: {
+                                text: "ID Checker name"
+                            },
+                            name: "search-id-checker-name",
+                            value: data["search-id-checker-name"]
+                        }) }}
+                    </div>
+                    <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
+                        <!-- Button. -->
+                        {{ govukButton({
+                            attributes: {
+                                "style": "float: right;
+                                          width: 100%"
+                            },
+                            classes: "govuk-button--secondary",
+                            text: "Search"
+                        }) }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table rows / applications. -->
+    {% set tableRows = [] %}
+    {% for idChecker in data["id-checkers"] %}
+        <!-- Name. -->
+        {% set idCheckerFirstName = idChecker["name"].split(" ")[0] %}
+        {% set idCheckerSurname = idChecker["name"].split(" ")[1] %}
+        <!-- Email. -->
+        {% set idCheckerEmail = idChecker["email"] %}
+        <!-- Organisation. -->
+        {% set idCheckerOrganisation = idChecker["org"] %}
+        <!-- Last ID check. -->
+        {% set idCheckerLastIdCheck = idChecker["dateAdded"] %}
+        <!-- Edit details. -->
+        {% set idCheckerEditDetails = '<a class="govuk-link" href="#" rel="noopener noreferrer" style="text-align: right;">Edit details</a>' %}
+
+        <!-- Table cell / application. -->
+        {% set tableCell =
+            [
+                {
+                    attributes: {
+                        "data-sort-value": idCheckerSurname,
+                        "style": "width: 34.5%"
+                    },
+                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6">' + idCheckerFirstName + ' <span class="govuk-!-font-weight-bold">' + idCheckerSurname + '</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Organisation</p>
+                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>'
+                },
+                {
+                    attributes: {
+                        "data-sort-value": idCheckerLastIdCheck
+                    },
+                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6" style="visibility: hidden">' + idCheckerSurname + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
+                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
+                },
+                {
+                    attributes: {
+                        "style": "text-align: right;
+                                    width: 20.0%"
+                    },
+                    html: idCheckerEditDetails
+                }
+            ]
+        %}
+        {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+    {% endfor %}
+
+    <!-- Table. -->
+    {{ govukTable({
+        attributes: {
+            "data-module": "moj-sortable-table"
+        },
+        firstCellIsHeader: false,
+        head: [
+            {
+                attributes: {
+                    "aria-sort": "none"
+                },
+                text: "Name"
+            },
+            {
+                attributes: {
+                    "aria-sort": "none"
+                },
+                text: "Date"
+            },
+            {
+            }
+        ],
+        rows: tableRows
+    }) }}
+{% endblock %}

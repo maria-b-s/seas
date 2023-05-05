@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Declaration
+    What is the ID Checker's email address?
 {% endblock %}
 
 
@@ -18,7 +18,7 @@
 -- Service name
 ---------------------------------------------------------------------------- -->
 {% set serviceName %}
-    Verify ID for a standard or enhanced DBS check
+    Request a standard or enhanced DBS check
 {% endset %}
 
 
@@ -66,12 +66,19 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentDeclare = "" %}
+            {% set errorComponentIdCheckerEmail = "" %}
+            {% set errorComponentIdCheckerEmailConfirm = "" %}
             {% if validation | length %}
-                <!-- Declare. -->
-                {% if validation["declare"] %}
-                    {% set errorComponentDeclare = {
-                        text: validation["declare"]
+                <!-- ID Checker email. -->
+                {% if validation["id-checker-email"] %}
+                    {% set errorComponentIdCheckerEmail = {
+                        text: validation["id-checker-email"]
+                    } %}
+                {% endif %}
+                <!-- ID Checker email confirm. -->
+                {% if validation["id-checker-email-confirm"] %}
+                    {% set errorComponentIdCheckerEmailConfirm = {
+                        text: validation["id-checker-email-confirm"]
                     } %}
                 {% endif %}
             {% endif %}
@@ -81,28 +88,50 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Declaration"
+                    text: "What is the ID Checker's email address?"
                 }
             }) %}
 
                 <!-- Hint. -->
-                <p class="govuk-hint">You can now submit your ID check for review by a countersignatory.</p>
+                <p class="govuk-hint">This must be an individual email address that only the ID Checker can access.</p>
+
+                <!-- Body. -->
+                <p class="govuk-body">We will use this email address to send the ID Checker an email to activate their account. We will also send an email to notify them when there is a new identity check to complete.</p>
 
                 <form method="post">
-                    <!-- Checkboxes. -->
-                    {{ govukCheckboxes({
-                        errorMessage: errorComponentDeclare,
-                        items: [
-                            {
-                                html: 'I have established the true identity of the applicant, by examining a range of documents as set out in the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>.'
-                            }
-                        ],
-                        name: "declare"
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "email",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdCheckerEmail,
+                        id: "id-checker-email",
+                        inputmode: "email",
+                        label: {
+                            text: "Email address"
+                        },
+                        name: "id-checker-email",
+                        spellcheck: false,
+                        value: data["id-checker-email"]
+                    }) }}
+
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "email",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdCheckerEmailConfirm,
+                        id: "id-checker-email-confirm",
+                        inputmode: "email",
+                        label: {
+                            text: "Confirm email address"
+                        },
+                        name: "id-checker-email-confirm",
+                        spellcheck: false,
+                        value: data["id-checker-email-confirm"]
                     }) }}
 
                     <!-- Button. -->
                     {{ govukButton({
-                        text: "Agree and submit"
+                        text: "Continue"
                     }) }}
                 </form>
             {% endcall %}

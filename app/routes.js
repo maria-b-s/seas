@@ -33,6 +33,7 @@ const { sendApplication } = require('./middleware/sendApplication');
 const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
 const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { setPredefinedIdcApplications } = require('./middleware/utilsSeasIdc');
+const { setPredefinedIdCheckers } = require('./middleware/utilsIdCheckers');
 const { selectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { validateApplicantEmailAddress } = require('./middleware/validateApplicantEmailAddress');
 const { validateApplicantOrPostHolder } = require('./middleware/validateApplicantOrPostHolder');
@@ -49,6 +50,10 @@ const { validateEmail } = require('./middleware/validateEmail');
 const { validateExistingPostHolder } = require('./middleware/validateExistingPostHolder');
 const { validateFreeOfChargeVolunteerDeclaration } = require('./middleware/validateFreeOfChargeVolunteerDeclaration');
 const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
+const { validateIdCheckersAdd } = require('./middleware/validateIdCheckersAdd');
+const { validateIdCheckersAddChecks } = require('./middleware/validateIdCheckersAddChecks');
+const { validateIdCheckersAddEmailAddress } = require('./middleware/validateIdCheckersAddEmailAddress');
+const { validateIdCheckersAddName } = require('./middleware/validateIdCheckersAddName');
 const { validateIdDocuments } = require('./middleware/validateIdDocuments');
 const { validateIdVerified } = require('./middleware/validateIdVerified');
 const { validateNationalInsurance } = require('./middleware/validateNationalInsurance');
@@ -87,6 +92,12 @@ router.get('*', invalidateCache, (request, response, next) => {
     /* Ensures a predefined deactivated ID Checker details are available; these
      * details would have identified via a unique email URL. */
     setPredefinedDeactivatedIdChecker(request);
+
+    // Ensures predefined IDC applications are available for selection.
+    setPredefinedIdcApplications(request);
+
+    // Ensures predefined ID checkers are available for selection.
+    setPredefinedIdCheckers(request);
 
     // Response.
     return next();
@@ -337,8 +348,6 @@ registeredBodyRouter.get('/volunteer-declaration', invalidateCache, (request, re
 });
 registeredBodyRouter.post('/volunteer-declaration', invalidateCache, validateFreeOfChargeVolunteerDeclaration);
 
-
-
 // -----------------------------------------------------------------------------
 // Applicant details / Name
 // -----------------------------------------------------------------------------
@@ -359,8 +368,6 @@ registeredBodyRouter.get('/applicant-email', invalidateCache, (req, res) => {
     res.render('registered-body/applicant-email', { cms, cache: inputCache, validation: null });
 });
 registeredBodyRouter.post('/applicant-email', invalidateCache, validateApplicantEmailAddress);
-
-
 
 registeredBodyRouter.post('/select-flow', (req, res) => {
     const applicationType = req.session.data['what-application-type'];
@@ -550,193 +557,68 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
 
 // IDC
 
-let idCheckers = [
-    {
-        name: 'Joe Bloggs',
-        email: 'joeb@gmail.com',
-        password: 'pass1234',
-        mobile: '07666 993355',
-        org: 'Penny Lane College of PE',
-        dept: 'Student Applications',
-        dateAdded: '28/03/2023',
-    },
-    {
-        name: 'David Smith',
-        email: 'ds@gmail.com',
-        password: 'pass1234',
-        mobile: '07613 385143',
-        org: 'Penny Lane College of PE',
-        dept: 'Student Applications',
-        dateAdded: '14/03/2022',
-    },
-    {
-        name: 'Lisa Walker',
-        email: 'lisaw@gmail.com',
-        password: 'pass1234',
-        mobile: '07837 298457',
-        org: 'Penny Lane College of PE',
-        dept: 'Student Applications',
-        dateAdded: '19/02/2023',
-    },
-    {
-        name: 'Paul Knowles',
-        email: 'paulk@gmail.com',
-        password: 'pass1234',
-        mobile: '07159 984654',
-        org: 'Penny Lane College of PE',
-        dept: 'Student Applications',
-        dateAdded: '30/03/2023',
-    },
-];
+// -----------------------------------------------------------------------------
+// ID checkers / Manage
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-manage', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-registeredBodyRouter.get('/manage-idc', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    if (req.session.data['id-checkers'] == undefined) {
-        req.session.data['id-checkers'] = idCheckers;
-    }
+    /* Ensures any client organisation previously chosen is deselected within
+     * the Select component of /id-checkers-manage. */
+    deselectClientOrganisation(request);
 
-    req.session.data['id-checkers'].sort(function (a, b) {
-        var aa = a.dateAdded.split('/').reverse().join(),
-            bb = b.dateAdded.split('/').reverse().join();
-        return aa > bb ? -1 : aa < bb ? 1 : 0;
-    });
-
-    res.render('registered-body/manage-idc', { cms, cache: inputCache, validation: null, checkers: req.session.data['id-checkers'] });
+    // Response.
+    response.render('registered-body/id-checkers-manage', { cache: inputCache, validation: null });
 });
 
-// IDC Start/Declaration
-registeredBodyRouter.get('/add-new-idc', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+// -----------------------------------------------------------------------------
+// ID checkers / Add
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    res.render('registered-body/add-new-idc', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render('registered-body/id-checkers-add', { cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/id-checkers-add', invalidateCache, validateIdCheckersAdd);
 
-registeredBodyRouter.post('/add-new-idc', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Name
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-name', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    if (req.body['confirm'] == '_unchecked') {
-        dataValidation['confirm'] = 'Tick the box to confirm you agree with the declaration';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/add-new-idc', { cache: inputCache, validation: dataValidation });
-    } else {
-        res.redirect('idc-name');
-    }
+    // Response.
+    response.render('registered-body/id-checkers-add-name', { cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/id-checkers-add-name', invalidateCache, validateIdCheckersAddName);
 
-// IDC Name
-registeredBodyRouter.get('/idc-name', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Email
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-email-address', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    res.render('registered-body/idc-name', { cms, cache: inputCache, validation: null });
+    // Response.
+    response.render('registered-body/id-checkers-add-email-address', { cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/id-checkers-add-email-address', invalidateCache, validateIdCheckersAddEmailAddress);
 
-registeredBodyRouter.post('/idc-name', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-first-name']);
-    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['idc-last-name']);
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Checks
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-checks', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-    let redirectPath = 'idc-email';
-    if (req.query && req.query.change) {
-        redirectPath = 'idc-check-answers';
-    }
-
-    if (!validFirstName) {
-        dataValidation['idc-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (!validLastName) {
-        dataValidation['idc-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (req.body['idc-first-name'].length > 50) {
-        dataValidation['idc-first-name'] = 'First name must be 50 characters or fewer';
-    }
-    if (req.body['idc-last-name'].length > 50) {
-        dataValidation['idc-last-name'] = 'Last name must be 50 characters or fewer';
-    }
-
-    if (!req.body['idc-first-name']) {
-        dataValidation['idc-first-name'] = 'Enter first name';
-    }
-
-    if (!req.body['idc-last-name']) {
-        dataValidation['idc-last-name'] = 'Enter last name';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/idc-name', { cache: inputCache, validation: dataValidation });
-    } else {
-        req.session.data['idc-full-name'] = req.body['idc-first-name'] + ' ' + req.body['idc-last-name'];
-        res.redirect(redirectPath);
-    }
+    // Response.
+    response.render('registered-body/id-checkers-add-checks', { cache: inputCache, validation: null });
 });
-
-// IDC Email
-registeredBodyRouter.get('/idc-email', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-
-    res.render('registered-body/idc-email', { cms, cache: inputCache, validation: null });
-});
-
-registeredBodyRouter.post('/idc-email', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    let applicantEmail = req.body['idc-email'];
-    let applicantEmailConfirm = req.body['idc-email-confirm'];
-    const validEmail =
-        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
-            req.body['idc-email'],
-        );
-    const validConfirmEmail =
-        /^(?!\.)(?!.*\.\.)(?!.*\.$)(?!.*@.*@)[a-zA-Z0-9&'+=_\-\/]([\.a-zA-Z0-9&'+=_\-\/]){0,63}@[a-zA-Z0-9\-]{1,63}(\.([a-zA-Z0-9\-]){1,63}){0,}$/.test(
-            req.body['idc-email-confirm'],
-        );
-
-    let redirectPath = 'idc-mobile-number';
-    if (req.query && req.query.change) {
-        redirectPath = 'idc-check-answers';
-    }
-
-    if (!validEmail) {
-        dataValidation['idc-email'] = 'Enter email address in the correct format';
-    }
-
-    if (!validConfirmEmail) {
-        dataValidation['idc-email-confirm'] = 'Enter email address in the correct format';
-    }
-
-    if (applicantEmail.length > 100) {
-        dataValidation['idc-email'] = 'Email address must be 100 characters or fewer';
-    }
-
-    if (applicantEmailConfirm.length > 100) {
-        dataValidation['idc-email-confirm'] = 'Email address must be 100 characters or fewer';
-    }
-
-    if (!applicantEmail) {
-        dataValidation['idc-email'] = 'Enter email address';
-    }
-
-    if (!applicantEmailConfirm) {
-        dataValidation['idc-email-confirm'] = 'Enter email address';
-    } else if (applicantEmail != applicantEmailConfirm) {
-        dataValidation['idc-email-confirm'] = 'Email address does not match';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('registered-body/idc-email', { cache: inputCache, validation: dataValidation });
-    } else {
-        req.session.data['idc-email'] = req.body['idc-email'];
-        res.redirect(redirectPath);
-    }
-});
+registeredBodyRouter.post('/id-checkers-add-checks', invalidateCache, validateIdCheckersAddChecks);
 
 // IDC Mobile Number
 registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
@@ -3201,11 +3083,22 @@ dashboardRouter.get('*', (req, res, next) => {
 //     }
 // });
 
+seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const applications = data['idc-applications'];
+    const idChecker = request.session.selectedIDC.name;
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('seas-idc/dashboard', { cache: inputCache, applications: applications, idCheckerCurrent: idChecker, validation: null });
+});
+
+
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
     res.render('dashboard/rb-login', { cache: inputCache, validation: null });
 });
-
 dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
     savePageData(req, req.body);
 
@@ -3269,6 +3162,7 @@ dashboardRouter.post('/rb-login', invalidateCache, (req, res, _next) => {
         res.redirect('/dashboard/rb-dob-check');
     }
 });
+
 
 dashboardRouter.get('/rb-password-check', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
@@ -3744,11 +3638,6 @@ seasIdcRouter.get('/start', invalidateCache, (request, response) => {
     const data = request.session.data;
     const inputCache = loadPageData(request);
 
-    // Populates known ID checkers.
-    if (!data['id-checkers']) {
-        data['id-checkers'] = idCheckers;
-    }
-
     // Clears any password associated to the predefined deactivated ID Checker.
     clearDeactivatedIdCheckerPassword(request);
     /* Clears any current ID Checker currently selected to ensure the activate
@@ -3810,14 +3699,12 @@ seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdChe
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
     // Constants.
+    const data = request.session.data;
     const idChecker = request.session.selectedIDC.name;
     const inputCache = loadPageData(request);
-    
-    // Ensures predefined IDC applications are available for selection.
-    setPredefinedIdcApplications(request);
 
     // Response.
-    response.render('seas-idc/dashboard', { cache: inputCache, applications: request.session.data['idc-applications'], idCheckerCurrent: idChecker, validation: null });
+    response.render('seas-idc/dashboard', { cache: inputCache, idCheckerCurrent: idChecker, validation: null });
 });
 
 // -----------------------------------------------------------------------------

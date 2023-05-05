@@ -4,23 +4,135 @@
 const _PREDEFINED_CLIENT_ORGANISATIONS = [
     {
         selected: false,
+        text: "Air Springfield",
+        value: "Air Springfield"
+    },
+    {
+        selected: false,
+        text: "Aztec Theater",
+        value: "Aztec Theater",
+    },
+    {
+        selected: false,
+        text: "Barney's Bowlarama",
+        value: "Barney's Bowlarama"
+    },
+    {
+        selected: false,
+        text: "Blocko Store",
+        value: "Blocko Store",
+    },
+    {
+        selected: false,
+        text: "Burns Construction Co.",
+        value: "Burns Construction Co.",
+    },
+    {
+        selected: false,
+        text: "Coffee House",
+        value: "Coffee House",
+    },
+    {
+        selected: false,
+        text: "Dentz",
+        value: "Dentz",
+    },
+    {
+        selected: false,
+        text: "Evening Standard",
+        value: "Evening Standard",
+    },
+    {
+        selected: false,
         text: "Globex Corporation",
-        value: "Globex Corporation"
+        value: "Globex Corporation",
     },
     {
         selected: false,
-        text: "MoneyBank",
-        value: "MoneyBank",
+        text: "Grocery Store",
+        value: "Grocery Store",
     },
     {
         selected: false,
-        text: "Springfield Museum",
-        value: "Springfield Museum"
+        text: "Hammock Hut",
+        value: "Hammock Hut",
+    },
+    {
+        selected: false,
+        text: "Hollywood Hotel",
+        value: "Hollywood Hotel",
+    },
+    {
+        selected: false,
+        text: "Ice Cream Parlor",
+        value: "Ice Cream Parlor",
+    },
+    {
+        selected: false,
+        text: "KUDD Radio",
+        value: "KUDD Radio",
+    },
+    {
+        selected: false,
+        text: "Luigi's",
+        value: "Luigi's",
+    },
+    {
+        selected: false,
+        text: "Marine World",
+        value: "Marine World",
+    },
+    {
+        selected: false,
+        text: "Moe's Tavern",
+        value: "Moe's Tavern",
+    },
+    {
+        selected: false,
+        text: "Noise Land Video Arcade",
+        value: "Noise Land Video Arcade",
+    },
+    {
+        selected: false,
+        text: "Otto Cab Co.",
+        value: "Otto Cab Co.",
+    },
+    {
+        selected: false,
+        text: "Planet Springfield",
+        value: "Planet Springfield",
+    }
+    ,
+    {
+        selected: false,
+        text: "Springfield Mall",
+        value: "Springfield Mall",
+    }
+    ,
+    {
+        selected: false,
+        text: "Springfield Retirement Castle",
+        value: "Springfield Retirement Castle",
     },
     {
         selected: false,
         text: "The Leftorium",
         value: "The Leftorium",
+    },
+    {
+        selected: false,
+        text: "Vine Yogurt",
+        value: "Vine Yogurt",
+    },
+    {
+        selected: false,
+        text: "Worldwide Shipping",
+        value: "Worldwide Shipping",
+    },
+    {
+        selected: false,
+        text: "ZiffCorp",
+        value: "ZiffCorp",
     }
 ];
 
