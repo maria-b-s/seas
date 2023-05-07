@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Declaration
+    Will the ID Checker be doing checks for client organisations?
 {% endblock %}
 
 
@@ -18,7 +18,7 @@
 -- Service name
 ---------------------------------------------------------------------------- -->
 {% set serviceName %}
-    Verify ID for a standard or enhanced DBS check
+    Request a standard or enhanced DBS check
 {% endset %}
 
 
@@ -66,43 +66,52 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentDeclare = "" %}
+            {% set errorComponentIdCheckerChecks = "" %}
             {% if validation | length %}
-                <!-- Declare. -->
-                {% if validation["declare"] %}
-                    {% set errorComponentDeclare = {
-                        text: validation["declare"]
+                <!-- ID Verified. -->
+                {% if validation["id-checker-checks"] %}
+                    {% set errorComponentIdCheckerChecks = {
+                        text: validation["id-checker-checks"]
                     } %}
                 {% endif %}
             {% endif %}
-            
-            <!-- Heading. -->
-            {% call govukFieldset({
+
+             <!-- Heading. -->
+             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Declaration"
+                    text: "Will the ID Checker be doing checks for client organisations?"
                 }
             }) %}
 
                 <!-- Hint. -->
-                <p class="govuk-hint">You can now submit your ID check for review by a countersignatory.</p>
+                <p class="govuk-hint">If the ID Checker will only be doing ID checks for your organisation, select no.</p>
 
                 <form method="post">
-                    <!-- Checkboxes. -->
-                    {{ govukCheckboxes({
-                        errorMessage: errorComponentDeclare,
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentIdCheckerChecks,
                         items: [
                             {
-                                html: 'I have established the true identity of the applicant, by examining a range of documents as set out in the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>.'
+                                checked: data["id-checker-checks"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["id-checker-checks"] === "No",
+                                text: "No",
+                                value: "No"
                             }
                         ],
-                        name: "declare"
+                        name: "id-checker-checks",
+                        value: data["id-checker-checks"]
                     }) }}
 
                     <!-- Button. -->
                     {{ govukButton({
-                        text: "Agree and submit"
+                        text: "Continue"
                     }) }}
                 </form>
             {% endcall %}

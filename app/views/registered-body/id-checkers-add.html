@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    ID documents
+    Add a new ID Checker account
 {% endblock %}
 
 
@@ -18,7 +18,7 @@
 -- Service name
 ---------------------------------------------------------------------------- -->
 {% set serviceName %}
-    Verify ID for a standard or enhanced DBS check
+    Request a standard or enhanced DBS check
 {% endset %}
 
 
@@ -52,75 +52,90 @@
         <div class="govuk-grid-column-two-thirds">
             <!-- Errors / Summary. -->
             {% if validation | length %}
-                {% set errorList = [] %}
-                {% for key, value in validation %}
-                    {% set errorList = (errorList.push({
-                        "href": "#" + key,
-                        "text": value
-                    }), errorList) %}
-                {% endfor %}
-                {{ govukErrorSummary({
-                    errorList: errorList,
-                    titleText: "There's a problem with the information you have provided"
-                }) }}
+            {% set errorList = [] %}
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "href": "#" + key,
+                    "text": value
+                }), errorList) %}
+            {% endfor %}
+            {{ govukErrorSummary({
+                errorList: errorList,
+                titleText: "There's a problem with the information you have provided"
+            }) }}
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentIdDocuments = "" %}
+            {% set errorComponentIdCheckerDeclare = "" %}
             {% if validation | length %}
-                <!-- ID documents. -->
-                {% if validation["id-documents"] %}
-                    {% set errorComponentIdDocuments = {
-                        text: validation["id-documents"]
+                <!-- ID Checker declare. -->
+                {% if validation["id-checker-declare"] %}
+                    {% set errorComponentIdCheckerDeclare = {
+                        text: validation["id-checker-declare"]
                     } %}
                 {% endif %}
             {% endif %}
-            
+
             <!-- Heading. -->
             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "ID documents"
+                    text: "Add a new ID Checker account"
                 }
             }) %}
 
+                <!-- Hint. -->
+                <p class="govuk-hint">ID Checker accounts are for individuals who complete ID checks only.</p>
+                <p class="govuk-hint">If you are a Countersignatory you do not need an ID Checker account. You can complete ID checks from the <a class='govuk-link' href='/dashboard/home' rel='noopener noreferrer'>Applications dashboard</a>.</p>
+
+                <!-- Heading. -->
+                <h2 class="govuk-heading-m">What you'll need</h2>
+
                 <!-- Body. -->
-                <p class="govuk-body">I have seen documents as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a> to verify:</p>
+                <p class="govuk-body">To set up an ID Checker account you'll need their:</p>
+
+                <!-- List bullets. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>first and last name</li>
+                    <li>email address</li>
+                </ul>
+
+                <!-- Body. -->
+                <p class="govuk-body">You may also need:</p>
+
+                <!-- List bullets. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>the name of any client organisations that the ID checker will be doing checks for</li>
+                </ul>
+
+                <!-- Heading. -->
+                <h2 class="govuk-heading-m">Declaration</h2>
+
+                <!-- Body. -->
+                <p class="govuk-body">By adding a new ID Checker you confirm that:</p>
 
                 <form method="post">
                     <!-- Checkboxes. -->
                     {{ govukCheckboxes({
-                        errorMessage: errorComponentIdDocuments,
+                        errorMessage: errorComponentIdCheckerDeclare,
                         items: [
                             {
-                                hint: {
-                                    text: "Including applicant's title, surname and forenames"
-                                },
-                                text: "Applicant's name"
+                                text: "the person you are adding is suitable to conduct such checks"
                             },
                             {
-                                text: "Date of birth"
+                                text: "the person you are adding has had the appropriate training and guidance needed"
                             },
                             {
-                                text: "National Insurance number"
-                            },
-                            {
-                                text: "Driving licence number"
-                            },
-                            {
-                                text: "Passport number"
-                            },
-                            {
-                                text: "Current address"
+                                text: "the Registered Body remains responsible for conducting accurate identity checks"
                             }
                         ],
-                        name: "id-documents"
+                        name: "id-checker-declare"
                     }) }}
 
                     <!-- Button. -->
                     {{ govukButton({
-                        text: "Continue"
+                        text: "Accept and continue"
                     }) }}
                 </form>
             {% endcall %}

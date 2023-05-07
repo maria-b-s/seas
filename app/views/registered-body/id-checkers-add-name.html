@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Declaration
+    What is the ID Checker's name?
 {% endblock %}
 
 
@@ -18,7 +18,7 @@
 -- Service name
 ---------------------------------------------------------------------------- -->
 {% set serviceName %}
-    Verify ID for a standard or enhanced DBS check
+    Request a standard or enhanced DBS check
 {% endset %}
 
 
@@ -66,12 +66,19 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentDeclare = "" %}
+            {% set errorComponentIdCheckerFirstName = "" %}
+            {% set errorComponentIdCheckerLastName = "" %}
             {% if validation | length %}
-                <!-- Declare. -->
-                {% if validation["declare"] %}
-                    {% set errorComponentDeclare = {
-                        text: validation["declare"]
+                <!-- ID Checker first name. -->
+                {% if validation["id-checker-first-name"] %}
+                    {% set errorComponentIdCheckerFirstName = {
+                        text: validation["id-checker-first-name"]
+                    } %}
+                {% endif %}
+                <!-- ID Checker last name. -->
+                {% if validation["id-checker-last-name"] %}
+                    {% set errorComponentIdCheckerLastName = {
+                        text: validation["id-checker-last-name"]
                     } %}
                 {% endif %}
             {% endif %}
@@ -81,28 +88,46 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Declaration"
+                    text: "What is the ID Checker's name?"
                 }
             }) %}
 
-                <!-- Hint. -->
-                <p class="govuk-hint">You can now submit your ID check for review by a countersignatory.</p>
-
                 <form method="post">
-                    <!-- Checkboxes. -->
-                    {{ govukCheckboxes({
-                        errorMessage: errorComponentDeclare,
-                        items: [
-                            {
-                                html: 'I have established the true identity of the applicant, by examining a range of documents as set out in the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>.'
-                            }
-                        ],
-                        name: "declare"
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "name",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdCheckerFirstName,
+                        id: "id-checker-first-name",
+                        label: {
+                            text: "First name"
+                        },
+                        name: "id-checker-first-name",
+                        spellcheck: false,
+                        value: data["id-checker-first-name"]
+                    }) }}
+
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "name",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentIdCheckerLastName,
+                        id: "id-checker-last-name",
+                        label: {
+                            text: "Last name"
+                        },
+                        name: "id-checker-last-name",
+                        spellcheck: false,
+                        value: data["id-checker-last-name"]
                     }) }}
 
                     <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
                     {{ govukButton({
-                        text: "Agree and submit"
+                        text: buttonText
                     }) }}
                 </form>
             {% endcall %}
