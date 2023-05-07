@@ -1,0 +1,72 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    ID Checker successfully added
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Panel. -->
+            {{ govukPanel({
+                classes: "govuk-!-margin-bottom-6",
+                titleText: "ID Checker successfully added"
+            }) }}
+
+            <!-- Body. -->
+            <p class="govuk-body">
+                What happens next
+            </p>
+
+            <!-- List bullets. -->
+            <ul class="govuk-list govuk-list--bullet">
+                <li>we'll email the ID Checker a link to activate their account. The link will expire after 7 days</li>
+                <li>you'll get a notification on your <a class="govuk-link" href="id-checkers-manage" rel="noopener noreferrer">dashboard</a> when the ID Checker activates their account</li>
+            </ul>
+
+            <form method="post">
+                <!-- Button. -->
+                {{ govukButton({
+                    text: "Return to dashboard"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

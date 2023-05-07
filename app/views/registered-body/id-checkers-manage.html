@@ -74,23 +74,33 @@
             <h2 class="govuk-heading-m">Filter</h2>
 
             <!-- Select. -->
-            {% set clientOrganisations = [{ disabled: true, selected: true, value: "" }] %}
-            {% for idChecker in data["id-checkers"] %}
-                {% set clientOrganisation = { selected: false, text: idChecker["org"], value: idChecker["org"] } %}
-                {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
-            {% endfor %}
-            {{ govukSelect({
-                attributes: {
-                    "style": "width: 100.0%"
-                },
-                classes: "govuk-!-font-size-16",
-                id: "filter-client-organisation",
-                label: {
-                    text: "Client organisation"
-                },
-                name: "filter-client-organisation",
-                items: clientOrganisations
-            }) }}
+            <form method="post">
+                {% set clientOrganisations = [{ disabled: false, selected: false, value: "" }] %}
+                {% for idChecker in data["id-checkers"] %}
+                    {% set selected = false %}
+                    {% if data["filter-client-organisation"] %}
+                        {% if idChecker["org"] === data["filter-client-organisation"] %}
+                            {% set selected = true %}
+                        {% endif %}
+                    {% endif %}
+                    {% set clientOrganisation = { selected: selected, text: idChecker["org"], value: idChecker["org"] } %}
+                    {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
+                {% endfor %}
+                {{ govukSelect({
+                    attributes: {
+                        "onchange": "this.form.submit();",
+                        "style": "width: 100.0%"
+                    },
+                    classes: "govuk-!-font-size-16",
+                    id: "filter-client-organisation",
+                    label: {
+                        text: "Client organisation"
+                    },
+                    name: "filter-client-organisation",
+                    items: clientOrganisations,
+                    selected: data["filter-client-organisation"]
+                }) }}
+            </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
             <!-- Search. -->
@@ -102,12 +112,12 @@
                     <div class="govuk-grid-column-three-quarters">
                         <!-- Input. -->
                         {{ govukInput({
-                            id: "search-id-checker-name",
+                            id: "filter-id-checker-name",
                             label: {
                                 text: "ID Checker name"
                             },
-                            name: "search-id-checker-name",
-                            value: data["search-id-checker-name"]
+                            name: "filter-id-checker-name",
+                            value: data["filter-id-checker-name"]
                         }) }}
                     </div>
                     <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
@@ -128,7 +138,11 @@
 
     <!-- Table rows / applications. -->
     {% set tableRows = [] %}
-    {% for idChecker in data["id-checkers"] %}
+    {% set idCheckers = data["id-checkers"] %}
+    {% if data["id-checkers-filtered"] %}
+        {% set idCheckers = data["id-checkers-filtered"] %}
+    {% endif %}
+    {% for idChecker in idCheckers %}
         <!-- Name. -->
         {% set idCheckerFirstName = idChecker["name"].split(" ")[0] %}
         {% set idCheckerSurname = idChecker["name"].split(" ")[1] %}
@@ -137,9 +151,17 @@
         <!-- Organisation. -->
         {% set idCheckerOrganisation = idChecker["org"] %}
         <!-- Last ID check. -->
-        {% set idCheckerLastIdCheck = idChecker["dateAdded"] %}
-        <!-- Edit details. -->
-        {% set idCheckerEditDetails = '<a class="govuk-link" href="#" rel="noopener noreferrer" style="text-align: right;">Edit details</a>' %}
+        {% set idCheckerLastIdCheck = idChecker["dateLastIdCheck"] %}
+        {% if not idCheckerLastIdCheck %}
+            {% set idCheckerLastIdCheck = '<span style="color: #D4351C">N/A</span>' %}
+        {% endif %}
+        <!-- Action. -->
+        {% set idCheckerAction = "" %}
+        {% if idChecker["activated"] %}
+            {% set idCheckerAction = '<a class="govuk-link" href="#" rel="noopener noreferrer" style="text-align: right;">Edit details</a>' %}
+        {% else %}
+            {% set idCheckerAction = '<span style="color: #D4351C; text-align: right;">Account awaiting activation</span>' %}
+        {% endif %}
 
         <!-- Table cell / application. -->
         {% set tableCell =
@@ -166,9 +188,9 @@
                 {
                     attributes: {
                         "style": "text-align: right;
-                                    width: 20.0%"
+                                    width: 27.5%"
                     },
-                    html: idCheckerEditDetails
+                    html: idCheckerAction
                 }
             ]
         %}

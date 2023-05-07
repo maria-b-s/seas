@@ -70,15 +70,15 @@
             {% set errorComponentIdCheckerEmailConfirm = "" %}
             {% if validation | length %}
                 <!-- ID Checker email. -->
-                {% if validation["id-checker-email"] %}
+                {% if validation["id-checker-email-address"] %}
                     {% set errorComponentIdCheckerEmail = {
-                        text: validation["id-checker-email"]
+                        text: validation["id-checker-email-address"]
                     } %}
                 {% endif %}
                 <!-- ID Checker email confirm. -->
-                {% if validation["id-checker-email-confirm"] %}
+                {% if validation["id-checker-email-address-confirm"] %}
                     {% set errorComponentIdCheckerEmailConfirm = {
-                        text: validation["id-checker-email-confirm"]
+                        text: validation["id-checker-email-address-confirm"]
                     } %}
                 {% endif %}
             {% endif %}
@@ -104,14 +104,14 @@
                         autocomplete: "email",
                         classes: "govuk-input govuk-!-width-two-thirds",
                         errorMessage: errorComponentIdCheckerEmail,
-                        id: "id-checker-email",
+                        id: "id-checker-email-address",
                         inputmode: "email",
                         label: {
                             text: "Email address"
                         },
-                        name: "id-checker-email",
+                        name: "id-checker-email-address",
                         spellcheck: false,
-                        value: data["id-checker-email"]
+                        value: data["id-checker-email-address"]
                     }) }}
 
                     <!-- Text input. -->
@@ -119,19 +119,23 @@
                         autocomplete: "email",
                         classes: "govuk-input govuk-!-width-two-thirds",
                         errorMessage: errorComponentIdCheckerEmailConfirm,
-                        id: "id-checker-email-confirm",
+                        id: "id-checker-email-address-confirm",
                         inputmode: "email",
                         label: {
                             text: "Confirm email address"
                         },
-                        name: "id-checker-email-confirm",
+                        name: "id-checker-email-address-confirm",
                         spellcheck: false,
-                        value: data["id-checker-email-confirm"]
+                        value: data["id-checker-email-address-confirm"]
                     }) }}
 
                     <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
                     {{ govukButton({
-                        text: "Continue"
+                        text: buttonText
                     }) }}
                 </form>
             {% endcall %}

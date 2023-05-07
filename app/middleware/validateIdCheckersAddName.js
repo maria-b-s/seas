@@ -16,6 +16,7 @@ const validateIdCheckersAddName = (request, response) => {
     const idCheckerLastName = data["id-checker-last-name"];
     const inputCache = loadPageData(request);
     const inputCharactersMaximum = 50;
+    const redirectPathIdCheckersAddCheckAnswers = "id-checkers-add-check-answers";
     const redirectPathIdCheckersAddEmailAddress = "id-checkers-add-email-address";
     const regExpName = /^[a-zA-Z'\- ]+$/;
     const renderPath = "registered-body/id-checkers-add-name";
@@ -56,6 +57,9 @@ const validateIdCheckersAddName = (request, response) => {
     } else {
         request.session.data["id-checker-first-name"] = request.body["id-checker-first-name"];
         request.session.data["id-checker-last-name"] = request.body["id-checker-last-name"];
+        if (request.query && request.query.change) {
+            redirectPath = redirectPathIdCheckersAddCheckAnswers;
+        }
         response.redirect(redirectPath);
     }
 };

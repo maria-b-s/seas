@@ -92,6 +92,17 @@ $govuk-assets-path: '/govuk/assets/';
     }
 }
 
+/* Provides additional spacing between checkbox dividers, and adds additional
+ * font weight for increased separation visibility. */
+.govuk-checkboxes__divider {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    text-align: left;
+}
+
 /* Provides space between tag and "Assign to me" URL when viewing applications
  * in the identity checker dashboard. */
 .govuk-tag {

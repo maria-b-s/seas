@@ -122,8 +122,12 @@
                     }) }}
 
                     <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
                     {{ govukButton({
-                        text: "Continue"
+                        text: buttonText
                     }) }}
                 </form>
             {% endcall %}

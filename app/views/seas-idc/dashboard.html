@@ -57,12 +57,12 @@
             <div class="govuk-grid-column-three-quarters">
                 <!-- Input. -->
                 {{ govukInput({
-                    id: "search-application-name",
+                    id: "filter-applicant-name",
                     label: {
                         text: "Applicant name"
                     },
-                    name: "search-application-name",
-                    value: data["search-application-name"]
+                    name: "filter-applicant-name",
+                    value: data["filter-applicant-name"]
                 }) }}
             </div>
             <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
@@ -81,7 +81,11 @@
 
     <!-- Table rows / applications. -->
     {% set tableRows = [] %}
-    {% for application in data["idc-applications"] %}
+    {% set idcApplications = data["idc-applications"] %}
+    {% if data["idc-applications-filtered"] %}
+        {% set idcApplications = data["idc-applications-filtered"] %}
+    {% endif %}
+    {% for application in idcApplications %}
         <!-- Name. -->
         {% set applicationFirstName = application["firstName"] %}
         {% set applicationSurname = application["surname"] %}

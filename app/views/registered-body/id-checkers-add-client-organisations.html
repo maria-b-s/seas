@@ -1,0 +1,149 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% set idCheckerName = data["id-checker-first-name"] + " " + data["id-checker-last-name"] %}
+{% block pageTitle %}
+    Which client organisations will {{ idCheckerName }} be doing ID checks for?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+            {% set errorList = [] %}
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "href": "#" + key,
+                    "text": value
+                }), errorList) %}
+            {% endfor %}
+            {{ govukErrorSummary({
+                errorList: errorList,
+                titleText: "There's a problem with the information you have provided"
+            }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdCheckerClientOrganisations = "" %}
+            {% if validation | length %}
+                <!-- ID Checker client organisations. -->
+                {% if validation["id-checker-client-organisations"] %}
+                    {% set errorComponentIdCheckerClientOrganisations = {
+                        text: validation["id-checker-client-organisations"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Which client organisations will " + idCheckerName + " be doing ID checks for?"
+                }
+            }) %}
+
+                <!-- Hint. -->
+                <p class="govuk-hint govuk-!-margin-bottom-6">You can add one or more client organisations. The ID Checker can only see applications from a client organisation if you select them here.</p>
+
+                <form method="post">
+                    <!-- Checkboxes. -->
+                    {% set selectCheckbox = false %}
+                    {% if data["id-checker-client-organisations"] %}
+                        {% set selectCheckbox = (registeredBody["organisation"] in data["id-checker-client-organisations"]) %}
+                    {% endif %}
+                    {% set registeredBodyOrganisation = {
+                        checked: selectCheckbox,
+                        hint: {
+                            text: "Select box if " + idCheckerName + " will also be doing ID checks for your organisation."
+                        },
+                        text: registeredBody["organisation"],
+                        value: registeredBody["organisation"] }
+                    %}
+                    {% set clientOrganisations = [registeredBodyOrganisation] %}
+                    {% set listAzDividerCurrent = "" %}
+                    {% for clientOrganisation in data["client-organisations"] %}
+                        <!-- Checkboxes / Divider. -->
+                        {% set listAzDividerClientOrganisation = clientOrganisation["text"].slice(0, 1) %}
+                        {% if listAzDividerClientOrganisation !== listAzDividerCurrent %}
+                            {% set listAzDividerCurrent = listAzDividerClientOrganisation %}
+                            {% set listAzDivider = { 
+                                divider: listAzDividerCurrent } %}
+                            {% set clientOrganisations = (clientOrganisations.push(listAzDivider), clientOrganisations) %}
+                        {% endif %}
+                        <!-- Checkboxes / Client organisation. -->
+                        {% if data["id-checker-client-organisations"] %}
+                            {% set selectCheckbox = (clientOrganisation["value"] in data["id-checker-client-organisations"]) %}
+                        {% else %}
+                            {% set selectCheckbox = false %}
+                        {% endif %}
+                        {% set clientOrganisation = {
+                            checked: selectCheckbox,
+                            text: clientOrganisation["text"],
+                            value: clientOrganisation["value"]
+                        } %}
+                        {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
+                    {% endfor %}
+                    {{ govukCheckboxes({
+                        errorMessage: errorComponentIdCheckerClientOrganisations,
+                        items: clientOrganisations,
+                        name: "id-checker-client-organisations",
+                        values: data["id-checker-client-organisations"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

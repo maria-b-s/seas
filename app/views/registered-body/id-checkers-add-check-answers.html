@@ -1,0 +1,211 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Check your answers
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+            {% set errorList = [] %}
+            {% for key, value in validation %}
+                {% set errorList = (errorList.push({
+                    "href": "#" + key,
+                    "text": value
+                }), errorList) %}
+            {% endfor %}
+            {{ govukErrorSummary({
+                errorList: errorList,
+                titleText: "There's a problem with the information you have provided"
+            }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdCheckerAddAdditional = "" %}
+            {% if validation | length %}
+                <!-- ID Checker client organisations. -->
+                {% if validation["id-checker-add-additional"] %}
+                    {% set errorComponentIdCheckerAddAdditional = {
+                        text: validation["id-checker-add-additional"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Check your answers"
+                }
+            }) %}
+
+                <!-- Summary list. -->
+                {% set summaryListRows = [] %}
+                <!-- Name. -->
+                {% set idCheckerNameSummaryListRow = {
+                    key: {
+                        text: "Name"
+                    },
+                    value: {
+                        text: data["id-checker-first-name"] + " " + data["id-checker-last-name"]
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "id-checkers-add-name?change=true",
+                                text: "Change",
+                                visuallyHiddenText: "Change ID Checker name."
+                            }
+                        ]
+                    }
+                } %}
+                {% set summaryListRows = (summaryListRows.push(idCheckerNameSummaryListRow), summaryListRows) %}
+                <!-- Email address. -->
+                {% set idCheckerEmailAddressSummaryListRow = {
+                    key: {
+                        text: "Email address"
+                    },
+                    value: {
+                        text: data["id-checker-email-address"]
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "id-checkers-add-email-address?change=true",
+                                text: "Change",
+                                visuallyHiddenText: "Change ID Checker email address."
+                            }
+                        ]
+                    }
+                } %}
+                {% set summaryListRows = (summaryListRows.push(idCheckerEmailAddressSummaryListRow), summaryListRows) %}
+                <!-- Checks. -->
+                {% set idCheckerChecksSummaryListRow = {
+                    key: {
+                        text: "Checks for client organisations"
+                    },
+                    value: {
+                        text: data["id-checker-checks"]
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "id-checkers-add-checks?change=true",
+                                text: "Change",
+                                visuallyHiddenText: "Change if the ID Checker will be doing checks for client organisations."
+                            }
+                        ]
+                    }
+                } %}
+                {% set summaryListRows = (summaryListRows.push(idCheckerChecksSummaryListRow), summaryListRows) %}
+                <!-- Client organisations. -->
+                {% if data["id-checker-checks"] === "Yes" %}
+                    {% set idCheckerClientOrganisations = "" %}
+                    {% for clientOrganisation in data["id-checker-client-organisations"] %}
+                        {% set idCheckerClientOrganisations = idCheckerClientOrganisations + clientOrganisation + "<br/>" %}
+                    {% endfor %}
+                    {% set idCheckerClientOrganisations = idCheckerClientOrganisations.substring(0, (idCheckerClientOrganisations.length - ("<br/>").length)) %}
+                    {% set idCheckerClientOrganisationsSummaryListRow = {
+                        key: {
+                            text: "Client organisations"
+                        },
+                        value: {
+                            html: idCheckerClientOrganisations
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "id-checkers-add-client-organisations?change=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "Change the client organisations the ID Checker will be doing checks for."
+                                }
+                            ]
+                        }
+                    } %}
+                    {% set summaryListRows = (summaryListRows.push(idCheckerClientOrganisationsSummaryListRow), summaryListRows) %}
+                {% endif %}
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: summaryListRows
+                }) }}
+
+
+
+                <form method="post">
+                    <!-- Heading. -->
+                    <h2 class="govuk-heading-m">Do you want to add another ID Checker?</h2>
+
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentIdCheckerAddAdditional,
+                        items: [
+                            {
+                                checked: false,
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: false,
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "id-checker-add-additional"
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

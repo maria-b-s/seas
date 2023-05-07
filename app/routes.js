@@ -24,6 +24,8 @@ const { clearSelectedIdChecker } = require('./middleware/utilsDeactivatedIdCheck
 const { confirmClientOrganisation } = require('./middleware/confirmClientOrganisation');
 const { deselectClientOrganisation } = require('./middleware/utilsClientOrganisation');
 const { filterAppList } = require('./middleware/filterAppList');
+const { filterIdcApplications } = require('./middleware/filterIdcApplications');
+const { filterIdCheckersManage } = require('./middleware/filterIdCheckersManage');
 const { getEncryptedPassword } = require("./middleware/utilsMiddleware");
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
@@ -51,7 +53,9 @@ const { validateExistingPostHolder } = require('./middleware/validateExistingPos
 const { validateFreeOfChargeVolunteerDeclaration } = require('./middleware/validateFreeOfChargeVolunteerDeclaration');
 const { validateIdCheckerSecurityCode } = require('./middleware/validateIdCheckerSecurityCode');
 const { validateIdCheckersAdd } = require('./middleware/validateIdCheckersAdd');
+const { validateIdCheckersAddCheckAnswers } = require('./middleware/validateIdCheckersAddCheckAnswers');
 const { validateIdCheckersAddChecks } = require('./middleware/validateIdCheckersAddChecks');
+const { validateIdCheckersAddClientOrganisations } = require('./middleware/validateIdCheckersAddClientOrganisations');
 const { validateIdCheckersAddEmailAddress } = require('./middleware/validateIdCheckersAddEmailAddress');
 const { validateIdCheckersAddName } = require('./middleware/validateIdCheckersAddName');
 const { validateIdDocuments } = require('./middleware/validateIdDocuments');
@@ -571,13 +575,21 @@ registeredBodyRouter.get('/id-checkers-manage', invalidateCache, (request, respo
     // Response.
     response.render('registered-body/id-checkers-manage', { cache: inputCache, validation: null });
 });
+registeredBodyRouter.post('/id-checkers-manage', invalidateCache, filterIdCheckersManage);
 
 // -----------------------------------------------------------------------------
 // ID checkers / Add
 // -----------------------------------------------------------------------------
 registeredBodyRouter.get('/id-checkers-add', invalidateCache, (request, response) => {
     // Constants.
+    const data = request.session.data;
     const inputCache = loadPageData(request);
+
+    /* Clears any corresponding filters according to the client organisation
+     * selected and/or Identity checker name searched in /id-checkers-manage. */ 
+    data["filter-client-organisation"] = "";
+    data["filter-id-checker-name"] = "";
+    data["id-checkers-filtered"] = "";
 
     // Response.
     response.render('registered-body/id-checkers-add', { cache: inputCache, validation: null });
@@ -619,6 +631,53 @@ registeredBodyRouter.get('/id-checkers-add-checks', invalidateCache, (request, r
     response.render('registered-body/id-checkers-add-checks', { cache: inputCache, validation: null });
 });
 registeredBodyRouter.post('/id-checkers-add-checks', invalidateCache, validateIdCheckersAddChecks);
+
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Client organisations
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-client-organisations', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+    const registeredBody = request.session.selectedRB;
+
+    // Response.
+    response.render('registered-body/id-checkers-add-client-organisations', { cache: inputCache, registeredBody: registeredBody, validation: null });
+});
+registeredBodyRouter.post('/id-checkers-add-client-organisations', invalidateCache, validateIdCheckersAddClientOrganisations);
+
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Check answers
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-check-answers', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+    const registeredBody = request.session.selectedRB;
+
+    // Response.
+    response.render('registered-body/id-checkers-add-check-answers', { cache: inputCache, registeredBody: registeredBody, validation: null });
+});
+registeredBodyRouter.post('/id-checkers-add-check-answers', invalidateCache, validateIdCheckersAddCheckAnswers);
+
+// -----------------------------------------------------------------------------
+// ID checkers / Add / Confirmation
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/id-checkers-add-confirmation', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/id-checkers-add-confirmation', { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/id-checkers-add-confirmation', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = 'id-checkers-manage';
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
 
 // IDC Mobile Number
 registeredBodyRouter.get('/idc-mobile-number', invalidateCache, (req, res) => {
@@ -3083,18 +3142,6 @@ dashboardRouter.get('*', (req, res, next) => {
 //     }
 // });
 
-seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
-    // Constants.
-    const data = request.session.data;
-    const applications = data['idc-applications'];
-    const idChecker = request.session.selectedIDC.name;
-    const inputCache = loadPageData(request);
-
-    // Response.
-    response.render('seas-idc/dashboard', { cache: inputCache, applications: applications, idCheckerCurrent: idChecker, validation: null });
-});
-
-
 dashboardRouter.get('/rb-login', invalidateCache, (req, res, _next) => {
     const inputCache = loadPageData(req);
     res.render('dashboard/rb-login', { cache: inputCache, validation: null });
@@ -3699,20 +3746,26 @@ seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdChe
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
     // Constants.
-    const data = request.session.data;
     const idChecker = request.session.selectedIDC.name;
     const inputCache = loadPageData(request);
 
     // Response.
     response.render('seas-idc/dashboard', { cache: inputCache, idCheckerCurrent: idChecker, validation: null });
 });
+seasIdcRouter.post('/dashboard', invalidateCache, filterIdcApplications);
 
 // -----------------------------------------------------------------------------
 // Verifying ID
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/verifying-id', invalidateCache, (request, response) => {
     // Constants.
+    const data = request.session.data;
     const inputCache = loadPageData(request);
+
+    /* Clears any corresponding filter according to the applicant name
+     * searched in /dashboard. */ 
+    data["filter-applicant-name"] = "";
+    data["idc-applications-filtered"] = "";
 
     // Response.
     response.render('seas-idc/verifying-id', { cache: inputCache, validation: null });
