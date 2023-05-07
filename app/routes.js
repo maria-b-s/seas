@@ -2987,7 +2987,7 @@ dashboardRouter.get('*', (req, res, next) => {
             // date: `${date}/${month}/${year}`,
             date: randomdate.valueOf(),
             readableDate: `${date}/${month}/${year}`,
-            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@mail.com`,
+            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@example.org`,
             organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
             history: [
                 {
