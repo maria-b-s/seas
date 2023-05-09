@@ -153,7 +153,7 @@
         <!-- Last ID check. -->
         {% set idCheckerLastIdCheck = idChecker["dateLastIdCheck"] %}
         {% if not idCheckerLastIdCheck %}
-            {% set idCheckerLastIdCheck = '<span style="color: #D4351C">N/A</span>' %}
+            {% set idCheckerLastIdCheck = 'N/A' %}
         {% endif %}
         <!-- Action. -->
         {% set idCheckerAction = "" %}
@@ -169,28 +169,22 @@
                 {
                     attributes: {
                         "data-sort-value": idCheckerSurname,
-                        "style": "width: 34.5%"
+                        "style": "width: 34.25%"
                     },
-                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6">' + idCheckerFirstName + ' <span class="govuk-!-font-weight-bold">' + idCheckerSurname + '</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Organisation</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>'
+                    html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Client organisation</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>
+                           <p class="govuk-body-m govuk-!-margin-top-3 govuk-!-margin-bottom-1">' + idCheckerAction + '</p>'
                 },
                 {
                     attributes: {
                         "data-sort-value": idCheckerLastIdCheck
                     },
-                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6" style="visibility: hidden">' + idCheckerSurname + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
-                },
-                {
-                    attributes: {
-                        "style": "text-align: right;
-                                    width: 27.5%"
-                    },
-                    html: idCheckerAction
+                    html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + idCheckerFirstName + ' ' + idCheckerSurname + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
                 }
             ]
         %}
@@ -208,13 +202,13 @@
                 attributes: {
                     "aria-sort": "none"
                 },
-                text: "Name"
+                text: "Last name"
             },
             {
                 attributes: {
                     "aria-sort": "none"
                 },
-                text: "Date"
+                text: "Last ID check"
             },
             {
             }

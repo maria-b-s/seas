@@ -38,6 +38,7 @@ const validateIdCheckersAddCheckAnswers = (request, response) => {
     } else {
         request.session.data["id-checker-add-additional"] = idCheckerAddAdditional;
         if (idCheckerAddAdditional === "Yes") {
+            data["id-checker-add-additional"] = "";
             redirectPath = "#";
         } else {
             /* Stores the captured details of the new ID checkers submitted by the

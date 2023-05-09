@@ -53,30 +53,32 @@
     <h2 class="govuk-heading-m">Search</h2>
 
     <div class="govuk-grid-row">
-        <form method="post">
-            <div class="govuk-grid-column-three-quarters">
-                <!-- Input. -->
-                {{ govukInput({
-                    id: "filter-applicant-name",
-                    label: {
-                        text: "Applicant name"
-                    },
-                    name: "filter-applicant-name",
-                    value: data["filter-applicant-name"]
-                }) }}
-            </div>
-            <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
-                <!-- Button -->
-                {{ govukButton({
-                    attributes: {
-                        "style": "float: right;
-                                  width: 100%"
-                    },
-                    classes: "govuk-button--secondary",
-                    text: "Search"
-                }) }}
-            </div>
-        </form>
+        <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+            <form method="post">
+                <div class="govuk-grid-column-three-quarters">
+                    <!-- Input. -->
+                    {{ govukInput({
+                        id: "filter-applicant-name",
+                        label: {
+                            text: "Applicant name"
+                        },
+                        name: "filter-applicant-name",
+                        value: data["filter-applicant-name"]
+                    }) }}
+                </div>
+                <div class="govuk-grid-column-one-quarter govuk-!-margin-top-6">
+                    <!-- Button -->
+                    {{ govukButton({
+                        attributes: {
+                            "style": "float: right;
+                                    width: 100%"
+                        },
+                        classes: "govuk-button--secondary",
+                        text: "Search"
+                    }) }}
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Table rows / applications. -->
@@ -118,28 +120,21 @@
                 {
                     attributes: {
                         "data-sort-value": applicationSurname,
-                        "style": "width: 34.5%"
+                        "style": "width: 34.25%"
                     },
-                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6">' + applicationFirstName + ' <span class="govuk-!-font-weight-bold">' + applicationSurname + '</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Address</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date submitted</p>
-                           <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Identity checker</p>'
+                    html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Address</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date submitted</p>
+                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">ID Checker</p>'
                 },
                 {
                     attributes: {
                         "data-sort-value": applicationDateSubmitted
                     },
-                    html: '<p class="govuk-body-m govuk-!-margin-bottom-6" style="visibility: hidden">' + applicationSurname + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationAddress + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationDateSubmitted + '</p>
-                           <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationIdChecker + applicationAssignToIdentityChecker + '</p>'
-                },
-                {
-                    attributes: {
-                        "style": "text-align: right;
-                                    width: 25.0%"
-                    },
-                    html: applicationViewVerifyingId
+                    html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + applicationFirstName + ' ' + applicationSurname + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + applicationAddress + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + applicationDateSubmitted + '</p>
+                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + applicationIdChecker + applicationViewVerifyingId + applicationAssignToIdentityChecker + '</p>'
                 }
             ]
         %}
@@ -157,13 +152,13 @@
                 attributes: {
                     "aria-sort": "none"
                 },
-                text: "Name"
+                text: "Last name"
             },
             {
                 attributes: {
                     "aria-sort": "none"
                 },
-                text: "Date"
+                text: "Date submitted"
             },
             {
             }

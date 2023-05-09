@@ -27,9 +27,12 @@ const validateIdCheckersAddClientOrganisations = (request, response) => {
     savePageData(request, data);
 
     /* Validates that at least one checkbox has been checked to identify a
-     * client organisation/s the Identity Checker will do ID checks for. */
+     * client organisation/s, other than their corresponding organisation that
+     * the Identity Checker will do ID checks for. */
     if (!idCheckerClientOrganisations || idCheckerClientOrganisations.length < 1) {
         dataValidation["id-checker-client-organisations"] = `Tick a box for the client organisations ${ idCheckerName } will be doing ID checks for`;
+    } else if (idCheckerClientOrganisations.length === 1 && idCheckerClientOrganisations.includes(registeredBody.organisation)) {
+        dataValidation["id-checker-client-organisations"] = `Tick a box other than your organisation for the client organisations ${ idCheckerName } will be doing ID checks for`;
     }
 
     // Response.
