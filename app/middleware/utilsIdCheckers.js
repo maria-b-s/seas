@@ -45,6 +45,17 @@ const _PREDEFINED_ID_CHECKERS = [
         name: "Martin Prince",
         org: "Worldwide Shipping",
         password: "pass1234"
+    },
+    {
+        activated : true,
+        dateAdded: "04/04/2023",
+        dateLastIdCheck: "",
+        dept: "Student Applications",
+        email: "joeb@gmail.com",
+        mobile: "07998 832182",
+        name: "Joe Burnley",
+        org: "Aztec Theatre",
+        password: "pass1234"
     }
 ];
 
