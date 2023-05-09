@@ -16,7 +16,7 @@ const validateIdCheckersAddCheckAnswers = (request, response) => {
     const idCheckerAddAdditional = data["id-checker-add-additional"];
     const inputCache = loadPageData(request);
     const redirectPathIdCheckersAddConfirmation = "id-checkers-add-confirmation";
-    const registeredBody = request.session.selectedRB;
+    const registeredBody = { organisation: "My Registered Body organisation name" };
     const renderPath = "registered-body/id-checkers-add-check-answers";
 
     // Properties.
@@ -38,6 +38,7 @@ const validateIdCheckersAddCheckAnswers = (request, response) => {
     } else {
         request.session.data["id-checker-add-additional"] = idCheckerAddAdditional;
         if (idCheckerAddAdditional === "Yes") {
+            data["id-checker-add-additional"] = "";
             redirectPath = "#";
         } else {
             /* Stores the captured details of the new ID checkers submitted by the

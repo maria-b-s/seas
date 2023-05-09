@@ -60,7 +60,7 @@ const addNewIdChecker = (request) => {
 
     /* Stores the captured details of the new ID checkers submitted by the
      * registered body. */
-    data["id-checkers"].push({
+    data["id-checkers"].unshift({
         activated : false,
         dateAdded: new Date().toLocaleDateString("en-GB"),
         dateLastIdCheck: "",
@@ -70,7 +70,7 @@ const addNewIdChecker = (request) => {
         name: data["id-checker-first-name"] + " " + data["id-checker-last-name"],
         org: registeredBody["organisation"],
         password: ""
-    });  
+    });
 };
 
 const setPredefinedIdCheckers = (request) => {
