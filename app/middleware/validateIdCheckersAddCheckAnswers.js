@@ -16,7 +16,7 @@ const validateIdCheckersAddCheckAnswers = (request, response) => {
     const idCheckerAddAdditional = data["id-checker-add-additional"];
     const inputCache = loadPageData(request);
     const redirectPathIdCheckersAddConfirmation = "id-checkers-add-confirmation";
-    const registeredBody = { organisation: "My Registered Body organisation name" };
+    const registeredBody = request.session.selectedRB;
     const renderPath = "registered-body/id-checkers-add-check-answers";
 
     // Properties.
