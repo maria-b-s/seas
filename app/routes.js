@@ -567,10 +567,18 @@ registeredBodyRouter.post('/check-answers', invalidateCache, (req, res) => {
 registeredBodyRouter.get('/id-checkers-manage', invalidateCache, (request, response) => {
     // Constants.
     const inputCache = loadPageData(request);
+    const mockDbAccounts = request.session.mockDBaccounts;
+    const registeredBody = request.session.selectedRB;
 
     /* Ensures any client organisation previously chosen is deselected within
      * the Select component of /id-checkers-manage. */
     deselectClientOrganisation(request);
+
+    /* Within the prototype, if sign in of a registered body was skipped for
+     * testing purposes we sign in the first known registered body. */
+    if (!registeredBody && mockDbAccounts) {
+        request.session.selectedRB = mockDbAccounts[0];
+    }
 
     // Response.
     response.render('registered-body/id-checkers-manage', { cache: inputCache, validation: null });
@@ -3718,6 +3726,20 @@ seasIdcRouter.get('/sign-in', invalidateCache, (request, response) => {
 seasIdcRouter.post('/sign-in', invalidateCache, validateSignIn);
 
 // -----------------------------------------------------------------------------
+// Sign in / Automatic
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/auto-login', invalidateCache, (request, response) => {
+    // Constants.
+    const idChecker = request.session.data['id-checkers'][0];
+
+    // Selects the first predefined ID Checker.
+    request.session.selectedIDC = idChecker;
+
+    // Response.
+    response.redirect('dashboard');
+});
+
+// -----------------------------------------------------------------------------
 // Check your mobile
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/security-code-check', invalidateCache, (request, response) => {
@@ -3753,6 +3775,26 @@ seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
     response.render('seas-idc/dashboard', { cache: inputCache, idCheckerCurrent: idChecker, validation: null });
 });
 seasIdcRouter.post('/dashboard', invalidateCache, filterIdcApplications);
+
+// -----------------------------------------------------------------------------
+// Dashboard / Assign application to ID Checker
+// -----------------------------------------------------------------------------
+seasIdcRouter.get('/dashboard-application-assign', invalidateCache, (request, response) => {
+    // Constants.
+    const idcApplications = request.session.data['idc-applications']
+    const idChecker = request.session.selectedIDC;
+
+    /* Assigns the application selected by the Identity Checker to the
+     * corresponding Identity Checker. */ 
+    if (idChecker) {
+        index = idcApplications.findIndex(application => application.id == request.query.id);
+        request.session.data['idc-applications'][index].idChecker = idChecker["name"];
+    }
+
+    /* Response, while ensuring any corresponding filter according to the
+     * applicant name is maintained. */ 
+    filterIdcApplications(request, response);
+});
 
 // -----------------------------------------------------------------------------
 // Verifying ID
@@ -3885,27 +3927,6 @@ seasIdcRouter.get('/id-verified', invalidateCache, (request, response) => {
     response.render('seas-idc/id-verified', { cache: inputCache, validation: null });
 });
 seasIdcRouter.post('/id-verified', invalidateCache, validateIdVerified);
-
-// Auto-Login
-seasIdcRouter.get('/auto-login', invalidateCache, (req, res) => {
-    const inputCache = loadPageData(req);
-    if (req.session.data['id-checkers'] == undefined) {
-        req.session.data['id-checkers'] = idCheckers;
-    }
-
-    req.session.selectedIDC = req.session.data['id-checkers'][0];
-    res.redirect('dashboard');
-});
-
-// Assign IDV
-seasIdcRouter.get('/assign-idv', invalidateCache, (req, res) => {
-    if (req.session.selectedIDC && req.session.data['idc-applications']) {
-        objIndex = req.session.data['idc-applications'].findIndex(obj => obj.id == req.query.id);
-        req.session.data['idc-applications'][objIndex].idChecker = req.session.selectedIDC.name;
-    }
-
-    res.redirect('dashboard');
-});
 
 router.use('/citizen-application', citizenRouter);
 router.use('/dashboard', dashboardRouter);

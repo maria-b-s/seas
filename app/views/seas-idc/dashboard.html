@@ -109,7 +109,7 @@
         <!-- Assign to identity checker. -->
         {% set applicationAssignToIdentityChecker = "" %}
         {% if idCheckerCurrent !== application["idChecker"] %}
-            {% set applicationAssignToIdentityChecker = '<a class="govuk-link" href="assign-idv?id=' + application["id"] + '" rel="noopener noreferrer">Assign to me</a>' %}
+            {% set applicationAssignToIdentityChecker = '<a class="govuk-link" href="dashboard-application-assign?id=' + application["id"] + '" rel="noopener noreferrer">Assign to me</a>' %}
         {% endif %}
 
         <!-- Table cell / application. -->
