@@ -54,7 +54,7 @@ const _PREDEFINED_ID_CHECKERS = [
         email: "joeb@gmail.com",
         mobile: "07998 832182",
         name: "Joe Burnley",
-        org: "Aztec Theatre",
+        org: "ZiffCorp",
         password: "pass1234"
     }
 ];
