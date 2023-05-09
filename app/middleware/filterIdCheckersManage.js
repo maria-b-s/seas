@@ -27,12 +27,12 @@ const filterIdCheckersManage = (request, response) => {
     if (filterClientOrganisation && filterIdCheckerName) {
         filterIdCheckerName = filterIdCheckerName.trim().toLowerCase();
         idCheckers = idCheckers.filter(idCheckers => idCheckers["org"] === (filterClientOrganisation));
-        data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].toLowerCase().includes(filterIdCheckerName));
+        data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].trim().toLowerCase().includes(filterIdCheckerName));
     } else if (filterClientOrganisation) {
         data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["org"] === (filterClientOrganisation));
     } else if (filterIdCheckerName) {
         filterIdCheckerName = filterIdCheckerName.trim().toLowerCase();
-        data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].toLowerCase().includes(filterIdCheckerName));
+        data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].trim().toLowerCase().includes(filterIdCheckerName));
     } else {
         data["filter-client-organisation"] = "";
         data["filter-id-checker-name"] = "";

@@ -25,7 +25,7 @@ const filterIdcApplications = (request, response) => {
      * searched. */ 
     if (filterApplicantName) {
         filterApplicantName = filterApplicantName.trim().toLowerCase();
-        data["idc-applications-filtered"] = idcApplications.filter(idcApplication => (idcApplication["firstName"].toLowerCase().includes(filterApplicantName) || idcApplication["surname"].toLowerCase().includes(filterApplicantName)));
+        data["idc-applications-filtered"] = idcApplications.filter(idcApplication => (filterApplicantName.includes(idcApplication["firstName"].toLowerCase()) || filterApplicantName.includes(idcApplication["surname"].toLowerCase())));
     } else {
         data["filter-applicant-name"] = "";
         data["idc-applications-filtered"] = "";
