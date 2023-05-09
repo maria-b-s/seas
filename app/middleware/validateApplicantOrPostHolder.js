@@ -15,16 +15,15 @@ const validateApplicantOrPostHolder = (request, response) => {
     const data = request.session.data;
     const historicWhatApplicationType = data["historic_what-application-type"];
     const inputCache = loadPageData(request);
-    const rechecked = data["rechecked"];
     const redirectPathCheckAnswers = "/registered-body/check-answers";
-    const redirectPathExistingPostHolder = persistChangeQueryStringFromRequestForPath(request, "existing-post-holder");
+    const redirectPathApplicantName = "applicant-name";
     const redirectPathVolunteerDeclaration = persistChangeQueryStringFromRequestForPath(request, "volunteer-declaration");
     const renderPath = "registered-body/applicant-or-post-holder";
     const whatApplicationType = data["what-application-type"];
 
     // Properties.
     let dataValidation = {};
-    let redirectPath = redirectPathExistingPostHolder;
+    let redirectPath = redirectPathApplicantName;
 
     // Cache session.
     savePageData(request, data);
@@ -51,18 +50,12 @@ const validateApplicantOrPostHolder = (request, response) => {
 
                 /* Responds with "Check your answers" if it is known whether or
                  * not the application is for a recheck. */
-                if (rechecked && (request.query && request.query.change)) {
+                if (request.query && request.query.change) {
                     redirectPath = redirectPathCheckAnswers;
                 }
                 break;
             case "Volunteer":
                 // Free-of-charge volunteer.
-
-                /* Removes the previously selected option regarding whether or
-                 * not the application is for a recheck; it is no longer
-                 * relevant. */ 
-                data["rechecked"] = undefined;
-
                 redirectPath = redirectPathVolunteerDeclaration;
                 break;
             default:
