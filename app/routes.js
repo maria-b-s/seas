@@ -107,6 +107,18 @@ router.get('*', invalidateCache, (request, response, next) => {
     return next();
 });
 
+// -----------------------------------------------------------------------------
+// Demonstration accounts
+// -----------------------------------------------------------------------------
+router.get('/demonstration-accounts', (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+    const registeredBodies = request.session.mockDBaccounts;
+
+    // Response.
+    response.render("demonstration-accounts", { cache: inputCache, registeredBodies: registeredBodies, validation: null });
+});
+
 
 
 // -----------------------------------------------------------------------------

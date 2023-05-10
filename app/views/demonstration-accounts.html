@@ -1,0 +1,243 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Demonstration accounts for prototype
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Demonstration accounts for prototype"
+                }
+            }) %}
+
+                <!-- Hint. -->
+                <p class="govuk-hint">This is not a real service.<br>You should only use the following demonstration accounts if you have been invited to test this prototype.</p>
+
+                <!-- ID Checkers. -->
+                {% set tablesIdCheckers %}
+                    {% for idChecker in data["id-checkers"] %}
+                        <!-- Name. -->
+                        {% set name = idChecker["name"] %}
+                        <!-- Organisation. -->
+                        {% set organisation = idChecker["org"] %}
+                        <!-- Department. -->
+                        {% set department = idChecker["dept"] %}
+                        <!-- Email address. -->
+                        {% set emailAddress = idChecker["email"] %}
+                        <!-- Mobile number. -->
+                        {% set mobileNumber = idChecker["mobile"] %}
+                        <!-- Password. -->
+                        {% set password = '<span style="color: #D4351C">Not set' %}
+                        {% if idChecker["password"].length > 0 %}
+                            {% set password = idChecker["password"] %}
+                        {% endif %}
+
+                        <!-- Table. -->
+                        <hr style="border: none; padding-top: 12px"/>
+                        {{ govukTable({
+                            rows: [
+                                [
+                                    {
+                                        attributes: {
+                                            "style": "width: 46.00%"
+                                        },
+                                        html: '<span class="govuk-!-font-weight-bold">Name</span>'
+                                    },
+                                    {
+                                        text: name
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Organisation</span>'
+                                    },
+                                    {
+                                        text: organisation
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Department</span>'
+                                    },
+                                    {
+                                        text: department
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Email address</span>'
+                                    },
+                                    {
+                                        text: emailAddress
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Mobile number</span>'
+                                    },
+                                    {
+                                        text: mobileNumber
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Password</span>'
+                                    },
+                                    {
+                                        html: password
+                                    }
+                                ]
+                            ]
+                        }) }}
+                        <hr style="border: none; padding-bottom: 12px"/>
+                    {% endfor %}
+                {% endset %}
+
+                <!-- Registered bodies. -->
+                {% set tablesRegisteredBodies %}
+                    {% for registeredBody in registeredBodies %}
+                        <!-- Registered body number. -->
+                        {% set registeredBodyNumber = registeredBody["rbNumber"] %}
+                        <!-- Countersignatory number. -->
+                        {% set countersignatoryNumber = registeredBody["csNumber"] %}
+                        <!-- Organisation. -->
+                        {% set organisation = registeredBody["organisation"] %}
+                        <!-- Date of birth. -->
+                        {% set dateOfBirth = registeredBody["userDob"] %}
+                        <!-- Email address. -->
+                        {% set emailAddress = registeredBody["email"] %}
+                        <!-- Password. -->
+                        {% set password = '<span style="color: #D4351C">Not set' %}
+                        {% if registeredBody["hasSetPassword"] %}
+                            {% set password = registeredBody["password"] %}
+                        {% endif %}
+
+                        <!-- Table. -->
+                        <hr style="border: none; padding-top: 12px"/>
+                        {{ govukTable({
+                            rows: [
+                                [
+                                    {
+                                        attributes: {
+                                            "style": "width: 46.00%"
+                                        },
+                                        html: '<span class="govuk-!-font-weight-bold">Registered body number</span>'
+                                    },
+                                    {
+                                        text: registeredBodyNumber
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Countersignatory number</span>'
+                                    },
+                                    {
+                                        text: countersignatoryNumber
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Organisation</span>'
+                                    },
+                                    {
+                                        text: organisation
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Date of birth</span>'
+                                    },
+                                    {
+                                        text: dateOfBirth
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Email address</span>'
+                                    },
+                                    {
+                                        text: emailAddress
+                                    }
+                                ],
+                                [
+                                    {
+                                        html: '<span class="govuk-!-font-weight-bold">Password</span>'
+                                    },
+                                    {
+                                        html: password
+                                    }
+                                ]
+                            ]
+                        }) }}
+                        <hr style="border: none; padding-bottom: 12px"/>
+                    {% endfor %}
+                {% endset %}
+
+                <!-- Accordion. -->
+                {{ govukAccordion({
+                    items: [
+                        {
+                            heading: {
+                                text: "ID Checkers"
+                            },
+                            content: {
+                                html: tablesIdCheckers
+                            }
+                        },
+                        {
+                            heading: {
+                                text: "Registered bodies"
+                            },
+                            content: {
+                                html: tablesRegisteredBodies
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}
