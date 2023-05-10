@@ -43,12 +43,12 @@ endset%} {% block beforeContent %}
                     <div id="sex-hint" class="govuk-hint">We need to know your sex, so we can check police records.</div>
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="sex" name="sex" type="radio" {% if cache['sex'] === 'Male' %}  checked="checked" {% endif %} value="Male" />
-                            <label class="govuk-label govuk-radios__label" for="sex"> Male </label>
-                        </div>
-                        <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="sex-2" name="sex" {% if cache['sex'] === 'Female' %} checked="checked" {% endif %}  type="radio" value="Female" />
                             <label class="govuk-label govuk-radios__label" for="sex-2"> Female </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="sex" name="sex" type="radio" {% if cache['sex'] === 'Male' %}  checked="checked" {% endif %} value="Male" />
+                            <label class="govuk-label govuk-radios__label" for="sex"> Male </label>
                         </div>
                     </div>
 

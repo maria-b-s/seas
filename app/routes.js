@@ -1896,8 +1896,7 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
             dataValidation['start-year'] = 'Enter year you started living at this address';
         } else {
             const inputtedDate = new Date(req.body['start-year'], req.body['start-month'] - 1);
-
-            if (inputtedDate.toLocaleDateString() >= date.toLocaleDateString()) {
+            if (inputtedDate >= date) {
                 if (inputtedDate.getFullYear() > date.getFullYear()) {
                     dataValidation['start-year'] = 'Year you started living at this address must be in the past';
                 } else if (inputtedDate.getMonth() > date.getMonth()) {
