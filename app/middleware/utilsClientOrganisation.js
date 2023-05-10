@@ -9,8 +9,8 @@ const _PREDEFINED_CLIENT_ORGANISATIONS = [
     },
     {
         selected: false,
-        text: "Aztec Theater",
-        value: "Aztec Theater",
+        text: "Aztec Theatre",
+        value: "Aztec Theatre",
     },
     {
         selected: false,

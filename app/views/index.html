@@ -10,8 +10,8 @@
 {% endblock %} {% block content %}
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Standard or enhanced DBS check prototypes</h1>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">Standard or enhanced DBS check prototype</h1>
 
         <a
             href="registered-body/start"
@@ -36,197 +36,47 @@
         <br />
         <br />
         
-        <h2 class="govuk-heading-m">CSig creates user account for the IDC</h2>
+        <!-- Countersignatory creates user account for the ID Checker. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-3">Countersignatory creates user account for the ID Checker</h2>
         <p class="govuk-body">
             <a class="govuk-link" href="dashboard/rb-login" rel="noopener noreferrer">Sign in</a>
         </p>
         <p class="govuk-body">
-            <a href="registered-body/id-checkers-manage" class="govuk-link">Manage ID Checkers</a>
+            <a class="govuk-link" href="registered-body/id-checkers-manage" class="govuk-link">Manage ID Checkers</a>
         </p>
 
-        <h2 class="govuk-heading-m">IDC activates their account</h2>
+        <!-- ID Checker activates their account. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">ID Checker activates their account</h2>
         <p class="govuk-body">
-            <a href="seas-idc/start" class="govuk-link">Start page</a>
+            <a class="govuk-link" href="seas-idc/start" rel="noopener noreferrer">Activate ID Checker account</a>
         </p>
 
-        <h2 class="govuk-heading-m">CSig initiates the application</h2>
+        <!-- Countersignatory initiates the application. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Countersignatory initiates the application</h2>
         <p class="govuk-body">
-            <a href="registered-body/start" class="govuk-link">Start page</a>
+            <a class="govuk-link" href="registered-body/start" rel="noopener noreferrer">Initiate application</a>
         </p>
 
-        <h2 class="govuk-heading-m">IDC logs into SEAS, assigns applications, verifies ID, declares verification</h2>
-        <!--
+        <!-- ID Checker logs into SEAS, assigns applications, verifies ID, declares verification. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">ID Checker logs into SEAS, assigns applications, verifies ID, declares verification</h2>
         <p class="govuk-body">
-            <a href="seas-idc/start" class="govuk-link"> Start </a>
-        </p>
-        -->
-        <p class="govuk-body">
-            <a href="seas-idc/sign-in" class="govuk-link">Sign in</a>
+            <a class="govuk-link" href="seas-idc/sign-in" rel="noopener noreferrer">Log into SEAS</a>
         </p>
         <p class="govuk-body">
-            <a href="seas-idc/auto-login" class="govuk-link">Applications</a>
+            <a class="govuk-link" href="seas-idc/auto-login" rel="noopener noreferrer">Assign applications</a>
         </p>
 
-
-        <h2 class="govuk-heading-m">Citizen application</h2>
+        <!-- Citizen application. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Citizen application</h2>
         <p class="govuk-body">
-            <a href="citizen-application/start-application" class="govuk-link"> Start application </a>
-        </p>
-        <!--
-        <p class="govuk-body">
-            <a href="seas-idc/security-code-check" class="govuk-link"> OTP Verify </a>
-        </p>
-        <p class="govuk-body">
-            <a href="seas-idc/idc-create-password" class="govuk-link"> Create Password </a>
-        </p>
-        <p class="govuk-body">
-            <a href="seas-idc/dashboard" class="govuk-link"> Dashboard </a>
-        </p>
-        -->
-
-        <!--
-        <p class="govuk-body">
-            <a href="dashboard/rb-login" class="govuk-link">Login page</a>
-        </p>
-        <p class="govuk-body">
-            <a href="dashboard/email-otp" class="govuk-link"> OTP Email </a>
-        </p>
-        <p class="govuk-body">
-            <a href="dashboard/opt-verify" class="govuk-link">OTP verify</a>
-        </p>
-        <p class="govuk-body">
-            <a href="dashboard/home-old" class="govuk-link">Landing page</a>
-        </p>
-        <p class="govuk-body">
-            <a href="dashboard/home" class="govuk-link">Landing page 2.0</a>
-        </p>
-        -->
-        <!--
-        <p class="govuk-body">
-            <a href="/registered-body/enter-details" class="govuk-link"> Enter registered body and countersignatory numbers </a>
-        </p>
-        -->
-        <!--
-        <p class="govuk-body">
-            <a href="registered-body/dbs-check-level" class="govuk-link"> DBS check level </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/enhanced/barred-list-children" class="govuk-link"> Enhanced: barred list (children) </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/enhanced/barred-list-adults" class="govuk-link"> Enhanced: barred list (adults) </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/enhanced/working-at-home-address" class="govuk-link"> Enhanced: working at home address </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/enhanced/workforce-select" class="govuk-link"> Enhanced: Workforce </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/position" class="govuk-link"> Job or role </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/organisation-name" class="govuk-link"> Employer or organisation </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/applicant-or-post-holder" class="govuk-link"> New applicant or post holder </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/volunteer-declaration" class="govuk-link"> Free-of-charge volunteer </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/applicant-name" class="govuk-link"> Applicant name </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/applicant-email" class="govuk-link"> Applicant email address </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/check-answers" class="govuk-link"> Check answers </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/application-sent-to-citizen" class="govuk-link"> Application form sent to citizen </a>
+            <a class="govuk-link" href="citizen-application/start-application" rel="noopener noreferrer">Start application</a>
         </p>
 
-        <h2 class="govuk-heading-m">Citizen application</h2>
+        <!-- Demonstration accounts. -->
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Demonstration accounts</h2>
         <p class="govuk-body">
-            <a href="citizen-application/start-application" class="govuk-link"> Start application </a>
+            <a class="govuk-link" href="demonstration-accounts" rel="noopener noreferrer">View accounts</a>
         </p>
-        -->
-        <!--
-        <p class="govuk-body">
-            <a href="citizen-application/login" class="govuk-link"> Login </a>
-        </p>
-        -->
-        <!--
-        <p class="govuk-body">
-            <a href="citizen-application/login-old" class="govuk-link"> Login back in </a>
-        </p>
-        -->
-        <!--
-        <p class="govuk-body">
-            <a href="citizen-application/current-full-name" class="govuk-link"> Current full name </a>
-        </p>
-        <p class="govuk-body">
-            <a href="/citizen-application/previous-names-q" class="govuk-link"> Previous names </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/date-of-birth" class="govuk-link"> Date of birth </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/sex" class="govuk-link"> Sex </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/national-insurance-number" class="govuk-link"> National Insurance number </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/drivers-licence" class="govuk-link"> Driving licence </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/passport" class="govuk-link"> Passport </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/place-of-birth" class="govuk-link"> Place of birth </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/send-certificate" class="govuk-link"> Address to send certificate </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/lived-elsewhere" class="govuk-link"> Lived elsewhere </a>
-        </p>
-
-        <p class="govuk-body">
-            <a href="citizen-application/telephone-number" class="govuk-link"> Telephone number </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/previous-convictions" class="govuk-link"> Previous convictions </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/review-application" class="govuk-link"> Review application </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/declaration" class="govuk-link"> Declaration </a>
-        </p>
-        <p class="govuk-body">
-            <a href="citizen-application/confirmation" class="govuk-link"> Application sent to registered body </a>
-        </p>
-        -->
-        <!--
-        <h2 class="govuk-heading-m">Registered body</h2>
-
-        <p class="govuk-body">
-            <a href="registered-body/view-details" class="govuk-link">View Applicant Details</a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/id-checked" class="govuk-link"> ID Checked </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/declaration-registered-person" class="govuk-link"> Declaration </a>
-        </p>
-        <p class="govuk-body">
-            <a href="registered-body/application-sent" class="govuk-link"> Application sent </a>
-        </p>
-        -->
     </div>
 </div>
-
 {% endblock %}
