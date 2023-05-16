@@ -29,6 +29,8 @@ const { filterIdCheckersManage } = require('./middleware/filterIdCheckersManage'
 const { getEncryptedPassword } = require("./middleware/utilsMiddleware");
 const { getMonth } = require('./middleware/getMonth');
 const { invalidateCache, loadPageData, savePageData, trimDataValuesAndRemoveSpaces } = require('./middleware/utilsMiddleware');
+const { manualSendAddress } = require('./middleware/utilsSendAddress');
+const { postcodeLookupSendAddress } = require('./middleware/utilsSendAddress');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
@@ -66,6 +68,7 @@ const { validatePositionName } = require('./middleware/validatePositionName');
 const { validatePassport } = require('./middleware/validatePassport');
 const { validatePhone } = require('./middleware/validatePhone');
 const { validateSeasIdcDeclaration } = require('./middleware/validateSeasIdcDeclaration');
+const { validateSendAddress } = require('./middleware/validateSendAddress');
 const { validateSex } = require('./middleware/validateSex');
 const { validateSignIn } = require('./middleware/validateSignIn');
 const { validateVerifyingId } = require('./middleware/validateVerifyingId');
@@ -1214,7 +1217,7 @@ citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
         if (req.query['change'] == 'true') {
             res.redirect('/citizen-application/review-application');
         } else {
-            res.redirect('/citizen-application/send-certificate');
+            res.redirect('/citizen-application/send-address');
         }
     }
 });
@@ -1727,59 +1730,20 @@ citizenRouter.post('/previous-address-lookup', invalidateCache, (req, res, next)
     return res.redirect('previous-address-details');
 });
 
-citizenRouter.get('/send-certificate', invalidateCache, (req, res) => {
-    let inputCache = loadPageData(req);
-    let parameterString = '';
-    if (req.query.edit && req.session) {
-        let state = req.session.data['cert-address'] || [];
-        if (state) {
-            const seedingObject = {
-                'lookup-addr': state.lineOne,
-                'lookup-addr-2': state.lineTwo,
-                'hidden-details-town': state.townOrCity,
-                'hidden-details-country': state.country,
-                'postcode-lookup': state.postcode,
-            };
+// -----------------------------------------------------------------------------
+// Citizen application / Send address
+// -----------------------------------------------------------------------------
+citizenRouter.get('/send-address', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
 
-            inputCache = seedingObject;
-            parameterString = 'edit';
-        }
-    }
-
-    res.render('citizen-application/send-certificate', { cache: inputCache, validation: null, parameter: parameterString });
+    // Response.
+    response.render('citizen-application/send-address', { cache: inputCache, validation: null });
 });
-
-citizenRouter.post('/send-certificate', (req, res) => {
-    let dataValidation = {};
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-
-    if (!req.body['postcode-lookup']) {
-        dataValidation['postcode-lookup'] = 'Enter postcode';
-    }
-
-    if (!req.body['lookup-addr']) {
-        dataValidation['lookup-addr'] = 'Select address';
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('citizen-application/send-certificate', {
-            cache: inputCache,
-            validation: dataValidation,
-        });
-    } else {
-        if (req.query.edit) {
-            req.session.data['cert-address']['lineOne'] = req.body['lookup-addr'];
-            req.session.data['cert-address']['townOrCity'] = req.body['hidden-details-town'];
-            req.session.data['cert-address']['country'] = req.body['hidden-details-country'];
-            req.session.data['cert-address']['postcode'] = req.body['postcode-lookup'];
-            res.redirect('lived-elsewhere');
-        }
-        req.session.cache[req.originalUrl.split('?')[0]] = {};
-        req.session.data.temp_current = req.body;
-        return res.redirect('confirm-current-address');
-    }
-});
+citizenRouter.post('/send-address', invalidateCache, validateSendAddress);
+citizenRouter.post('/send-address/manual', invalidateCache, manualSendAddress);
+citizenRouter.post('/send-address/postcode-lookup', invalidateCache, postcodeLookupSendAddress);
+citizenRouter.post('/send-address/select', invalidateCache, postcodeLookupSendAddress);
 
 citizenRouter.get('/cert-address-manual', invalidateCache, (req, res) => {
     let inputCache = loadPageData(req);
@@ -1864,7 +1828,7 @@ citizenRouter.post('/cert-address-manual', (req, res) => {
 
 citizenRouter.get('/confirm-current-address', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
-    res.render('citizen-application/confirm-current-address', { cache: inputCache, validation: null, address: req.session.data.temp_current });
+    res.render('citizen-application/confirm-current-address', { cache: inputCache, validation: null, address: req.session.data["cert-address"] });
 });
 
 citizenRouter.post('/confirm-current-address', (req, res) => {
@@ -1913,11 +1877,6 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
             address: req.session.data.temp_current,
         });
     } else {
-        req.session.data['cert-address'] = {};
-        req.session.data['cert-address']['lineOne'] = req.session.data.temp_current['lookup-addr'];
-        req.session.data['cert-address']['townOrCity'] = req.session.data.temp_current['hidden-details-town'];
-        req.session.data['cert-address']['country'] = req.session.data.temp_current['hidden-details-country'];
-        req.session.data['cert-address']['postcode'] = req.session.data.temp_current['postcode-lookup'];
         req.session.data['cert-address']['start-month'] = getMonth(req.body['start-month']);
         req.session.data['cert-address']['start-year'] = req.body['start-year'];
 
@@ -2729,7 +2688,7 @@ citizenRouter.post('/outside-uk', (req, res) => {
 
 citizenRouter.get('/edit-address', invalidateCache, (req, res) => {
     if (req.query.type == 'certificate') {
-        res.redirect('send-certificate?edit=1&address=' + req.query.type);
+        res.redirect('send-address?edit=1&address=' + req.query.type);
     }
     if (req.query.address == 'no-address') {
         res.redirect('no-address?edit=' + req.query.edit + '&address=' + req.query.type);

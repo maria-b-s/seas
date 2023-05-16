@@ -24,11 +24,11 @@ set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block
                     </legend>
 
                     <p class="govuk-body-m">
-                        {% if address['lookup-addr'] %}{{address['lookup-addr']}}<br />{% endif %} {% if address['lookup-addr-2']
-                        %}{{address['lookup-addr-2']}}<br />
-                        {% endif %} {% if address['hidden-details-town'] %}{{address['hidden-details-town']}}<br />{% endif %} {% if
-                        address['hidden-details-country'] %}{{address['hidden-details-country']}}<br />{% endif %} {% if address['postcode-lookup']
-                        %}{{address['postcode-lookup']}}<br />{% endif %}
+                        {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if address['lineTwo']
+                        %}{{address['lineTwo']}}<br />
+                        {% endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{% endif %} {% if
+                        address['country'] %}{{address['country']}}<br />{% endif %} {% if address['postcode']
+                        %}{{address['postcode']}}<br />{% endif %}
                     </p>
 
                     <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
