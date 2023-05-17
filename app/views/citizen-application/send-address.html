@@ -96,7 +96,7 @@
                         text: validation["send-address-town-or-city"]
                     } %}
                 {% endif %}
-                <!-- Send address post code. -->
+                <!-- Send address postcode. -->
                 {% if validation["send-address-postcode"] %}
                     {% set errorComponentSendAddressPostcode = {
                         text: validation["send-address-postcode"]
@@ -119,7 +119,11 @@
                 <!-- Hint. -->
                 <p class="govuk-hint">You must make sure that you are able to check the information on your DBS certificate is correct.</p>
 
-                <form action="/citizen-application/send-address/postcode-lookup" method="post">
+                {% set formActionPostcodeLookup = "/citizen-application/send-address/postcode-lookup" %}
+                {% if query["edit"] %}
+                    {% set formActionPostcodeLookup = "/citizen-application/send-address/postcode-lookup?address=certificate&edit=1" %}
+                {% endif %}
+                <form action="{{ formActionPostcodeLookup }}" method="post">
                     <!-- Text input. -->
                     {{ govukInput({
                         autocomplete: "post-code",
@@ -143,7 +147,11 @@
                 <!-- Select. -->
                 {% set sendAddressPostcodeAddresses = data["send-address-postcode-addresses"] %}
                 {% if sendAddressPostcodeAddresses %}
-                    <form action="/citizen-application/send-address/select" method="post">
+                    {% set formActionSelect = "/citizen-application/send-address/select" %}
+                    {% if query["edit"] %}
+                        {% set formActionSelect = "/citizen-application/send-address/select?address=certificate&edit=1" %}
+                    {% endif %}
+                    <form action="{{ formActionSelect }}" method="post">
                         {{ govukSelect({
                             attributes: {
                                 "onchange": "this.form.submit();"
@@ -162,7 +170,7 @@
 
                 <!-- Text inputs. -->
                 {% set sendAddressSelectAddress = data["send-address-select-address"] %}
-                {% if query["manual"] === "true" or sendAddressSelectAddress %}
+                {% if query["edit"] === "1" or query["manual"] === "true" or sendAddressSelectAddress %}
                     <form id="send-address" method="post">
                         <!-- Text input. -->
                         {{ govukInput({
@@ -220,7 +228,7 @@
                 
                 {% set formAction = "/citizen-application/send-address/manual" %}
                 {% if query["edit"] %}
-                    {% set formAction = "/citizen-application/send-address/manual?edit=1&address=certificate" %}
+                    {% set formAction = "/citizen-application/send-address/manual?address=certificate&edit=1" %}
                 {% endif %}
                 <form action="{{ formAction }}" method="post">
                     <!-- Body -->
@@ -237,7 +245,7 @@
                 <p class="gov-uk-body">
                     <!-- Link. -->
                     {% if query["edit"] %}
-                        <a class="govuk-link" href="bfpo?edit=1&address=certificate" rel="noopener noreferrer">Add a British Forces Post Office (BFPO) address</a>
+                        <a class="govuk-link" href="bfpo?address=certificate&edit=1" rel="noopener noreferrer">Add a British Forces Post Office (BFPO) address</a>
                     {% else %}
                         <a class="govuk-link" href="bfpo?address=cert" rel="noopener noreferrer">Add a British Forces Post Office (BFPO) address</a>
                     {% endif %}
@@ -246,7 +254,7 @@
                 <p class="gov-uk-body">
                     <!-- Link. -->
                     {% if query["edit"] %}
-                        <a class="govuk-link" href="outside-uk?edit=1&address=certificate" rel="noopener noreferrer">Add a non-UK address</a>
+                        <a class="govuk-link" href="outside-uk?address=certificate&edit=1" rel="noopener noreferrer">Add a non-UK address</a>
                     {% else %}
                         <a class="govuk-link" href="outside-uk?address=cert" rel="noopener noreferrer">Add a non-UK address</a>
                     {% endif %}

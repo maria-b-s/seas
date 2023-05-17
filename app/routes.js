@@ -1874,7 +1874,7 @@ citizenRouter.post('/confirm-current-address', (req, res) => {
         res.render('citizen-application/confirm-current-address', {
             cache: inputCache,
             validation: dataValidation,
-            address: req.session.data.temp_current,
+            address: req.session.data["cert-address"],
         });
     } else {
         req.session.data['cert-address']['start-month'] = getMonth(req.body['start-month']);
@@ -2345,8 +2345,8 @@ citizenRouter.post('/address-confirm', (req, res) => {
 
 // BFPO - Mock Addresses
 const BFPO_ADDRESSES = [
-    { id: 2, lineOne: 'BFPO 2', postcode: 'BF1 3AA', townOrCity: 'Washington', country: 'USA' },
-    { id: 4, lineOne: 'BFPO 4', postcode: 'BF1 3AD', townOrCity: 'Kathmandu	', country: 'Nepal' },
+    { id: 2, lineOne: 'BFPO 2', lineTwo: '', postcode: 'BF1 3AA', townOrCity: 'Washington', country: 'USA' },
+    { id: 4, lineOne: 'BFPO 4', lineTwo: '', postcode: 'BF1 3AD', townOrCity: 'Kathmandu', country: 'Nepal' },
 ];
 
 citizenRouter.get('/bfpo', invalidateCache, (req, res) => {
@@ -2434,6 +2434,7 @@ citizenRouter.post('/bfpo', (req, res) => {
         }
         if (req.query.address == 'certificate') {
             req.session.data['cert-address']['lineOne'] = selectedBFPO['lineOne'];
+            req.session.data['cert-address']['lineTwo'] = selectedBFPO['lineTwo'];
             req.session.data['cert-address']['townOrCity'] = selectedBFPO['townOrCity'];
             req.session.data['cert-address']['country'] = selectedBFPO['country'];
             req.session.data['cert-address']['postcode'] = selectedBFPO['postcode'];
@@ -2688,21 +2689,21 @@ citizenRouter.post('/outside-uk', (req, res) => {
 
 citizenRouter.get('/edit-address', invalidateCache, (req, res) => {
     if (req.query.type == 'certificate') {
-        res.redirect('send-address?edit=1&address=' + req.query.type);
+        res.redirect('send-address?address=' + req.query.type + '&edit=1');
     }
     if (req.query.address == 'no-address') {
-        res.redirect('no-address?edit=' + req.query.edit + '&address=' + req.query.type);
+        res.redirect('no-address?address=' + req.query.type + '&edit=' + req.query.edit);
     }
     if (req.query.address == 'bfpo') {
-        res.redirect('bfpo?edit=' + req.query.edit + '&address=' + req.query.type);
+        res.redirect('bfpo?address=' + req.query.type + '&edit=' + req.query.edit);
     }
     if (req.query.address == 'outside-uk') {
-        res.redirect('outside-uk?edit=' + req.query.edit + '&address=' + req.query.type);
+        res.redirect('outside-uk?address=' + req.query.type + '&edit=' + req.query.edit);
     }
     if (req.query.address == 'uk') {
-        res.redirect('uk-address?edit=' + req.query.edit + '&address=' + req.query.type);
+        res.redirect('uk-address?address=' + req.query.type + '&edit=' + req.query.edit);
     } else {
-        res.redirect('uk-address-manual?edit=' + req.query.edit + '&address=' + req.query.type);
+        res.redirect('uk-address-manual?address=' + req.query.type + '&edit=' + req.query.edit);
     }
 });
 

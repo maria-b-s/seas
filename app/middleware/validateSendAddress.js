@@ -2,6 +2,7 @@
 // Imports
 // -----------------------------------------------------------------------------
 const { loadPageData } = require('./utilsMiddleware');
+const { persistQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { savePageData } = require('./utilsMiddleware');
 
 
@@ -14,6 +15,7 @@ const validateSendAddress = (request, response) => {
     const data = request.session.data;
     const inputCache = loadPageData(request);
     const redirectPathConfirmCurrentAddress = "confirm-current-address";
+    const redirectPathLivedElsewhere = "lived-elsewhere";
     const regExpAddressLine = /^[a-zA-Z0-9- '&.,]+$/;
     const regExpPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/;
     const regExpTownOrCity = /^[a-zA-Z'\- ]+$/;
@@ -82,7 +84,10 @@ const validateSendAddress = (request, response) => {
             "lineTwo": sendAddressLineTwo,
             "townOrCity": sendAddressTownOrCity,
             "postcode": sendAddressPostcode,
-            "country": data["hidden-details-country"]
+            "country": "United Kingdom"
+        }
+        if (request.query.edit) {
+            redirectPath = redirectPathLivedElsewhere;
         }
         response.redirect(redirectPath);
     }

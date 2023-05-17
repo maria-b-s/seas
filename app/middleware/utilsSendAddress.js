@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 const { getAddressesForPostcode } = require('./utilsIdealPostcodes');
 const { loadPageData } = require('./utilsMiddleware');
+const { persistQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { savePageData } = require('./utilsMiddleware');
 
 
@@ -14,7 +15,7 @@ const postcodeLookupSendAddress = async (request, response) => {
     // Constants.
     const data = request.session.data;
     const inputCache = loadPageData(request);
-    const redirectPathSendAddress = "/citizen-application/send-address";
+    const redirectPathSendAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/send-address");
     const regExpPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/;
     const renderPath = "citizen-application/send-address";
     const sendAddressPostcodeLookup = data["send-address-postcode-lookup"];
@@ -58,18 +59,16 @@ const postcodeLookupSendAddress = async (request, response) => {
 const manualSendAddress = (request, response) => {
     // Constants.
     const data = request.session.data;
-    const redirectPathSendAddress = "/citizen-application/send-address";
+    const redirectPathSendAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/send-address");
     
     // Properties.
-    let redirectPath = redirectPathSendAddress + "?manual=true";
+    let manualQueryString = "manual=true";
+    let redirectPath = redirectPathSendAddress;
 
     /* Persist any existing query string property for the received HTTP request;
      * "edit" and "address". */
-    const queryStringIndex = request.originalUrl.indexOf("?");
-    const rawQueryString = (queryStringIndex >= 0) ? request.originalUrl.slice(queryStringIndex + 1): "";
-    if (rawQueryString) {
-        redirectPath += "&" + rawQueryString;
-    }
+    manualQueryString = redirectPath.includes("?") ? "&" + manualQueryString : "?" + manualQueryString; 
+    redirectPath += manualQueryString;
 
     /* Clears any previously known address, and selected addresses, for a
      * previously submitted postcode. */ 
@@ -111,7 +110,7 @@ const getAddressesForSelectComponent = (addresses, data) => {
     for (address of addresses) {
         /* Addresses for select component are composed of address line one and
          * address line two. */ 
-        const addressLinesOneAndTwo = `${ address["line_1"] }, ${ address["line_2"] }`;
+        const addressLinesOneAndTwo = address["line_2"] ? `${ address["line_1"] }, ${ address["line_2"] }` : address["line_1"];
         /* Unique Property Reference Number (UPRN) is a unique identifier for
          * every addressable location in the UK. */
         const addressUprn = address["uprn"];
@@ -125,7 +124,7 @@ const getAddressesForSelectComponent = (addresses, data) => {
          * allow population of the address in corresponding text inputs. */ 
         if (isAddressSelected) {
             data["send-address-line-one"] = address["line_1"];
-            data["send-address-line-two"] = address["line_2"] + ", " + address["line_3"];
+            data["send-address-line-two"] = address["line_3"] ? address["line_2"] + ", " + address["line_3"] : address["line_2"];
             data["send-address-town-or-city"] = address["post_town"];
             data["send-address-postcode"] = address["postcode"];
             data["send-address-select-address"] = address;

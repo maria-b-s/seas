@@ -61,6 +61,18 @@ const persistChangeQueryStringFromRequestForPath = (request, path) => {
     return path;
 };
 
+const persistQueryStringFromRequestForPath = (request, path) => {
+    // Constants.
+    const queryStringIndex = request.originalUrl.indexOf("?");
+    const rawQueryString = (queryStringIndex >= 0) ? request.originalUrl.slice(queryStringIndex): "";
+    /* Persist any existing query string properties for the received HTTP
+     * request. */
+    if (rawQueryString) {
+        path = path.split("?")[0] + rawQueryString;
+    }
+    return path;
+};
+
 function savePageData(req, data, withCache = false) {
 const urlOfPage = req.originalUrl.split('?')[0];
 
@@ -102,5 +114,6 @@ exports.getEncryptedPassword = getEncryptedPassword;
 exports.invalidateCache = invalidateCache;
 exports.loadPageData = loadPageData;
 exports.persistChangeQueryStringFromRequestForPath = persistChangeQueryStringFromRequestForPath;
+exports.persistQueryStringFromRequestForPath = persistQueryStringFromRequestForPath;
 exports.savePageData = savePageData;
 exports.trimDataValuesAndRemoveSpaces = trimDataValuesAndRemoveSpaces;
