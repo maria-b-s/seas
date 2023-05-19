@@ -10,7 +10,7 @@ const { lookupPostcode } = require("@ideal-postcodes/core-node");
 // -----------------------------------------------------------------------------
 // Constants
 // -----------------------------------------------------------------------------
-const addressFilter = ["line_1", "line_2", "line_3", "post_town", "postcode", "uprn"];
+const addressFilter = ["line_1", "line_2", "line_3", "post_town", "postcode"];
 const client = new Client({ api_key: process.env.KEY_API_IDEALPOSTCODES });
 
 

@@ -2,7 +2,6 @@
 // Imports
 // -----------------------------------------------------------------------------
 const { loadPageData } = require('./utilsMiddleware');
-const { persistQueryStringFromRequestForPath } = require('./utilsMiddleware');
 const { savePageData } = require('./utilsMiddleware');
 
 

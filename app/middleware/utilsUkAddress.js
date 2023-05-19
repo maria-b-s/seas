@@ -11,35 +11,35 @@ const { savePageData } = require('./utilsMiddleware');
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
-const postcodeLookupSendAddress = async (request, response) => {
+const postcodeLookupUkAddress = async (request, response) => {
     // Constants.
     const data = request.session.data;
     const inputCache = loadPageData(request);
-    const redirectPathSendAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/send-address");
+    const redirectPathUkAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/uk-address");
     const regExpPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/;
-    const renderPath = "citizen-application/send-address";
-    const sendAddressPostcodeLookup = data["send-address-postcode-lookup"];
+    const renderPath = "citizen-application/uk-address";
+    const ukAddressPostcodeLookup = data["uk-address-postcode-lookup"];
 
     // Properties.
     let dataValidation = {};
     let postcodeAddresses = [];
-    let redirectPath = redirectPathSendAddress;
+    let redirectPath = redirectPathUkAddress;
 
     // Cache session.
     savePageData(request, data);
 
     // Validates that a valid UK postcode has been submitted for look up.
-    if (!sendAddressPostcodeLookup) {
-        dataValidation["send-address-postcode-lookup"] = "Enter postcode";
+    if (!ukAddressPostcodeLookup) {
+        dataValidation["uk-address-postcode-lookup"] = "Enter postcode";
     } else {
-        const validSendAddressPostcodeLookup = regExpPostcode.test(sendAddressPostcodeLookup);
-        if (!validSendAddressPostcodeLookup) {
-            dataValidation["send-address-postcode-lookup"] = "Postcode is not in the correct format"
+        const validUkAddressPostcodeLookup = regExpPostcode.test(ukAddressPostcodeLookup);
+        if (!validUkAddressPostcodeLookup) {
+            dataValidation["uk-address-postcode-lookup"] = "Postcode is not in the correct format"
         } else {
             // Requests addresses for the given postcodes via Ideal Postcodes.
-            postcodeAddresses = await getAddressesForPostcode(sendAddressPostcodeLookup);
+            postcodeAddresses = await getAddressesForPostcode(ukAddressPostcodeLookup);
             if (postcodeAddresses.length === 0) {
-                dataValidation["send-address-postcode-lookup"] = "No addresses found for postcode"
+                dataValidation["uk-address-postcode-lookup"] = "No addresses found for postcode"
             }
         }
     }
@@ -50,20 +50,20 @@ const postcodeLookupSendAddress = async (request, response) => {
     } else {
         /* Ideal Postcodes has returned an array of addresses for the given
          * postcode. */
-        data["send-address-postcode-addresses"] = postcodeAddresses;
-        data["send-address-select"] = getAddressesForSelectComponent(postcodeAddresses, data);
+        data["uk-address-postcode-addresses"] = postcodeAddresses;
+        data["uk-address-select"] = getAddressesForSelectComponent(postcodeAddresses, data);
         response.redirect(redirectPath);
     }
 };
 
-const manualSendAddress = (request, response) => {
+const manualUkAddress = (request, response) => {
     // Constants.
     const data = request.session.data;
-    const redirectPathSendAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/send-address");
+    const redirectPathUkAddress = persistQueryStringFromRequestForPath(request, "/citizen-application/uk-address");
     
     // Properties.
     let manualQueryString = "manual=true";
-    let redirectPath = redirectPathSendAddress;
+    let redirectPath = redirectPathUkAddress;
 
     /* Persist any existing query string property for the received HTTP request;
      * "edit" and "address". */
@@ -72,14 +72,14 @@ const manualSendAddress = (request, response) => {
 
     /* Clears any previously known address, and selected addresses, for a
      * previously submitted postcode. */ 
-    data["send-address-line-one"] = "";
-    data["send-address-line-two"] = "";
-    data["send-address-postcode"] = "";
-    data["send-address-postcode-addresses"] = "";
-    data["send-address-postcode-lookup"] = "";
-    data["send-address-select"] = "";
-    data["send-address-select-address"] = "";
-    data["send-address-town-or-city"] = "";
+    data["uk-address-line-one"] = "";
+    data["uk-address-line-two"] = "";
+    data["uk-address-postcode"] = "";
+    data["uk-address-postcode-addresses"] = "";
+    data["uk-address-postcode-lookup"] = "";
+    data["uk-address-select"] = "";
+    data["uk-address-select-address"] = "";
+    data["uk-address-town-or-city"] = "";
 
     // Response.
     response.redirect(redirectPath);
@@ -92,13 +92,13 @@ const manualSendAddress = (request, response) => {
 // -----------------------------------------------------------------------------
 const getAddressesForSelectComponent = (addresses, data) => {
     // Constants.
-    const sendAddressSelect = data["send-address-select"];
+    const ukAddressSelect = data["uk-address-select"];
 
     // Properties.
     let isAddressSelected = false;
 
     // Clears any previously selected address in the select component.
-    data["send-address-select-address"] = "";
+    data["uk-address-select-address"] = "";
 
     /* Ensures "Select your address" is the default option and to inform the
      * user that an address now can be selected. */ 
@@ -109,10 +109,10 @@ const getAddressesForSelectComponent = (addresses, data) => {
     }];
     for (address of addresses) {
         /* Addresses for select component are composed of address line one and
-         * address line two. */ 
+         * address line two. */
         const addressIndex = addresses.indexOf(address).toString();
         const addressLinesOneAndTwo = address["line_2"] ? `${ address["line_1"] }, ${ address["line_2"] }` : address["line_1"];
-        isAddressSelected = (addressIndex === sendAddressSelect);
+        isAddressSelected = (addressIndex === ukAddressSelect);
         formattedAddresses.push({
             selected: isAddressSelected,
             text: addressLinesOneAndTwo,
@@ -121,11 +121,11 @@ const getAddressesForSelectComponent = (addresses, data) => {
         /* Records any currently selected address in the select component to
          * allow population of the address in corresponding text inputs. */ 
         if (isAddressSelected) {
-            data["send-address-line-one"] = address["line_1"];
-            data["send-address-line-two"] = address["line_3"] ? address["line_2"] + ", " + address["line_3"] : address["line_2"];
-            data["send-address-town-or-city"] = address["post_town"];
-            data["send-address-postcode"] = address["postcode"];
-            data["send-address-select-address"] = address;
+            data["uk-address-line-one"] = address["line_1"];
+            data["uk-address-line-two"] = address["line_3"] ? address["line_2"] + ", " + address["line_3"] : address["line_2"];
+            data["uk-address-town-or-city"] = address["post_town"];
+            data["uk-address-postcode"] = address["postcode"];
+            data["uk-address-select-address"] = address;
         }
     }
     return formattedAddresses;
@@ -136,5 +136,5 @@ const getAddressesForSelectComponent = (addresses, data) => {
 // -----------------------------------------------------------------------------
 // Exports
 // -----------------------------------------------------------------------------
-exports.manualSendAddress = manualSendAddress;
-exports.postcodeLookupSendAddress = postcodeLookupSendAddress;
+exports.manualUkAddress = manualUkAddress;
+exports.postcodeLookupUkAddress = postcodeLookupUkAddress;

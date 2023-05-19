@@ -1,84 +1,260 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
-        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
-        endif %}
-        <form class="form" method="post">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            What {%if query['address'] == 'previous'%}was{%else%}is{% endif %} your {%if query['address'] ==
-                            'previous'%}{%else%}current{% endif %} address?
-                        </h1>
-                    </legend>
-    
 
-                    <div class="govuk-form-group {% if validation['postcode-lookup'] %}govuk-form-group--error{% endif %}">
-                        <label class="govuk-label" for="postcode-lookup"> UK postcode </label>
-                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg" style="display: none">
-                            <span class="govuk-visually-hidden">Error:</span> UK postcode is not in the correct format. Please check and try again
-                        </p>
-                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-2" style="display: none">
-                            <span class="govuk-visually-hidden">Error:</span> Enter postcode
-                        </p>
-                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-3" style="display: none">
-                            <span class="govuk-visually-hidden">Error:</span> Unable to search postcode
-                        </p>
-                        <p id="cost-per-item-error-error" class="govuk-error-message error-msg-4" style="display: none">
-                            <span class="govuk-visually-hidden">Error:</span> UK postcode must be between 5 and 8 characters
-                        </p>
-                        {% if validation['postcode-lookup'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['postcode-lookup'] }}
-                        </span>
-                        {% endif %} <input class="govuk-input govuk-input--width-10" id="postcode-lookup" name="postcode-lookup" type="text"
-                        autocomplete="postal-code" {% if cache['postcode-lookup'] %} value="{{cache['postcode-lookup']}}" {% endif %} />
-                    </div>
 
-                    <button class="govuk-button lookup" type="button" data-module="govuk-button">Look up address</button>
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    What {% if query["address"] === "previous" %}was {% else %}is {% endif %}your {% if query["address"] !== "previous"%}current {% endif %}address?
+{% endblock %}
 
-                    <div
-                        class="govuk-form-group {% if validation['lookup-addr'] %}govuk-form-group--error{% endif %}"
-                        id="selectAddress"
-                        style="display: none"
-                    >
-                        <label class="govuk-label" for="sort"> Select your address </label>
-                        {% if validation['lookup-addr'] %}
-                        <span id="ninonr-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> {{ validation['lookup-addr'] }}
-                        </span>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentUkAddressPostcodeLookup = "" %}
+            {% set errorComponentUkAddressLineOne = "" %}
+            {% set errorComponentUkAddressLineTwo = "" %}
+            {% set errorComponentUkAddressTownOrCity = "" %}
+            {% set errorComponentUkAddressPostcode = "" %}
+            {% if validation | length %}
+                <!-- UK address postcode lookup. -->
+                {% if validation["uk-address-postcode-lookup"] %}
+                    {% set errorComponentUkAddressPostcodeLookup = {
+                        text: validation["uk-address-postcode-lookup"]
+                    } %}
+                {% endif %}
+                <!-- UK address line one. -->
+                {% if validation["uk-address-line-one"] %}
+                    {% set errorComponentUkAddressLineOne = {
+                        text: validation["uk-address-line-one"]
+                    } %}
+                {% endif %}
+                <!-- UK address line two. -->
+                {% if validation["uk-address-line-two"] %}
+                    {% set errorComponentUkAddressLineTwo = {
+                        text: validation["uk-address-line-two"]
+                    } %}
+                {% endif %}
+                <!-- UK address town or city. -->
+                {% if validation["uk-address-town-or-city"] %}
+                    {% set errorComponentUkAddressTownOrCity = {
+                        text: validation["uk-address-town-or-city"]
+                    } %}
+                {% endif %}
+                <!-- UK address postcode. -->
+                {% if validation["uk-address-postcode"] %}
+                    {% set errorComponentUkAddressPostcode = {
+                        text: validation["uk-address-postcode"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% set heading =  "What is your current address?" %}
+            {% if query["address"] === "previous" %}
+                {% set heading =  "What was your address?" %}
+            {% endif %}
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: heading
+                }
+            }) %}
+
+                {% set formActionPostcodeLookup = "/citizen-application/uk-address/postcode-lookup" %}
+                {% if query["address"] %}
+                    {% set formActionPostcodeLookup = formActionPostcodeLookup + "?address=" + query["address"] %}
+                    {% if query["edit"] %}
+                        {% set formActionPostcodeLookup = formActionPostcodeLookup + "&edit=" + query["edit"] %}
+                    {% endif %}
+                {% endif %}
+                <form action="{{ formActionPostcodeLookup }}" method="post">
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "post-code",
+                        classes: "govuk-input govuk-!-width-one-third",
+                        errorMessage: errorComponentUkAddressPostcodeLookup,
+                        id: "uk-address-postcode-lookup",
+                        label: {
+                            text: "UK postcode"
+                        },
+                        name: "uk-address-postcode-lookup",
+                        spellcheck: false,
+                        value: data["uk-address-postcode-lookup"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Look up address"
+                    }) }}
+                </form>
+
+                <!-- Select. -->
+                {% set ukAddressPostcodeAddresses = data["uk-address-postcode-addresses"] %}
+                {% if ukAddressPostcodeAddresses %}
+                    {% set formActionSelect = "/citizen-application/uk-address/select" %}
+                    {% if query["address"] %}
+                        {% set formActionSelect = formActionSelect + "?address=" + query["address"] %}
+                        {% if query["edit"] %}
+                            {% set formActionSelect = formActionSelect + "&edit=" + query["edit"] %}
                         {% endif %}
-                        <select class="govuk-select govuk-input--width-20 postcode-select" id="sort" name="lookup-addr" disabled>
-                            <option class="enter-postcode">Enter postcode</option>
-                        </select>
-                    </div>
-                    <input class="hidden-details-town" name="hidden-details-town" type="text" hidden />
-                    <input class="hidden-details-country" name="hidden-details-country" type="text" hidden />
-                    <br />
+                    {% endif %}
+                    <form action="{{ formActionSelect }}" method="post">
+                        {{ govukSelect({
+                            attributes: {
+                                "onchange": "this.form.submit();"
+                            },
+                            errorMessage: errorComponentUkAddressSelect,
+                            classes: "govuk-!-font-size-20 govuk-!-width-two-thirds",
+                            id: "uk-address-select",
+                            label: {
+                                text: "Select your address"
+                            },
+                            name: "uk-address-select",
+                            items: data["uk-address-select"]
+                        }) }}
+                    </form>
+                {% endif %}
 
-                    <p class="govuk-body">
-                        <a id="address-manual" href="uk-address-manual?address={{query['address']}}" class="govuk-link"> Add address manually</a>
+                <!-- Text inputs. -->
+                {% set ukAddressSelectAddress = data["uk-address-select-address"] %}
+                {% if query["manual"] === "true" or ukAddressSelectAddress %}
+                    <form id="uk-address" method="post">
+                        <!-- Text input. -->
+                        {{ govukInput({
+                            classes: "govuk-input govuk-!-width-two-thirds",
+                            errorMessage: errorComponentUkAddressLineOne,
+                            id: "uk-address-line-one",
+                            label: {
+                                text: "Address line 1"
+                            },
+                            name: "uk-address-line-one",
+                            spellcheck: false,
+                            value: data["uk-address-line-one"]
+                        }) }}
+
+                        <!-- Text input. -->
+                        {{ govukInput({
+                            classes: "govuk-input govuk-!-width-two-thirds",
+                            errorMessage: errorComponentUkAddressLineTwo,
+                            id: "uk-address-line-two",
+                            label: {
+                                text: "Address line 2 (optional)"
+                            },
+                            name: "uk-address-line-two",
+                            spellcheck: false,
+                            value: data["uk-address-line-two"]
+                        }) }}
+
+                        <!-- Text input. -->
+                        {{ govukInput({
+                            classes: "govuk-input govuk-!-width-one-half",
+                            errorMessage: errorComponentUkAddressTownOrCity,
+                            id: "uk-address-town-or-city",
+                            label: {
+                                text: "Town or city"
+                            },
+                            name: "uk-address-town-or-city",
+                            spellcheck: false,
+                            value: data["uk-address-town-or-city"]
+                        }) }}
+
+                        <!-- Text input. -->
+                        {{ govukInput({
+                            classes: "govuk-input govuk-!-width-one-third",
+                            errorMessage: errorComponentUkAddressPostcode,
+                            id: "uk-address-postcode",
+                            label: {
+                                text: "Postcode"
+                            },
+                            name: "uk-address-postcode",
+                            spellcheck: false,
+                            value: data["uk-address-postcode"]
+                        }) }}
+                    </form>
+                {% endif %}
+                
+                {% set formActionManual = "/citizen-application/uk-address/manual" %}
+                {% if query["address"] %}
+                    {% set formActionManual = formActionManual + "?address=" + query["address"] %}
+                    {% if query["edit"] %}
+                            {% set formActionManual = formActionManual + "&edit=" + query["edit"] %}
+                        {% endif %}
+                {% endif %}
+                <form action="{{ formActionManual }}" method="post">
+                    <!-- Body -->
+                    <p class="gov-uk-body">
+                        <!-- Link. -->
+                        <a class="govuk-link" href="#" onclick="this.closest('form').submit();" rel="noopener noreferrer">Add address manually</a>
                     </p>
-                </fieldset>
-            </div>
+                </form>
 
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
-        </form>
+                <!-- Button. -->
+                {% if query["manual"] === "true" or ukAddressSelectAddress %}
+                    {{ govukButton({
+                        attributes: {
+                            "form": "uk-address"
+                        },
+                        text: "Continue"
+                    }) }}
+                {% endif %}
+            {% endcall %}
+        </div>
     </div>
-</div>
-
 {% endblock %}

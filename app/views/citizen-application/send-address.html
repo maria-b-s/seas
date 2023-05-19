@@ -74,7 +74,7 @@
             {% if validation | length %}
                 <!-- Send address postcode lookup. -->
                 {% if validation["send-address-postcode-lookup"] %}
-                    {% set errorComponentPostcodeLookup = {
+                    {% set errorComponentSendAddressPostcodeLookup = {
                         text: validation["send-address-postcode-lookup"]
                     } %}
                 {% endif %}
@@ -121,14 +121,14 @@
 
                 {% set formActionPostcodeLookup = "/citizen-application/send-address/postcode-lookup" %}
                 {% if query["edit"] %}
-                    {% set formActionPostcodeLookup = "/citizen-application/send-address/postcode-lookup?address=certificate&edit=1" %}
+                    {% set formActionPostcodeLookup = formActionPostcodeLookup + "?address=certificate&edit=1" %}
                 {% endif %}
                 <form action="{{ formActionPostcodeLookup }}" method="post">
                     <!-- Text input. -->
                     {{ govukInput({
                         autocomplete: "post-code",
                         classes: "govuk-input govuk-!-width-one-third",
-                        errorMessage: errorComponentPostcodeLookup,
+                        errorMessage: errorComponentSendAddressPostcodeLookup,
                         id: "send-address-postcode-lookup",
                         label: {
                             text: "UK postcode"
@@ -149,7 +149,7 @@
                 {% if sendAddressPostcodeAddresses %}
                     {% set formActionSelect = "/citizen-application/send-address/select" %}
                     {% if query["edit"] %}
-                        {% set formActionSelect = "/citizen-application/send-address/select?address=certificate&edit=1" %}
+                        {% set formActionSelect = formActionSelect + "?address=certificate&edit=1" %}
                     {% endif %}
                     <form action="{{ formActionSelect }}" method="post">
                         {{ govukSelect({
@@ -226,11 +226,11 @@
                     </form>
                 {% endif %}
                 
-                {% set formAction = "/citizen-application/send-address/manual" %}
+                {% set formActionManual = "/citizen-application/send-address/manual" %}
                 {% if query["edit"] %}
-                    {% set formAction = "/citizen-application/send-address/manual?address=certificate&edit=1" %}
+                    {% set formActionManual = formActionManual + "?address=certificate&edit=1" %}
                 {% endif %}
-                <form action="{{ formAction }}" method="post">
+                <form action="{{ formActionManual }}" method="post">
                     <!-- Body -->
                     <p class="gov-uk-body">
                         <!-- Link. -->
