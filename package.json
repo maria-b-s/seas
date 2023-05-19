@@ -13,6 +13,8 @@
         "acc-test": "pa11y localhost:3000/citizen-application/start-application"
     },
     "dependencies": {
+        "@ideal-postcodes/core-browser": "^3.0.1",
+        "@ideal-postcodes/core-node": "^4.0.1",
         "@ministryofjustice/frontend": "^1.6.4",
         "acorn": "^8.5.0",
         "ansi-colors": "^4.1.1",

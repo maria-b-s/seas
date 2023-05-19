@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    What {% if query["address"] === "previous" %}was {% else %}is {% endif %}your {% if query["address"] !== "previous"%}current {% endif %}address?
+    Where would you like us to send your DBS certificate?
 {% endblock %}
 
 
@@ -66,77 +66,76 @@
             {% endif %}
             
             <!-- Errors / Components. -->
-            {% set errorComponentUkAddressPostcodeLookup = "" %}
-            {% set errorComponentUkAddressLineOne = "" %}
-            {% set errorComponentUkAddressLineTwo = "" %}
-            {% set errorComponentUkAddressTownOrCity = "" %}
-            {% set errorComponentUkAddressPostcode = "" %}
+            {% set errorComponentSendAddressPostcodeLookup = "" %}
+            {% set errorComponentSendAddressLineOne = "" %}
+            {% set errorComponentSendAddressLineTwo = "" %}
+            {% set errorComponentSendAddressTownOrCity = "" %}
+            {% set errorComponentSendAddressPostcode = "" %}
             {% if validation | length %}
-                <!-- UK address postcode lookup. -->
-                {% if validation["uk-address-postcode-lookup"] %}
-                    {% set errorComponentUkAddressPostcodeLookup = {
-                        text: validation["uk-address-postcode-lookup"]
+                <!-- Send address postcode lookup. -->
+                {% if validation["send-address-postcode-lookup"] %}
+                    {% set errorComponentSendAddressPostcodeLookup = {
+                        text: validation["send-address-postcode-lookup"]
                     } %}
                 {% endif %}
-                <!-- UK address line one. -->
-                {% if validation["uk-address-line-one"] %}
-                    {% set errorComponentUkAddressLineOne = {
-                        text: validation["uk-address-line-one"]
+                <!-- Send address line one. -->
+                {% if validation["send-address-line-one"] %}
+                    {% set errorComponentSendAddressLineOne = {
+                        text: validation["send-address-line-one"]
                     } %}
                 {% endif %}
-                <!-- UK address line two. -->
-                {% if validation["uk-address-line-two"] %}
-                    {% set errorComponentUkAddressLineTwo = {
-                        text: validation["uk-address-line-two"]
+                <!-- Send address line two. -->
+                {% if validation["send-address-line-two"] %}
+                    {% set errorComponentSendAddressLineTwo = {
+                        text: validation["send-address-line-two"]
                     } %}
                 {% endif %}
-                <!-- UK address town or city. -->
-                {% if validation["uk-address-town-or-city"] %}
-                    {% set errorComponentUkAddressTownOrCity = {
-                        text: validation["uk-address-town-or-city"]
+                <!-- Send address town or city. -->
+                {% if validation["send-address-town-or-city"] %}
+                    {% set errorComponentSendAddressTownOrCity = {
+                        text: validation["send-address-town-or-city"]
                     } %}
                 {% endif %}
-                <!-- UK address postcode. -->
-                {% if validation["uk-address-postcode"] %}
-                    {% set errorComponentUkAddressPostcode = {
-                        text: validation["uk-address-postcode"]
+                <!-- Send address postcode. -->
+                {% if validation["send-address-postcode"] %}
+                    {% set errorComponentSendAddressPostcode = {
+                        text: validation["send-address-postcode"]
                     } %}
                 {% endif %}
             {% endif %}
             
             <!-- Heading. -->
-            {% set heading =  "What is your current address?" %}
-            {% if query["address"] === "previous" %}
-                {% set heading =  "What was your address?" %}
-            {% endif %}
             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: heading
+                    text: "Where would you like us to send your DBS certificate?"
                 }
             }) %}
 
-                {% set formActionPostcodeLookup = "/citizen-application/uk-address/postcode-lookup" %}
-                {% if query["address"] %}
-                    {% set formActionPostcodeLookup = formActionPostcodeLookup + "?address=" + query["address"] %}
-                    {% if query["edit"] %}
-                        {% set formActionPostcodeLookup = formActionPostcodeLookup + "&edit=" + query["edit"] %}
-                    {% endif %}
+                <!-- Hint. -->
+                <p class="govuk-hint">We can send your certificate to your current address, another personal address (for example a family member), or a care of address.</p>
+
+                <!-- Hint. -->
+                <p class="govuk-hint">You must make sure that you are able to check the information on your DBS certificate is correct.</p>
+
+                {% set formActionPostcodeLookup = "/citizen-application/send-address/postcode-lookup" %}
+                {% if query["edit"] %}
+                    {% set formActionPostcodeLookup = formActionPostcodeLookup + "?address=certificate&edit=1" %}
                 {% endif %}
                 <form action="{{ formActionPostcodeLookup }}" method="post">
                     <!-- Text input. -->
                     {{ govukInput({
                         autocomplete: "post-code",
                         classes: "govuk-input govuk-!-width-one-third",
-                        errorMessage: errorComponentUkAddressPostcodeLookup,
-                        id: "uk-address-postcode-lookup",
+                        errorMessage: errorComponentSendAddressPostcodeLookup,
+                        id: "send-address-postcode-lookup",
                         label: {
                             text: "UK postcode"
                         },
-                        name: "uk-address-postcode-lookup",
+                        name: "send-address-postcode-lookup",
                         spellcheck: false,
-                        value: data["uk-address-postcode-lookup"]
+                        value: data["send-address-postcode-lookup"]
                     }) }}
 
                     <!-- Button. -->
@@ -146,96 +145,90 @@
                 </form>
 
                 <!-- Select. -->
-                {% set ukAddressPostcodeAddresses = data["uk-address-postcode-addresses"] %}
-                {% if ukAddressPostcodeAddresses %}
-                    {% set formActionSelect = "/citizen-application/uk-address/select" %}
-                    {% if query["address"] %}
-                        {% set formActionSelect = formActionSelect + "?address=" + query["address"] %}
-                        {% if query["edit"] %}
-                            {% set formActionSelect = formActionSelect + "&edit=" + query["edit"] %}
-                        {% endif %}
+                {% set sendAddressPostcodeAddresses = data["send-address-postcode-addresses"] %}
+                {% if sendAddressPostcodeAddresses %}
+                    {% set formActionSelect = "/citizen-application/send-address/select" %}
+                    {% if query["edit"] %}
+                        {% set formActionSelect = formActionSelect + "?address=certificate&edit=1" %}
                     {% endif %}
                     <form action="{{ formActionSelect }}" method="post">
                         {{ govukSelect({
                             attributes: {
                                 "onchange": "this.form.submit();"
                             },
-                            errorMessage: errorComponentUkAddressSelect,
+                            errorMessage: errorComponentSendAddressSelect,
                             classes: "govuk-!-font-size-20 govuk-!-width-two-thirds",
-                            id: "uk-address-select",
+                            id: "send-address-select",
                             label: {
                                 text: "Select your address"
                             },
-                            name: "uk-address-select",
-                            items: data["uk-address-select"]
+                            name: "send-address-select",
+                            items: data["send-address-select"]
                         }) }}
                     </form>
                 {% endif %}
 
                 <!-- Text inputs. -->
-                {% set ukAddressSelectAddress = data["uk-address-select-address"] %}
-                {% if query["manual"] === "true" or ukAddressSelectAddress %}
-                    <form id="uk-address" method="post">
+                {% set sendAddressSelectAddress = data["send-address-select-address"] %}
+                {% if query["edit"] === "1" or query["manual"] === "true" or sendAddressSelectAddress %}
+                    <form id="send-address" method="post">
                         <!-- Text input. -->
                         {{ govukInput({
                             classes: "govuk-input govuk-!-width-two-thirds",
-                            errorMessage: errorComponentUkAddressLineOne,
-                            id: "uk-address-line-one",
+                            errorMessage: errorComponentSendAddressLineOne,
+                            id: "send-address-line-one",
                             label: {
                                 text: "Address line 1"
                             },
-                            name: "uk-address-line-one",
+                            name: "send-address-line-one",
                             spellcheck: false,
-                            value: data["uk-address-line-one"]
+                            value: data["send-address-line-one"]
                         }) }}
 
                         <!-- Text input. -->
                         {{ govukInput({
                             classes: "govuk-input govuk-!-width-two-thirds",
-                            errorMessage: errorComponentUkAddressLineTwo,
-                            id: "uk-address-line-two",
+                            errorMessage: errorComponentSendAddressLineTwo,
+                            id: "send-address-line-two",
                             label: {
                                 text: "Address line 2 (optional)"
                             },
-                            name: "uk-address-line-two",
+                            name: "send-address-line-two",
                             spellcheck: false,
-                            value: data["uk-address-line-two"]
+                            value: data["send-address-line-two"]
                         }) }}
 
                         <!-- Text input. -->
                         {{ govukInput({
                             classes: "govuk-input govuk-!-width-one-half",
-                            errorMessage: errorComponentUkAddressTownOrCity,
-                            id: "uk-address-town-or-city",
+                            errorMessage: errorComponentSendAddressTownOrCity,
+                            id: "send-address-town-or-city",
                             label: {
                                 text: "Town or city"
                             },
-                            name: "uk-address-town-or-city",
+                            name: "send-address-town-or-city",
                             spellcheck: false,
-                            value: data["uk-address-town-or-city"]
+                            value: data["send-address-town-or-city"]
                         }) }}
 
                         <!-- Text input. -->
                         {{ govukInput({
                             classes: "govuk-input govuk-!-width-one-third",
-                            errorMessage: errorComponentUkAddressPostcode,
-                            id: "uk-address-postcode",
+                            errorMessage: errorComponentSendAddressPostcode,
+                            id: "send-address-postcode",
                             label: {
                                 text: "Postcode"
                             },
-                            name: "uk-address-postcode",
+                            name: "send-address-postcode",
                             spellcheck: false,
-                            value: data["uk-address-postcode"]
+                            value: data["send-address-postcode"]
                         }) }}
                     </form>
                 {% endif %}
                 
-                {% set formActionManual = "/citizen-application/uk-address/manual" %}
-                {% if query["address"] %}
-                    {% set formActionManual = formActionManual + "?address=" + query["address"] %}
-                    {% if query["edit"] %}
-                            {% set formActionManual = formActionManual + "&edit=" + query["edit"] %}
-                        {% endif %}
+                {% set formActionManual = "/citizen-application/send-address/manual" %}
+                {% if query["edit"] %}
+                    {% set formActionManual = formActionManual + "?address=certificate&edit=1" %}
                 {% endif %}
                 <form action="{{ formActionManual }}" method="post">
                     <!-- Body -->
@@ -245,11 +238,33 @@
                     </p>
                 </form>
 
+                <!-- Heading. -->
+                <h2 class="govuk-heading-m">Other address types</h2>
+
+                <!-- Body -->
+                <p class="gov-uk-body">
+                    <!-- Link. -->
+                    {% if query["edit"] %}
+                        <a class="govuk-link" href="bfpo?address=certificate&edit=1" rel="noopener noreferrer">Add a British Forces Post Office (BFPO) address</a>
+                    {% else %}
+                        <a class="govuk-link" href="bfpo?address=cert" rel="noopener noreferrer">Add a British Forces Post Office (BFPO) address</a>
+                    {% endif %}
+                </p>
+                <!-- Body -->
+                <p class="gov-uk-body">
+                    <!-- Link. -->
+                    {% if query["edit"] %}
+                        <a class="govuk-link" href="outside-uk?address=certificate&edit=1" rel="noopener noreferrer">Add a non-UK address</a>
+                    {% else %}
+                        <a class="govuk-link" href="outside-uk?address=cert" rel="noopener noreferrer">Add a non-UK address</a>
+                    {% endif %}
+                </p>
+
                 <!-- Button. -->
-                {% if query["manual"] === "true" or ukAddressSelectAddress %}
+                {% if query["manual"] === "true" or sendAddressSelectAddress %}
                     {{ govukButton({
                         attributes: {
-                            "form": "uk-address"
+                            "form": "send-address"
                         },
                         text: "Continue"
                     }) }}
