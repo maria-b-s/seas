@@ -1,126 +1,268 @@
-{% import "../macros/error-summary/govukErrorSummary.njk" as es %}{% extends "layout.html" %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
-        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
-        endif %}
-        <form class="form" method="post">
-            <div class="govuk-form-group {% if validation['lived-elsewhere'] %}govuk-form-group--error{% endif %}">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">Have you lived anywhere else from {{date}} to now?</h1>
-                    </legend>
 
-                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live" name="lived-elsewhere" type="radio" value="Yes" />
-                            <label class="govuk-label govuk-radios__label" for="where-do-you-live">Yes</label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="where-do-you-live-2" name="lived-elsewhere" type="radio" value="No" />
-                            <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">No</label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
 
-            <p class="govuk-body">
-                You must tell us all your addresses for the last 5 years. This includes anywhere you've lived that is not in the UK.
-                <br />
-                <br />
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    List of addresses
+{% endblock %}
 
-                You cannot leave any gaps but it's fine to have overlapping dates.
 
-                <br />
-                <br />
-                Include any other addresses that you live at. For example, student accommodation or if you work away from home.
-            </p>
 
-            {# <br />
-            #}
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">Other addresses you need to tell us about.</span>
-                </summary>
-                <div class="govuk-details__text">
-                    If you live in student accommodation during term time, but live at another address in the holidays, you must tell us both
-                    addresses. <br /><br />If you work away from home and spend most of the week at another address, you must tell us both addresses.
-                </div>
-            </details>
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
 
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">DBS certificate address</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if certAddress['lineOne'] %}{{certAddress['lineOne']}}<br />{% endif %} {% if certAddress['lineTwo']
-                        %}{{certAddress['lineTwo']}}<br />{% endif %} {% if certAddress['townOrCity'] %}{{certAddress['townOrCity']}}<br />{% endif %}
-                        {% if certAddress['country'] %}{{certAddress['country']}}<br />{% endif %} {% if certAddress['postcode']
-                        %}{{certAddress['postcode']}}<br />{% endif %}
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="edit-address?type=certificate"> Change<span class="govuk-visually-hidden"></span> </a>
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Current {%if currentAddress.length > 1 %}addresses{%else%}address{%endif%}</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% for address in currentAddress %} {% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if
-                        address['lineTwo'] %}{{address['lineTwo']}}<br />{% endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{%
-                        endif %} {% if address['country'] %}{{address['country']}}<br />{% endif %} {% if address['postcode']
-                        %}{{address['postcode']}}<br />{% endif %} From {{address['start-month']}} {{address['start-year']}} to now
-                        <br />
-                         <a class="govuk-link" href="edit-address?edit={{ loop.index }}&address={{address['type']}}&type=current">
-                            Change<span class="govuk-visually-hidden"></span>
-                        </a>
-                        <a class="govuk-link" href="lived-elsewhere?item={{ loop.index }}&type=current">
-                            Remove<span class="govuk-visually-hidden"></span>
-                        </a>
-                        <br />
-                        <br />
-                        {%endfor%}
-                    </dd>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentLivedElsewhere = "" %}
+            {% if validation | length %}
+                <!-- Lived elsewhere. -->
+                {% if validation["lived-elsewhere"] %}
+                    {% set errorComponentLivedElsewhere = {
+                        text: validation["lived-elsewhere"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "List of addresses"
+                }
+            }) %}
+
+                <!-- Body. -->
+                <p class="govuk-body">You must tell us all your addresses for the last 5 years. This includes anywhere you've lived that is not in the UK.</p>
+                <p class="govuk-body">You cannot leave any gaps but it's fine to have overlapping dates.</p>
+                <p class="govuk-body">Include any other addresses that you live at. For example, student accommodation or if you work away from home.</p>
+
+                <!-- Details. -->
+                {{ govukDetails({
+                    html: "<p>If you live in student accommodation during term time, but live at another address in the holidays, you must tell us both addresses.</p>
+                           <p>If you work away from home and spend most of the week at another address, you must tell us both addresses.</p>",
+                    summaryText: "Other addresses"
+                }) }}
+
+                <!-- Body. -->
+                <p class="govuk-body">We will send your DBS certificate to your current address unless you tell us to send it to a different one.</p>
+        </div>
+        <div class="govuk-grid-column-full">
+                <!-- Send address rows. -->
+                {% set sendAddressRows = [] %}
+                {% set sendAddressLineOne = data["cert-address"]["lineOne"] %}
+                {% set sendAddressLineTwo = data["cert-address"]["lineTwo"] %}
+                {% set sendAddressTownOrCity = data["cert-address"]["townOrCity"] %}
+                {% set sendAddressPostcode = data["cert-address"]["postcode"] %}
+                {% set sendAddressCountry = data["cert-address"]["country"] %}
+                {% set sendAddress = "<p>" + sendAddressLineOne + "</br>" %}
+                {% if sendAddressLineTwo %}
+                    {% set sendAddress = sendAddress + sendAddressLineTwo + "</br>" %}
+                {% endif %}
+                {% set sendAddress = sendAddress + sendAddressTownOrCity + "<br/>" + sendAddressPostcode + "<br/>" + sendAddressCountry %}
+                {% set sendAddressRows = (sendAddressRows.push({
+                    actions: {
+                        items: [
+                            {
+                                href: "edit-address?type=certificate",
+                                text: "Change",
+                                visuallyHiddenText: "Change DBS certificate address."
+                            }
+                        ]
+                    },
+                    key: {
+                        text: "DBS certificate address"
+                    },
+                    value: {
+                        html: sendAddress
+                    }
+                }), sendAddressRows) %}
                 
-                </div>
-                {%if previousAddresses.length > 0 %}
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Previous {%if previousAddresses.length > 1 %}addresses{%else%}address{%endif%}</dt>
+                <!-- Current address rows. -->
+                {% set currentAddressRows = [] %}
+                {% for address in data["current_addresses"] %}
+                    {% set currentAddressLineOne = address["lineOne"] %}
+                    {% set currentAddressLineTwo = address["lineTwo"] %}
+                    {% set currentAddressTownOrCity = address["townOrCity"] %}
+                    {% set currentAddressPostcode = address["postcode"] %}
+                    {% set currentAddressCountry = address["country"] %}
+                    {% set currentAddressDateRange = "From " + address["start-month"] + " " + address["start-year"] + " to now" %}
+                    {% set currentAddress = "<p>" + currentAddressLineOne + "</br>" %}
+                    {% if currentAddressLineTwo %}
+                        {% set currentAddress = currentAddress + currentAddressLineTwo + "</br>" %}
+                    {% endif %}
+                    {% set currentAddress = currentAddress + currentAddressTownOrCity + "<br/>" + currentAddressPostcode + "<br/>" + currentAddressCountry + "<br/>" + currentAddressDateRange %}
+                    {% set currentAddressKeyText = "" %}
+                    {% if loop.first %}
+                        {% set currentAddressKeyText  = "Current address" %}
+                    {% endif %}
+                    {% set currentAddressClasses = "" %}
+                    {% if not loop.last %}
+                        {% set currentAddressClasses = "govuk-summary-list__row--no-border" %}
+                    {% endif %}
+                    {% set currentAddressRows = (currentAddressRows.push({
+                        actions: {
+                            items: [
+                                {
+                                    href: "edit-address?address=" + address["type"] + "&edit=" + loop.index + "&type=current",
+                                    text: "Change",
+                                    visuallyHiddenText: "Change current address."
+                                },
+                                {
+                                    href: "lived-elsewhere?item=" + loop.index + "&type=current",
+                                    text: "Delete",
+                                    visuallyHiddenText: "Delete current address."
+                                }
+                            ]
+                        },
+                        classes: currentAddressClasses,
+                        key: {
+                            text: currentAddressKeyText
+                        },
+                        value: {
+                            html: currentAddress
+                        }
+                    }), currentAddressRows) %}
+                {% endfor %}
 
-                    <dd class="govuk-summary-list__value">
-                        {% for address in previousAddresses %}{% if address['lineOne'] %}{{address['lineOne']}}<br />{% endif %} {% if
-                        address['lineTwo'] %}{{address['lineTwo']}}<br />{% endif %} {% if address['townOrCity'] %}{{address['townOrCity']}}<br />{%
-                        endif %} {% if address['country'] %}{{address['country']}}<br />{% endif %} {% if address['postcode']
-                        %}{{address['postcode']}}<br />{% endif %} From {{address['start-month']}} {{address['start-year']}} to
-                        {{address['end-month']}} {{address['end-year']}}
-                        <br />
-                        <a class="govuk-link" href="edit-address?edit={{ loop.index }}&address={{address['type']}}&type=previous">
-                            Change<span class="govuk-visually-hidden"></span>
-                        </a>
-                        <a class="govuk-link" href="lived-elsewhere?item={{ loop.index }}&type=previous">
-                            Remove<span class="govuk-visually-hidden"></span>
-                        </a>
-                        <br />
-                        <br />
-                        {%endfor%}
-                    </dd>
-                </div>
-                {%endif%}
-            </dl>
+                <!-- Previous address rows. -->
+                {% set previousAddressRows = [] %}
+                {% for address in data["previous_addresses"] %}
+                    {% set previousAddressLineOne = address["lineOne"] %}
+                    {% set previousAddressLineTwo = address["lineTwo"] %}
+                    {% set previousAddressTownOrCity = address["townOrCity"] %}
+                    {% set previousAddressPostcode = address["postcode"] %}
+                    {% set previousAddressCountry = address["country"] %}
+                    {% set previousAddressDateRange = "From " + address["start-month"] + " " + address["start-year"] + " to " + address["end-month"] + " " + address["end-year"] %}
+                    {% set previousAddress = "<p>" + previousAddressLineOne + "</br>" %}
+                    {% if previousAddressLineTwo %}
+                        {% set previousAddress = previousAddress + previousAddressLineTwo + "</br>" %}
+                    {% endif %}
+                    {% set previousAddress = previousAddress + previousAddressTownOrCity + "<br/>" + previousAddressPostcode + "<br/>" + previousAddressCountry %}
+                    {% set previousAddressKeyText = "" %}
+                    {% if loop.first %}
+                        {% set previousAddressKeyText  = "Previous address" %}
+                    {% endif %}
+                    {% set previousAddressClasses = "" %}
+                    {% if not loop.last %}
+                        {% set previousAddressClasses = "govuk-summary-list__row--no-border" %}
+                    {% endif %}
+                    {% set previousAddressRows = (previousAddressRows.push({
+                        actions: {
+                            items: [
+                                {
+                                    href: "edit-address?address=" + address["type"] + "&edit=" + loop.index + "&type=previous",
+                                    text: "Change",
+                                    visuallyHiddenText: "Change previous address."
+                                },
+                                {
+                                    href: "lived-elsewhere?item=" + loop.index + "&type=previous",
+                                    text: "Delete",
+                                    visuallyHiddenText: "Delete previous address."
+                                }
+                            ]
+                        },
+                        classes: previousAddressClasses,
+                        key: {
+                            text: previousAddressKeyText
+                        },
+                        value: {
+                            html: previousAddress
+                        }
+                    }), previousAddressRows) %}
+                {% endfor %}
 
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
-        </form>
+                <!-- Summary list. -->
+                {% set rows = sendAddressRows.concat(currentAddressRows, previousAddressRows) %}
+                {{ govukSummaryList({
+                    attributes: {
+                        "style": "width: 86.00%"
+                    },
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: rows
+                }) }}
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+                <!-- Heading -->
+                <h2 class="govuk-heading-m">Have you lived anywhere else from {{ date }} to now?</h2>
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentLivedElsewhere,
+                        items: [
+                            {
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "lived-elsewhere"
+                    }) }}
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
     </div>
-</div>
-
 {% endblock %}
