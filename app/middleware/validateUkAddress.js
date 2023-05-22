@@ -79,7 +79,6 @@ const validateUkAddress = (request, response) => {
     if (Object.keys(dataValidation).length) {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
-        const type = request.query.manual ? "uk-manual" : "uk";
         if (request.query.address === "previous") {
             data["temp-previous-address"] = {
                 "lineOne": ukAddressLineOne,
@@ -87,7 +86,7 @@ const validateUkAddress = (request, response) => {
                 "townOrCity": ukAddressTownOrCity,
                 "postcode": ukAddressPostcode,
                 "country": "United Kingdom",
-                "type": type
+                "type": "uk-manual"
             };
         } else {
             data["current_address"] = {
@@ -96,7 +95,7 @@ const validateUkAddress = (request, response) => {
                 "townOrCity": ukAddressTownOrCity,
                 "postcode": ukAddressPostcode,
                 "country": "United Kingdom",
-                "type": type
+                "type": "uk-manual"
             };
         }
         redirectPath = redirectPath.includes("?") ? redirectPath + "&" + queryStringLocationUk : redirectPath + "?" + queryStringLocationUk; 
