@@ -140,6 +140,10 @@
                     {% set currentAddressPostcode = address["postcode"] %}
                     {% set currentAddressCountry = address["country"] %}
                     {% set currentAddressDateRange = "From " + address["start-month"] + " " + address["start-year"] + " to now" %}
+                    {% set currentAddressType = address["type"] %}
+                    {% if not currentAddressType %}
+                        {% set currentAddressType = "uk-manual" %}
+                    {% endif %}
                     {% set currentAddress = "<p>" + currentAddressLineOne + "</br>" %}
                     {% if currentAddressLineTwo %}
                         {% set currentAddress = currentAddress + currentAddressLineTwo + "</br>" %}
@@ -157,7 +161,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "edit-address?address=" + address["type"] + "&edit=" + loop.index + "&type=current",
+                                    href: "edit-address?address=" + currentAddressType + "&edit=" + loop.index + "&type=current",
                                     text: "Change",
                                     visuallyHiddenText: "Change current address."
                                 },
@@ -187,6 +191,10 @@
                     {% set previousAddressPostcode = address["postcode"] %}
                     {% set previousAddressCountry = address["country"] %}
                     {% set previousAddressDateRange = "From " + address["start-month"] + " " + address["start-year"] + " to " + address["end-month"] + " " + address["end-year"] %}
+                    {% set previousAddressType = address["type"] %}
+                    {% if not previousAddressType %}
+                        {% set previousAddressType = "uk-manual" %}
+                    {% endif %}
                     {% set previousAddress = "<p>" + previousAddressLineOne + "</br>" %}
                     {% if previousAddressLineTwo %}
                         {% set previousAddress = previousAddress + previousAddressLineTwo + "</br>" %}
@@ -204,7 +212,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "edit-address?address=" + address["type"] + "&edit=" + loop.index + "&type=previous",
+                                    href: "edit-address?address=" + previousAddressType + "&edit=" + loop.index + "&type=previous",
                                     text: "Change",
                                     visuallyHiddenText: "Change previous address."
                                 },
