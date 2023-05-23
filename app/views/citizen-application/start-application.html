@@ -1,59 +1,87 @@
-{% extends "layout.html" %} {% block pageTitle %} Start Application {% endblock %} {% block header %}
-<!-- Blank header with no service name for the start page -->
-{{ govukHeader() }}{% endblock %} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your
-            <a class="govuk-link" href="#" aria-label="Provide feedback to help us improve this service.">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-{% endblock %} {% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Complete a requested standard or enhanced DBS check</h1>
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-        <p>Use this service to complete your standard or enhanced DBS check application. You must be 16 years or older to use this service.</p>
 
-        <h2 class="govuk-heading-m">What you'll need</h2>
 
-        <p>Before you start make sure you have:</p>
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Complete a requested standard or enhanced DBS check
+{% endblock %}
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>your addresses for the last 5 years and the dates you lived there</li>
-            <li>details of any other names you've used and the dates you used them</li>
-            <li>a current address we can post your DBS certificate to</li>
-        </ul>
-        <p>If you have them, you will also need your:</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>passport, this can be a UK or non-UK passport</li>
-            <li>National Insurance number</li>
-            <li>UK driving licence</li>
-        </ul>
-        <p>You’ll need to sign into GOV.UK One Login to use this service. If you do not have a GOV.UK One Login account, you can create one.</p>
 
-        <a
-            href="current-full-name"
-            role="button"
-            draggable="false"
-            class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8"
-            data-module="govuk-button"
-        >
-            Start
-            <svg
-                class="govuk-button__start-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                width="17.5"
-                height="19"
-                viewBox="0 0 33 40"
-                aria-hidden="true"
-                focusable="false"
-            >
-                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
-            </svg>
-        </a>
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Heading. -->
+            <h1 class="govuk-heading-l">Complete a requested standard or enhanced DBS check</h1>
+
+            <!-- Body. -->
+            <p class="govuk-body">Use this service to complete your standard or enhanced DBS check application. You must be 16 years or older to use this service.</p>
+
+            <!-- Heading. -->
+            <h2 class="govuk-heading-m">What you'll need</h2>
+
+            <!-- Body. -->
+            <p class="govuk-body">Before you start make sure you have:</p>
+
+            <!-- List bullet. -->
+            <ul class="govuk-list govuk-list--bullet">
+                <li>your addresses for the last 5 years and the dates you lived there</li>
+                <li>details of any other names you've used and the dates you used them</li>
+                <li>a current address we can post your DBS certificate to</li>
+            </ul>
+
+            <!-- Body. -->
+            <p class="govuk-body">If you have them, you will also need your:</p>
+
+            <!-- List bullet. -->
+            <ul class="govuk-list govuk-list--bullet">
+                <li>passport, this can be a UK or non-UK passport</li>
+                <li>National Insurance number</li>
+                <li>UK driving licence</li>
+            </ul>
+
+            <!-- Body. -->
+            <p class="govuk-body">You’ll need to sign into GOV.UK One Login to use this service. If you do not have a GOV.UK One Login account, you can create one.</p>
+
+            <form method="post">
+                <!-- Button. -->
+                {{ govukButton({
+                    isStartButton: true,
+                    text: "Start"
+                }) }}
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

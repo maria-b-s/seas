@@ -1,87 +1,160 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %} {% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="/citizen-application/start-application">Back</a>
-{% endblock %} {% block content %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% if validation|length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({"text": value,
-        "href": "#" + key}), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
-        endif %}
-        <form class="form full-name-form" action="" method="post">
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">What is your current full name?</h1>
-                </legend>
-                <div id="full-name-hint" class="govuk-hint">You must tell us your full name, including any middle names.</div>
-                <div class="govuk-form-group {% if validation['current-name-first-name'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="current-name-first-name"> First name </label>
-                    {% if validation['current-name-first-name'] %}
-                    <span id="ninonr-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-first-name'] }}
-                    </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-input--width-20"
-                        id="current-name-first-name"
-                        name="current-name-first-name"
-                        type="text"
-                        spellcheck="false"
-                        autocomplete="given-name"
-                        value='{{data["current-name-first-name"]}}'
-                    />
-                </div>
-                <div class="govuk-form-group {% if validation['current-name-middle-names'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="current-name-middle-names"> Middle names </label>
-                    {% if validation['current-name-middle-names'] %}
-                    <span id="ninonr-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-middle-names'] }}
-                    </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-input--width-20"
-                        id="current-name-middle-names"
-                        name="current-name-middle-names"
-                        type="text"
-                        spellcheck="false"
-                        autocomplete="name"
-                        value='{{data["current-name-middle-names"]}}'
-                    />
-                </div>
-                <div class="govuk-form-group {% if validation['current-name-last-name'] %}govuk-form-group--error{% endif %}">
-                    <label class="govuk-label" for="current-name-last-name"> Last name </label>
-                    {% if validation['current-name-last-name'] %}
-                    <span id="ninonr-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> {{ validation['current-name-last-name'] }}
-                    </span>
-                    {% endif %}
-                    <input
-                        class="govuk-input govuk-input--width-20"
-                        id="current-name-last-name"
-                        name="current-name-last-name"
-                        type="text"
-                        spellcheck="false"
-                        autocomplete="family-name"
-                        value='{{data["current-name-last-name"]}}'
-                    />
-                </div>
-            </fieldset>
-            <input value="Current" type="hidden" name="name-use-start" />
-            {% if query['change'] === 'true' %}
-            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
-            {% else %}
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    What is your current full name?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Complete a requested standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
             {% endif %}
-        </form>
-    </div>
-</div>
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentCurrentNameFirstName = "" %}
+            {% set errorComponentCurrentNameMiddleNames = "" %}
+            {% set errorComponentCurrentNameLastName = "" %}
+            {% if validation | length %}
+                <!-- Current name first name. -->
+                {% if validation["current-name-first-name"] %}
+                    {% set errorComponentCurrentNameFirstName = {
+                        text: validation["current-name-first-name"]
+                    } %}
+                {% endif %}
+                <!-- Current name middle names. -->
+                {% if validation["current-name-middle-names"] %}
+                    {% set errorComponentCurrentNameMiddleNames = {
+                        text: validation["current-name-middle-names"]
+                    } %}
+                {% endif %}
+                <!-- Current name last name. -->
+                {% if validation["current-name-last-name"] %}
+                    {% set errorComponentCurrentNameLastName = {
+                        text: validation["current-name-last-name"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "What is your current full name?"
+                }
+            }) %}
 
+                <!-- Hint. -->
+                <p class="govuk-hint">You must tell us your full name, including any middle names.</p>
+
+                <form method="post">
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "given-name",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentCurrentNameFirstName,
+                        id: "current-name-first-name",
+                        label: {
+                            text: "First name"
+                        },
+                        name: "current-name-first-name",
+                        spellcheck: false,
+                        value: data["current-name-first-name"]
+                    }) }}
+                    
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "additional-name",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentCurrentNameMiddleNames,
+                        id: "current-name-middle-names",
+                        label: {
+                            text: "Middle names"
+                        },
+                        name: "current-name-middle-names",
+                        spellcheck: false,
+                        value: data["current-name-middle-names"]
+                    }) }}
+
+                    <!-- Text input. -->
+                    {{ govukInput({
+                        autocomplete: "family-name",
+                        classes: "govuk-input govuk-!-width-two-thirds",
+                        errorMessage: errorComponentCurrentNameLastName,
+                        id: "current-name-last-name",
+                        label: {
+                            text: "Last name"
+                        },
+                        name: "current-name-last-name",
+                        spellcheck: false,
+                        value: data["current-name-last-name"]
+                    }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
 {% endblock %}

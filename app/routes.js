@@ -957,6 +957,136 @@ router.post('/pay-now-answer', (req, res) => {
     }
 });
 
+// -----------------------------------------------------------------------------
+// Citizen application / Start
+// -----------------------------------------------------------------------------
+citizenRouter.get('/start-application', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('citizen-application/start-application', { cache: inputCache, validation: null });
+});
+citizenRouter.post('/start-application', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = 'current-full-name';
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Citizen application / Current full name
+// -----------------------------------------------------------------------------
+citizenRouter.get('/current-full-name', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('citizen-application/current-full-name', { cache: inputCache, validation: null });
+});
+citizenRouter.post('/current-full-name', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let dataValidation = {};
+    let redirectPath = 'previous-names-q';
+    const validFirstName = /^[a-zA-Z'\- ]+$/.test(request.body['current-name-first-name']);
+    const validMiddleNames = /^[a-zA-Z'\- ]+$/.test(request.body['current-name-middle-names']);
+    const validLastName = /^[a-zA-Z'\- ]+$/.test(request.body['current-name-last-name']);
+
+    if (request.query && request.query.change) {
+        redirectPath = 'review-application';
+    }
+
+    if (!validFirstName) {
+        dataValidation['current-name-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (!validLastName) {
+        dataValidation['current-name-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
+    }
+
+    if (request.body['current-name-first-name'].length > 50) {
+        dataValidation['current-name-first-name'] = 'First name must be 50 characters or fewer';
+    }
+
+    if (request.body['current-name-last-name'].length > 50) {
+        dataValidation['current-name-last-name'] = 'Last name must be 50 characters or fewer';
+    }
+
+    if (!request.body['current-name-first-name']) {
+        dataValidation['current-name-first-name'] = 'Enter first name';
+    }
+
+    if (!request.body['current-name-last-name']) {
+        dataValidation['current-name-last-name'] = 'Enter last name';
+    }
+
+    if (request.body['current-name-middle-names']) {
+        if (!validMiddleNames) {
+            dataValidation['current-name-middle-names'] = 'Middle names must only include letters a to z, hyphens, spaces and apostrophes';
+        }
+        if (request.body['current-name-middle-names'].length > 50) {
+            dataValidation['current-name-middle-names'] = 'Middle names must be 50 characters or fewer';
+        }
+    }
+
+    if (Object.keys(dataValidation).length) {
+        response.render('citizen-application/current-full-name', { cache: inputCache, validation: dataValidation });
+    } else {
+        response.redirect(redirectPath);
+    }
+});
+
+// -----------------------------------------------------------------------------
+// Citizen application / Previous names question
+// -----------------------------------------------------------------------------
+citizenRouter.get('/previous-names-q', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    if (request.query.change) {
+        request.session.fromPrevNamesToReview = true;
+    }
+
+    // Response.
+    response.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
+});
+citizenRouter.post('/previous-names-q', invalidateCache, (request, response) => {
+    savePageData(request, request.body);
+    const inputCache = loadPageData(request);
+
+    const data = { ...request.body };
+
+    let validation = null;
+
+    if (!data['known-by-other-names']) {
+        validation = {};
+        validation['known-by-other-names'] = 'Select if you have been known by any other names';
+        response.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
+    }
+
+    if (data['known-by-other-names'] === "No") {
+        if (request.session.data.prevNames) {
+            delete request.session.data.prevNames;
+        }
+        if (request.session.fromPrevNamesToReview) {
+            request.session.fromPrevNamesToReview = false;
+            response.redirect('/citizen-application/review-application');
+        } else {
+            response.redirect('/citizen-application/date-of-birth');
+        }
+    } else if (data['known-by-other-names'] === "Yes") {
+        if (request.session.data?.prevNames?.length) {
+            response.redirect('/citizen-application/previous-names-list');
+        } else {
+            response.redirect('/citizen-application/previous-names-form');
+        }
+    }
+});
+
 citizenRouter.post('/verify-name', (req, res) => {
     const sessionNames = req.session.data.names || [];
     const otherName = req.session.data['other-full-name'];
@@ -1132,62 +1262,6 @@ citizenRouter.post('/where-certificate', (req, res) => {
     return res.redirect('address-lookup?certificate=true');
 });
 
-citizenRouter.get('/current-full-name', invalidateCache, (req, res) => {
-    res.render('citizen-application/current-full-name', { cache: req.session.data.fullName, validation: null });
-});
-
-citizenRouter.post('/current-full-name', invalidateCache, (req, res, next) => {
-    const inputCache = loadPageData(req);
-    let dataValidation = {};
-    let redirectPath = 'previous-names-q';
-    const validFirstName = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-first-name']);
-    const validMiddleNames = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-middle-names']);
-    const validLastName = /^[a-zA-Z'\- ]+$/.test(req.body['current-name-last-name']);
-
-    if (req.query && req.query.change) {
-        redirectPath = 'review-application';
-    }
-
-    if (!validFirstName) {
-        dataValidation['current-name-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (!validLastName) {
-        dataValidation['current-name-last-name'] = 'Last name must only include letters a to z, hyphens, spaces and apostrophes';
-    }
-
-    if (req.body['current-name-first-name'].length > 50) {
-        dataValidation['current-name-first-name'] = 'First name must be 50 characters or fewer';
-    }
-
-    if (req.body['current-name-last-name'].length > 50) {
-        dataValidation['current-name-last-name'] = 'Last name must be 50 characters or fewer';
-    }
-
-    if (!req.body['current-name-first-name']) {
-        dataValidation['current-name-first-name'] = 'Enter first name';
-    }
-
-    if (!req.body['current-name-last-name']) {
-        dataValidation['current-name-last-name'] = 'Enter last name';
-    }
-
-    if (req.body['current-name-middle-names']) {
-        if (!validMiddleNames) {
-            dataValidation['current-name-middle-names'] = 'Middle names must only include letters a to z, hyphens, spaces and apostrophes';
-        }
-        if (req.body['current-name-middle-names'].length > 50) {
-            dataValidation['current-name-middle-names'] = 'Middle names must be 50 characters or fewer';
-        }
-    }
-
-    if (Object.keys(dataValidation).length) {
-        res.render('citizen-application/current-full-name', { cache: inputCache, validation: dataValidation });
-    } else {
-        res.redirect(redirectPath);
-    }
-});
-
 citizenRouter.post('/place-of-birth', invalidateCache, (req, res, next) => {
     let dataValidation = {};
     savePageData(req, req.body);
@@ -1243,52 +1317,6 @@ citizenRouter.get('/place-of-birth', invalidateCache, (req, res) => {
     res.render('citizen-application/place-of-birth', { validation: null });
 });
 
-citizenRouter.get('/previous-names-q', invalidateCache, (req, res) => {
-    if (req.query.change) {
-        req.session.fromPrevNamesToReview = true;
-    }
-
-    const inputCache = loadPageData(req);
-    res.render('citizen-application/previous-names-q', { cache: inputCache, validation: null });
-});
-
-citizenRouter.post('/previous-names-q', invalidateCache, (req, res) => {
-    savePageData(req, req.body);
-    const inputCache = loadPageData(req);
-
-    // To prevent mutability I am creating a new object "data" from the req.body
-    const data = { ...req.body };
-
-    let validation = null;
-
-    // Explicit coercion to boolean
-    if (data['radio-group-alias-input']) {
-        data['radio-group-alias-input'] = Boolean(Number(data['radio-group-alias-input']));
-    } else {
-        validation = {};
-        validation['radio-group-alias-input'] = 'Select if you have been known by any other names';
-        res.render('citizen-application/previous-names-q', { cache: inputCache, validation: validation });
-    }
-
-    if (data['radio-group-alias-input'] === false) {
-        if (req.session.data.prevNames) {
-            delete req.session.data.prevNames;
-        }
-        if (req.session.fromPrevNamesToReview) {
-            req.session.fromPrevNamesToReview = false;
-            res.redirect('/citizen-application/review-application');
-        } else {
-            res.redirect('/citizen-application/date-of-birth');
-        }
-    } else if (data['radio-group-alias-input'] === true) {
-        if (req.session.data?.prevNames?.length) {
-            res.redirect('/citizen-application/previous-names-list');
-        } else {
-            res.redirect('/citizen-application/previous-names-form');
-        }
-    }
-});
-
 citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
     let inputCache = loadPageData(req);
 
@@ -1321,9 +1349,9 @@ citizenRouter.get('/previous-names-form', invalidateCache, (req, res) => {
                 const seedingItemDateTo = seedingItem.used_to.split('/');
                 seedingObject['alias-to-MM'] = seedingItemDateTo[0];
                 seedingObject['alias-to-YYYY'] = seedingItemDateTo[1];
-                seedingObject['radio-group-alias-input'] = '0';
+                seedingObject['known-by-other-names'] = '0';
             } else {
-                seedingObject['radio-group-alias-input'] = '1';
+                seedingObject['known-by-other-names'] = '1';
                 seedingObject['alias-to-MM'] = '';
                 seedingObject['alias-to-YYYY'] = '';
             }
@@ -1370,7 +1398,7 @@ let mapInput = data => {
         resultObj.used_to = notEntered;
     }
 
-    if (data['radio-group-alias-input'] === '1') {
+    if (data['known-by-other-names'] === '1') {
         resultObj.used_to = 'Present';
     }
 
@@ -1427,7 +1455,7 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         }
     }
 
-    if (req.body['radio-group-alias-input'] == 0) {
+    if (req.body['known-by-other-names'] == 0) {
         if (req.body['alias-to-MM'] < 1 || req.body['alias-to-MM'] > 12) {
             dataValidation['alias-to-MM'] = 'The month you stopped using name must be between 1 and 12';
         }
@@ -1468,8 +1496,8 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         }
     }
 
-    if (!req.body['radio-group-alias-input']) {
-        dataValidation['radio-group-alias-input'] = 'Select if you still use this name';
+    if (!req.body['known-by-other-names']) {
+        dataValidation['known-by-other-names'] = 'Select if you still use this name';
     }
 
     if (!validFirstName) {

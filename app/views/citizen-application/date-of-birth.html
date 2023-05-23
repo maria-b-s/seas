@@ -1,84 +1,133 @@
-{% extends "layout.html" %} {% import "../macros/error-summary/govukErrorSummary.njk" as es %}{% block pageTitle %} Question page {% endblock %} {%
-set serviceName %} Request a standard or enhanced DBS check {% endset%} {% block beforeContent %}
-<div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-        <strong class="govuk-tag govuk-phase-banner__content__tag"> alpha </strong>
-        <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-        </span>
-    </p>
-</div>
-<a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
-{% endblock %} {% block content %}
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% if validation | length %} {% set errorList = [] %} {% for key, value in validation %} {% set errorList = (errorList.push({ "text": value,
-        "href": "#" + key }), errorList) %} {% endfor %} {{ es.govukErrorSummary({ "titleText": "There is a problem", "errorList": errorList }) }} {%
-        endif %}
-        <form class="form" method="post">
-            <div class="govuk-form-group {% if validation %}govuk-form-group--error{% endif %}">
-                <fieldset id="main-content" class="govuk-fieldset" role="group" aria-describedby="dob-hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">What is your date of birth?</h1>
-                    </legend>
-                    <div id="dob-hint" class="govuk-hint">For example, 31 3 1980</div>
-                    <div class="govuk-date-input" id="dob">
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group {% if validation['ca-bday-day'] %}govuk-form-group--error{% endif %}">
-                                <label class="govuk-label govuk-date-input__label" for="ca-dob-day"> Day </label>
-                                <input
-                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                    id="ca-dob-day"
-                                    name="ca-dob-day"
-                                    type="text"
-                                    autocomplete="bday-day"
-                                    inputmode="numeric"
-                                    value='{{data["ca-dob-day"]}}'
-                                />
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group {% if validation['ca-bday-month'] %}govuk-form-group--error{% endif %}">
-                                <label class="govuk-label govuk-date-input__label" for="ca-dob-month"> Month </label>
-                                <input
-                                    class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                    id="ca-dob-month"
-                                    name="ca-dob-month"
-                                    type="text"
-                                    autocomplete="bday-month"
-                                    inputmode="numeric"
-                                    value='{{data["ca-dob-month"]}}'
-                                />
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group {% if validation['ca-bday-year'] %}govuk-form-group--error{% endif %}">
-                                <label class="govuk-label govuk-date-input__label" for="ca-dob-year"> Year </label>
-                                <input
-                                    class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                    id="ca-dob-year"
-                                    name="ca-dob-year"
-                                    type="text"
-                                    autocomplete="bday-year"
-                                    inputmode="numeric"
-                                    value='{{data["ca-dob-year"]}}'
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
 
-            <br />
 
-            {% if query['change'] === 'true' %}
-            <button class="govuk-button" data-module="govuk-button">Check Answers</button>
-            {% else %}
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    What is your date of birth?
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Complete a requested standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
             {% endif %}
-        </form>
-    </div>
-</div>
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentCaDobDay = "" %}
+            {% if validation | length %}
+                <!-- CA DoB day. -->
+                {% if validation["ca-dob-day"] %}
+                    {% set errorComponentCaDobDay = {
+                        text: validation["ca-dob-day"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "What is your date of birth?"
+                }
+            }) %}
 
+                <form method="post">
+                    <!-- Date input. -->
+                    {{ govukDateInput({
+                        hint: {
+                            text: "For example, 31 3 1980"
+                        },
+                        id: "ca-dob",
+                        items: [
+                            {
+                                autocomplete: "bday-day",
+                                classes: "govuk-input--width-2",
+                                inputmode: "numeric",
+                                name: "day",
+                                value: data["ca-dob-day"]
+                            },
+                            {
+                                autocomplete: "bday-month",
+                                classes: "govuk-input--width-2",
+                                inputmode: "numeric",
+                                name: "month",
+                                value: data["ca-dob-month"]
+                            },
+                            {
+                                autocomplete: "bday-year",
+                                classes: "govuk-input--width-4",
+                                inputmode: "numeric",
+                                name: "year",
+                                value: data["ca-dob-year"]
+                            }
+                        ],
+                        namePrefix: "ca-dob"
+                      }) }}
+
+                    <!-- Button. -->
+                    {% set buttonText = "Continue" %}
+                    {% if query["change"] === "true" %}
+                        {% set buttonText = "Check answers" %}
+                    {% endif %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
 {% endblock %}

@@ -140,9 +140,9 @@ block pageTitle %} Question page {% endblock %} {% set serviceName %} Request a 
                 </fieldset>
             </div>
 
-            <div class="govuk-form-group {% if validation['radio-group-alias-input'] %}govuk-form-group--error{% endif %}">
-                {{ fe.radio_buttons( questionText="Do you still use this name?", h1Text=false, value=cache['radio-group-alias-input'], error=true,
-                errorMessages=[validation['radio-group-alias-input']], horizontal=true, items=[ {group: 'alias-input', answerOption: "1", value: "1",
+            <div class="govuk-form-group {% if validation['known-by-other-names'] %}govuk-form-group--error{% endif %}">
+                {{ fe.radio_buttons( questionText="Do you still use this name?", h1Text=false, value=cache['known-by-other-names'], error=true,
+                errorMessages=[validation['known-by-other-names']], horizontal=true, items=[ {group: 'alias-input', answerOption: "1", value: "1",
                 label: "Yes", dataTarget: 'save-and-continue' }, {group: 'alias-input', answerOption: "0", value: "0", label: "No", dataTarget:
                 'save-and-continue' } ]) }}
             </div>
