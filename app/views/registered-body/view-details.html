@@ -242,15 +242,9 @@ endset%} {% block beforeContent %}
                 </div> #}
             </dl>
 
-            <p id="download-pdf-hint" class="govuk-body">
-                If you need to send a copy of the applicant's answers to an ID checker, you can download them as a PDF.
-            </p>
-            <p class="govuk-body govuk-!-font-weight-bold">
-                <a href="#" class="govuk-link">Download applicant details for {{selectedApplication[0].name}}</a>
-            </p>
             {% if selectedApplication[0].status['text'] != "Cancelled" %}
 
-            <p id="download-pdf-hint" class="govuk-body">
+            <p class="govuk-body">
                 If any of the applicant's details are incorrect, you must cancel the application. You can then start a new application for them.
             </p>
 
