@@ -235,19 +235,19 @@ block header %}
 
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="{{app['status'].id}}">
                         {% if app['status'].id == '1' or app['status'].id == '2'%}
-                        <strong class="govuk-tag govuk-tag--yellow govuk-!-font-size-14" style="width: 75%; text-align: center; float: right"
+                        <strong class="govuk-tag govuk-tag--yellow govuk-!-font-size-14" style="margin-right: 0px !important; float: right; text-align: center;  width: 92%"
                             >{{app['status'].text}}</strong
                         >
                         {% elif app['status'].id == '5' or app['status'].id == '6'%}
-                        <strong class="govuk-tag govuk-tag--red govuk-!-font-size-14" style="width: 75%; text-align: center; float: right"
+                        <strong class="govuk-tag govuk-tag--red govuk-!-font-size-14" style="margin-right: 0px !important; float: right; text-align: center;  width: 92%"
                             >{{app['status'].text}}</strong
                         >
                         {% elif app['status'].id == '7'%}
-                        <strong class="govuk-tag govuk-tag--green govuk-!-font-size-14" style="width: 75%; text-align: center; float: right"
+                        <strong class="govuk-tag govuk-tag--green govuk-!-font-size-14" style="margin-right: 0px !important; float: right; text-align: center;  width: 92%"
                             >{{app['status'].text}}</strong
                         >
                         {% else %}
-                        <strong class="govuk-tag govuk-tag--blue govuk-!-font-size-14" style="width: 75%; text-align: center; float: right"
+                        <strong class="govuk-tag govuk-tag--blue govuk-!-font-size-14" style="margin-right: 0px !important; float: right; text-align: center;  width: 92%"
                             >{{app['status'].text}}</strong
                         >
                         {% endif %}
@@ -256,11 +256,6 @@ block header %}
                         <br />
 
                         {% if app['status'].id == '1'%}
-                        <div class="govuk-grid-row">
-                            <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
-                                <a href="#">Download applicant details PDF</a>
-                            </div>
-                        </div>
 
                         <div class="govuk-grid-row">
                             <div class="govuk-body-s" style="text-align: right; padding-right: 15px; margin-bottom: 5px">
