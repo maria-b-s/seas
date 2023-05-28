@@ -2914,6 +2914,8 @@ dashboardRouter.get('*', (req, res, next) => {
     const statuses = STATUS_COLLECTION1;
     const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
+    const idCheckers = req.session.data['id-checkers'];
+    idCheckers.push({});
 
     req.session.data.notifications = Array.from(Array(getRandomArbitrary(2, 11))).map((_, elIndex) => {
         const date = randomDate(new Date(2021, 11, 10), new Date());
@@ -2955,6 +2957,7 @@ dashboardRouter.get('*', (req, res, next) => {
                     person: 'John Smith',
                 },
             ],
+            idChecker: idCheckers[Math.floor(Math.random() * idCheckers.length)]
         };
     });
 
@@ -3069,6 +3072,7 @@ dashboardRouter.get('*', (req, res, next) => {
                 person: 'Gill Henderson (me)',
             },
         ],
+        idChecker: {}
     };
 
     req.session.data.filteredApplications = req.session.data.applications;
