@@ -187,9 +187,9 @@
 
         <div class="govuk-grid-column-three-quarters">
             <!-- Heading. -->
-            <h2 class="govuk-heading-m ">Search</h2>
+            <h2 class="govuk-heading-m" style="margin-left: -15px">Search</h2>
 
-            <div class="govuk-grid-row">
+            <div class="govuk-grid-row"">
                 <form action="search-name" method="post">
                     <div class="govuk-grid-column-three-quarters govuk-!-padding-left-0">
                         <!-- Input. -->
@@ -199,7 +199,7 @@
                             value: search
                         }) }}
                     </div>
-                    <div class="govuk-grid-column-one-quarter govuk-!-padding-right-0">
+                    <div class="govuk-grid-column-one-quarter">
                         <!-- Button -->
                         {{ govukButton({
                             attributes: {
@@ -234,7 +234,7 @@
                     {% endif %}
                     <!-- Last worked on by. -->
                     {% set applicationLastWorkedOnBy = application["history"][0]["person"] %}
-                    <!-- TODO: Status Tag. -->
+                    <!-- Status Tag. -->
                     {% set applicationStatusTag %}
                         {% set applicationStatusClassTagColor = "govuk-tag--blue" %}
                         {% if application["status"]["id"] === "1" or application["status"]["id"] === "2" %}
@@ -256,8 +256,12 @@
                     {% set applicationViewFullApplicationDetails = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">View full application details</a>' %}
                     <!-- TODO: Assign ID check to me. -->
                     {% set applicationAssignIdCheckToMe = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">Assign ID check to me</a>' %}
-                    <!-- TODO: Verify ID. -->
-                    {% set applicationVerifyId = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">Verify ID</a>' %}
+                    <!-- Verify ID. -->
+                    {% set applicationVerifyId %}
+                        {% if application["status"]["id"] === "1" and data["selectedIDC"]["name"] === applicationIdChecker %}
+                            <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
+                        {% endif %}
+                    {% endset %}
                     <!-- Cancel application. -->
                     {% set applicationCancelApplication = '<a href="/registered-body/confirm-cancel?app=' + application["ref"] + '" rel="noopener noreferrer">Cancel application</a>' %}
                     <!-- Application history. -->
@@ -296,9 +300,9 @@
                                     "data-sort-value": application["status"]["id"]
                                 },
                                 html: applicationStatusTag +
-                                      '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationAssignIdCheckToMe + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationVerifyId + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationCancelApplication + '</p>
+                                      '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationAssignIdCheckToMe + '</p>' +
+                                      applicationVerifyId +
+                                      '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationCancelApplication + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationApplicationHistory + '</p>'
                             }
                         ]

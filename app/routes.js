@@ -2908,6 +2908,7 @@ const STATUS_COLLECTION1 = [
 const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
 
 dashboardRouter.get('*', (req, res, next) => {
+    req.session.data.selectedIDC = req.cookies['selectedIDC'] || req.session.data['id-checkers'][0];
     if (req.session.data.applications !== undefined) return next();
     req.session.data.appStatus = STATUS_COLLECTION1;
     req.session.data.organisations = ORGANISATION;
@@ -3072,7 +3073,7 @@ dashboardRouter.get('*', (req, res, next) => {
                 person: 'Gill Henderson (me)',
             },
         ],
-        idChecker: {}
+        idChecker: idCheckers[0]
     };
 
     req.session.data.filteredApplications = req.session.data.applications;

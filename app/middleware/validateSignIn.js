@@ -50,6 +50,7 @@ const validateSignIn = (request, response) => {
                 dataValidation["idc-password"] = 'Password is incorrect';
             } else {
                 request.session.selectedIDC = selectedIdc;
+                response.cookie("selectedIDC", selectedIdc);
             }
         }
     }
