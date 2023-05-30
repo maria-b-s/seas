@@ -18,6 +18,7 @@ const seasIdcRouter = express.Router();
 // -----------------------------------------------------------------------------
 const { addApplication } = require('./middleware/addApplication');
 const { addClientOrganisation } = require('./middleware/addClientOrganisation');
+const { assignIdCheckOfApplicationToRegisteredBody } = require('./middleware/utilsRegisteredBody');
 const { cancelApplication } = require('./middleware/cancelApplication');
 const { clearDeactivatedIdCheckerPassword } = require('./middleware/utilsDeactivatedIdChecker');
 const { clearSelectedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
@@ -2902,13 +2903,12 @@ const STATUS_COLLECTION1 = [
     { id: '4', text: 'Submitted to DBS' },
     { id: '5', text: 'Cancelled' },
     { id: '6', text: 'Rejected' },
-    { id: '7', text: 'Certificate issued' },
+    { id: '7', text: 'Certificate issued' }, 
 ];
 
 const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
 
 dashboardRouter.get('*', (req, res, next) => {
-    req.session.data.selectedIDC = req.cookies['selectedIDC'] || req.session.data['id-checkers'][0];
     if (req.session.data.applications !== undefined) return next();
     req.session.data.appStatus = STATUS_COLLECTION1;
     req.session.data.organisations = ORGANISATION;
@@ -2958,7 +2958,7 @@ dashboardRouter.get('*', (req, res, next) => {
                     person: 'John Smith',
                 },
             ],
-            idChecker: idCheckers[Math.floor(Math.random() * idCheckers.length)]
+            idChecker: idCheckers[Math.floor(Math.random() * idCheckers.length)]["name"]
         };
     });
 
@@ -2972,7 +2972,7 @@ dashboardRouter.get('*', (req, res, next) => {
         type: types[1],
         date: new Date('06/07/2022').valueOf(),
         readableDate: '07/06/2022',
-        email: 'matthewadler@myemail.com',
+        email: 'matthewadler@example.org',
         prevNames: [
             {
                 first_name: 'Matthew',
@@ -3073,7 +3073,7 @@ dashboardRouter.get('*', (req, res, next) => {
                 person: 'Gill Henderson (me)',
             },
         ],
-        idChecker: idCheckers[0]
+        idChecker: ""
     };
 
     req.session.data.filteredApplications = req.session.data.applications;
@@ -3235,14 +3235,15 @@ dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
     }
 
     res.render('dashboard/home', {
+        appStatusFilter: req.session.data.appStatusFilter,
         cache: inputCache,
-        validation: null,
         filteredApplications: req.session.data.filteredApplications,
+        needsActionFilter: req.session.data.needsActionFilter,
+        orgFilter: req.session.data.orgFilter,
         query: req.query,
         search: req.session.data.search,
-        needsActionFilter: req.session.data.needsActionFilter,
-        appStatusFilter: req.session.data.appStatusFilter,
-        orgFilter: req.session.data.orgFilter,
+        selectedRB: req.session.selectedRB,
+        validation: null
     });
 });
 
@@ -3297,6 +3298,11 @@ dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
     searchFilter(req, res);
     res.redirect('/dashboard/home?filter=' + urlString);
 });
+
+// -----------------------------------------------------------------------------
+// Dashboard / Assign ID check to me
+// -----------------------------------------------------------------------------
+dashboardRouter.post('/assign-id-check', invalidateCache, assignIdCheckOfApplicationToRegisteredBody);
 
 // SEAS 503 Password reset
 dashboardRouter.get('/rb-password-reset', invalidateCache, (req, res, _next) => {

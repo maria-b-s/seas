@@ -54,12 +54,14 @@
                     "style": "margin-right: 15px;
                               width: 23.25%"
                 },
+                href: "/registered-body/dbs-check-level",
                 text: "New application"
             }) }}
 
             <!-- Button -->
             {{ govukButton({
                 classes: "govuk-button--secondary",
+                href: "/registered-body/id-checkers-manage",
                 text: "Manage ID Checkers"
             }) }}
         </div>
@@ -187,11 +189,11 @@
 
         <div class="govuk-grid-column-three-quarters">
             <!-- Heading. -->
-            <h2 class="govuk-heading-m" style="margin-left: -15px">Search</h2>
+            <h2 class="govuk-heading-m">Search</h2>
 
             <div class="govuk-grid-row"">
                 <form action="search-name" method="post">
-                    <div class="govuk-grid-column-three-quarters govuk-!-padding-left-0">
+                    <div class="govuk-grid-column-three-quarters">
                         <!-- Input. -->
                         {{ govukInput({
                             id: "search-name",
@@ -222,6 +224,7 @@
                     <!-- Email address. -->
                     {% set applicationEmailAddress = application["email"] %}
                     <!-- Date application started. -->
+                    {% set applicationDate = application["date"] %}
                     {% set applicationDateApplicationStarted = application["readableDate"] %}
                     <!-- Organisation. -->
                     {% set applicationOrganisation = application["organisation"] %}
@@ -230,18 +233,21 @@
                     <!-- ID Checker. -->
                     {% set applicationIdChecker = "Unassigned" %}
                     {% if application["idChecker"] | length %}
-                        {% set applicationIdChecker = application["idChecker"]["name"] %}
+                        {% set applicationIdChecker = application["idChecker"] %}
                     {% endif %}
+                    {% set currentIdChecker = selectedRB["organisation"] %}
                     <!-- Last worked on by. -->
                     {% set applicationLastWorkedOnBy = application["history"][0]["person"] %}
                     <!-- Status Tag. -->
+                    {% set applicationStatusId = application["status"]["id"] %}
+                    {% set applicationStatusText = application["status"]["text"] %}
                     {% set applicationStatusTag %}
                         {% set applicationStatusClassTagColor = "govuk-tag--blue" %}
-                        {% if application["status"]["id"] === "1" or application["status"]["id"] === "2" %}
+                        {% if applicationStatusId === "1" or applicationStatusId === "2" %}
                             {% set applicationStatusClassTagColor = "govuk-tag--yellow" %}
-                        {% elif application["status"]["id"] === "5" or application["status"]["id"] === "6" %}
+                        {% elif applicationStatusId === "5" or applicationStatusId === "6" %}
                             {% set applicationStatusClassTagColor = "govuk-tag--red" %}
-                        {% elif application["status"]["id"] === "7" %}
+                        {% elif applicationStatusId === "7" %}
                             {% set applicationStatusClassTagColor = "govuk-tag--green" %}
                         {% endif %}
                         {{ govukTag({
@@ -249,16 +255,25 @@
                                 "style": "float: right; margin-right: 0px !important; text-align: center; width: 86%"
                             },
                             classes: "govuk-!-font-size-14 govuk-!-margin-bottom-4 " + applicationStatusClassTagColor,
-                            text: application["status"]["text"]
+                            text: applicationStatusText
                         }) }}
                     {% endset %}
                     <!-- View full application details. -->
                     {% set applicationViewFullApplicationDetails = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">View full application details</a>' %}
-                    <!-- TODO: Assign ID check to me. -->
-                    {% set applicationAssignIdCheckToMe = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">Assign ID check to me</a>' %}
+                    <!-- Assign ID check to me. -->
+                    {% set applicationAssignIdCheckToMe %}
+                        {% if applicationStatusId === "1" or applicationStatusId === "3" %}
+                            {% if applicationIdChecker !== currentIdChecker %}
+                                {% set formActionAssignIdCheck = "assign-id-check?application="  + application["ref"] %}
+                                <form action="{{ formActionAssignIdCheck }}" method="post">
+                                    <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a class="govuk-link" href="#" onclick="this.closest('form').submit();" rel="noopener noreferrer">Assign ID check to me</a></p>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% endset %}
                     <!-- Verify ID. -->
                     {% set applicationVerifyId %}
-                        {% if application["status"]["id"] === "1" and data["selectedIDC"]["name"] === applicationIdChecker %}
+                        {% if applicationStatusId === "1" and applicationIdChecker === currentIdChecker %}
                             <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
                         {% endif %}
                     {% endset %}
@@ -285,7 +300,7 @@
                             },
                             {
                                 attributes: {
-                                    "data-sort-value": applicationDateApplicationStarted
+                                    "data-sort-value": applicationDate
                                 },
                                 html: '<p class="govuk-body-m govuk-!-margin-bottom-4">' + applicationViewFullApplicationDetails + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationEmailAddress + '</p>
@@ -297,10 +312,10 @@
                             },
                             {
                                 attributes: {
-                                    "data-sort-value": application["status"]["id"]
+                                    "data-sort-value": applicationStatusId
                                 },
                                 html: applicationStatusTag +
-                                      '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationAssignIdCheckToMe + '</p>' +
+                                      applicationAssignIdCheckToMe +
                                       applicationVerifyId +
                                       '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationCancelApplication + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationApplicationHistory + '</p>'
@@ -313,13 +328,16 @@
                 <!-- Table. -->
                 {{ govukTable({
                     attributes: {
-                        "data-module": "moj-sortable-table"
+                        "data-module": "moj-sortable-table",
+                        "style": "margin-left: 15px; width: calc(100% - 30px)"
+
                     },
-                    firstCellIsHeader: true,
+                    firstCellIsHeader: false,
                     head: [
                         {
                             attributes: {
-                                "aria-sort": "none"
+                                "aria-sort": "none",
+                                "scope": "col"
                             },
                             text: "Last name"
                         },
@@ -331,7 +349,7 @@
                         },
                         {
                             attributes: {
-                                "aria-sort": "none"
+                                "aria-sort": "ascending"
                             },
                             classes: "govuk-table__header--numeric",
                             text: "Action needed"
