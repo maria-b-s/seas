@@ -373,7 +373,6 @@ $('.lookup').on('click', function () {
     var addressManual = $('#address-manual');
 
     if(postcode.val().length < 5 || postcode.val().length > 8){
-        console.log("heloo")
         err4.css('display', 'block');
         return;
     }

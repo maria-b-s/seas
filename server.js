@@ -261,14 +261,31 @@ app.post('/prototype-admin/clear-data', function (req, res) {
 const generateAccounts = (req, refresh) => {
     if (!req.session?.mockDBaccounts) {
         const accounts = [];
+        const organisations = [
+            "Atomic Reply",
+            "Avantage Reply",
+            "Avvio Reply",
+            "Breed Reply",
+            "Canvas Reply",
+            "Data Reply",
+            "Glue Reply",
+            "Go Reply",
+            "Infinity Reply",
+            "Portaltech Reply",
+            "Retail Reply",
+            "Solidsoft Reply",
+            "Spike Reply",
+            "Sprint Reply",
+            "WM Reply"
+        ];
 
         for (let i = 1; i <= 15; i++) {
             accounts.push({
                 rbNumber: String(99000000001 + i),
                 csNumber: String(33000000020 - i),
-                organisation: 'My Registered Body organisation name', 
+                organisation: organisations[i - 1], 
                 userDob:  String(i + 1).padStart(2, '0') + '/09/1989',
-                email: i % 2 ? `user${i * 3 + 78}@nodomain.com` : `user${i * 2 + 3}@dbs.co.uk`,
+                email: i % 2 ? `user${i * 3 + 78}@example.org` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
                 password: i % 2 ? String('pass0' + 12 + i) : null,
                 created: moment(new Date(), 'Europe/London').format("DD MMM YYYY hh:mm:ss")

@@ -32,13 +32,16 @@ const filterIdCheckersManage = (request, response) => {
         data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["org"] === (filterClientOrganisation));
     } else if (filterIdCheckerName) {
         filterIdCheckerName = filterIdCheckerName.trim().toLowerCase();
-        data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].trim().toLowerCase().includes(filterIdCheckerName));
+        if (idCheckers["name"]) {
+            data["id-checkers-filtered"] = idCheckers.filter(idCheckers => idCheckers["name"].trim().toLowerCase().includes(filterIdCheckerName));
+        }
     } else {
         data["filter-client-organisation"] = "";
         data["filter-id-checker-name"] = "";
         data["id-checkers-filtered"] = "";
     }
 
+    // Response.
     response.redirect(redirectPath);
 };
 

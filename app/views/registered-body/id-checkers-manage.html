@@ -77,14 +77,16 @@
             <form method="post">
                 {% set clientOrganisations = [{ disabled: false, selected: false, value: "" }] %}
                 {% for idChecker in data["id-checkers"] %}
-                    {% set selected = false %}
-                    {% if data["filter-client-organisation"] %}
-                        {% if idChecker["org"] === data["filter-client-organisation"] %}
-                            {% set selected = true %}
+                    {% if idChecker | length %}
+                        {% set selected = false %}
+                        {% if data["filter-client-organisation"] %}
+                            {% if idChecker["org"] === data["filter-client-organisation"] %}
+                                {% set selected = true %}
+                            {% endif %}
                         {% endif %}
+                        {% set clientOrganisation = { selected: selected, text: idChecker["org"], value: idChecker["org"] } %}
+                        {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
                     {% endif %}
-                    {% set clientOrganisation = { selected: selected, text: idChecker["org"], value: idChecker["org"] } %}
-                    {% set clientOrganisations = (clientOrganisations.push(clientOrganisation), clientOrganisations) %}
                 {% endfor %}
                 {{ govukSelect({
                     attributes: {
@@ -143,52 +145,54 @@
         {% set idCheckers = data["id-checkers-filtered"] %}
     {% endif %}
     {% for idChecker in idCheckers %}
-        <!-- Name. -->
-        {% set idCheckerFirstName = idChecker["name"].split(" ")[0] %}
-        {% set idCheckerSurname = idChecker["name"].split(" ")[1] %}
-        <!-- Email. -->
-        {% set idCheckerEmail = idChecker["email"] %}
-        <!-- Organisation. -->
-        {% set idCheckerOrganisation = idChecker["org"] %}
-        <!-- Last ID check. -->
-        {% set idCheckerLastIdCheck = idChecker["dateLastIdCheck"] %}
-        {% if not idCheckerLastIdCheck %}
-            {% set idCheckerLastIdCheck = 'N/A' %}
-        {% endif %}
-        <!-- Action. -->
-        {% set idCheckerAction = "" %}
-        {% if idChecker["activated"] %}
-            {% set idCheckerAction = '<a class="govuk-link" href="#" rel="noopener noreferrer" style="text-align: right;">Edit details</a>' %}
-        {% else %}
-            {% set idCheckerAction = '<span style="color: #D4351C; text-align: right;">Account awaiting activation</span>' %}
-        {% endif %}
+        {% if idChecker | length %}
+            <!-- Name. -->
+            {% set idCheckerFirstName = idChecker["name"].split(" ")[0] %}
+            {% set idCheckerSurname = idChecker["name"].split(" ")[1] %}
+            <!-- Email. -->
+            {% set idCheckerEmail = idChecker["email"] %}
+            <!-- Organisation. -->
+            {% set idCheckerOrganisation = idChecker["org"] %}
+            <!-- Last ID check. -->
+            {% set idCheckerLastIdCheck = idChecker["dateLastIdCheck"] %}
+            {% if not idCheckerLastIdCheck %}
+                {% set idCheckerLastIdCheck = 'N/A' %}
+            {% endif %}
+            <!-- Action. -->
+            {% set idCheckerAction = "" %}
+            {% if idChecker["activated"] %}
+                {% set idCheckerAction = '<a class="govuk-link" href="#" rel="noopener noreferrer" style="text-align: right;">Edit details</a>' %}
+            {% else %}
+                {% set idCheckerAction = '<span style="color: #D4351C; text-align: right;">Account awaiting activation</span>' %}
+            {% endif %}
 
-        <!-- Table cell / application. -->
-        {% set tableCell =
-            [
-                {
-                    attributes: {
-                        "data-sort-value": idCheckerSurname,
-                        "style": "width: 34.25%"
+            <!-- Table cell / application. -->
+            {% set tableCell =
+                [
+                    {
+                        attributes: {
+                            "data-sort-value": idCheckerSurname,
+                            "style": "width: 34.25%"
+                        },
+                        html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
+                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
+                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Client organisation</p>
+                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>
+                            <p class="govuk-body-m govuk-!-margin-top-3 govuk-!-margin-bottom-1">' + idCheckerAction + '</p>'
                     },
-                    html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
-                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
-                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Client organisation</p>
-                           <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>
-                           <p class="govuk-body-m govuk-!-margin-top-3 govuk-!-margin-bottom-1">' + idCheckerAction + '</p>'
-                },
-                {
-                    attributes: {
-                        "data-sort-value": idCheckerLastIdCheck
-                    },
-                    html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + idCheckerFirstName + ' ' + idCheckerSurname + '</p>
-                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
-                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
-                           <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
-                }
-            ]
-        %}
-        {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+                    {
+                        attributes: {
+                            "data-sort-value": idCheckerLastIdCheck
+                        },
+                        html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + idCheckerFirstName + ' ' + idCheckerSurname + '</p>
+                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
+                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
+                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
+                    }
+                ]
+            %}
+            {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+        {% endif %}
     {% endfor %}
 
     <!-- Table. -->
