@@ -7,7 +7,7 @@ module.exports = {
     serviceName: 'Standard or enhanced DBS check',
 
     // Default port that prototype runs on
-    port: '3000',
+    port: process.env.PORT || '3000',
 
     // Enable or disable password protection on production
     useAuth: 'true',
