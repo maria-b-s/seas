@@ -74,6 +74,8 @@ const { validateSeasIdcDeclaration } = require('./middleware/validateSeasIdcDecl
 const { validateSendAddress } = require('./middleware/validateSendAddress');
 const { validateSex } = require('./middleware/validateSex');
 const { validateSignIn } = require('./middleware/validateSignIn');
+const { validateSubmitApplicationDeclaration } = require('./middleware/validateSubmitApplicationDeclaration');
+const { validateSubmitApplicationDetails } = require('./middleware/validateSubmitApplicationDetails');
 const { validateUkAddress } = require('./middleware/validateUkAddress');
 const { validateVerifyingId } = require('./middleware/validateVerifyingId');
 const { validateWorkforceSelect } = require('./middleware/validateWorkforceSelect');
@@ -400,6 +402,57 @@ registeredBodyRouter.post('/select-flow', (req, res) => {
         }${req.header('referer').includes('change=true') ? '?change=true' : ''}`,
     );
 });
+
+
+
+// -----------------------------------------------------------------------------
+// Submit application / Application details
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/submit-application-details', invalidateCache, (request, response) => {
+    // Constants.
+    const data = request.session.data;
+    const application = data['applications'].filter(application => application["ref"] == request.query.application);
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/submit-application-details', { application: application, cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/submit-application-details', invalidateCache, validateSubmitApplicationDetails);
+
+// -----------------------------------------------------------------------------
+// Submit application / Declaration
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/submit-application-declaration', invalidateCache, (request, response) => {
+    // Constants.
+    const inputCache = loadPageData(request);
+
+    // Response.
+    response.render('registered-body/submit-application-declaration', { cache: inputCache, validation: null });
+});
+registeredBodyRouter.post('/submit-application-declaration', invalidateCache, validateSubmitApplicationDeclaration);
+
+// -----------------------------------------------------------------------------
+// Submit application / Confirmation
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/submit-application-confirmation', invalidateCache, (request, response) => {
+    // Constants.
+    const data =  request.session.data;
+    const applications = data["applications"];
+    const inputCache = loadPageData(request);
+
+    /* Updates the status of the corresponding application to reflect that it
+     * has been sent to DBS. */
+    const applicationIndex = applications.findIndex(application => application["ref"] === request.query.application);
+    const statuses = STATUS_COLLECTION1;
+    if (applicationIndex >= 0) {
+        data["applications"][applicationIndex]["status"] = statuses[3]; 
+    }
+
+    // Response.
+    response.render('registered-body/submit-application-confirmation', { cache: inputCache, validation: null });
+});
+
+
 
 registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {
     const inputCache = loadPageData(req);
@@ -2909,6 +2962,18 @@ const STATUS_COLLECTION1 = [
 const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
 
 dashboardRouter.get('*', (req, res, next) => {
+    /* Ensures the ID Checker assigned to Matthew Peter Adler's application
+     * is the current registered body logged into SEAS. */ 
+    const data = req.session.data;
+    const applications = data["applications"];
+    const registeredBody = req.session.selectedRB;
+    if (applications && registeredBody) {
+        const applicationIndex = applications.findIndex(application => application["ref"] === "MATT0711");
+        if (applicationIndex >= 0) {
+            data["applications"][applicationIndex]["idChecker"] = registeredBody["organisation"]; 
+        }
+    }
+
     if (req.session.data.applications !== undefined) return next();
     req.session.data.appStatus = STATUS_COLLECTION1;
     req.session.data.organisations = ORGANISATION;
@@ -2940,13 +3005,20 @@ dashboardRouter.get('*', (req, res, next) => {
         const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
             extractSetAverage: true,
         }).gen();
+        /* Ensures only Matthew Peter Adler's application has the status of
+         * "Ready to submit"; this is the only application has full population
+         * of details. */
+        let status = statuses[getRandomArbitrary(0, statuses.length)];
+        if (status === statuses[1]) {
+            status = statuses[0];
+        }
         return {
             ref,
             name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
             firstName: `${firstNames[elIndex]}`,
             middleName: '',
             surname: `${lastNames[elIndex]}`,
-            status: statuses[getRandomArbitrary(0, statuses.length)],
+            status: status,
             type: types[getRandomArbitrary(0, types.length)],
             // date: `${date}/${month}/${year}`,
             date: randomdate.valueOf(),
@@ -2968,10 +3040,10 @@ dashboardRouter.get('*', (req, res, next) => {
         firstName: 'Matthew',
         middleName: 'Peter',
         surname: 'Adler',
-        status: statuses[0],
+        status: statuses[1],
         type: types[1],
-        date: new Date('06/07/2022').valueOf(),
-        readableDate: '07/06/2022',
+        date: new Date('12/05/2023').valueOf(),
+        readableDate: '12/05/2023',
         email: 'matthewadler@example.org',
         prevNames: [
             {
@@ -3007,7 +3079,7 @@ dashboardRouter.get('*', (req, res, next) => {
                 country: 'United Kingdom',
             },
         ],
-        changedAddress: 'yes',
+        changedAddress: 'Yes',
         previous_addresses: [
             {
                 lineOne: '12 Main Road',
@@ -3029,7 +3101,7 @@ dashboardRouter.get('*', (req, res, next) => {
             },
         ],
         phoneNumber: '07777 111111',
-        previousConvictions: 'no',
+        previousConvictions: 'No',
         organisation: 'Castle Healthcare',
         position: 'Nurse',
         appType: 'New employee',
@@ -3209,12 +3281,8 @@ dashboardRouter.post('/rb-password-check', invalidateCache, (req, res, _next) =>
 });
 
 dashboardRouter.get('/home', invalidateCache, (req, res, _next) => {
+    // Constants.
     const inputCache = loadPageData(req);
-    // if (!req.session?.selectedRB) {
-    //     res.redirect('/dashboard/rb-login');
-    // } else {
-    //     res.render('dashboard/home', { cache: inputCache, validation: null });
-    // }
 
     if (Object.keys(req.query).length === 0) {
         req.session.data.needsActionFilter = null;
@@ -3303,6 +3371,21 @@ dashboardRouter.post('/delete-filter', invalidateCache, (req, res, _next) => {
 // Dashboard / Assign ID check to me
 // -----------------------------------------------------------------------------
 dashboardRouter.post('/assign-id-check', invalidateCache, assignIdCheckOfApplicationToRegisteredBody);
+
+// -----------------------------------------------------------------------------
+// Dashboard / Submit application
+// -----------------------------------------------------------------------------
+dashboardRouter.post('/submit-application', invalidateCache, (request, response) => {
+    // Constants.
+    const queryApplication = request.query.application;
+    const redirectPath = "/registered-body/submit-application-details?application=" + queryApplication;
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
 
 // SEAS 503 Password reset
 dashboardRouter.get('/rb-password-reset', invalidateCache, (req, res, _next) => {
