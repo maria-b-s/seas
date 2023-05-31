@@ -244,10 +244,13 @@
                     {% set applicationStatusTag %}
                         {% set applicationStatusClassTagColor = "govuk-tag--blue" %}
                         {% if applicationStatusId === "1" or applicationStatusId === "2" %}
+                            <!-- Status of sent to applicant or rejected. -->
                             {% set applicationStatusClassTagColor = "govuk-tag--yellow" %}
                         {% elif applicationStatusId === "5" or applicationStatusId === "6" %}
+                            <!-- Status of ID check required or ready to submit. -->
                             {% set applicationStatusClassTagColor = "govuk-tag--red" %}
                         {% elif applicationStatusId === "7" %}
+                            <!-- Status of application submitted. -->
                             {% set applicationStatusClassTagColor = "govuk-tag--green" %}
                         {% endif %}
                         {{ govukTag({
@@ -263,6 +266,7 @@
                     <!-- Assign ID check to me. -->
                     {% set applicationAssignIdCheckToMe %}
                         {% if applicationStatusId === "1" or applicationStatusId === "3" %}
+                            <!-- Status of ID check required or sent to applicant. -->
                             {% if applicationIdChecker !== currentIdChecker %}
                                 {% set formActionAssignIdCheck = "assign-id-check?application="  + application["ref"] %}
                                 <form action="{{ formActionAssignIdCheck }}" method="post">
@@ -274,7 +278,18 @@
                     <!-- Verify ID. -->
                     {% set applicationVerifyId %}
                         {% if applicationStatusId === "1" and applicationIdChecker === currentIdChecker %}
+                            <!-- Status of ID check required and CSig is the assigned ID Checker. -->
                             <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
+                        {% endif %}
+                    {% endset %}
+                    <!-- Submit application. -->
+                    {% set applicationSubmitApplication %}
+                        {% if applicationStatusId === "2" %}
+                            <!-- Status of ready to submit. -->
+                            {% set formActionSubmitApplication = "submit-application?application="  + application["ref"] %}
+                                <form action="{{ formActionSubmitApplication }}" method="post">
+                                    <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a class="govuk-link" href="#" onclick="this.closest('form').submit();" rel="noopener noreferrer">Submit application</a></p>
+                                </form>
                         {% endif %}
                     {% endset %}
                     <!-- Cancel application. -->
@@ -317,6 +332,7 @@
                                 html: applicationStatusTag +
                                       applicationAssignIdCheckToMe +
                                       applicationVerifyId +
+                                      applicationSubmitApplication +
                                       '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationCancelApplication + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right">' + applicationApplicationHistory + '</p>'
                             }
