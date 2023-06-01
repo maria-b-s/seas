@@ -8,8 +8,9 @@
 <!-- ---------------------------------------------------------------------------
 -- Page title
 ---------------------------------------------------------------------------- -->
+{% set idCheckerName = data["id-checker-first-name"] + " " + data["id-checker-last-name"] %}
 {% block pageTitle %}
-    Will the ID Checker be doing checks for client organisations?
+    Who will {{ idCheckerName }} be doing ID checks for?
 {% endblock %}
 
 
@@ -81,28 +82,29 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Will the ID Checker be doing checks for client organisations?"
+                    text: "Who will " + idCheckerName + " be doing ID checks for?"
                 }
             }) %}
-
-                <!-- Hint. -->
-                <p class="govuk-hint">If the ID Checker will be doing ID checks for client organisations and your own organisation, select yes.</p>
 
                 <form method="post">
                     <!-- Radio buttons. -->
                     {{ govukRadios({
-                        classes: "govuk-radios--inline",
                         errorMessage: errorComponentIdCheckerChecks,
                         items: [
                             {
-                                checked: data["id-checker-checks"] === "Yes",
-                                text: "Yes",
-                                value: "Yes"
+                                checked: data["id-checker-checks"] === "Own organisation",
+                                text: "Own organisation",
+                                value: "Own organisation"
                             },
                             {
-                                checked: data["id-checker-checks"] === "No",
-                                text: "No",
-                                value: "No"
+                                checked: data["id-checker-checks"] === "Another organisation",
+                                text: "Another organisation",
+                                value: "Another organisation"
+                            },
+                            {
+                                checked: data["id-checker-checks"] === "Both",
+                                text: "Both",
+                                value: "Both"
                             }
                         ],
                         name: "id-checker-checks",

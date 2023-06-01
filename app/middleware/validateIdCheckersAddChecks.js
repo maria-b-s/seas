@@ -13,6 +13,7 @@ const validateIdCheckersAddChecks = (request, response) => {
     // Constants.
     const data = request.session.data;
     const idCheckerChecks = data["id-checker-checks"];
+    const idCheckerName = data["id-checker-first-name"] + " " + data["id-checker-last-name"];
     const inputCache = loadPageData(request);
     const redirectPathIdCheckersAddCheckAnswers = "id-checkers-add-check-answers";
     const redirectPathIdCheckersAddClientOrganisations = "id-checkers-add-client-organisations";
@@ -25,10 +26,10 @@ const validateIdCheckersAddChecks = (request, response) => {
     // Cache session.
     savePageData(request, request.body);
 
-    /* Validates if a selection has been made for whether or not the ID Checker
-     * will be doing checks for client organisations. */
+    /* Validates if a selection has been made for who the ID Checker will be
+     * doing checks for. */
     if (!idCheckerChecks) {
-        dataValidation["id-checker-checks"] = "Select if the ID Checker will be doing checks for client organisations";
+        dataValidation["id-checker-checks"] = "Select who " + idCheckerName +  " will be doing ID checks for";
     }
 
     // Response.
@@ -36,7 +37,7 @@ const validateIdCheckersAddChecks = (request, response) => {
         response.render(renderPath, { cache: inputCache, validation: dataValidation });
     } else {
         request.session.data["id-checker-checks"] = idCheckerChecks;
-        if (idCheckerChecks === "No") {
+        if (idCheckerChecks === "Own organisation") {
             redirectPath = redirectPathIdCheckersAddCheckAnswers;
         }
         response.redirect(redirectPath);
