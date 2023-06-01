@@ -126,26 +126,30 @@
                 } %}
                 {% set summaryListRows = (summaryListRows.push(idCheckerEmailAddressSummaryListRow), summaryListRows) %}
                 <!-- Checks. -->
+                {% set idCheckerChecks = "No" %}
+                {% if data["id-checker-checks"] !== "Own organisation" %}
+                    {% set idCheckerChecks = "Yes" %}
+                {% endif %}
                 {% set idCheckerChecksSummaryListRow = {
                     key: {
-                        text: "Checks for client organisations"
+                        text: "Checks for other organisations"
                     },
                     value: {
-                        text: data["id-checker-checks"]
+                        text: idCheckerChecks
                     },
                     actions: {
                         items: [
                             {
                                 href: "id-checkers-add-checks?change=true",
                                 text: "Change",
-                                visuallyHiddenText: "Change if the ID Checker will be doing checks for client organisations."
+                                visuallyHiddenText: "Change if the ID Checker will be doing checks for other organisations."
                             }
                         ]
                     }
                 } %}
                 {% set summaryListRows = (summaryListRows.push(idCheckerChecksSummaryListRow), summaryListRows) %}
                 <!-- Client organisations. -->
-                {% if data["id-checker-checks"] === "Yes" %}
+                {% if data["id-checker-checks"] !== "Own organisation" %}
                     {% set idCheckerClientOrganisations = "" %}
                     {% for clientOrganisation in data["id-checker-client-organisations"] %}
                         {% set idCheckerClientOrganisations = idCheckerClientOrganisations + clientOrganisation + "<br/>" %}
@@ -153,7 +157,7 @@
                     {% set idCheckerClientOrganisations = idCheckerClientOrganisations.substring(0, (idCheckerClientOrganisations.length - ("<br/>").length)) %}
                     {% set idCheckerClientOrganisationsSummaryListRow = {
                         key: {
-                            text: "Client organisations"
+                            text: "Organisations"
                         },
                         value: {
                             html: idCheckerClientOrganisations
@@ -163,7 +167,7 @@
                                 {
                                     href: "id-checkers-add-client-organisations?change=true",
                                     text: "Change",
-                                    visuallyHiddenText: "Change the client organisations the ID Checker will be doing checks for."
+                                    visuallyHiddenText: "Change the other organisations the ID Checker will be doing checks for."
                                 }
                             ]
                         }

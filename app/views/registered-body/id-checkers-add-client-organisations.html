@@ -10,7 +10,7 @@
 ---------------------------------------------------------------------------- -->
 {% set idCheckerName = data["id-checker-first-name"] + " " + data["id-checker-last-name"] %}
 {% block pageTitle %}
-    Which client organisations will {{ idCheckerName }} be doing ID checks for?
+    Which organisations will {{ idCheckerName }} be doing ID checks for?
 {% endblock %}
 
 
@@ -82,12 +82,12 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Which client organisations will " + idCheckerName + " be doing ID checks for?"
+                    text: "Which organisations will " + idCheckerName + " be doing ID checks for?"
                 }
             }) %}
 
                 <!-- Hint. -->
-                <p class="govuk-hint govuk-!-margin-bottom-6">You can add one or more client organisations. The ID Checker can only see applications from a client organisation if you select them here.</p>
+                <p class="govuk-body govuk-!-margin-bottom-6">The ID Checker can only see applications from an organisation if you select them here.</p>
 
                 <form method="post">
                     <!-- Checkboxes. -->

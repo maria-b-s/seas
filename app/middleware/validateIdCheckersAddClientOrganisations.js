@@ -30,9 +30,9 @@ const validateIdCheckersAddClientOrganisations = (request, response) => {
      * client organisation/s, other than their corresponding organisation that
      * the Identity Checker will do ID checks for. */
     if (!idCheckerClientOrganisations || idCheckerClientOrganisations.length < 1) {
-        dataValidation["id-checker-client-organisations"] = "Select which client organisations the ID Checker will be doing ID checks for";
+        dataValidation["id-checker-client-organisations"] = `Select which organisations ${ idCheckerName } will be doing ID checks for`;
     } else if (idCheckerClientOrganisations.length === 1 && idCheckerClientOrganisations.includes(registeredBody.organisation)) {
-        dataValidation["id-checker-client-organisations"] = "Select which client organisations the ID Checker will be doing ID checks for";
+        dataValidation["id-checker-client-organisations"] = `Select which organisations ${ idCheckerName } will be doing ID checks for`;
     }
 
     // Response.
