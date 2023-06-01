@@ -417,7 +417,20 @@ registeredBodyRouter.get('/submit-application-details', invalidateCache, (reques
     // Response.
     response.render('registered-body/submit-application-details', { application: application, cache: inputCache, validation: null });
 });
-registeredBodyRouter.post('/submit-application-details', invalidateCache, validateSubmitApplicationDetails);
+registeredBodyRouter.post('/submit-application-details', invalidateCache, (request, response) => {
+    // Constants.
+    const queryApplication = request.query.application;
+    const redirectPathSubmitApplicationDeclaration = "submit-application-declaration";
+
+    // Properties.
+    let redirectPath = `${redirectPathSubmitApplicationDeclaration}?application=${queryApplication}`;
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
 
 // -----------------------------------------------------------------------------
 // Submit application / Declaration
