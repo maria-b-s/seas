@@ -50,32 +50,6 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <!-- Errors / Summary. -->
-            {% if validation | length %}
-                {% set errorList = [] %}
-                {% for key, value in validation %}
-                    {% set errorList = (errorList.push({
-                        "href": "#" + key,
-                        "text": value
-                    }), errorList) %}
-                {% endfor %}
-                {{ govukErrorSummary({
-                    errorList: errorList,
-                    titleText: "There's a problem with the information you have provided"
-                }) }}
-            {% endif %}
-            
-            <!-- Errors / Components. -->
-            {% set errorComponentDetailsChecked = "" %}
-            {% if validation | length %}
-                <!-- Details checked. -->
-                {% if validation["details-checked"] %}
-                    {% set errorComponentDetailsChecked = {
-                        text: validation["details-checked"]
-                    } %}
-                {% endif %}
-            {% endif %}
-
             <!-- Heading. -->
             <h1 class="govuk-heading-l">Application details</h1>
 
@@ -400,57 +374,8 @@
                         }
                     ]
                 }) }}
-            {% endcall %}
-
-             <!-- Heading. -->
-             {% call govukFieldset({
-                attributes: {
-                    "style": "margin-top: 30px"
-                },
-                legend: {
-                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
-                    isPageHeading: true,
-                    text: "Have you checked the applicant's details?"
-                }
-            }) %}
-
-                <!-- Body. -->
-                <p class="govuk-body">Select yes if:<br/></p>
-
-                <!-- List bullet. -->
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        the DBS check details are correct
-                    </li>
-                    <li>
-                        the applicant details are correct
-                    </li>
-                    <li>
-                        you have verified the ID as set out in <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>
-                    </li>
-                </ul>
 
                 <form method="post">
-                    <!-- Radio buttons. -->
-                    {{ govukRadios({
-                        classes: "govuk-radios--inline",
-                        errorMessage: errorComponentDetailsChecked,
-                        items: [
-                            {
-                                checked: data["details-checked"] === "Yes",
-                                text: "Yes",
-                                value: "Yes"
-                            },
-                            {
-                                checked: data["details-checked"] === "No",
-                                text: "No",
-                                value: "No"
-                            }
-                        ],
-                        name: "details-checked",
-                        value: data["details-checked"]
-                    }) }}
-
                     <!-- Button. -->
                     {{ govukButton({
                         text: "Continue"
