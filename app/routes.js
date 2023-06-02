@@ -37,6 +37,10 @@ const { postcodeLookupUkAddress } = require('./middleware/utilsUkAddress');
 const { resendApplication } = require('./middleware/resendApplication');
 const { searchFilter } = require('./middleware/searchFilter');
 const { sendApplication } = require('./middleware/sendApplication');
+const { setAppStatus } = require('./middleware/utilsApplications');
+const { setAppTypes } = require('./middleware/utilsApplications');
+const { setOrganisations } = require('./middleware/utilsApplications');
+const { setPredefinedApplications } = require('./middleware/utilsApplications');
 const { setPredefinedClientOrganisations } = require('./middleware/utilsClientOrganisation');
 const { setPredefinedDeactivatedIdChecker } = require('./middleware/utilsDeactivatedIdChecker');
 const { setPredefinedIdcApplications } = require('./middleware/utilsSeasIdc');
@@ -456,7 +460,7 @@ registeredBodyRouter.get('/submit-application-confirmation', invalidateCache, (r
     /* Updates the status of the corresponding application to reflect that it
      * has been sent to DBS. */
     const applicationIndex = applications.findIndex(application => application["ref"] === request.query.application);
-    const statuses = STATUS_COLLECTION1;
+    const statuses = data["appStatus"];
     if (applicationIndex >= 0) {
         data["applications"][applicationIndex]["status"] = statuses[3]; 
     }
@@ -2949,31 +2953,6 @@ const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-// Ids documented here https://carpathia.atlassian.net/wiki/spaces/SEAS/pages/7514423306/Application+Status
-const STATUS_COLLECTION = [
-    { id: '001', text: 'SENT TO APPLICANT' },
-    { id: '002', text: 'REJECTED' },
-    { id: '003', text: 'CHECK ANSWERS' },
-    { id: '004', text: 'APPLICANT AMENDING' },
-    { id: '005', text: 'ID CHECK REQUIRED' },
-    { id: '006', text: 'READY TO SUBMIT' },
-    { id: '007', text: 'APPLICATION SUBMITED' },
-    { id: '008', text: 'CERTIFICATE ISSUED' },
-    { id: '009', text: 'CANCELLED' },
-];
-
-const STATUS_COLLECTION1 = [
-    { id: '1', text: 'ID check required' },
-    { id: '2', text: 'Ready to submit' },
-    { id: '3', text: 'Sent to applicant' },
-    { id: '4', text: 'Submitted to DBS' },
-    { id: '5', text: 'Cancelled' },
-    { id: '6', text: 'Rejected' },
-    { id: '7', text: 'Certificate issued' }, 
-];
-
-const ORGANISATION = ['Org A', 'Org B', 'Org C', 'Castle Healthcare'];
-
 dashboardRouter.get('*', (req, res, next) => {
     /* Ensures the ID Checker assigned to Matthew Peter Adler's application
      * is the current registered body logged into SEAS. */ 
@@ -2981,17 +2960,18 @@ dashboardRouter.get('*', (req, res, next) => {
     const applications = data["applications"];
     const registeredBody = req.session.selectedRB;
     if (applications && registeredBody) {
-        const applicationIndex = applications.findIndex(application => application["ref"] === "MATT0711");
+        const applicationIndex = applications.findIndex(application => application["ref"] === "CARR0711");
         if (applicationIndex >= 0) {
             data["applications"][applicationIndex]["idChecker"] = registeredBody["organisation"]; 
         }
     }
 
     if (req.session.data.applications !== undefined) return next();
-    req.session.data.appStatus = STATUS_COLLECTION1;
-    req.session.data.organisations = ORGANISATION;
-    const statuses = STATUS_COLLECTION1;
-    const types = ['Standard', 'Enhanced', 'Enhanced with barred'];
+    setAppStatus(req);
+    setOrganisations(req);
+    setAppTypes(req);
+    const statuses = data["appStatus"];
+    const types = data["appTypes"];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
     const idCheckers = req.session.data['id-checkers'];
     idCheckers.push({});
@@ -3004,162 +2984,10 @@ dashboardRouter.get('*', (req, res, next) => {
             date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
         };
     });
-    req.session.data.applications = Array.from(Array(getRandomArbitrary(15, 25))).map((_, elIndex) => {
-        const randomdate = randomDate(new Date(2021, 11, 10), new Date());
-        let date = randomdate.getDate();
-        let month = randomdate.getMonth() + 1;
-        if (date < 10) {
-            date = '0' + date;
-        }
-        if (month < 10) {
-            month = '0' + month;
-        }
-        const year = randomdate.getFullYear();
-        const ref = new RandExp(/^[A-Z]{4}[0-9]{4}[A-Z]$/, {
-            extractSetAverage: true,
-        }).gen();
-        /* Ensures only Matthew Peter Adler's application has the status of
-         * "Ready to submit"; this is the only application has full population
-         * of details. */
-        let status = statuses[getRandomArbitrary(0, statuses.length)];
-        if (status === statuses[1]) {
-            status = statuses[0];
-        }
-        return {
-            ref,
-            name: `${firstNames[elIndex]} ${lastNames[elIndex]}`,
-            firstName: `${firstNames[elIndex]}`,
-            middleName: '',
-            surname: `${lastNames[elIndex]}`,
-            status: status,
-            type: types[getRandomArbitrary(0, types.length)],
-            // date: `${date}/${month}/${year}`,
-            date: randomdate.valueOf(),
-            readableDate: `${date}/${month}/${year}`,
-            email: `${firstNames[elIndex]}-${lastNames[elIndex]}@example.org`,
-            organisation: `${ORGANISATION[Math.floor(Math.random() * ORGANISATION.length)]}`,
-            history: [
-                {
-                    person: 'John Smith',
-                },
-            ],
-            idChecker: idCheckers[Math.floor(Math.random() * idCheckers.length)]["name"]
-        };
-    });
 
-    req.session.data.applications[0] = {
-        ref: 'MATT0711',
-        name: 'Matthew Peter Adler',
-        firstName: 'Matthew',
-        middleName: 'Peter',
-        surname: 'Adler',
-        status: statuses[1],
-        type: types[1],
-        date: new Date('12/05/2023').valueOf(),
-        readableDate: '12/05/2023',
-        email: 'matthewadler@example.org',
-        prevNames: [
-            {
-                first_name: 'Matthew',
-                middle_names: 'John',
-                last_name: 'Adler',
-                used_from: '06/1997',
-                used_to: '01/2011',
-            },
-            {
-                first_name: 'Matthew',
-                middle_names: 'John',
-                last_name: 'Richards',
-                used_from: '04/1989',
-                used_to: '06/1997',
-            },
-        ],
-        dob: '12/04/1989',
-        sex: 'Male',
-        nino: 'AA112201A',
-        licence: 'ADLER345456MJ7RJ',
-        passport: '946890102',
-        passportCountry: 'United Kingdom',
-        nationality: 'British',
-        addressTown: 'Liverpool',
-        addressCountry: 'United Kingdom',
-        address: [
-            {
-                lineOne: '37 Stroma Road',
-                lineTwo: 'Allerton',
-                townOrCity: 'Liverpool',
-                postcode: 'L18 9SN',
-                country: 'United Kingdom',
-            },
-        ],
-        changedAddress: 'Yes',
-        previous_addresses: [
-            {
-                lineOne: '12 Main Road',
-                lineTwo: 'Allerton',
-                townOrCity: 'Liverpool',
-                postcode: 'L17 1SN',
-                country: 'United Kingdom',
-                startYear: '2020',
-                endYear: '2021',
-            },
-            {
-                lineOne: '23b River Street',
-                lineTwo: 'Allerton',
-                townOrCity: 'Liverpool',
-                postcode: 'WS2 9PZ',
-                country: 'United Kingdom',
-                startYear: '2017',
-                endYear: '2020',
-            },
-        ],
-        phoneNumber: '07777 111111',
-        previousConvictions: 'No',
-        organisation: 'Castle Healthcare',
-        position: 'Nurse',
-        appType: 'New employee',
-        workforce: 'Adult and Child',
-        children_or_adults: 'No',
-        history: [
-            {
-                action: 'Viewed application details',
-                date: '10/06/2022',
-                time: '11:14am',
-                person: 'Gill Henderson (me)',
-            },
-            {
-                action: 'Viewed application details',
-                date: '09/06/2022',
-                time: '02:12pm',
-                person: 'Colin Hawshaw',
-            },
-            {
-                action: 'Viewed application details',
-                date: '09/06/2022',
-                time: '12:05pm',
-                person: 'Colin Hawshaw',
-            },
-            {
-                action: 'Applicant completed application form',
-                date: '08/06/2022',
-                time: '06:44pm',
-                person: 'Applicant',
-            },
-            {
-                action: 'Sent to applicant',
-                date: '07/06/2022',
-                time: '10:17am',
-                person: 'Gill Henderson (me)',
-            },
-            {
-                action: 'Started application',
-                date: '07/06/2022',
-                time: '09:45am',
-                person: 'Gill Henderson (me)',
-            },
-        ],
-        idChecker: ""
-    };
+    /* Ensures predefined applications are available and present within the
+     * dashboard. */
+    setPredefinedApplications(req);
 
     req.session.data.filteredApplications = req.session.data.applications;
     req.session.data.filteredApplications.sort((a, b) => {

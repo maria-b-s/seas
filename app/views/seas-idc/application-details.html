@@ -50,32 +50,6 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <!-- Errors / Summary. -->
-            {% if validation | length %}
-                {% set errorList = [] %}
-                {% for key, value in validation %}
-                    {% set errorList = (errorList.push({
-                        "href": "#" + key,
-                        "text": value
-                    }), errorList) %}
-                {% endfor %}
-                {{ govukErrorSummary({
-                    errorList: errorList,
-                    titleText: "There's a problem with the information you have provided"
-                }) }}
-            {% endif %}
-            
-            <!-- Errors / Components. -->
-            {% set errorComponentIdVerified = "" %}
-            {% if validation | length %}
-                <!-- ID Verified. -->
-                {% if validation["id-verified"] %}
-                    {% set errorComponentIdVerified = {
-                        text: validation["id-verified"]
-                    } %}
-                {% endif %}
-            {% endif %}
-
             <!-- Heading. -->
             <h1 class="govuk-heading-l">Application details</h1>
 
@@ -256,7 +230,7 @@
                     rows: [
                         {
                             key: {
-                                text: "Current names"
+                                text: "Name"
                             },
                             value: {
                                 text: applicantsDetailsCurrentName
@@ -375,7 +349,7 @@
             }) %}
 
                 <!-- Body. -->
-                <p class="govuk-body">Select yes if:<br/></p>
+                <p class="govuk-body">You must make sure that:<br/></p>
 
                 <!-- List bullet. -->
                 <ul class="govuk-list govuk-list--bullet">
@@ -390,27 +364,11 @@
                     </li>
                 </ul>
 
-                <form method="post">
-                    <!-- Radio buttons. -->
-                    {{ govukRadios({
-                        classes: "govuk-radios--inline",
-                        errorMessage: errorComponentIdVerified,
-                        items: [
-                            {
-                                checked: data["id-verified"] === "Yes",
-                                text: "Yes",
-                                value: "Yes"
-                            },
-                            {
-                                checked: data["id-verified"] === "No",
-                                text: "No",
-                                value: "No"
-                            }
-                        ],
-                        name: "id-verified",
-                        value: data["id-verified"]
-                    }) }}
+                <!-- Body. -->
+                <p class="govuk-body">If there are errors in the application details or you can not verify the ID, you should select No. We will notify the countersignatory and they will cancel the application.</p>
+                <p class="govuk-body">If you cannot complete the ID check now, you can return to your <a class="govuk-link" href="/seas-idc/dashboard" rel='noopener noreferrer'>dashboard</a>.</p>
 
+                <form method="post">
                     <!-- Button. -->
                     {{ govukButton({
                         text: "Continue"
