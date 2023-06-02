@@ -45,8 +45,15 @@
     <!-- Heading. -->
     <h1 class="govuk-heading-l">Applications</h1>
 
-    <!-- Hint. -->
-    <p class="govuk-hint govuk-!-margin-bottom-6">These applications are ready for ID checking. You must assign the application to yourself before verifying the ID.</p>
+    <!-- Body. -->
+    <p class="govuk-body govuk-!-margin-bottom-6">These applications are ready for ID checking.</p>
+    <p class="govuk-body">To view the application and start the ID check you must assign the application to yourself.</p>
+
+    <!-- Details. -->
+    {{ govukDetails({
+        summaryText: "Assigning applications",
+        text: "If the application is already assigned to another ID Checker, you can still assign it to yourself. You will then become the ID Checker for this application."
+    }) }}
 
     <!-- Search. -->
     <!-- Heading. -->

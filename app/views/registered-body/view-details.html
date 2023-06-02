@@ -34,7 +34,7 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Date application started</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].date}}</dd>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].readableDate}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -144,12 +144,13 @@ endset%} {% block beforeContent %}
                     <dt class="govuk-summary-list__key">Previous names</dt>
                     <dd class="govuk-summary-list__value">
                         {% if not selectedApplication[0].prevNames or selectedApplication[0].prevNames.length === 0 %} None {% endif %} {% for item in
-                        selectedApplication[0].prevNames %} {{[ item.first_name | capitalize, ' ' ,item.middle_names | capitalize, ' ' ,
-                        item.last_name | capitalize] | join }} <br />
+                        selectedApplication[0].prevNames %} {{[ item.first_name, ' ' , item.middle_names, ' ' , item.last_name] | join }} <br />
                         {% if item.used_to == "Not entered"%} {{ [item.used_from , ' - Present'] | join}} {% else %} {{ [item.used_from , ' - ',
                         item.used_to] | join}} {% endif %}
                         <br />
-                        <br />
+                        {% if not loop.last %} 
+                            <br />
+                        {% endif %}
                         {% endfor %}
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
@@ -192,7 +193,7 @@ endset%} {% block beforeContent %}
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Place of birth</dt>
-                    <dd class="govuk-summary-list__value">{{selectedApplication[0].addressTown}}, {{selectedApplication[0].addressCountry}}</dd>
+                    <dd class="govuk-summary-list__value">{{selectedApplication[0].addressTown}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -201,12 +202,9 @@ endset%} {% block beforeContent %}
                         {% if not selectedApplication[0].address or selectedApplication[0].address.length === 0 %} None {% else %}
                         {{selectedApplication[0].address[0].lineOne }} <br />
                         {{selectedApplication[0].address[0].lineTwo}} <br />
-                        {{selectedApplication[0].address[0].townOrCity }} <br />{% if selectedApplication[0].address[0].postcode == '' %} {% else %}
-                        {% if selectedApplication[0].address[0].postcode.length == 7 %} {{selectedApplication[0].address[0].postcode.slice(0, 4) |
-                        upper}} {{selectedApplication[0].address[0].postcode.slice(4, 7) | upper }} <br />
-                        {% else %} {{selectedApplication[0].address[0].postcode.slice(0, 3) | upper}}
-                        {{selectedApplication[0].address[0].postcode.slice(3, 6) | upper }} <br />
-                        {% endif %} {% endif %} {{selectedApplication[0].address[0].country }} <br />
+                        {{selectedApplication[0].address[0].townOrCity }} <br />
+                        {{selectedApplication[0].address[0].postcode }} <br />
+                        {{selectedApplication[0].address[0].country }} <br />
                         {% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
@@ -225,7 +223,9 @@ endset%} {% block beforeContent %}
                         <br />
                         {{ [item.startYear , ' - ',item.endYear] | join}}
                         <br />
-                        <br />
+                        {% if not loop.last %} 
+                            <br />
+                        {% endif %}
                         {% endfor %} {% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
