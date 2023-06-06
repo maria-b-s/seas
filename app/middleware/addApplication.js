@@ -111,7 +111,7 @@ function addApplication(req, res) {
                 action: 'Sent to applicant',
                 date: `${date}/${month}/${year}`,
                 time: strTime,
-                person: req.session.mockDBaccounts.filter(acc => acc['rbNumber'] == app['registered-body-nr'])[0]["applicant-email"],
+                person: req.session.selectedRB["name"],
             },
         ],
     };

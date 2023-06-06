@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Check client organisation
+    Check organisation
 {% endblock %}
 
 
@@ -61,7 +61,7 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Check client organisation"
+                    text: "Check organisation"
                 }
             }) %}
 
@@ -71,7 +71,7 @@
                     rows: [
                         {
                             key: {
-                                text: "Client organisation name"
+                                text: "Organisation name"
                             },
                             value: {
                                 text: data["client-organisation"]
@@ -81,7 +81,7 @@
                                     {
                                         href: redirectPath,
                                         text: "Change",
-                                        visuallyHiddenText: "Change client organisation name."
+                                        visuallyHiddenText: "Change organisation name."
                                     }
                                 ]
                             }

@@ -824,7 +824,7 @@ registeredBodyRouter.post('/idc-org-check', invalidateCache, (req, res) => {
     let dataValidation = {};
 
     if (!req.body['idc-org-check']) {
-        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for a client organisation';
+        dataValidation['idc-org-check'] = 'Select if the ID Checker will be doing checks for another organisation organisation';
     }
 
     if (Object.keys(dataValidation).length) {
@@ -2962,7 +2962,7 @@ dashboardRouter.get('*', (req, res, next) => {
     if (applications && registeredBody) {
         const applicationIndex = applications.findIndex(application => application["ref"] === "CARR0711");
         if (applicationIndex >= 0) {
-            data["applications"][applicationIndex]["idChecker"] = registeredBody["organisation"]; 
+            data["applications"][applicationIndex]["idChecker"] = registeredBody["name"]; 
         }
     }
 
@@ -2970,8 +2970,6 @@ dashboardRouter.get('*', (req, res, next) => {
     setAppStatus(req);
     setOrganisations(req);
     setAppTypes(req);
-    const statuses = data["appStatus"];
-    const types = data["appTypes"];
     const actions = ['Ready to submit', 'Application Expired', 'Certificate sent'];
     const idCheckers = req.session.data['id-checkers'];
     idCheckers.push({});

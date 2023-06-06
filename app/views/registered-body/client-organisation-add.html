@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    What is the name of the client organisation?
+    What is the name of the organisation?
 {% endblock %}
 
 
@@ -81,7 +81,7 @@
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "What is the name of the client organisation?"
+                    text: "What is the name of the organisation?"
                 }
             }) %}
 
@@ -97,7 +97,7 @@
                         errorMessage: errorComponentClientOrganisation,
                         id: "client-organisation",
                         label: {
-                            text: "Client organisation name"
+                            text: "Organisation name"
                         },
                         maxlength: 60,
                         name: "client-organisation",

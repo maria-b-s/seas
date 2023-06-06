@@ -7,9 +7,9 @@ const _PREDEFINED_ID_CHECKERS = [
         dateAdded: "28/03/2023",
         dateLastIdCheck: "",
         dept: "Student Applications",
-        email: "jasper.beardly@example.org",
+        email: "janey.powell@example.org",
         mobile: "07666 993355",
-        name: "Jasper Beardly",
+        name: "Janey Powell",
         org: "Burns Construction Co.",
         password: "pass1234"
     },

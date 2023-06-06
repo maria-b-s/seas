@@ -16,6 +16,9 @@ endset%} {% block beforeContent %}
             <div style="display: flex; flex-direction: row; justify-content: space-between">
                 <h1 class="govuk-heading-l">Application details</h1>
             </div>
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-6">DBS check details</h2>
+            </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Applicant name</dt>
@@ -53,7 +56,7 @@ endset%} {% block beforeContent %}
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Applicant Type</dt>
+                    <dt class="govuk-summary-list__key">Type of applicant</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0].appType}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
@@ -63,7 +66,7 @@ endset%} {% block beforeContent %}
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Check Type</dt>
+                    <dt class="govuk-summary-list__key">Check level</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0].type}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
@@ -74,13 +77,13 @@ endset%} {% block beforeContent %}
                 </div>
                 {% if selectedApplication[0]['barredAdult'] %}
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Adult Barred list</dt>
+                    <dt class="govuk-summary-list__key">Adult barred list</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredAdult']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 {% endif %} {% if selectedApplication[0]['barredChildren'] %}
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Children Barred list</dt>
+                    <dt class="govuk-summary-list__key">Children barred list</dt>
                     <dd class="govuk-summary-list__value">{{selectedApplication[0]['barredChildren']}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
@@ -96,35 +99,25 @@ endset%} {% block beforeContent %}
         
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">ID check details</h1>
+                <h1 class="govuk-heading-m">ID check details</h1>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">ID check complete</dt>
+                    {% if selectedApplication[0]['status']['id'] !== "1" and selectedApplication[0]['status']['id'] !== "3" %}
+                        <dd class="govuk-summary-list__value">Yes</dd>
+                    {% else %}
+                        <dd class="govuk-summary-list__value">No</dd>
+                    {% endif %}
+                    <dd class="govuk-summary-list__actions"></dd>
+                </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">ID verified by</dt>
-                    <dd class="govuk-summary-list__value">Not completed yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Evidence checked by</dt>
-                    <dd class="govuk-summary-list__value">Not completed yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-            </dl>
-        </div>
-
-        <div class="govuk-width-container">
-            <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Certificate details</h1>
-            </div>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Certificate issue date</dt>
-                    <dd class="govuk-summary-list__value">Not issued yet</dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Result status</dt>
-                    <dd class="govuk-summary-list__value">Not available yet</dd>
+                    {% if selectedApplication[0]['status']['id'] !== "1" and selectedApplication[0]['status']['id'] !== "3" %}
+                        <dd class="govuk-summary-list__value">{{selectedApplication[0]['idChecker']}}</dd>
+                    {% else %}
+                        <dd class="govuk-summary-list__value">Not completed yet</dd>
+                    {% endif %}
                     <dd class="govuk-summary-list__actions"></dd>
                 </div>
             </dl>
@@ -132,7 +125,7 @@ endset%} {% block beforeContent %}
 
         <div class="govuk-width-container">
             <div style="display: flex; flex-direction: row; justify-content: space-between">
-                <h1 class="govuk-heading-l">Applicant details for ID check</h1>
+                <h1 class="govuk-heading-m">Applicant's details</h1>
             </div>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">

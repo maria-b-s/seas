@@ -2,12 +2,14 @@
 // Constants
 // -----------------------------------------------------------------------------
 const _PREDEFINED_DEACTIVATED_ID_CHECKER = {
-    dateAdded: "01/01/2023",
+    activated : true,
+    dateAdded: "05/31/2023",
+    dateLastIdCheck: "",
     dept: "Student Applications",
-    email: "lionelhutz@example.org",
-    mobile: "07987 654321",
-    name: "Lionel Hutz",
-    org: "Penny Lane College of PE",
+    email: "jasper.beardly@example.org",
+    mobile: "07666 993355",
+    name: "Jasper Beardly",
+    org: "Atomic Reply",
     password: undefined
 };
 
@@ -20,20 +22,13 @@ const activateAndSelectDeactivatedIdChecker = (request) => {
     // Constants.
     const data = request.session.data;
 
-    /* Activates the deactivated ID checker by adding to the array of known ID
-     * checkers. */
-    data["id-checkers"].push({
-        dateAdded: _PREDEFINED_DEACTIVATED_ID_CHECKER.dateAdded,
-        dept: _PREDEFINED_DEACTIVATED_ID_CHECKER.dept,
-        email: _PREDEFINED_DEACTIVATED_ID_CHECKER.email,
-        mobile: _PREDEFINED_DEACTIVATED_ID_CHECKER.mobile,
-        name: _PREDEFINED_DEACTIVATED_ID_CHECKER.name,
-        org: _PREDEFINED_DEACTIVATED_ID_CHECKER.org,
-        password: data["deactivated-id-checker-password"]
-    });
-
-    // Selects the now activated ID Checker for use within /dashboard.
-    request.session.selectedIDC = data["id-checkers"].at(-1);
+    // Activates and selects the ID Checker for use within /dashboard.
+    const deactivatedIdChecker = data["id-checkers"].findIndex(idChecker => idChecker["activated"] === false);
+    if (data["id-checkers"][deactivatedIdChecker]) {
+        data["id-checkers"][deactivatedIdChecker]["activated"] = true;
+        data["id-checkers"][deactivatedIdChecker]["password"] = data["deactivated-id-checker-password"];
+    }
+    request.session.selectedIDC = data["id-checkers"][deactivatedIdChecker];
 };
 
 const clearDeactivatedIdCheckerPassword = (request) => {

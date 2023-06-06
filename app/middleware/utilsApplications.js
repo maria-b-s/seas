@@ -91,19 +91,19 @@ const _PREDEFINED_APPLICATIONS = [
                 action: "Viewed application details",
                 date: "10/06/2022",
                 time: "11:14am",
-                person: "Gill Henderson",
+                person: "Jasper Beardly (me)",
             },
             {
                 action: "Viewed application details",
                 date: "09/06/2022",
                 time: "02:12pm",
-                person: "Colin Hawshaw",
+                person: "Hans Moleman",
             },
             {
                 action: "Viewed application details",
                 date: "09/06/2022",
                 time: "12:05pm",
-                person: "Colin Hawshaw",
+                person: "Hans Moleman",
             },
             {
                 action: "Applicant completed application form",
@@ -115,13 +115,13 @@ const _PREDEFINED_APPLICATIONS = [
                 action: "Sent to applicant",
                 date: "07/06/2022",
                 time: "10:17am",
-                person: "Gill Henderson",
+                person: "Jasper Beardly (me)",
             },
             {
                 action: "Started application",
                 date: "07/06/2022",
                 time: "09:45am",
-                person: "Gill Henderson",
+                person: "Jasper Beardly (me)",
             },
         ],
         idChecker: ""

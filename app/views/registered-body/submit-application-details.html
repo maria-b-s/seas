@@ -154,6 +154,47 @@
                 }) }}
             {% endcall %}
 
+            <!-- ID check complete. -->
+            {% set idCheckDetailsCheckComplete = "No" %}
+            {% if application[0]["status"]["id"] !== "1" and application[0]["status"]["id"] !== "3" %}
+                {% set idCheckDetailsCheckComplete = "Yes" %}
+            {% endif %}
+            <!-- ID verified by. -->
+            {% set idCheckDetailsVerifiedBy = application[0]["idChecker"] %}
+
+            <!-- ID check details. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--m govuk-!-margin-bottom-6",
+                    isPageHeading: false,
+                    text: "ID check details"
+                }
+            }) %}
+
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: [
+                        {
+                            key: {
+                                text: "ID check complete"
+                            },
+                            value: {
+                                text: idCheckDetailsCheckComplete
+                            }
+                        },
+                        {
+                            key: {
+                                text: "ID verified by"
+                            },
+                            value: {
+                                text: idCheckDetailsVerifiedBy
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
             <!-- Reference number. -->
             {% set applicantsDetailsReferenceNumber = application[0]["ref"] %}
             <!-- Date application started. -->
