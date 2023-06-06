@@ -29,13 +29,13 @@ const validateClientOrganisation = (request, response) => {
 
     // Validates if a client organisation is genuine.
     if (!clientOrganisation) {
-        dataValidation["client-organisation"] = "Enter client organisation name";
+        dataValidation["client-organisation"] = "Enter organisation name";
     } else {
         const validOrganisationName = regExpOrganisationName.test(clientOrganisation);
         if (!validOrganisationName) {
-            dataValidation["client-organisation"] = "Client organisation must only include letters a to z, numbers, ampersands, at signs, full stops, commas, hyphens, space characters, apostrophes";
+            dataValidation["client-organisation"] = "Organisation must only include letters a to z, numbers, ampersands, at signs, full stops, commas, hyphens, space characters, apostrophes";
         } else if (clientOrganisation.length > inputCharactersMaximum) {
-            dataValidation["client-organisation"] = `Client organisation name must be ${ inputCharactersMaximum } characters or fewer`;
+            dataValidation["client-organisation"] = `Organisation name must be ${ inputCharactersMaximum } characters or fewer`;
         }
     }
 

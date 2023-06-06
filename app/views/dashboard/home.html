@@ -231,13 +231,19 @@
                     <!-- Check level. -->
                     {% set applicationCheckLevel = application["type"] %}
                     <!-- ID Checker. -->
+                    {% set currentIdChecker = selectedRB["name"] %}
                     {% set applicationIdChecker = "Unassigned" %}
                     {% if application["idChecker"] | length %}
                         {% set applicationIdChecker = application["idChecker"] %}
+                        {% if applicationIdChecker === currentIdChecker %}
+                            {% set applicationIdChecker = application["idChecker"] + " (me)" %}
+                        {% endif %}
                     {% endif %}
-                    {% set currentIdChecker = selectedRB["organisation"] %}
                     <!-- Last worked on by. -->
                     {% set applicationLastWorkedOnBy = application["history"][0]["person"] %}
+                    {% if applicationLastWorkedOnBy === currentIdChecker %}
+                        {% set applicationLastWorkedOnBy = application["history"][0]["person"] + " (me)"%}
+                    {% endif %}
                     <!-- Status Tag. -->
                     {% set applicationStatusId = application["status"]["id"] %}
                     {% set applicationStatusText = application["status"]["text"] %}
@@ -267,7 +273,7 @@
                     {% set applicationAssignIdCheckToMe %}
                         {% if applicationStatusId === "1" or applicationStatusId === "3" %}
                             <!-- Status of ID check required or sent to applicant. -->
-                            {% if applicationIdChecker !== currentIdChecker %}
+                            {% if applicationIdChecker !== (currentIdChecker + " (me)")  %}
                                 {% set formActionAssignIdCheck = "assign-id-check?application="  + application["ref"] %}
                                 <form action="{{ formActionAssignIdCheck }}" method="post">
                                     <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a class="govuk-link" href="#" onclick="this.closest('form').submit();" rel="noopener noreferrer">Assign ID check to me</a></p>
@@ -277,7 +283,7 @@
                     {% endset %}
                     <!-- Verify ID. -->
                     {% set applicationVerifyId %}
-                        {% if applicationStatusId === "1" and applicationIdChecker === currentIdChecker %}
+                        {% if applicationStatusId === "1" and applicationIdChecker === (currentIdChecker + " (me)") %}
                             <!-- Status of ID check required and CSig is the assigned ID Checker. -->
                             <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
                         {% endif %}
@@ -359,13 +365,13 @@
                         },
                         {
                             attributes: {
-                                "aria-sort": "none"
+                                "aria-sort": "descending"
                             },
                             text: "Date started"
                         },
                         {
                             attributes: {
-                                "aria-sort": "ascending"
+                                "aria-sort": "none"
                             },
                             classes: "govuk-table__header--numeric",
                             text: "Action needed"

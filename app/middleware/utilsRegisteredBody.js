@@ -27,7 +27,7 @@ const assignIdCheckOfApplicationToRegisteredBody = (request, response) => {
     if (applications) {
         const applicationIndex = applications.findIndex(application => application["ref"] === queryApplication);
         if (applicationIndex >= 0) {
-            data["applications"][applicationIndex]["idChecker"] = registeredBody["organisation"]; 
+            data["applications"][applicationIndex]["idChecker"] = registeredBody["name"]; 
         }
     }
 

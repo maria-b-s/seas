@@ -278,6 +278,23 @@ const generateAccounts = (req, refresh) => {
             "Sprint Reply",
             "WM Reply"
         ];
+        const names = [
+            "Jasper Beardly",
+            "Herman Hermann",
+            "Bernice Hibbert",
+            "Elizabeth Hoover",
+            "Jimbo Jones",
+            "Akira Kurosawa",
+            "Hans Moleman",
+            "Nelson Muntz",
+            "Waylon Smithers",
+            "Cletus Spuckler",
+            "Dolph Starbeam",
+            "Drederick Tatum",
+            "Ralph Wiggum",
+            "Rainier Wolfcastle",
+            "Kearney Zzyzwicz"
+        ];
 
         for (let i = 1; i <= 15; i++) {
             accounts.push({
@@ -285,6 +302,7 @@ const generateAccounts = (req, refresh) => {
                 csNumber: String(33000000020 - i),
                 organisation: organisations[i - 1], 
                 userDob:  String(i + 1).padStart(2, '0') + '/09/1989',
+                name: names[i - 1],
                 email: i % 2 ? `user${i * 3 + 78}@example.org` : `user${i * 2 + 3}@dbs.co.uk`,
                 hasSetPassword: i % 2 ? true : false,
                 password: i % 2 ? String('pass0' + 12 + i) : null,

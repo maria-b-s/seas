@@ -50,6 +50,32 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentIdVerified = "" %}
+            {% if validation | length %}
+                <!-- ID Verified. -->
+                {% if validation["id-verified"] %}
+                    {% set errorComponentIdVerified = {
+                        text: validation["id-verified"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
             <!-- Heading. -->
             <h1 class="govuk-heading-l">Application details</h1>
 
@@ -354,9 +380,6 @@
                 <!-- List bullet. -->
                 <ul class="govuk-list govuk-list--bullet">
                     <li>
-                        the DBS check details are correct
-                    </li>
-                    <li>
                         the applicant details are correct
                     </li>
                     <li>
@@ -369,6 +392,25 @@
                 <p class="govuk-body">If you cannot complete the ID check now, you can return to your <a class="govuk-link" href="/seas-idc/dashboard" rel='noopener noreferrer'>dashboard</a>.</p>
 
                 <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentIdVerified,
+                        items: [
+                            {
+                                checked: data["id-verified"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["id-verified"] === "No",
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "id-verified",
+                        value: data["id-verified"]
+                    }) }}
                     <!-- Button. -->
                     {{ govukButton({
                         text: "Continue"
