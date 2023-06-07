@@ -166,32 +166,34 @@
                 {% set idCheckerAction = '<span style="color: #D4351C; text-align: right;">Account awaiting activation</span>' %}
             {% endif %}
 
-            <!-- Table cell / application. -->
-            {% set tableCell =
-                [
-                    {
-                        attributes: {
-                            "data-sort-value": idCheckerSurname,
-                            "style": "width: 34.25%"
+            {% if idCheckerEmail !== "jasper.beardly@example.org" %}
+                <!-- Table cell / application. -->
+                {% set tableCell =
+                    [
+                        {
+                            attributes: {
+                                "data-sort-value": idCheckerSurname,
+                                "style": "width: 34.25%"
+                            },
+                            html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
+                                <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
+                                <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Organisation</p>
+                                <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>
+                                <p class="govuk-body-m govuk-!-margin-top-3 govuk-!-margin-bottom-1">' + idCheckerAction + '</p>'
                         },
-                        html: '<p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-top-1 govuk-!-margin-bottom-1">Name</p>
-                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
-                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Organisation</p>
-                            <p class="govuk-body-m govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last ID check</p>
-                            <p class="govuk-body-m govuk-!-margin-top-3 govuk-!-margin-bottom-1">' + idCheckerAction + '</p>'
-                    },
-                    {
-                        attributes: {
-                            "data-sort-value": idCheckerLastIdCheck
-                        },
-                        html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + idCheckerFirstName + ' ' + idCheckerSurname + '</p>
-                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
-                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
-                            <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
-                    }
-                ]
-            %}
-            {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+                        {
+                            attributes: {
+                                "data-sort-value": idCheckerLastIdCheck
+                            },
+                            html: '<p class="govuk-body-m govuk-!-margin-top-1 govuk-!-margin-bottom-1">' + idCheckerFirstName + ' ' + idCheckerSurname + '</p>
+                                <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerEmail + '</p>
+                                <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerOrganisation + '</p>
+                                <p class="govuk-body-m govuk-!-margin-bottom-1">' + idCheckerLastIdCheck + '</p>'
+                        }
+                    ]
+                %}
+                {% set tableRows = (tableRows.push(tableCell), tableRows) %}
+            {% endif %}
         {% endif %}
     {% endfor %}
 
