@@ -235,15 +235,9 @@
                     {% set applicationIdChecker = "Unassigned" %}
                     {% if application["idChecker"] | length %}
                         {% set applicationIdChecker = application["idChecker"] %}
-                        {% if applicationIdChecker === currentIdChecker %}
-                            {% set applicationIdChecker = application["idChecker"] + " (me)" %}
-                        {% endif %}
                     {% endif %}
                     <!-- Last worked on by. -->
                     {% set applicationLastWorkedOnBy = application["history"][0]["person"] %}
-                    {% if applicationLastWorkedOnBy === currentIdChecker %}
-                        {% set applicationLastWorkedOnBy = application["history"][0]["person"] + " (me)"%}
-                    {% endif %}
                     <!-- Status Tag. -->
                     {% set applicationStatusId = application["status"]["id"] %}
                     {% set applicationStatusText = application["status"]["text"] %}
@@ -273,7 +267,7 @@
                     {% set applicationAssignIdCheckToMe %}
                         {% if applicationStatusId === "1" or applicationStatusId === "3" %}
                             <!-- Status of ID check required or sent to applicant. -->
-                            {% if applicationIdChecker !== (currentIdChecker + " (me)")  %}
+                            {% if applicationIdChecker !== currentIdChecker  %}
                                 {% set formActionAssignIdCheck = "assign-id-check?application="  + application["ref"] %}
                                 <form action="{{ formActionAssignIdCheck }}" method="post">
                                     <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a class="govuk-link" href="#" onclick="this.closest('form').submit();" rel="noopener noreferrer">Assign ID check to me</a></p>
@@ -283,7 +277,7 @@
                     {% endset %}
                     <!-- Verify ID. -->
                     {% set applicationVerifyId %}
-                        {% if applicationStatusId === "1" and applicationIdChecker === (currentIdChecker + " (me)") %}
+                        {% if applicationStatusId === "1" and applicationIdChecker === currentIdChecker %}
                             <!-- Status of ID check required and CSig is the assigned ID Checker. -->
                             <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
                         {% endif %}
@@ -299,7 +293,10 @@
                         {% endif %}
                     {% endset %}
                     <!-- Cancel application. -->
-                    {% set applicationCancelApplication = '<a href="/registered-body/confirm-cancel?app=' + application["ref"] + '" rel="noopener noreferrer">Cancel application</a>' %}
+                    {% set applicationCancelApplication = "" %}
+                    {% if applicationStatusId === "1" or applicationStatusId === "2" or applicationStatusId === "3" %}
+                        {% set applicationCancelApplication = '<a href="/registered-body/confirm-cancel?app=' + application["ref"] + '" rel="noopener noreferrer">Cancel application</a>' %}
+                    {% endif %}
                     <!-- Application history. -->
                     {% set applicationApplicationHistory = '<a href="/registered-body/application-history?app=' + application["ref"] + '" rel="noopener noreferrer">Application history</a>' %}
 
