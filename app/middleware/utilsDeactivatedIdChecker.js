@@ -6,7 +6,7 @@ const _PREDEFINED_DEACTIVATED_ID_CHECKER = {
     dateAdded: "05/31/2023",
     dateLastIdCheck: "",
     dept: "Student Applications",
-    email: "frank.grimesy@example.org",
+    email: "frank.grimes@example.org",
     mobile: "07666 993355",
     name: "Frank Grimes",
     org: "Atomic Reply",
