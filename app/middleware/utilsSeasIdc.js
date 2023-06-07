@@ -37,7 +37,7 @@ const _PREDEFINED_IDC_APPLICATIONS = [
         ref: "CARR0711",
         date: "31/05/2023",
         organisation: "Springfield General Hospital",
-        position: "Nurse",
+        position: "Traffic Flow Administrator",
         appType: "New employee",
         type: "Enhanced",
         workforce: "Adult and Child",
