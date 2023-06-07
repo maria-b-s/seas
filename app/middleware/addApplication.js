@@ -111,7 +111,7 @@ function addApplication(req, res) {
                 action: 'Sent to applicant',
                 date: `${date}/${month}/${year}`,
                 time: strTime,
-                person: req.session.selectedRB["name"],
+                person: "Waylon Smithers",
             },
         ],
     };

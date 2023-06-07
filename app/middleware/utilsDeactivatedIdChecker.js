@@ -2,13 +2,13 @@
 // Constants
 // -----------------------------------------------------------------------------
 const _PREDEFINED_DEACTIVATED_ID_CHECKER = {
-    activated : true,
+    activated : false,
     dateAdded: "05/31/2023",
     dateLastIdCheck: "",
     dept: "Student Applications",
-    email: "jasper.beardly@example.org",
+    email: "frank.grimesy@example.org",
     mobile: "07666 993355",
-    name: "Jasper Beardly",
+    name: "Frank Grimes",
     org: "Atomic Reply",
     password: undefined
 };

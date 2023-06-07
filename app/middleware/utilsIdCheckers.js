@@ -4,6 +4,17 @@
 const _PREDEFINED_ID_CHECKERS = [
     {
         activated : true,
+        dateAdded: new Date().toLocaleDateString("en-GB"),
+        dateLastIdCheck: "",
+        dept: "Student Applications",
+        email: "jasper.beardly@example.org",
+        mobile: "07666 993355",
+        name: "Jasper Beardly",
+        org: "Atomic Reply",
+        password: "pass1234"
+    },
+    {
+        activated : true,
         dateAdded: "28/03/2023",
         dateLastIdCheck: "",
         dept: "Student Applications",
