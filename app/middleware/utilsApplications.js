@@ -9,7 +9,7 @@ const _APPLICATION_STATUS = [
     { id: "4", text: "Submitted to DBS" },
     { id: "5", text: "Cancelled" },
     { id: "6", text: "Rejected" },
-    { id: "7", text: "Certificate issued" }
+    { id: "7", text: "Certificate issued" },
 ];
 const _APPLICATION_TYPES = ["Standard", "Enhanced", "Enhanced with barred"];
 const _PREDEFINED_APPLICATIONS = [
