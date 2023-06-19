@@ -1567,9 +1567,9 @@ citizenRouter.post('/previous-names-form', invalidateCache, (req, res) => {
         }
     }
 
-    if (!req.body['known-by-other-names']) {
-        dataValidation['known-by-other-names'] = 'Select if you still use this name';
-    }
+    // if (!req.body['known-by-other-names']) {
+    //     dataValidation['known-by-other-names'] = 'Select if you still use this name';
+    // }
 
     if (!validFirstName) {
         dataValidation['full-name-first-name'] = 'First name must only include letters a to z, hyphens, spaces and apostrophes';
