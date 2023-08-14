@@ -3654,11 +3654,14 @@ seasIdcRouter.post('/create-password', invalidateCache, validateDeactivatedIdChe
 // -----------------------------------------------------------------------------
 seasIdcRouter.get('/dashboard', invalidateCache, (request, response) => {
     // Constants.
-    const idChecker = request.session.selectedIDC.name;
+    const idChecker = request.session.data['id-checkers'][0];
+    // Selects the first predefined ID Checker.
+    request.session.selectedIDC = idChecker;
+    const idCheckerName = request.session.selectedIDC.name;
     const inputCache = loadPageData(request);
 
     // Response.
-    response.render('seas-idc/dashboard', { cache: inputCache, idCheckerCurrent: idChecker, validation: null });
+    response.render('seas-idc/dashboard', { cache: inputCache, idCheckerCurrent: idCheckerName, validation: null });
 });
 seasIdcRouter.post('/dashboard', invalidateCache, filterIdcApplications);
 
