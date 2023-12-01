@@ -9,7 +9,7 @@
 -- Page title
 ---------------------------------------------------------------------------- -->
 {% block pageTitle %}
-    Application cancelled
+    Cancel application
 {% endblock %}
 
 
@@ -50,22 +50,20 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {% set html %}
-                <h3 class="govuk-notification-banner__heading">Application cancelled</h3>
-            {% endset %}
-            {{ govukNotificationBanner({
-                html: html,
-                type: "success"
-            }) }}
-
             <!-- Heading. -->
             {% call govukFieldset({
                 legend: {
                     classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
                     isPageHeading: true,
-                    text: "Application details"
+                    text: "Cancel application"
                 }
             }) %}
+
+                <!-- Warning text. -->
+                {{ govukWarningText({
+                    html: "Are you sure you want to cancel this application?<br />This action can not be undone.",
+                    iconFallbackText: "Warning"
+                }) }}
 
                 <!-- Summary list. -->
                 {% set applicantDetailsCurrentName = selectedApplication[0]["title"] + " " + selectedApplication[0]["name"] %}
@@ -109,20 +107,11 @@
                     ]
                 }) }}
 
-                <!-- Heading. -->
-                <h2 class="govuk-heading-m">What happens next</h2>
-                
-                <!-- List. -->
-                <ol class="govuk-list govuk-list--number">
-                    <li>If the applicant still needs a DBS check, you must complete a paper application form.</li>
-                    <li>On the paper form question W59 asks about the applicant's identity. You should mark this questions as No.</li>
-                    <li>We will send the applicant a letter inviting them to have their fingerprints taken as evidence of identity.</li>
-                </ol>
-
                 <form method="post">
                     <!-- Button. -->
                     {{ govukButton({
-                        text: "Return to application list"
+                        classes: "govuk-button--warning",
+                        text: "Cancel application"
                     }) }}
                 </form>
             {% endcall %}

@@ -1,0 +1,85 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Verifying identity for a standard or enhanced DBS check
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Heading. -->
+            {% set heading = "Verifying identity for a standard or enhanced DBS check" %}
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: heading
+                }
+            }) %}
+
+                <!-- Heading. -->
+                <h2 class="govuk-heading-m">When verifying an identity you must:</h2>
+
+                <!-- List. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>follow the three route identity checking process as listed in the <a href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a></li>
+                    <li>check and verify the information and documents provided by the applicant</li>
+                    <li>check the applicant has provided details of all names they have been known by</li>
+                    <li>check the applicant has provided details of all addresses they have lived at in the last five years</li>
+                </ul>
+                <br/>
+
+                <form method="post">
+                    <!-- Button. -->
+                    {% set buttonText = "Accept and continue" %}
+                    {{ govukButton({
+                        text: buttonText
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

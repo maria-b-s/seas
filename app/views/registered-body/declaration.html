@@ -1,0 +1,121 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Declaration
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "javascript:window.history.back()",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentDeclare = "" %}
+            {% if validation | length %}
+                <!-- Declare. -->
+                {% if validation["declare"] %}
+                    {% set errorComponentDeclare = {
+                        text: validation["declare"]
+                    } %}
+                {% endif %}
+            {% endif %}
+            
+            <!-- Heading. -->
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Declaration"
+                }
+            }) %}
+
+                <form method="post">
+                    <!-- Checkboxes. -->
+                    {{ govukCheckboxes({
+                        errorMessage: errorComponentDeclare,
+                        items: [
+                            {
+                                html: 'I confirm that the requisite documentation and information has been supplied and checked in accordance with <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>.'
+                            },
+                            {
+                                html: 'I declare that the information I have provided in support of the application is complete and true.'
+                            },
+                            {
+                                html: 'I certify that, where requested, an application for a DBS check is required for the purpose of asking an exempted question under the Rehabilitation of Offenders Act 1974 (Exception) Order 1975; or for a prescribed purpose as defined in the Police Act 1997 (Criminal Records) Regulation 2002.'
+                            }
+                        ],
+                        name: "declaration"
+                    }) }}
+
+                    <!-- Warning text. -->
+                    {{ govukWarningText({
+                        html: "You could be prosecuted if you knowingly make a false statement in support of this application.",
+                        iconFallbackText: "Warning"
+                    }) }}
+                    <br/>
+
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Agree and submit"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

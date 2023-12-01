@@ -1,0 +1,623 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Application details
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+
+    <!-- Back link. -->
+    {{ govukBackLink({
+        href: "/dashboard/home",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <!-- Errors / Summary. -->
+            {% if validation | length %}
+                {% set errorList = [] %}
+                {% for key, value in validation %}
+                    {% set errorList = (errorList.push({
+                        "href": "#" + key,
+                        "text": value
+                    }), errorList) %}
+                {% endfor %}
+                {{ govukErrorSummary({
+                    errorList: errorList,
+                    titleText: "There's a problem with the information you have provided"
+                }) }}
+            {% endif %}
+            
+            <!-- Errors / Components. -->
+            {% set errorComponentApplicationIdVerified = "" %}
+            {% if validation | length %}
+                <!-- ID Verified. -->
+                {% if validation["application-id-verified"] %}
+                    {% set errorComponentApplicationIdVerified = {
+                        text: validation["application-id-verified"]
+                    } %}
+                {% endif %}
+            {% endif %}
+
+            <!-- Heading. -->
+            <h1 class="govuk-heading-l">Application details</h1>
+
+            {% set dbsCheckDetailsApplicantName = selectedApplication[0]["name"] %}
+            {% set dbsCheckDetailsEmailAddress = selectedApplication[0]["email"] %}
+            {% set dbsCheckDetailsReferenceNumber = selectedApplication[0]["ref"] %}
+            {% set dbsCheckDetailsDateApplicationStarted = selectedApplication[0]["readableDate"] %}
+            {% set dbsCheckDetailsApplicationStatus = selectedApplication[0]["status"]["text"] %}
+            {% set dbsCheckDetailsVolunteer %} {% if selectedApplication[0].appType == "Volunteer" %} Yes {% else %} No {% endif %} {% endset %}
+            {% set dbsCheckDetailsRole = selectedApplication[0]["position"] %}
+            {% set dbsCheckDetailsWorkforce = selectedApplication[0]["workforce"] %}
+            {% set dbsCheckDetailsCheckLevel = selectedApplication[0]["type"] %}
+            {% set dbsCheckDetailsChildBarredList %} {% if "Child" in selectedApplication[0].type %} Yes {% else %} No {% endif %} {% endset %}
+            {% set dbsCheckDetailsAdultBarredList %} {% if "adult" or "Adult" in selectedApplication[0].type %} Yes {% else %} No {% endif %} {% endset %}
+            {% set dbsCheckDetailsHomeBasedPosition = selectedApplication[0]["children_or_adults"] %}
+
+            {% set dbsCheckDetails %}
+                {% call govukFieldset({
+                    legend: {}
+                }) %}
+
+                    <!-- Summary list. -->
+                    {{ govukSummaryList({
+                        classes: "govuk-!-margin-bottom-9",
+                        rows: [
+                            {
+                                key: {
+                                    text: "Applicant’s name"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsApplicantName
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Email address"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsEmailAddress
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Reference number"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsReferenceNumber
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Date application started"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsDateApplicationStarted
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Application status"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsApplicationStatus
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Volunteer"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsVolunteer
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Role"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsRole
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Workforce"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsWorkforce
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Check level"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsCheckLevel
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Child bared list"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsChildBarredList
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Adult barred list"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsAdultBarredList
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Home-based position"
+                                },
+                                value: {
+                                    html: dbsCheckDetailsHomeBasedPosition
+                                }
+                            }
+                        ]
+                    }) }}
+                {% endcall %}
+            {% endset %}
+
+            {{ govukAccordion({
+                attributes: {
+                    "style": "border-bottom: 0px"
+                },
+                items: [
+                    {
+                        heading: {
+                            text: "DBS check details"
+                        },
+                        content: {
+                            html: dbsCheckDetails
+                        }
+                    }
+                ],
+                rememberExpanded: false
+              }) }}
+
+            {% set applicantDetailsCurrentName = selectedApplication[0]["title"] + " " + selectedApplication[0]["name"] + "<br/>" + selectedApplication[0]["nameUsedFrom"] %}
+            {% set applicantDetailsNameAtBirth = selectedApplication[0]["birthFirstName"] + " " + selectedApplication[0]["birthMiddleName"] + " " + selectedApplication[0]["birthLastName"] + "<br/>" + selectedApplication[0]["birthNameUsedFrom"] %}
+            {% set applicantDetailsPreviousNames = "None entered" %}
+            {% if selectedApplication[0]["prevNames"].length !== 0 %}
+                {% set applicantDetailsPreviousNames = "" %}
+                {% for previousName in selectedApplication[0]["prevNames"] %}
+                    {% set formattedPreviousName = previousName["first_name"] + " " + previousName["middle_names"] + " " + previousName["last_name"] + "<br/>" %}
+                    {% set formattedPreviousNameUsage = previousName["used_from"] + " – " + previousName["used_to"] + "<br/><br/>" %}
+                    {% set applicantDetailsPreviousNames = applicantDetailsPreviousNames + formattedPreviousName + formattedPreviousNameUsage %}
+                {% endfor %}
+                {% set applicantDetailsPreviousNames = applicantDetailsPreviousNames.substring(0, (applicantDetailsPreviousNames.length - ("<br/>").length)) %}
+            {% endif %}
+            {% set applicantDetailsSex = selectedApplication[0]["sex"] %}
+            {% set applicantDetailsPlaceOfBirth = selectedApplication[0]["addressTown"] %}
+            {% set applicantDetailsDateOfBirth = selectedApplication[0]["dob"] %}
+            {% set applicantDetailsCurrentAddressLineOne = selectedApplication[0]["address"][0]["lineOne"] + "<br/>" %}
+            {% set applicantDetailsCurrentAddressLineTwo = "" %}
+            {% if selectedApplication[0]["address"][0]["lineTwo"] %}
+                {% set applicantDetailsCurrentAddressLineTwo = selectedApplication[0]["address"][0]["lineTwo"] + "<br/>" %}
+            {% endif %}
+            {% set applicantDetailsCurrentAddressTownOrCity = selectedApplication[0]["address"][0]["townOrCity"] + "<br/>" %}
+            {% set applicantDetailsCurrentAddressCountry = selectedApplication[0]["address"][0]["country"] + "<br/>" %}
+            {% set applicantDetailsCurrentAddressPostcode = selectedApplication[0]["address"][0]["postcode"] + "<br/>" %}
+            {% set applicantDetailsCurrentAddressFrom = selectedApplication[0]["address"][0]["from"] + "<br/>" %}
+            {% set applicantDetailsCurrentAddress = applicantDetailsCurrentAddressLineOne +
+                                                    applicantDetailsCurrentAddressLineTwo +
+                                                    applicantDetailsCurrentAddressTownOrCity +
+                                                    applicantDetailsCurrentAddressCountry +
+                                                    applicantDetailsCurrentAddressPostcode +
+                                                    applicantDetailsCurrentAddressFrom %}
+            {% set applicantDetailsPreviousAddresses = "None entered" %}
+            {% if selectedApplication[0]["previous_addresses"].length !== 0 %}
+                {% set applicantDetailsPreviousAddresses = "" %}
+                {% for previousAddress in selectedApplication[0]["previous_addresses"] %}
+                    {% set previousAddressLineOne = previousAddress["lineOne"] + "<br/>" %}
+                    {% set previousAddressLineTwo = "" %}
+                    {% if previousAddress["lineTwo"] %}
+                        {% set previousAddressLineTwo = previousAddress["lineTwo"] + "<br/>" %}
+                    {% endif %}
+                    {% set previousAddressTownOrCity = previousAddress["townOrCity"] + "<br/>" %}
+                    {% set previousAddressPostcode = previousAddress["postcode"] + "<br/>" %}
+                    {% set previousAddressCountry = previousAddress["country"] + "<br/>" %}
+                    {% set previousAddressUsage = previousAddress["startYear"] + " – " + previousAddress["endYear"] + "<br/><br/>" %}
+                    {% set applicantDetailsPreviousAddresses = applicantDetailsPreviousAddresses +
+                                                                previousAddressLineOne +
+                                                                previousAddressLineTwo +
+                                                                previousAddressTownOrCity +
+                                                                previousAddressCountry +
+                                                                previousAddressPostcode +
+                                                                previousAddressUsage %}
+                {% endfor %}
+                {% set applicantDetailsPreviousAddresses = applicantDetailsPreviousAddresses.substring(0, (applicantDetailsPreviousAddresses.length - ("<br/>").length)) %}
+            {% endif %}
+            {% set applicantDetailsNationalInsuranceNumber = selectedApplication[0]["nino"] %}
+            {% set applicantDetailsDrivingLicenseNumber = selectedApplication[0]["licence"] %}
+            {% set applicantDetailsDrivingLicenseDateOfBirth %}
+                {{ govukInput({
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "drivingLicenseDateOfBirth"
+                }) }}
+            {% endset %}
+            {% set applicantDetailsDrivingLicenseType %}
+
+                {{ govukSelect({
+                    name: "drivingLicenseType",
+                    items: [
+                        {
+                            value: "",
+                            text: "Choose licence type"
+                        },
+                        {
+                            value: "Paper",
+                            text: "Paper"
+                        },
+                        {
+                            value: "Photo",
+                            text: "Photo"
+                        }
+                    ]
+                }) }}
+            {% endset %}
+            {% set applicantDetailsDrivingLicenseValidFrom %}
+                {{ govukInput({
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "drivingLicenseValidFrom"
+                }) }}
+            {% endset %}
+            {% set applicantDetailsDrivingLicenseIssueCountry %}
+                {{ govukInput({
+                    attributes: {
+                        "style": "margin-bottom: 10px;"
+                    },
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "drivingLicenseIssueCountry"
+                }) }}
+            {% endset %}
+            {% set applicantDetailsPassport = selectedApplication[0]["passport"] %}
+            {% set applicantDetailsPassportDateOfBirth %}
+                {{ govukInput({
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "passportDateOfBirth"
+                }) }}
+            {% endset %}
+            {% set applicantDetailsPassportNationality %}
+                {{ govukInput({
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "passportNationality"
+                }) }}
+            {% endset %}
+            {% set applicantDetailsPassportIssueDate %}
+                {{ govukInput({
+                    attributes: {
+                        "style": "margin-bottom: 10px;"
+                    },
+                    classes: "govuk-input govuk-!-width-two-thirds",
+                    name: "passportIssueDate"
+                }) }}
+            {% endset %}
+
+            {% call govukFieldset({
+                legend: {
+                    classes: "govuk-fieldset__legend--m govuk-!-margin-bottom-6",
+                    isPageHeading: false,
+                    text: "Applicant's details"
+                }
+            }) %}
+
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    attributes: {
+                        "style": "border-bottom: 1px solid #b1b4b6; margin-bottom: 0px;"
+                    },
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                         {
+                            key: {
+                                text: "Current name"
+                            },
+                            value: {
+                                html: applicantDetailsCurrentName
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Name at birth"
+                            },
+                            value: {
+                                html: applicantDetailsNameAtBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Previous names"
+                            },
+                            value: {
+                                html: applicantDetailsPreviousNames
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+            <!-- Applicant's details. -->
+            {% call govukFieldset({
+                legend: {}
+            }) %}
+
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    attributes: {
+                        "style": "margin-bottom: 10px"
+                    },
+                    rows: [
+                        {
+                            key: {
+                                text: "Sex"
+                            },
+                            value: {
+                                html: applicantDetailsSex
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Place of birth"
+                            },
+                            value: {
+                                html: applicantDetailsPlaceOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth"
+                            },
+                            value: {
+                                html: applicantDetailsDateOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Current address"
+                            },
+                            value: {
+                                html: applicantDetailsCurrentAddress
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Previous address(s)"
+                            },
+                            value: {
+                                html: applicantDetailsPreviousAddresses
+                            }
+                        },
+                        {
+                            key: {
+                                text: "National Insurance number"
+                            },
+                            value: {
+                                html: applicantDetailsNationalInsuranceNumber
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+            {% call govukFieldset({
+                legend: {}
+            }) %}
+
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    attributes: {
+                        "style": "border-bottom: 1px solid #b1b4b6; margin-bottom: 10px;"
+                    },
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                                text: "Driving licence number"
+                            },
+                            value: {
+                                html: applicantDetailsDrivingLicenseNumber
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth shown on driving licence"
+                            },
+                            value: {
+                                html: applicantDetailsDrivingLicenseDateOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Type of driving licence"
+                            },
+                            value: {
+                                html: applicantDetailsDrivingLicenseType
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Valid from"
+                            },
+                            value: {
+                                html: applicantDetailsDrivingLicenseValidFrom
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Issue Country"
+                            },
+                            value: {
+                                html: applicantDetailsDrivingLicenseIssueCountry
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+            {% call govukFieldset({
+                legend: {}
+            }) %}
+                <!-- Summary list. -->
+                {{ govukSummaryList({
+                    attributes: {
+                        "style": "border-bottom: 1px solid #b1b4b6; margin-bottom: 50px;"
+                    },
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                                text: "Passport number"
+                            },
+                            value: {
+                                html: applicantDetailsPassport
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth shown on passport"
+                            },
+                            value: {
+                                html: applicantDetailsPassportDateOfBirth
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Nationality shown on passport"
+                            },
+                            value: {
+                                html: applicantDetailsPassportNationality
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Issue date"
+                            },
+                            value: {
+                                html: applicantDetailsPassportIssueDate
+                            }
+                        }
+                    ]
+                }) }}
+            {% endcall %}
+
+             <!-- Heading. -->
+             {% call govukFieldset({
+                attributes: {
+                    "style": "margin-top: 30px"
+                },
+                legend: {
+                    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+                    isPageHeading: true,
+                    text: "Has the applicant’s identity been verified?"
+                }
+            }) %}
+
+                <!-- Body. -->
+                <p class="govuk-body">Select Yes if:<br/></p>
+
+                <!-- List bullet. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        you have checked all details above are correct
+                    </li>
+                    <li>
+                        you have seen and checked documents to verify the applicant's current address
+                    </li>
+                    <li>
+                        you have verified the applicant’s identity by checking relevant documents as listed in the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>
+                    </li>
+                </ul>
+
+                <!-- Body. -->
+                <p class="govuk-body">Select No if:<br/></p>
+
+                <!-- List bullet. -->
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        the applicant details are incorrect
+                    </li>
+                    <li>
+                        you cannot verify their identity by following the <a class="govuk-link" href="https://www.gov.uk/government/publications/dbs-identity-checking-guidelines/id-checking-guidelines-for-standardenhanced-dbs-check-applications-from-1-july-2021" rel="noopener noreferrer" target="_blank">DBS guidance</a>
+                    </li>
+                </ul>
+
+                <!-- Details. -->
+                {{ govukDetails({
+                    summaryText: "If the applicant hasn't been able to show correct documents",
+                    html: 'If you haven’t seen the documents required to verify the applicant’s identity and you have to rearrange the verification meeting, you can complete the identity verification later.<br/><br/><a class="govuk-link" href="/dashboard/home">Return to the application list</a>'
+                }) }}
+
+                <form method="post">
+                    <!-- Radio buttons. -->
+                    {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        errorMessage: errorComponentApplicationIdVerified,
+                        items: [
+                            {
+                                checked: data["application-id-verified"] === "Yes",
+                                text: "Yes",
+                                value: "Yes"
+                            },
+                            {
+                                checked: data["application-id-verified"] === "No",
+                                text: "No",
+                                value: "No"
+                            }
+                        ],
+                        name: "application-id-verified",
+                        value: data["application-id-verified"]
+                    }) }}
+                    <!-- Button. -->
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </form>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock %}

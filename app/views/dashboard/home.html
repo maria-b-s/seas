@@ -242,22 +242,22 @@
                     {% set applicationStatusId = application["status"]["id"] %}
                     {% set applicationStatusText = application["status"]["text"] %}
                     {% set applicationStatusTag %}
-                        {% set applicationStatusClassTagColor = "govuk-tag--blue" %}
+                        {% set applicationStatusTagColor = "" %}
                         {% if applicationStatusId === "1" or applicationStatusId === "2" %}
                             <!-- Status of sent to applicant or rejected. -->
-                            {% set applicationStatusClassTagColor = "govuk-tag--yellow" %}
+                            {% set applicationStatusTagColor = "background-color: #F47738" %}
                         {% elif applicationStatusId === "5" or applicationStatusId === "6" %}
                             <!-- Status of ID check required or ready to submit. -->
-                            {% set applicationStatusClassTagColor = "govuk-tag--red" %}
+                            {% set applicationStatusTagColor = "background-color: #F3F2F1; color: #0B0C0C" %}
                         {% elif applicationStatusId === "7" %}
                             <!-- Status of application submitted. -->
-                            {% set applicationStatusClassTagColor = "govuk-tag--green" %}
+                            {% set applicationStatusTagColor = "background-color: #00703C" %}
                         {% endif %}
                         {{ govukTag({
                             attributes: {
-                                "style": "float: right; margin-right: 0px !important; text-align: center; width: 86%"
+                                "style": "float: right; margin-right: 0px !important; text-align: center; width: 86%; " + applicationStatusTagColor
                             },
-                            classes: "govuk-!-font-size-14 govuk-!-margin-bottom-4 " + applicationStatusClassTagColor,
+                            classes: "govuk-!-font-size-14 govuk-!-margin-bottom-4 govuk-tag",
                             text: applicationStatusText
                         }) }}
                     {% endset %}
@@ -265,7 +265,7 @@
                     {% set applicationViewFullApplicationDetails = '<a href="/registered-body/view-details?app=' + application["ref"] + '" rel="noopener noreferrer">View full application details</a>' %}
                     <!-- Assign ID check to me. -->
                     {% set applicationAssignIdCheckToMe %}
-                        {% if applicationStatusId === "1" or applicationStatusId === "3" %}
+                        {% if applicationStatusId === "3" %}
                             <!-- Status of ID check required or sent to applicant. -->
                             {% if applicationIdChecker !== currentIdChecker  %}
                                 {% set formActionAssignIdCheck = "assign-id-check?application="  + application["ref"] %}
@@ -277,9 +277,10 @@
                     {% endset %}
                     <!-- Verify ID. -->
                     {% set applicationVerifyId %}
-                        {% if applicationStatusId === "1" and applicationIdChecker === currentIdChecker %}
+                        {% if applicationStatusId === "1"%}
                             <!-- Status of ID check required and CSig is the assigned ID Checker. -->
-                            <p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="#" rel="noopener noreferrer">Verify ID</a></p>
+                            {% set applicationVerifyId = '<p class="govuk-body-s govuk-!-margin-bottom-1" style="text-align: right"><a href="/registered-body/verify-id?app=' + application["ref"] + '" rel="noopener noreferrer">Verify ID</a></p>' %}
+                            {{ applicationVerifyId | safe }}
                         {% endif %}
                     {% endset %}
                     <!-- Submit application. -->
@@ -310,11 +311,8 @@
                                 },
                                 html: '<p class="govuk-body-m govuk-!-margin-bottom-4">' + applicationName + '</p>
                                        <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Email</p>
-                                       <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date application started</p>
-                                       <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Organisation</p>
                                        <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Check level</p>
-                                       <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">ID Checker</p>
-                                       <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Last worked on by</p>'
+                                       <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-1">Date application started</p>'
                             },
                             {
                                 attributes: {
@@ -322,11 +320,8 @@
                                 },
                                 html: '<p class="govuk-body-m govuk-!-margin-bottom-4">' + applicationViewFullApplicationDetails + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationEmailAddress + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationDateApplicationStarted + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationOrganisation + '</p>
                                        <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationCheckLevel + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationIdChecker + '</p>
-                                       <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationLastWorkedOnBy + '</p>'
+                                       <p class="govuk-body-s govuk-!-margin-bottom-1">' + applicationDateApplicationStarted + '</p>'
                             },
                             {
                                 attributes: {
@@ -362,13 +357,13 @@
                         },
                         {
                             attributes: {
-                                "aria-sort": "descending"
+                                "aria-sort": "none"
                             },
                             text: "Date started"
                         },
                         {
                             attributes: {
-                                "aria-sort": "none"
+                                "aria-sort": "ascending"
                             },
                             classes: "govuk-table__header--numeric",
                             text: "Action needed"

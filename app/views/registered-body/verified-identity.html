@@ -1,0 +1,70 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    You have successfully verified the identity of {{ selectedApplication[0]["name"] }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Panel. -->
+            {{ govukPanel({
+                classes: "govuk-!-margin-bottom-6",
+                titleText: "You have successfully verified the identity of " + selectedApplication[0]["name"]
+            }) }}
+
+            <!-- Heading. -->
+            <h2 class="govuk-heading-m">What happens next</h2>
+
+            <!-- Body. -->
+            <p class="govuk-body">The application is now ready to be submitted to DBS.</p>
+
+            <form method="post" style="display: inline-block">
+                <!-- Button. -->
+                {{ govukButton({
+                    text: "Return to application list"
+                }) }}
+                <!-- Link. -->
+                <p class="govuk-body govuk-!-margin-left-6"" style="display: inline-block; padding-top: 5px"><a class="govuk-link" href="declaration" rel="noopener noreferrer">Submit application</a></p>
+            </form>
+            
+        </div>
+    </div>
+{% endblock %}

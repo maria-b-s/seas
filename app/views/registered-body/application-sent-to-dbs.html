@@ -1,0 +1,80 @@
+<!-- ---------------------------------------------------------------------------
+-- Templates
+---------------------------------------------------------------------------- -->
+{% extends "layout.html" %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Page title
+---------------------------------------------------------------------------- -->
+{% block pageTitle %}
+    Application sent to DBS
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Service name
+---------------------------------------------------------------------------- -->
+{% set serviceName %}
+    Request a standard or enhanced DBS check
+{% endset %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Before content
+---------------------------------------------------------------------------- -->
+{% block beforeContent %}
+    <!-- Phrase banner. -->
+    {{ govukPhaseBanner({
+        html: "This is a new service – your <a class='govuk-link' href='#' rel='noopener noreferrer' target='_blank'>feedback (opens in a new tab)</a> will help us to improve it.",
+        tag: {
+            text: "Alpha"
+        }
+    }) }}
+{% endblock %}
+
+
+
+<!-- ---------------------------------------------------------------------------
+-- Block / Content
+---------------------------------------------------------------------------- -->
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <!-- Panel. -->
+            {{ govukPanel({
+                classes: "govuk-!-margin-bottom-6",
+                titleText: "Application sent to DBS"
+            }) }}
+
+            <!-- Body. -->
+            <p class="govuk-body">You can <a class="govuk-link" href="/dashboard/home" rel="noopener noreferrer">view and track your applications online.</a></p>
+
+            <!-- Heading. -->
+            <h2 class="govuk-heading-m">What happens next</h2>
+
+            <!-- Body. -->
+            <p class="govuk-body">We'll process the application and send the applicant their certificate in the post.<br/><br/>Standard or enhanced DBS checks usually take around 14 days. They can take longer if:</p>
+            
+            <!-- List. -->
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the details given by the applicant are incorrect</li>
+                <li>several police forces need to be involved in the check</li>
+            </ul>
+
+            <!-- Body. -->
+            <p class="govuk-body">We'll contact you by email if we need any more information about this application.</p>
+
+            <form method="post" style="display: inline-block">
+                <!-- Button. -->
+                {{ govukButton({
+                    text: "Return to application list"
+                }) }}
+            </form>
+            
+        </div>
+    </div>
+{% endblock %}

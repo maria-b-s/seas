@@ -51,11 +51,14 @@ const { validateApplicantOrPostHolder } = require('./middleware/validateApplican
 const { validateApplicantName } = require('./middleware/validateApplicantName');
 const { validateApplicationDetails } = require('./middleware/validateApplicationDetails');
 const { validateApplicationDetailsConfirm } = require('./middleware/validateApplicationDetailsConfirm');
+const { validateApplicationIdVerified } = require('./middleware/validateApplicationIdVerified');
 const { validateBarredListAdults } = require('./middleware/validateBarredListAdults');
 const { validateBarredListChildren } = require('./middleware/validateBarredListChildren');
+const { validateCancelApplication } = require('./middleware/utilsCancelApplication')
 const { validateClientOrganisation } = require('./middleware/validateClientOrganisation');
 const { validateDbsCheckLevel } = require('./middleware/validateDbsCheckLevel');
 const { validateDeactivatedIdCheckerPassword } = require('./middleware/validateDeactivatedIdCheckerPassword');
+const { validateDeclaration } = require('./middleware/validateDeclaration');
 const { validateDriversLicence } = require('./middleware/validateDriversLicence');
 const { validateEmail } = require('./middleware/validateEmail');
 const { validateExistingPostHolder } = require('./middleware/validateExistingPostHolder');
@@ -469,6 +472,136 @@ registeredBodyRouter.get('/submit-application-confirmation', invalidateCache, (r
     response.render('registered-body/submit-application-confirmation', { cache: inputCache, validation: null });
 });
 
+// -----------------------------------------------------------------------------
+// Verify ID
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/verify-id', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    response.render('registered-body/verify-id', { cms, cache: inputCache, query: request.query.app });
+});
+registeredBodyRouter.post('/verify-id', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = `application-details?app=${request.query.app}`;
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Application Details
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/application-details', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/application-details', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/application-details', invalidateCache, validateApplicationIdVerified);
+
+// -----------------------------------------------------------------------------
+// Verified Identity
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/verified-identity', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/verified-identity', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/verified-identity', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = "/dashboard/home";
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Declaration
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/declaration', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data.selectedApplication;
+    response.render(`registered-body/declaration`, { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/declaration', invalidateCache, validateDeclaration);
+
+// -----------------------------------------------------------------------------
+// Application Sent to DBS
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/application-sent-to-dbs', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/application-sent-to-dbs', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/application-sent-to-dbs', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = "/dashboard/home";
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Cannot Verify
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/cannot-verify', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/cannot-verify', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/cannot-verify', invalidateCache, (request, response) => {
+    // Constants.
+    const app = request.query.app;
+    const redirectPath = `cancel-application?app=${app}`;
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
+
+// -----------------------------------------------------------------------------
+// Cancel Application
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/cancel-application', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/cancel-application', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/cancel-application', invalidateCache, validateCancelApplication);
+
+// -----------------------------------------------------------------------------
+// Application Cancelled
+// -----------------------------------------------------------------------------
+registeredBodyRouter.get('/application-cancelled', invalidateCache, (request, response) => {
+    const inputCache = loadPageData(request);
+    let selectedApplication = request.session.data['applications'].filter(value => value.ref == request.query.app);
+    request.session.data.selectedApplication = selectedApplication;
+    response.render('registered-body/application-cancelled', { cms, cache: inputCache, query: request.query.app, selectedApplication: selectedApplication });
+});
+registeredBodyRouter.post('/application-cancelled', invalidateCache, (request, response) => {
+    // Constants.
+    const redirectPath = "/dashboard/home";
+
+    // Cache session.
+    savePageData(request, request.body);
+
+    // Response.
+    response.redirect(redirectPath);
+});
 
 
 registeredBodyRouter.get('/view-details', invalidateCache, (req, res) => {

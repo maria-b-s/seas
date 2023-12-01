@@ -119,3 +119,15 @@ $govuk-assets-path: '/govuk/assets/';
  .no-details details > summary::before {
     content: "" !important;
 }
+
+.govuk-accordion__controls {
+    display: none;
+}
+
+.govuk-accordion__section-button {
+    border-top: 0px !important;
+}
+
+.govuk-accordion__section-content {
+    padding-bottom: 0px !important;
+}
